@@ -34,7 +34,7 @@ swapped underneath without changing callers (the dep-behind-port strategy below)
 
 - **Identity** — ✅ ZetaId (4/4)
 - **Event / reactive** — ✅ Observe loop (4/4) · ⬜ Rx-Observable = Z-set delta-stream (per-lang Rx exists; unify) · ⬜ CALM coordination-free marker
-- **Algebra ladder** — ✅ G-Set (4/4) · 🚧 Bag / multiset (next) · 🚧 Z-set (F# only) · ✅ IndexedZSet (F#) · ✅ CRDTs — G-Counter / PN-Counter / OR-Set / Delta-CRDT (F# `Crdt.fs` / `DeltaCrdt.fs`)
+- **Algebra ladder** — 🚧 G-Set (3/4 — TS/F#/Rust; C# pending #6363) · 🚧 Bag / multiset (next) · 🚧 Z-set (F# only) · ✅ IndexedZSet (F#) · ✅ CRDTs — G-Counter / PN-Counter / OR-Set / Delta-CRDT (F# `Crdt.fs` / `DeltaCrdt.fs`)
 - **Numerics / algebra tower** — ⬜ complex/imaginary + the **Cayley–Dickson** tower ℝ→ℂ→ℍ→𝕆→𝕊 (F# `src/Core/CayleyDickson.fs` — the "imaginary stack", B-0623) · ⬜ Clifford / geometric algebra (F# substrate) · ✅ Z-set weight ring ℤ (F# `src/Core/Algebra.fs`)
 - **Inference** — ⬜ Infer.NET **BP/EP** factor-graph (F# substrate; architecture B-0365.5 closed + B-0637) · ⬜ uncertainty semiring (B-0367) · ⬜ posterior quorum (B-0255)
 - **Comms** — 🚧 git-native Bus (TS only)
@@ -75,7 +75,7 @@ sweep order is **ZetaId → algebra ladder → bus**.
 
 | Primitive                                                          | TS  | F#  | C#  | Rust | Note                                                                                                                                                                                                                                                                                                                    |
 | ------------------------------------------------------------------ | --- | --- | --- | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **G-Set** — grow-only set CRDT                                     | ✅  | ✅  | ✅  | ✅   | TS `src/Core.TypeScript/g-set/` (+ `golden-vectors.json` fixture); F# `src/Core/GSet.fs`; Rust `src/Core.Rust.Algebra/src/gset.rs` (#6360); C# `src/Core.CSharp/GSet.cs` (#6363). **Now 4/4 → Tier-1.**                                                                                                                 |
+| **G-Set** — grow-only set CRDT                                     | ✅  | ✅  | ❌  | ✅   | TS `src/Core.TypeScript/g-set/` (+ `golden-vectors.json` fixture); F# `src/Core/GSet.fs`; Rust `src/Core.Rust.Algebra/src/gset.rs` (#6360). **3/4** — C# `src/Core.CSharp/GSet.cs` pending #6363; flips to 4/4 → Tier-1 when it lands.                                                                                  |
 | **Bag / multiset** — non-negative-weight multiset                  | ❌  | ⚠️  | ❌  | ❌   | The **missing middle rung**. Only implicit-in-Z-set in F# today; no named type anywhere. Cheapest gap.                                                                                                                                                                                                                  |
 | **Z-set** — signed-weight, retraction-native set (DBSP)            | ❌  | ✅  | ⚠️  | ❌   | F# `src/Core/ZSet.fs` (+`IndexedZSet.fs`); C# is a binding→F# (`ZetaCircuitBuilder`). Needs native TS + Rust.                                                                                                                                                                                                           |
 | **Bus (git-native)** — ZetaId-keyed G-Set of envelopes, no-PR      | ✅  | ❌  | ❌  | ❌   | `tools/agent-bus/` (B-0954, #6283/#6327). The wire is JSON-on-git, so cross-lang = a thin read/write/merge per language (each needs ZetaId first).                                                                                                                                                                      |
@@ -208,7 +208,9 @@ G-Set / Bag / Z-set gaps collapse into a single ladder build per language.
   harness that fails non-zero on mismatch (the `tests/cross-verification/zeta-id/`
   pattern is the template).
 
-_Last updated: 2026-06-01 — ZetaId Tier-1 4-oracle (B-0679); G-Set now **4/4** (Rust
-#6360, C# #6363) → Tier-1; added the cross-language-BCL framing, the numeric/category
-primitives table (+ the dep-behind-port fill strategy for the ❌ gaps), the DST/test
-primitives section, and the BCL-like candidate tier (JSON, UTF-8 — pull in slowly)._
+_Last updated: 2026-06-01 — ZetaId Tier-1 4-oracle (B-0679); G-Set **3/4** (TS/F#/Rust
+via #6360; C# pending #6363, flips to 4/4 → Tier-1 when it lands); added the
+cross-language-BCL framing, the wish list, the numeric/category primitives table (+ the
+dep-behind-port fill strategy for the ❌ gaps), the numerics/algebra-tower + inference +
+nullable wish items, the DST/test primitives section, and the BCL-like candidate tier
+(JSON, UTF-8 — pull in slowly)._
