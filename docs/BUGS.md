@@ -296,9 +296,11 @@ tempted to ship.
 - **Found:** round 20 by Rune
 - **Severity:** P2
 - **Symptom:** the registry and `CONFLICT-RESOLUTION.md` disagree on
-  the expert roster and on whether pronouns are declared. The
-  name-canon rule is pronoun-free; any residual pronoun phrasing
-  in `CONFLICT-RESOLUTION.md` should be removed.
+  the expert roster (the registry carries names; `CONFLICT-RESOLUTION`
+  lists mostly bare role-titles). The declared-pronoun half is
+  resolved — the `(she/her)` / `(he/him)` / `(they/them)` markers
+  have been removed from `CONFLICT-RESOLUTION.md` per the pronoun-free
+  name-canon. Roster reconciliation remains.
 - **Fix:** registry is canon for names; `CONFLICT-RESOLUTION`
   defers to it.
 
