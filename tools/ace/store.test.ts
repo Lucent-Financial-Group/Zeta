@@ -309,6 +309,17 @@ describe("addRegistryEntry", () => {
     expect(e?.url).toBe("NEW");
     expect(e?.package_hash).toBe("sha256:new");
   });
+  test("a __proto__ / constructor package name does not pollute Object.prototype", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
+    const u = join(dir, "registry.json");
+    addRegistryEntry("__proto__", "9.9.9", { url: "U", package_hash: "sha256:u" }, u);
+    addRegistryEntry("constructor", "9.9.9", { url: "U2", package_hash: "sha256:u2" }, u);
+    // pollution would make every object carry a "9.9.9" property
+    expect(({} as Record<string, unknown>)["9.9.9"]).toBeUndefined();
+    expect(Object.prototype.hasOwnProperty.call({}, "9.9.9")).toBe(false);
+    // and the entries are still retrievable via the Map-based loader
+    expect(loadRegistry(join(dir, "missing.json"), u).get("__proto__")?.get("9.9.9")?.url).toBe("U");
+  });
   test("writes owner-only perms on POSIX (0600 file, 0700 dir)", () => {
     if (process.platform === "win32") return;
     const parent = mkdtempSync(join(tmpdir(), "ace-regperm-"));

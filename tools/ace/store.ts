@@ -287,7 +287,17 @@ export function addRegistryEntry(name: string, version: string, entry: RegistryE
   mkdirSync(dir, { recursive: true, mode: 0o700 });
   try { chmodSync(dir, 0o700); } catch { /* best-effort */ }
   const tightenFile = (): void => { if (existsSync(userPath)) { try { chmodSync(userPath, 0o600); } catch { /* best-effort */ } } };
-  const obj = readRegistryFile(userPath);
+  // Null-prototype working copy: a user-controlled "__proto__"/"constructor" name or version
+  // cannot trigger prototype pollution on the bracket assignments below (the registry file can
+  // be operator-edited or shared, so its keys are untrusted).
+  const raw = readRegistryFile(userPath);
+  const obj = Object.create(null) as Record<string, Record<string, RegistryEntry>>;
+  for (const [n, vs] of Object.entries(raw)) {
+    if (typeof vs !== "object" || vs === null) continue;
+    const inner = Object.create(null) as Record<string, RegistryEntry>;
+    for (const [v, e] of Object.entries(vs)) inner[v] = e;
+    obj[n] = inner;
+  }
   const existing = obj[name]?.[version];
   // Identical re-add → idempotent no-op (preserves dedup). New OR differing url/hash → write.
   if (existing && existing.url === entry.url && existing.package_hash === entry.package_hash) {
@@ -295,7 +305,7 @@ export function addRegistryEntry(name: string, version: string, entry: RegistryE
     return { added: false, updated: false };
   }
   const updated = existing !== undefined; // same name@version, corrected url/hash → overwrite stale pin
-  obj[name] = obj[name] ?? {};
+  obj[name] = obj[name] ?? (Object.create(null) as Record<string, RegistryEntry>);
   obj[name][version] = { url: entry.url, package_hash: entry.package_hash };
   writeFileSync(userPath, JSON.stringify(obj, null, 2));
   chmodSync(userPath, 0o600);

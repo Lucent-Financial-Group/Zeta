@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { packageHash, resolve, type FetchPackage } from "./resolve.ts";
-import type { AcePackage } from "./store.ts";
+import type { AcePackage, AceDependency } from "./store.ts";
 import { contentHash } from "./store.ts";
 import type { RegistryEntry } from "./store.ts";
 
@@ -230,5 +230,17 @@ describe("resolve — registry deps", () => {
     const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("pin-mismatch");
+  });
+  test("an unknown dependency kind refuses with invalid-package (not silently treated as inline)", async () => {
+    const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [{ kind: "frobnicate", name: "X", version: "1.0.0" }] as unknown as AceDependency[] }, files: { "r.txt": "r" } };
+    const r = await resolve(root, fetchOf({}), NO_TRUST, new Map(), { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("invalid-package");
+  });
+  test("an inline edge missing url/package_hash refuses with invalid-package", async () => {
+    const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [{ kind: "inline", name: "X", version: "1.0.0" }] as unknown as AceDependency[] }, files: { "r.txt": "r" } };
+    const r = await resolve(root, fetchOf({}), NO_TRUST, new Map(), { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("invalid-package");
   });
 });

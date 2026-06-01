@@ -46,6 +46,14 @@ export async function resolve(
     for (const edge of (Array.isArray(node.manifest.dependencies) ? node.manifest.dependencies : [])) {
       const here = [...path, edge.name];
 
+      // Edge-shape guard: dependency edges are untrusted JSON. kind omitted == inline (pre-DU
+      // back-compat); reject an unknown kind + an inline edge missing url/package_hash here with a
+      // precise invalid-package refusal rather than letting it surface later as fetch-failed.
+      const ek = (edge as { readonly kind?: unknown }).kind;
+      if (ek !== undefined && ek !== "inline" && ek !== "registry") {
+        return { ok: false, reason: "invalid-package", detail: `${edge.name}: unknown dependency kind ${JSON.stringify(ek)}`, path: here };
+      }
+
       // Resolve url + package_hash from the edge kind
       let url: string;
       let package_hash: string;
@@ -56,6 +64,9 @@ export async function resolve(
         }
         url = entry.url; package_hash = entry.package_hash;
       } else {
+        if (typeof edge.url !== "string" || typeof edge.package_hash !== "string") {
+          return { ok: false, reason: "invalid-package", detail: `${edge.name}: inline edge missing url/package_hash`, path: here };
+        }
         url = edge.url; package_hash = edge.package_hash;
       }
 
