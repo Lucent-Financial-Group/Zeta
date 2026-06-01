@@ -239,8 +239,13 @@ module DynamicValue =
                 if j = start || j >= n || path.[j] <> ']' then
                     ok <- false
                 else
-                    steps.Add(Index(System.Int32.Parse(path.Substring(start, j - start))))
-                    i <- j + 1
+                    // TryParse (not Parse): an index that overflows Int32 is a
+                    // malformed path -> None, never an OverflowException escaping `get`.
+                    match System.Int32.TryParse(path.Substring(start, j - start)) with
+                    | true, idx ->
+                        steps.Add(Index idx)
+                        i <- j + 1
+                    | false, _ -> ok <- false
             | ']' -> ok <- false
             | _ ->
                 key.Append(c) |> ignore

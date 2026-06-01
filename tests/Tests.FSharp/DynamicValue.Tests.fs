@@ -145,3 +145,4 @@ let ``get declines malformed paths`` () =
     Assert.Equal(None, DynamicValue.get "a.b[" sample) // unterminated bracket
     Assert.Equal(None, DynamicValue.get "a.b[x]" sample) // non-digit index
     Assert.Equal(None, DynamicValue.get "a]b" sample) // stray close bracket
+    Assert.Equal(None, DynamicValue.get "a.b[99999999999999999999]" sample) // index overflows Int32 -> None, not an exception
