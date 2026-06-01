@@ -568,6 +568,10 @@ export async function main(argv: readonly string[]): Promise<number> {
         if (fh !== (obj as AcePackage).manifest.content_hash) {
           console.error(`ace: publish: skip ${f} — content_hash does not match files`); continue;
         }
+        const expectedFile = `${(obj as AcePackage).manifest.name}-${(obj as AcePackage).manifest.version}.json`;
+        if (f !== expectedFile) {
+          console.error(`ace: publish: skip ${f} — filename must be ${expectedFile} to match its derived consumer URL`); continue;
+        }
         packages.push(obj as AcePackage);
       }
       if (packages.length === 0) { console.error(`ace: publish refused: no valid packages in ${parsed.pubPackagesDir}`); return 1; }
@@ -579,6 +583,10 @@ export async function main(argv: readonly string[]): Promise<number> {
         catch (e) { console.error(`ace: publish refused: cannot read existing ${outPath}: ${(e as Error).message}`); return 1; }
         const p = parseIndex(prevRaw);
         if ("error" in p) { console.error(`ace: publish refused: existing ${outPath} is not a valid index (${p.error}) — refusing to reset sequence (would look like a rollback to consumers); remove or fix it`); return 1; }
+        const prevInfo = publicKeyInfoFromPrivatePem(pem);
+        const { signature: prevSig, ...prevContent } = p;
+        const prevVerify = verifyIndexSignature(prevContent, prevSig, new Map([[prevInfo.keyId, { public_key: prevInfo.public_key }]]));
+        if (!prevVerify.ok) { console.error(`ace: publish refused: existing ${outPath} signature does not verify under --key (${prevVerify.reason}) — refusing to auto-bump from an untrusted index; fix or remove it`); return 1; }
         prev = p;
       }
       const seq = nextSequence(prev);

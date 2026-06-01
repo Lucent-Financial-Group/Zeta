@@ -1390,12 +1390,14 @@ describe("ace registry publish (slice 6.1)", () => {
     expect("error" in parseArgs(["registry", "publish", "--packages", "d", "--base-url", "https://x"])).toBe(true);
   });
 
-  test("duplicate name@version in the dir → publish refused (exit 1, no index written)", async () => {
-    const { existsSync: existsSyncLocal } = await import("node:fs");
+  test("second SAME-identity file with a mismatched basename is skipped (basename filter precedes dup check); dup-detection itself covered at buildIndexDoc unit level", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
     const idxKp = generateKeypair();
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-dup-"));
     writeSignedPkg(pkgDir, "leaf", "1.0.0");
-    // a second file, different filename, SAME name@version
+    // a second file, SAME name@version, but its basename != leaf-1.0.0.json so Fix 2 skips it
+    // BEFORE it can reach buildIndexDoc's duplicate check. (Two files cannot share the canonical
+    // basename leaf-1.0.0.json in one dir, so the CLI scan can no longer surface a duplicate.)
     const dupFiles = { "leaf.txt": "other" };
     const dupCh = contentHash(new TextEncoder().encode(JSON.stringify(dupFiles)));
     const dupKp = generateKeypair();
@@ -1405,8 +1407,12 @@ describe("ace registry publish (slice 6.1)", () => {
     const keyPath = join(tempHome, "dup.pem"); writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "dup-index.json");
     const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
-    expect(code).toBe(1);
-    expect(existsSyncLocal(outPath)).toBe(false);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    if (!("error" in doc)) {
+      // only the canonically-named leaf-1.0.0.json was indexed; the mismatched dup was skipped
+      expect(doc.packages.leaf!["1.0.0"]!.url).toBe("https://pkgs/leaf-1.0.0.json");
+    }
   });
 
   test("malformed (non-PEM) key → publish refused (exit 1, no index written)", async () => {
@@ -1458,5 +1464,70 @@ describe("ace registry publish (slice 6.1)", () => {
     expect(code).toBe(0);
     const doc = parseIndex(readFileSync(outPath, "utf8"));
     if (!("error" in doc)) { expect(doc.packages.good).toBeDefined(); expect(doc.packages.bad).toBeUndefined(); }
+  });
+
+  test("tampered existing --out (signature flipped) → publish refused; index unchanged", async () => {
+    const { existsSync: existsSyncLocal } = await import("node:fs");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-tamper-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const keyPath = join(tempHome, "tk.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "tamper-index.json");
+    // publish a valid index once
+    const code1 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code1).toBe(0);
+    // tamper: lower sequence (still parseable, but sequence is signed so signature no longer verifies)
+    const tampered = JSON.parse(readFileSync(outPath, "utf8")) as { sequence: number };
+    tampered.sequence = 0;
+    const tamperedBytes = JSON.stringify(tampered, null, 2);
+    writeFileSync(outPath, tamperedBytes);
+    // republish with same key + packages → refused (signature does not verify under --key)
+    const code2 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code2).toBe(1);
+    // on-disk index unchanged (publish must not overwrite on refusal)
+    expect(existsSyncLocal(outPath)).toBe(true);
+    expect(readFileSync(outPath, "utf8")).toBe(tamperedBytes);
+  });
+
+  test("package file whose basename != name-version.json is skipped", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-mismatch-"));
+    // correctly-named package
+    writeSignedPkg(pkgDir, "good", "1.0.0");
+    // mismatched filename: manifest other@2.0.0 written as mypkg.json (valid content_hash)
+    const oFiles = { "other.txt": "x" };
+    const oCh = contentHash(new TextEncoder().encode(JSON.stringify(oFiles)));
+    const oKp = generateKeypair();
+    const oM = { format_version: 1, name: "other", version: "2.0.0", content_hash: oCh };
+    const oPkg = { manifest: { ...oM, signature: signManifest(oM, oKp.privatePem) }, files: oFiles };
+    writeFileSync(join(pkgDir, "mypkg.json"), JSON.stringify(oPkg));
+    const keyPath = join(tempHome, "mm.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "mismatch-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    if (!("error" in doc)) {
+      expect(doc.packages.good!["1.0.0"]).toBeDefined();
+      expect(doc.packages.other).toBeUndefined();
+    }
+  });
+
+  test("all package files have mismatched basenames → no valid packages (exit 1)", async () => {
+    const { existsSync: existsSyncLocal } = await import("node:fs");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-allmismatch-"));
+    // only one file, manifest foo@1.0.0 but named mypkg.json
+    const fFiles = { "foo.txt": "x" };
+    const fCh = contentHash(new TextEncoder().encode(JSON.stringify(fFiles)));
+    const fKp = generateKeypair();
+    const fM = { format_version: 1, name: "foo", version: "1.0.0", content_hash: fCh };
+    const fPkg = { manifest: { ...fM, signature: signManifest(fM, fKp.privatePem) }, files: fFiles };
+    writeFileSync(join(pkgDir, "mypkg.json"), JSON.stringify(fPkg));
+    const keyPath = join(tempHome, "am.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "allmismatch-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(1);
+    expect(existsSyncLocal(outPath)).toBe(false);
   });
 });
