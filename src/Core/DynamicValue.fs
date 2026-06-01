@@ -69,8 +69,11 @@ type DynamicValueType =
 /// Equality is structural but hand-written (`Bytes` compares contents, not the
 /// `ImmutableArray` reference; arrays/objects recurse). `Object` is an ORDERED
 /// key→value list: two objects with the same pairs in different orders are NOT
-/// equal — the value tree preserves insertion order, and a canonical wire encoder
-/// sorts keys when byte-locking. (Caveat: `Float` equality is .NET double
+/// equal — the value tree preserves insertion order, and the canonical wire
+/// encoder (`toCanonicalJson`) PRESERVES that insertion order when byte-locking
+/// (a key-sorting canonical form — JCS / RFC 8785 / CBOR §4.2 — would be lossy /
+/// non-bijective for an order-significant value, so it is rejected; see the seed
+/// `src/Core.TypeScript/dynamic-value/golden-vectors.json`). (Caveat: `Float` equality is .NET double
 /// equality, so `nan = nan` is true and `-0.0 = 0.0`; canonical encoding handles
 /// those on the wire.)
 ///
@@ -291,3 +294,54 @@ module DynamicValue =
     /// An empty path returns the value itself.
     let get (path: string) (value: DynamicValue) : DynamicValue option =
         tryParsePath path |> Option.bind (fun steps -> navigate steps value)
+
+    /// Escape a string as a JSON string literal (including the surrounding
+    /// quotes), RFC 8259 minimal escaping: '"' and '\' and control chars
+    /// U+0000..U+001F (short forms where they exist, else \u00XX lowercase-hex);
+    /// '/' is NOT escaped; all other characters (incl. non-ASCII / astral
+    /// surrogate pairs, appended raw per UTF-16 code unit) are emitted raw.
+    let private escapeJsonString (s: string) : string =
+        let sb = System.Text.StringBuilder(s.Length + 2)
+        sb.Append('"') |> ignore
+
+        for ch in s do
+            match ch with
+            | '"' -> sb.Append("\\\"") |> ignore
+            | '\\' -> sb.Append("\\\\") |> ignore
+            | '\b' -> sb.Append("\\b") |> ignore
+            | '\f' -> sb.Append("\\f") |> ignore
+            | '\n' -> sb.Append("\\n") |> ignore
+            | '\r' -> sb.Append("\\r") |> ignore
+            | '\t' -> sb.Append("\\t") |> ignore
+            | c when int c < 0x20 -> sb.AppendFormat("\\u{0:x4}", int c) |> ignore
+            | c -> sb.Append(c) |> ignore
+
+        sb.Append('"') |> ignore
+        sb.ToString()
+
+    /// Canonical JSON encoding — the byte-lock target (the shared seed is
+    /// `src/Core.TypeScript/dynamic-value/golden-vectors.json`). Minified (no
+    /// insignificant whitespace); `Object` keys in INSERTION order — NOT sorted,
+    /// because `Object` is order-significant, so a key-sorting canonical form
+    /// (JCS / RFC 8785 / CBOR §4.2) would be lossy / non-bijective; `Int` = bare
+    /// exact decimal (invariant culture); `String` per `escapeJsonString`. v1
+    /// locks null/bool/int/string/array/object; `Float` and `Bytes` are DEFERRED
+    /// (no canonical JSON form yet — they lock under CBOR or a tagged-JSON
+    /// convention) and raise `InvalidOperationException` if encoded.
+    let rec toCanonicalJson (value: DynamicValue) : string =
+        match value with
+        | DynamicValue.Null -> "null"
+        | DynamicValue.Bool b -> if b then "true" else "false"
+        | DynamicValue.Int i -> i.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        | DynamicValue.Float _ ->
+            invalidOp
+                "DynamicValue.Float canonical JSON is DEFERRED (no canonical shortest-float in plain JSON); locks under CBOR or a tagged-JSON convention"
+        | DynamicValue.String s -> escapeJsonString s
+        | DynamicValue.Bytes _ ->
+            invalidOp
+                "DynamicValue.Bytes canonical JSON is DEFERRED (no native JSON byte type); locks under CBOR or a tagged-JSON convention"
+        | DynamicValue.Array items -> "[" + String.concat "," (List.map toCanonicalJson items) + "]"
+        | DynamicValue.Object pairs ->
+            "{"
+            + String.concat "," (pairs |> List.map (fun (k, v) -> escapeJsonString k + ":" + toCanonicalJson v))
+            + "}"
