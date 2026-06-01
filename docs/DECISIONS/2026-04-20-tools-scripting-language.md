@@ -877,14 +877,25 @@ Nothing else changes: still TypeScript, still no Python, `.sh` still only for th
 pre-setup install-graph, F#/.NET still engine-adjacent. The one new constraint is
 **nothing may be Bun-only** — every tool must also run on Node.
 
-### What this requires of TS tooling (mostly already true)
+### What this requires of TS tooling
 
 | Concern | Status |
 |---|---|
-| Use `node:` builtins (`node:fs` / `node:path` / `node:child_process`), not Bun-only APIs | already the convention |
+| Use `node:` builtins, not Bun-only APIs (`Bun.argv` / `Bun.file` / `Bun.write` / `Bun.Glob` / `Bun.spawn[Sync]` / `Bun.sleep` / `Bun.stdin` / `Bun.$`) | **TARGET, not current state** — a repo search finds **~29 `tools/` files** still on Bun-only APIs (e.g. `tools/dora-classify/cli.ts` `Bun.argv`, `tools/dashboard/generate-metrics.ts` `Bun.write`, the `tools/ci/qemu-*` `Bun.spawnSync`/`Bun.sleep`). The policy *implies migrating* these to `process.argv` / `node:fs` / `node:child_process` / `node:fs.glob` etc. — tracked, not assumed-done (Codex #6293) |
 | CLI entry guard `import.meta.main` | **Node 24.2+** supports it (verified; aligns with the Node-24 pin) — runs on both |
 | `bun:test` test imports | the accelerator path; for a safe-baseline test run the swap is `node:test` (not required while Bun is in CI/dev) |
 | direct `.ts` invocation | Bun runs TS directly; Node 24 type-strips *erasable* TS, but non-erasable constructs (TS `enum`, `namespace`) need `tsx`/a build — verify per tool; Bun stays the simplest direct-run, Node is the portability floor |
+
+### Migration cost (honest — Codex #6293)
+
+The refinement is **not free**: ~29 existing `tools/` files depend on Bun-only runtime
+APIs and would need porting to `node:`/`process` equivalents to actually run on the safe
+Node baseline. Until they are ported, those specific tools remain Bun-required (they still
+*work* — Bun is in CI/dev — they just aren't yet Node-portable). The honest framing for
+ratification: this ADR sets the *direction* (new tooling is Node-safe by default; nothing
+new may be Bun-only), and the existing-tooling sweep is a **tracked migration** (candidate
+backlog row) prioritized by which tools need to run on Node-only harnesses first — not a
+big-bang rewrite. The agent-bus (#6283) is the first tool authored to the new convention.
 
 ### Proposed Rule-0 refinement (`.claude/rules/rule-0-no-sh-files.md`)
 
