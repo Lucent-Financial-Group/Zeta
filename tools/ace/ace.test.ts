@@ -1051,3 +1051,76 @@ describe("install --locked graph (slice 5.4)", () => {
     expect(listInstalled(store).length).toBe(0);
   });
 });
+
+describe("leaf-install lockfiles (slice 5.4)", () => {
+  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+
+  // Builds a no-dependency (leaf) package file in a temp dir; returns { dir, pkg, pkgPath }.
+  function leafFixture(files: Record<string,string> = { "leaf.txt": "v1" }) {
+    const dir = mkdtempSync(join(tmpdir(), "ace-leaf-pkgs-"));
+    const pkg = { manifest: { format_version:1, name:"leaf", version:"1.0.0", content_hash: h(files) }, files };
+    const pkgPath = join(dir, "leaf.json"); writeFileSync(pkgPath, JSON.stringify(pkg));
+    return { dir, pkg, pkgPath };
+  }
+
+  test("leaf install writes an empty-nodes lock", async () => {
+    const { dir, pkg, pkgPath } = leafFixture();
+    const store = mkdtempSync(join(tmpdir(), "ace-leaf-store-"));
+    const lockPath = join(dir, "ace.lock");
+    const code = await main(["install", pkgPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath]);
+    expect(code).toBe(0);
+    expect(listInstalled(store).map((p)=>p.manifest.name)).toEqual(["leaf"]);
+    expect(existsSync(lockPath)).toBe(true);
+    const lf = parseLockfile(readFileSync(lockPath, "utf8"));
+    expect("error" in lf).toBe(false);
+    if (!("error" in lf)) {
+      expect(lf.root.name).toBe("leaf");
+      expect(lf.root.package_hash).toBe(packageHash(pkg as any));
+      expect(lf.nodes).toEqual([]);
+    }
+  });
+
+  test("--frozen on a leaf installs the root when the lock matches", async () => {
+    const { dir, pkgPath } = leafFixture();
+    const lockPath = join(dir, "ace.lock");
+    // 1. Normal leaf install writes the lock.
+    expect(await main(["install", pkgPath, "--store", mkdtempSync(join(tmpdir(),"ace-leaf-gen-")), "--allow-no-signature", "--lockfile", lockPath])).toBe(0);
+    // 2. --frozen leaf with the matching lock → installs.
+    const store = mkdtempSync(join(tmpdir(), "ace-leaf-frozen-"));
+    const code = await main(["install", pkgPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    expect(code).toBe(0);
+    expect(listInstalled(store).map((p)=>p.manifest.name)).toEqual(["leaf"]);
+  });
+
+  test("--frozen leaf with a drifted root → refused, installs nothing", async () => {
+    const { dir, pkgPath } = leafFixture({ "leaf.txt": "v1" });
+    const lockPath = join(dir, "ace.lock");
+    // 1. Lock leaf@1.0.0 with the original files.
+    expect(await main(["install", pkgPath, "--store", mkdtempSync(join(tmpdir(),"ace-leaf-drift-gen-")), "--allow-no-signature", "--lockfile", lockPath])).toBe(0);
+    // 2. A DIFFERENT root (same name/version, changed files → different packageHash) under --frozen → refused.
+    const drifted = { manifest: { format_version:1, name:"leaf", version:"1.0.0", content_hash: h({ "leaf.txt": "v2-CHANGED" }) }, files: { "leaf.txt": "v2-CHANGED" } };
+    const driftedPath = join(dir, "leaf-drift.json"); writeFileSync(driftedPath, JSON.stringify(drifted));
+    const store = mkdtempSync(join(tmpdir(), "ace-leaf-drift-store-"));
+    const code = await main(["install", driftedPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    expect(code).toBe(1);
+    expect(listInstalled(store).length).toBe(0);
+  });
+
+  test("--locked leaf passes when the lock matches", async () => {
+    const { dir, pkgPath } = leafFixture();
+    const lockPath = join(dir, "ace.lock");
+    expect(await main(["install", pkgPath, "--store", mkdtempSync(join(tmpdir(),"ace-leaf-locked-gen-")), "--allow-no-signature", "--lockfile", lockPath])).toBe(0);
+    const store = mkdtempSync(join(tmpdir(), "ace-leaf-locked-ok-"));
+    const code = await main(["install", pkgPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath, "--locked"]);
+    expect(code).toBe(0);
+    expect(listInstalled(store).map((p)=>p.manifest.name)).toEqual(["leaf"]);
+  });
+
+  test("--locked leaf with NO lockfile → refused", async () => {
+    const { dir, pkgPath } = leafFixture();
+    const store = mkdtempSync(join(tmpdir(), "ace-leaf-locked-nolock-"));
+    const code = await main(["install", pkgPath, "--store", store, "--allow-no-signature", "--lockfile", join(dir, "missing.lock"), "--locked"]);
+    expect(code).toBe(1);
+    expect(listInstalled(store).length).toBe(0);
+  });
+});

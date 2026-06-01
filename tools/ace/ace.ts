@@ -24,7 +24,7 @@ import {
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
 import { resolve, packageHash } from "./resolve.ts";
-import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock, lockfilesEqual } from "./lockfile.ts";
+import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock, lockfilesEqual, buildLeafLockfile } from "./lockfile.ts";
 import { solve } from "./solver.ts";
 import { resolve as toAbsolutePath } from "node:path";
 
@@ -645,6 +645,25 @@ export async function main(argv: readonly string[]): Promise<number> {
       return 0;
     }
 
+    // SLICE 5.4: leaf (no-dependency) install — uniform lockfile handling.
+    // --frozen: require an on-disk lock + a matching root before installing (drift gate).
+    // --locked: require the on-disk lock to equal a fresh leaf lock (CI guard).
+    // default: install, then write the trivial leaf lock (empty nodes).
+    if (parsed.frozen) {
+      let lockRaw: string;
+      try { lockRaw = readFileSync(parsed.lockfile, "utf8"); }
+      catch { console.error(`ace: install refused: no lockfile at ${parsed.lockfile} — run install without --frozen first`); return 1; }
+      const lf = parseLockfile(lockRaw);
+      if ("error" in lf) { console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${lf.error}`); return 1; }
+      if (!verifyRootMatchesLock(pkg, lf)) { console.error(`ace: install refused: lockfile out of date for ${pkg.manifest.name} — re-run without --frozen to regenerate`); return 1; }
+    } else if (parsed.locked) {
+      let lockRaw: string;
+      try { lockRaw = readFileSync(parsed.lockfile, "utf8"); }
+      catch { console.error(`ace: install refused: --locked but no lockfile at ${parsed.lockfile} — run 'ace update' or install without --locked`); return 1; }
+      const onDisk = parseLockfile(lockRaw);
+      if ("error" in onDisk) { console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${onDisk.error}`); return 1; }
+      if (!lockfilesEqual(onDisk, buildLeafLockfile(pkg))) { console.error(`ace: install refused: lockfile out of date (--locked) — run 'ace update' to regenerate`); return 1; }
+    }
     // INTEGRITY + extract (slice 2, unchanged)
     const result = installPackage(parsed.storePath, pkg);
     if (!result.ok) { console.error(`ace: install refused: ${result.error}`); return 1; }
@@ -653,6 +672,11 @@ export async function main(argv: readonly string[]): Promise<number> {
     } else {
       console.log(`ace: installed ${pkg.manifest.name}@${pkg.manifest.version} -> ${result.dir}`);
       console.log("ace: integrity-verified (content hash). NOT authenticity-verified (--allow-no-signature).");
+    }
+    // SLICE 5.4: default (non-frozen) path writes the trivial leaf lock; write failure is a warning.
+    if (!parsed.frozen) {
+      try { writeFileSync(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg))); }
+      catch (e) { console.error(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`); }
     }
     return 0;
   }
