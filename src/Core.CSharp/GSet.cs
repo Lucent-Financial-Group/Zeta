@@ -39,6 +39,16 @@ public static class GSet
     public static GSet<T> OfSeq<T>(IEnumerable<T> xs, IComparer<T>? comparer = null)
     {
         var cmp = comparer ?? Comparer<T>.Default;
+        return new GSet<T>(Canonicalize(xs, cmp), cmp);
+    }
+
+    /// <summary>Sort ascending + drop duplicates under <paramref name="cmp"/> (the canonical run).</summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="xs">The elements.</param>
+    /// <param name="cmp">The order.</param>
+    /// <returns>The canonical ascending, duplicate-free run.</returns>
+    internal static ImmutableArray<T> Canonicalize<T>(IEnumerable<T> xs, IComparer<T> cmp)
+    {
         var sorted = new List<T>(xs);
         sorted.Sort(cmp);
         var builder = ImmutableArray.CreateBuilder<T>(sorted.Count);
@@ -50,7 +60,7 @@ public static class GSet
             }
         }
 
-        return new GSet<T>(builder.ToImmutable(), cmp);
+        return builder.ToImmutable();
     }
 }
 
@@ -124,6 +134,16 @@ public sealed class GSet<T> : IEquatable<GSet<T>>
     public GSet<T> Union(GSet<T> other)
     {
         ArgumentNullException.ThrowIfNull(other);
+
+        // If `other` was built with a different comparer, its run is not sorted under
+        // THIS set's comparer — recanonicalize before the linear merge (which assumes
+        // both runs are sorted under _comparer, else it can emit a non-canonical run
+        // and break later binary-search Contains). Fast path: same comparer instance.
+        if (!ReferenceEquals(_comparer, other._comparer))
+        {
+            other = new GSet<T>(GSet.Canonicalize(other._items, _comparer), _comparer);
+        }
+
         if (_items.IsEmpty)
         {
             return other;
@@ -228,10 +248,19 @@ public sealed class GSet<T> : IEquatable<GSet<T>>
     /// <inheritdoc/>
     public override int GetHashCode()
     {
+        // The hash must follow the SAME equivalence relation as Equals (which compares
+        // under _comparer). When the comparer is also an equality comparer (e.g.
+        // StringComparer.Ordinal), hash each element through it; otherwise fall back to
+        // the count alone — weaker spread, but still consistent with comparer-based
+        // equality (equal sets share a count), so GSet stays a valid dictionary key.
         var hash = default(HashCode);
-        foreach (var x in _items)
+        hash.Add(_items.Length);
+        if (_comparer is IEqualityComparer<T> eq)
         {
-            hash.Add(x);
+            foreach (var x in _items)
+            {
+                hash.Add(x, eq);
+            }
         }
 
         return hash.ToHashCode();

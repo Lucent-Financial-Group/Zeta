@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -83,5 +84,27 @@ public class GSetCrossVerifyTests
         Assert.Equal(a, a.Union(GSet.Empty<string>(cmp))); // identity
         Assert.Equal(a, G(cmp, "a", "c").Add("c")); // add idempotent
         Assert.Equal(G(cmp, "a", "b", "c"), G(cmp, "a", "b").Add("c"));
+    }
+
+    [Fact]
+    public void UnionRecanonicalizesAMismatchedComparer()
+    {
+        // `other` built with a REVERSE comparer is stored descending; union under the
+        // ordinal set must recanonicalize it (PR review 2026-06-01) so the result stays
+        // canonical-ascending and binary-search Contains stays correct.
+        var ordinal = StringComparer.Ordinal;
+        var reverse = Comparer<string>.Create((x, y) => string.CompareOrdinal(y, x));
+
+        string[] aItems = ["a", "b"];
+        string[] otherItems = ["c", "a"]; // stored descending under the reverse comparer
+        string[] expected = ["a", "b", "c"];
+
+        var a = GSet.OfSeq(aItems, ordinal);
+        var other = GSet.OfSeq(otherItems, reverse);
+
+        var merged = a.Union(other);
+        Assert.Equal(expected, merged.ToArray()); // canonical ascending
+        Assert.True(merged.Contains("a")); // binary search works on the canonical run
+        Assert.True(merged.Contains("c"));
     }
 }
