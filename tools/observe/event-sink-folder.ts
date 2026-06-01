@@ -178,8 +178,39 @@ export function coauthorFor(by: string): string {
  * DATA not code), push `HEAD:main` with rebase-retry (disjoint ZetaId files →
  * G-Set union, never a real conflict). Returns a CommitOutcome; never throws.
  */
+type GitRun = (args: readonly string[]) => string;
+
+/**
+ * Push HEAD:main with rebase-retry. A concurrent peer advancing main rejects the push
+ * non-fast-forward, but disjoint ZetaId files (G-Set CRDT) never conflict → `pull --rebase
+ * --autostash` (tolerates a dirty checkout) + retry. On exhausted/failed rebase, `undoLocalCommit`
+ * leaves no local residue. Extracted from gitCommitToMain to keep each function's complexity bounded.
+ */
+function pushWithRebaseRetry(run: GitRun, undoLocalCommit: () => void): CommitOutcome {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      run(["push", "origin", "HEAD:main"]);
+      return { ok: true };
+    } catch {
+      try {
+        run(["pull", "--rebase", "--autostash", "origin", "main"]);
+      } catch {
+        try {
+          run(["rebase", "--abort"]);
+        } catch {
+          /* no rebase in progress to abort — fine */
+        }
+        undoLocalCommit();
+        return { ok: false, reason: "push rejected and rebase failed (peer contention); local commit undone" };
+      }
+    }
+  }
+  undoLocalCommit();
+  return { ok: false, reason: "push failed after 3 rebase-retry attempts; local commit undone" };
+}
+
 export function gitCommitToMain(filePath: string, envelope: EventEnvelope): CommitOutcome {
-  const run = (args: readonly string[]): string =>
+  const run: GitRun = (args) =>
     // eslint-disable-next-line sonarjs/no-os-command-from-path
     execFileSync("git", [...args], { encoding: "utf-8" }).trim();
   const gitPath = filePath.replaceAll("\\", "/");
@@ -228,33 +259,7 @@ export function gitCommitToMain(filePath: string, envelope: EventEnvelope): Comm
         /* nothing to undo — fine */
       }
     };
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        run(["push", "origin", "HEAD:main"]);
-        return { ok: true };
-      } catch {
-        try {
-          // --autostash: an agent may have unrelated unstaged tracked edits in the shared main
-          // checkout; without it the rebase refuses on a dirty tree. autostash stashes them, replays
-          // our disjoint event, and pops them back — peer contention resolves even on a dirty checkout
-          // (Codex #6312). Our event is a disjoint ZetaId file, so the pop never conflicts with it.
-          run(["pull", "--rebase", "--autostash", "origin", "main"]);
-        } catch {
-          // Leave the checkout clean: abort the in-progress rebase + undo our local commit
-          // (best-effort) so neither a dangling rebase nor an ahead local main blocks the next
-          // append. Result-only contract: a failed append leaves no local residue (Codex #6312 P2).
-          try {
-            run(["rebase", "--abort"]);
-          } catch {
-            /* no rebase in progress to abort — fine */
-          }
-          undoLocalCommit();
-          return { ok: false, reason: "push rejected and rebase failed (peer contention); local commit undone" };
-        }
-      }
-    }
-    undoLocalCommit();
-    return { ok: false, reason: "push failed after 3 rebase-retry attempts; local commit undone" };
+    return pushWithRebaseRetry(run, undoLocalCommit);
   } catch (err) {
     // If `git commit` itself failed AFTER `git add` (e.g. missing git identity, a commit hook),
     // our path is left STAGED; append's rmSync would then remove the worktree file but leave a
