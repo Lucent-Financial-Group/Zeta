@@ -45,6 +45,16 @@ describe("buildIndexDoc", () => {
     const { signature, ...content } = doc;
     expect(verifyIndexSignature(content, signature, new Map([[info.keyId, { public_key: info.public_key }]])).ok).toBe(true);
   });
+
+  test.each(["__proto__", "constructor", "prototype"])("rejects reserved package name %s", (bad) => {
+    const doc = buildIndexDoc({ packages: [pkg(bad, "1.0.0") as never], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
+    expect("error" in doc).toBe(true);
+  });
+  test("rejects reserved package version", () => {
+    const doc = buildIndexDoc({ packages: [pkg("ok", "__proto__") as never], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
+    expect("error" in doc).toBe(true);
+  });
+
   test("duplicate name@version → error", () => {
     const doc = buildIndexDoc({ packages: [pkg("leaf", "1.0.0") as never, pkg("leaf", "1.0.0") as never], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
     expect("error" in doc).toBe(true);

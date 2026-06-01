@@ -17,6 +17,9 @@ export function nextSequence(prev: IndexDoc | null): number {
   return prev ? prev.sequence + 1 : 1;
 }
 
+
+/** Package names/versions that would mutate Object prototypes; rejected at ingest. */
+const RESERVED_IDENTITY_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 /** Assemble + sign an index doc from already-read packages. Duplicate name@version → error. */
 export function buildIndexDoc(args: {
   packages: AcePackage[]; baseUrl: string; sequence: number; issuedAt: string; privatePem: string;
@@ -27,6 +30,9 @@ export function buildIndexDoc(args: {
     const name = pkg.manifest.name;
     const version = pkg.manifest.version;
     const versions = packages[name] ?? (Object.create(null) as Record<string, RegistryEntry>);
+    if (RESERVED_IDENTITY_KEYS.has(name) || RESERVED_IDENTITY_KEYS.has(version)) {
+      return { error: `reserved package identity not allowed: ${name}@${version}` };
+    }
     if (versions[version] !== undefined) return { error: `duplicate package ${name}@${version}` };
     versions[version] = { url: joinUrl(args.baseUrl, `${name}-${version}.json`), package_hash: packageHash(pkg) };
     packages[name] = versions;
