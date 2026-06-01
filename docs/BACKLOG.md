@@ -461,6 +461,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0957](backlog/P1/B-0957-first-class-labels-tags-scopes-on-every-gset-zset-entity-deferred-to-human-state-label-otel-baggage-di-scope-propagation-aaron-otto-2026-05-31.md)** First-class labels/tags + scopes on every G-Set/Z-set entity — deferred-to-human state-label; OTel-baggage / DI-scope propagation; the metadata layer policies + decentralized identity build on
 - [ ] **[B-0958](backlog/P1/B-0958-observe-ts-agent-loop-implementation-and-testing-checklist-closed-loop-toward-vendor-store-aaron-otto-2026-05-31.md)** observe.ts agent-loop — implementation + testing checklist (the closed observe→execute→loadWorld loop; toward vendor-store distribution)
 - [ ] **[B-0959](backlog/P1/B-0959-zeta-sovereign-distributed-db-and-agent-loop-master-checklist-one-git-native-zset-substrate-aaron-otto-2026-05-31.md)** Zeta sovereign distributed-DB + agent-loop MASTER checklist — one git-native ZetaId Z-set substrate (algebra ladder · observe loop · git-native bus · distributed time · 4-oracle)
+- [ ] **[B-0964](backlog/P1/B-0964-effectful-do-item-command-vs-fact-event-envelope-injected-executor-just-bash-sandbox-surface-2026-06-01.md)** Effectful do_item — command-vs-fact-event envelope + injected executor port + item-class-routed bash surface (just-bash text / local docker real-work / CF cloud-burst)
 
 ## P2 — research-grade
 
@@ -916,6 +917,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0961](backlog/P2/B-0961-zetaid-root-category-taxonomy-gap-analysis-claim-lock-coordination-categories-2026-05-31.md)** ZetaId root-category taxonomy — gap analysis + DEFERRAL (model Claim/Lock as typed events first; promote to root Category only after producers + identity-rule + growth-theory)
 - [ ] **[B-0962](backlog/P2/B-0962-phase1-typed-claim-lock-coordination-events-deadlock-free-by-construction-optimistic-cas-2026-06-01.md)** Phase 1 — typed Claim/Lock coordination events (optimistic CAS: mechanism-deadlock-free + symmetry-breaking observe-menu; app-level safety needs fencing + release-before-acquire)
 - [ ] **[B-0963](backlog/P2/B-0963-prove-completion-lock-freedom-and-per-agent-wait-freedom-in-fsharp-model-first-then-extend-to-git-2026-06-01.md)** Prove completion-lock-freedom + per-agent wait-freedom — F# model first (no git), then extend to git
+- [ ] **[B-0965](backlog/P2/B-0965-gitbash-routing-install-shield-parity-gap-2026-06-01.md)** git-bash routing install-shield — the one unshielded install surface (parity gap)
 
 ## P3 — convenience / deferred
 
@@ -1077,5 +1079,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0947](backlog/P3/B-0947-windows-ci-checkout-fails-filename-too-long-max-path-260-long-persona-archive-names-otto-cli-2026-05-30.md)** Windows CI build-and-test fails at Checkout with "Filename too long" (MAX_PATH 260) on long persona-archive names -- non-required so it merges CLEAN but Windows is silently red
 - [ ] **[B-0949](backlog/P3/B-0949-fromvalue-wide-decoder-mode-search-hangs-bound-analytically-or-cap-widths-cross-language-parity-aaron-2026-05-30.md)** Tri-boolean float FromValue mode-search hangs for wide decoders (biased-exponent impls F#/C#/Rust; TS radix-point unaffected) — bound the scan analytically or cap widths, consistently
 - [ ] **[B-0950](backlog/P3/B-0950-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md)** Creator compensation via a multi-attribution contribution graph + weighted split (provenance, NOT DRM)
+- [ ] **[B-0966](backlog/P3/B-0966-ace-store-key-by-package-identity-not-files-hash-future-enhancement-2026-06-01.md)** Ace store keyed by package identity (not files-hash) — future enhancement, only if same-files-different-identity arises
 
 <!-- END AUTO-GENERATED -->
