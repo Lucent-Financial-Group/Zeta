@@ -110,4 +110,14 @@ describe("resolve — conflicts", () => {
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("cycle");
   });
+  test("cycle A->B->A refuses with the loop in path", async () => {
+    const aFiles = { "a.txt": "a" }, bFiles = { "b.txt": "b" };
+    const aPlaceholder = pkgOf("A", aFiles);
+    const B: AcePackage = { manifest: { ...pkgOf("B", bFiles).manifest, dependencies: [{ name: "A", version: "1.0.0", url: "http://e/A", package_hash: packageHash(aPlaceholder) }] }, files: bFiles };
+    const A: AcePackage = { manifest: { ...pkgOf("A", aFiles).manifest, dependencies: [{ name: "B", version: "1.0.0", url: "http://e/B", package_hash: packageHash(B) }] }, files: aFiles };
+    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: A, url: "http://e/A" }]);
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B }), NO_TRUST, { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) { expect(r.reason).toBe("cycle"); expect(r.path).toContain("A"); }
+  });
 });
