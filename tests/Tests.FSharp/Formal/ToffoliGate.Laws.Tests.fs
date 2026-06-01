@@ -133,14 +133,14 @@ let ``Toffoli circuit records gate steps by wire id without erasing wire state``
     let circuit = {
         Gates = [ step ]
         Wires = wires
-        Ancilla = 1
+        Ancilla = 3
     }
 
     circuit.Gates |> should equal [ step ]
     circuit.Wires.[step.ControlA] |> should equal One
     circuit.Wires.[step.ControlB] |> should equal One
     circuit.Wires.[step.Target] |> should equal Zero
-    circuit.Ancilla |> should equal 1
+    circuit.Ancilla |> should equal 3
 
 
 // ── Reversible join weight multiplication fragment (B-0366.2.2) ──────────
@@ -215,6 +215,19 @@ let ``Weight multiplication fragment keeps zero weight as one magnitude bit`` ()
     wireBits fragment fragment.RightMagnitudeWires |> should equal [ Zero ]
     fragment.ProductMagnitudeWires.Length |> should equal 2
     fragment.PeresChains.Length |> should equal 1
+
+
+[<Fact>]
+let ``Weight multiplication fragment normalizes zero product sign`` () =
+    let cases =
+        [ ToffoliGate.modelWeightMul 0L -5L
+          ToffoliGate.modelWeightMul -5L 0L ]
+
+    for fragment in cases do
+        fragment.Circuit.Wires.[fragment.ProductSignWire] |> should equal Zero
+        fragment.Circuit.Gates
+        |> List.exists (fun step -> step.Target = fragment.ProductSignWire)
+        |> should equal false
 
 
 [<Fact>]

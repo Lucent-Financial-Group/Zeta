@@ -160,7 +160,7 @@ module ToffoliGate =
     /// Signed weights are encoded as sign plus little-endian magnitude
     /// bits. A constant-one helper turns Toffoli into CNOT where the
     /// fragment needs XOR-style sign/product wiring. Each magnitude bit
-    /// pair emits a three-step Peres-shaped chain:
+    /// pair emits a Peres-shaped chain:
     ///
     ///   1. compute and retain the partial product,
     ///   2. route it into the matching product column,
@@ -168,7 +168,9 @@ module ToffoliGate =
     ///
     /// Carries can advance into the final high product column, so the
     /// fragment retains leftWidth + rightWidth product magnitude wires even
-    /// though no partial product starts in the high column.
+    /// though no partial product starts in the high column. Product sign
+    /// gates are emitted only for nonzero products, keeping zero products in
+    /// canonical signed-magnitude form.
     ///
     /// This is intentionally the core multiplication primitive only;
     /// B-0366.2.3 layers laws over the fragment before full join(A,B).
@@ -179,6 +181,7 @@ module ToffoliGate =
         let rightWidth = magnitudeBitWidth rightMagnitude
         let productWidth = leftWidth + rightWidth
         let partialCount = leftWidth * rightWidth
+        let productIsZero = leftMagnitude = 0UL || rightMagnitude = 0UL
 
         let mutable nextWire = 0
         let mutable wireValues = []
@@ -240,12 +243,15 @@ module ToffoliGate =
                 @ addBitToProductColumn partialWire productColumn)
 
         let signGates =
-            [ { ControlA = leftSignWire
-                ControlB = constantOneWire
-                Target = productSignWire }
-              { ControlA = rightSignWire
-                ControlB = constantOneWire
-                Target = productSignWire } ]
+            if productIsZero then
+                []
+            else
+                [ { ControlA = leftSignWire
+                    ControlB = constantOneWire
+                    Target = productSignWire }
+                  { ControlA = rightSignWire
+                    ControlB = constantOneWire
+                    Target = productSignWire } ]
 
         let circuit =
             { Gates = signGates @ List.collect id peresChains
