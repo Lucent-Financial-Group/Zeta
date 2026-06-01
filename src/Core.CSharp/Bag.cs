@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace Zeta.Core.CSharp;
 
@@ -51,12 +52,15 @@ public static class Bag
         return new Bag<T>(Canonicalize(entries, cmp), cmp);
     }
 
-    /// <summary>Build a Bag by counting occurrences in a sequence — each occurrence adds 1.</summary>
+    /// <summary>
+    /// Build a Bag by counting occurrences in a sequence — each occurrence adds 1. The ladder
+    /// sibling of <see cref="GSet.OfSeq"/> (both take a general <see cref="IEnumerable{T}"/>).
+    /// </summary>
     /// <typeparam name="T">The key type.</typeparam>
     /// <param name="xs">The keys.</param>
     /// <param name="comparer">Order on the key; defaults to <see cref="Comparer{T}.Default"/>.</param>
     /// <returns>The canonical Bag of occurrence counts.</returns>
-    public static Bag<T> OfArray<T>(IEnumerable<T> xs, IComparer<T>? comparer = null)
+    public static Bag<T> OfSeq<T>(IEnumerable<T> xs, IComparer<T>? comparer = null)
     {
         ArgumentNullException.ThrowIfNull(xs);
         var cmp = comparer ?? Comparer<T>.Default;
@@ -68,6 +72,17 @@ public static class Bag
 
         return new Bag<T>(Canonicalize(entries, cmp), cmp);
     }
+
+    /// <summary>
+    /// Build a Bag by counting occurrences in an array — the C# parity twin of the TypeScript
+    /// oracle's <c>ofArray(compare, readonly T[])</c>. Takes a concrete <c>T[]</c> (not a general
+    /// enumerable) to match the TS golden-source shape; forwards to <see cref="OfSeq{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="xs">The keys.</param>
+    /// <param name="comparer">Order on the key; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <returns>The canonical Bag of occurrence counts.</returns>
+    public static Bag<T> OfArray<T>(T[] xs, IComparer<T>? comparer = null) => OfSeq(xs, comparer);
 
     /// <summary>
     /// Sum per key, drop non-positive summed counts, sort ascending under <paramref name="cmp"/>
@@ -96,16 +111,9 @@ public static class Bag
             }
         }
 
-        var outBuilder = ImmutableArray.CreateBuilder<BagEntry<T>>(merged.Count);
-        foreach (var e in merged)
-        {
-            if (e.Count > 0)
-            {
-                outBuilder.Add(e);
-            }
-        }
-
-        return outBuilder.ToImmutable();
+        // Drop keys whose summed count netted to <= 0 (e.g. +1 then -1), keeping the rest in
+        // canonical order. Explicit .Where filter (github-code-quality review 2026-06-01).
+        return merged.Where(e => e.Count > 0).ToImmutableArray();
     }
 }
 
