@@ -92,7 +92,10 @@ signature.
      duplicate name@version in the dir      → hard error (ambiguous)
    no valid packages found                  → hard error (nothing to publish)
 3. sequence = nextSequence(prev):
-     prev = (--out exists && parseIndex(--out) ok) ? that : null
+     prev = --out missing            → null   (fresh publish, sequence 1)
+          | --out exists && parses   → that
+          | --out exists && !parses  → hard error  (do NOT fall back to null)
+                see "Corrupt-existing-output is a hard error" below
      n = prev ? prev.sequence + 1 : 1
      guard: n <= (prev?.sequence ?? -1)     → hard error (anti-rollback; unreachable with +1)
 4. issued_at = new Date().toISOString()
@@ -108,6 +111,27 @@ signature.
 7. writeFileSync(--out, JSON.stringify(doc, null, 2))   (write failure → hard error)
 8. print: "ace: published N package(s) at sequence n → <out>"
 ```
+
+### Corrupt-existing-output is a hard error
+
+An existing `--out` that exists but does **not** parse as a valid index (truncated /
+partially-written / hand-corrupted `index.json`) is a **hard error** — publish refuses
+and writes nothing. It must NOT be silently treated as "no previous index" and reset
+to sequence `1`.
+
+The reason is the anti-rollback gate, which lives on the **consumer** side: a consumer
+that has already seen sequence `7` rejects any later index whose sequence is `≤ 7`. If
+publish silently reset a corrupt local `index.json` to sequence `1`, it would emit a
+freshly-signed but **un-adoptable** index — valid signature, but every consumer past
+sequence `1` refuses it. The corruption is local and transient; the resulting bad
+publication is global and sticky. So the unparseable case is caught in the I/O layer
+(reading `--out`) **before** `nextSequence` is reached — `nextSequence` only ever sees
+`null` (genuinely absent) or a parsed `IndexDoc`, never a corrupt one.
+
+Recovery is explicit and operator-driven: inspect the corrupt file, recover the true
+last sequence (e.g. from the static host or a backup), and either repair `--out` to a
+parseable index at that sequence or remove it deliberately only when a sequence-`1`
+reset is actually intended (a genuinely fresh registry). Publish does not guess.
 
 ## Components
 
@@ -137,8 +161,10 @@ signature.
 - Parse `registry publish` under the existing `if (command === "registry")` block (sibling
   of `remote`), validating the three required flags + optional `--out`.
 - Handler: read the key PEM; `readdirSync` the `--packages` dir for `*.json`; read+parse+
-  shape-guard each (skip+warn non-packages); read the prev index from `--out` if present;
-  `nextSequence`; `buildIndexDoc`; **self-verify** (`parseIndex` + `verifyIndexSignature`
+  shape-guard each (skip+warn non-packages); read the prev index from `--out` if present
+  (**existing-but-unparseable `--out` → hard error**, never reset to sequence 1 — see Flow
+  step 3 + "Corrupt-existing-output is a hard error"); `nextSequence`; `buildIndexDoc`;
+  **self-verify** (`parseIndex` + `verifyIndexSignature`
   via `publicKeyInfoFromPrivatePem`); `writeFileSync(--out, pretty)`; print summary.
 - Reuses `parseIndex` (registry-remote.ts) + `verifyIndexSignature` (signing.ts) for the
   self-verify — the consumer's own gates run against the freshly-produced index.
