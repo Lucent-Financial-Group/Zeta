@@ -2,8 +2,9 @@
 // signed remote registry index. Untrusted-input discipline throughout (never throw on bad
 // input; return { error } / { skipped }). The package bytes the index points at are still
 // hash-pinned + signature-gated downstream (unchanged) — index trust is additive.
-import type { AceSignature, IndexSignableContent } from "./signing.ts";
-import type { RegistryEntry } from "./store.ts";
+import type { AceSignature, IndexSignableContent, TrustEntry } from "./signing.ts";
+import { verifyIndexSignature } from "./signing.ts";
+import type { RegistryEntry, RemoteRegistryConfig } from "./store.ts";
 
 export type IndexDoc = IndexSignableContent & { signature: AceSignature };
 
@@ -40,4 +41,32 @@ export function parseIndex(json: string): IndexDoc | { error: string } {
   }
   if (!isSig(o.signature)) return { error: "index signature is malformed" };
   return { format_version: 1, sequence: o.sequence, issued_at: o.issued_at, packages, signature: o.signature };
+}
+
+export const DEFAULT_MAX_STALENESS_DAYS = 30;
+export const MAX_FUTURE_SKEW_MS = 5 * 60 * 1000;
+
+export interface CacheMeta {
+  url: string; etag?: string; last_modified?: string;
+  sequence_high_water: number; index_content_hash: string; fetched_at: string;
+}
+export interface VerifyOpts { offline?: boolean }
+
+/** The three gates, in order: signature (mandatory pin) → anti-rollback → freshness (two-sided). */
+export function verifyIndex(
+  doc: IndexDoc, remote: RemoteRegistryConfig, trustStore: Map<string, TrustEntry>,
+  cacheMeta: CacheMeta, now: number, opts: VerifyOpts,
+): { ok: true } | { ok: false; reason: string } {
+  const { signature, ...content } = doc;
+  if (signature.key_id !== remote.key_id) return { ok: false, reason: `index not signed by the registry's pinned key ${remote.key_id}` };
+  const sv = verifyIndexSignature(content, signature, trustStore);
+  if (!sv.ok) return { ok: false, reason: `index signature ${sv.reason}` };
+  if (doc.sequence < cacheMeta.sequence_high_water) return { ok: false, reason: `index rollback: sequence ${doc.sequence} < seen ${cacheMeta.sequence_high_water}` };
+  const issued = Date.parse(doc.issued_at);
+  if (issued - now > MAX_FUTURE_SKEW_MS) return { ok: false, reason: `index issued_at is in the future beyond skew` };
+  if (!opts.offline) {
+    const maxStaleMs = (remote.max_staleness_days ?? DEFAULT_MAX_STALENESS_DAYS) * 24 * 3600 * 1000;
+    if (now - issued > maxStaleMs) return { ok: false, reason: `index is stale (issued_at older than max-staleness)` };
+  }
+  return { ok: true };
 }

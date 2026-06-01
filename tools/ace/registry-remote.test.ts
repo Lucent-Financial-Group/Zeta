@@ -1,5 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { parseIndex } from "./registry-remote.ts";
+import type { TrustEntry } from "./signing.ts";
+import { generateKeypair, signIndex } from "./signing.ts";
+import { verifyIndex, type CacheMeta } from "./registry-remote.ts";
 
 const good = JSON.stringify({
   format_version: 1, sequence: 2, issued_at: "2026-06-01T12:00:00Z",
@@ -22,5 +25,47 @@ describe("parseIndex", () => {
     ["non-string url", JSON.stringify({ format_version: 1, sequence: 1, issued_at: "2026-06-01T12:00:00Z", packages: { a: { "1.0.0": { url: 5, package_hash: "h" } } }, signature: { algo: "ed25519", key_id: "k", sig: "s" } })],
   ])("rejects %s (no throw)", (_label, json) => {
     expect("error" in parseIndex(json)).toBe(true);
+  });
+});
+
+function mk(seq: number, issuedAtMs: number) {
+  const kp = generateKeypair();
+  const content = { format_version: 1 as const, sequence: seq, issued_at: new Date(issuedAtMs).toISOString(),
+    packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } } };
+  const doc = { ...content, signature: signIndex(content, kp.privatePem) };
+  const trust = new Map<string, TrustEntry>([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
+  return { kp, doc, trust };
+}
+const remoteOf = (keyId: string) => ({ url: "https://x/index.json", key_id: keyId });
+const NOW = Date.parse("2026-06-01T12:00:00Z");
+const meta0: CacheMeta = { url: "https://x/index.json", sequence_high_water: 0, index_content_hash: "", fetched_at: "" };
+
+describe("verifyIndex (three gates)", () => {
+  test("all gates pass", () => { const { kp, doc, trust } = mk(1, NOW); expect(verifyIndex(doc, remoteOf(kp.keyId), trust, meta0, NOW, {}).ok).toBe(true); });
+  test("untrusted signer refused", () => { const { doc, kp } = mk(1, NOW); expect(verifyIndex(doc, remoteOf(kp.keyId), new Map(), meta0, NOW, {}).ok).toBe(false); });
+  test("trusted-but-not-pinned key refused (mandatory pin)", () => {
+    const { doc, trust } = mk(1, NOW);
+    const r = verifyIndex(doc, remoteOf("ed25519:someoneelse"), trust, meta0, NOW, {});
+    expect(r.ok).toBe(false); if (!r.ok) expect(r.reason).toContain("pinned");
+  });
+  test("rollback refused", () => {
+    const { kp, doc, trust } = mk(2, NOW);
+    const r = verifyIndex(doc, remoteOf(kp.keyId), trust, { ...meta0, sequence_high_water: 5 }, NOW, {});
+    expect(r.ok).toBe(false); if (!r.ok) expect(r.reason).toContain("rollback");
+  });
+  test("equal sequence accepted", () => { const { kp, doc, trust } = mk(5, NOW); expect(verifyIndex(doc, remoteOf(kp.keyId), trust, { ...meta0, sequence_high_water: 5 }, NOW, {}).ok).toBe(true); });
+  test("stale (past) refused", () => {
+    const { kp, doc, trust } = mk(1, NOW - 40 * 24 * 3600 * 1000);
+    const r = verifyIndex(doc, remoteOf(kp.keyId), trust, meta0, NOW, {});
+    expect(r.ok).toBe(false); if (!r.ok) expect(r.reason).toContain("stale");
+  });
+  test("future beyond skew refused — always, incl. offline", () => {
+    const { kp, doc, trust } = mk(1, NOW + 10 * 60 * 1000);
+    expect(verifyIndex(doc, remoteOf(kp.keyId), trust, meta0, NOW, {}).ok).toBe(false);
+    expect(verifyIndex(doc, remoteOf(kp.keyId), trust, meta0, NOW, { offline: true }).ok).toBe(false);
+  });
+  test("offline skips past-staleness but keeps sig + anti-rollback", () => {
+    const { kp, doc, trust } = mk(1, NOW - 40 * 24 * 3600 * 1000);
+    expect(verifyIndex(doc, remoteOf(kp.keyId), trust, meta0, NOW, { offline: true }).ok).toBe(true);
   });
 });
