@@ -2,11 +2,12 @@
 
 Carved sentence:
 
-> `docs/ACTIVE-WORKSTREAMS.md` is the ONE doc that indexes every active lane
-> (sovereign-DB / Windows+Ace+distribution / zflash) and its master row. It is a
-> **map, not a queue**: `claim acquire` before working any item, respect surface
-> lanes, and check the git-native bus + open PRs for live claims. A bridge until
-> observe.ts coordinates lanes automatically.
+> `docs/ACTIVE-WORKSTREAMS.md` is the ONE doc that indexes every active lane and its
+> master row + driving surface. Current lanes (operator-confirmed 2026-06-01):
+> workflow→sovereign-DB · encryption · zflash · git-accelerator · Ace-distribution.
+> It is a **map, not a queue**: `claim acquire` before working any item, respect
+> surface lanes, and check the git-native bus + open PRs for live claims. A bridge
+> until observe.ts coordinates lanes automatically.
 
 ## Why this rule exists
 
