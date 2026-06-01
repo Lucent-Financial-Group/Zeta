@@ -128,7 +128,7 @@ container where one exists):
   JSON-pointer keys.
 - **Accumulate (applicative) — SAVE, hexagonal eventually (NOT this slice).** For
   batch / model-validation (validate N golden vectors at once, the bus validating a
-  batch of envelopes, throttled-batch ops) you want _every_ failure, keyed by field.
+  batch of envelopes, throttled-batch ops) you want *every* failure, keyed by field.
   That shape is **RFC 9457 "Problem Details"** (supersedes RFC 7807), and .NET ships
   it as **`ValidationProblemDetails`** with `Errors: IDictionary<string, string[]>`
   (field → messages) — useful well outside HTTP (only `status` is HTTP-flavored).
