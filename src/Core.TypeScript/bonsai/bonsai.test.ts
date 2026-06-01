@@ -184,6 +184,16 @@ describe("Bonsai-subset — total contract (no exception escapes, even on null)"
   it("parse declines null input with MalformedJson (no throw)", () => {
     expect(errKind(parse(null as unknown as string))).toBe("MalformedJson");
   });
+
+  it("serialize declines an invalid binary operator with UnknownOp (boundary symmetry with parse)", () => {
+    const bad: Expr = { kind: "binary", op: "div" as unknown as "add", left: cint(1), right: cint(2) };
+    expect(errKind(serialize(bad))).toBe("UnknownOp");
+  });
+
+  it("serialize declines a non-boolean bool constant with ExpectedBool (boundary symmetry with parse)", () => {
+    const bad: Expr = { kind: "const", value: { t: "bool", v: 1 as unknown as boolean } };
+    expect(errKind(serialize(bad))).toBe("ExpectedBool");
+  });
 });
 
 describe("Bonsai-subset — nesting-depth contract (shared MaxDepth, bounded)", () => {

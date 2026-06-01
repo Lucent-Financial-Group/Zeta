@@ -194,6 +194,9 @@ function emitConst(c: ConstValue): string {
     case "str":
       return `{"t":"str","v":${jstr(c.v, "const str value")}}`;
     case "bool":
+      // Validate the runtime type (an untyped JS caller could pass a truthy
+      // non-boolean); decline ExpectedBool so serialize agrees with parse.
+      if (typeof c.v !== "boolean") throw new BonsaiFail({ kind: "ExpectedBool", where: "const bool value" });
       return `{"t":"bool","v":${c.v ? "true" : "false"}}`;
     case "null":
       return `{"t":"null"}`;
@@ -212,8 +215,13 @@ function emitAt(depth: number, e: Expr): string {
       return `{"kind":"param","name":${jstr(e.name, "param.name")}}`;
     case "lambda":
       return `{"kind":"lambda","params":[${e.params.map((p) => jstr(p, "lambda.params[]")).join(",")}],"body":${emitAt(depth + 1, e.body)}}`;
-    case "binary":
+    case "binary": {
+      // Validate the operator at the boundary the same way parse does (an untyped
+      // JS caller could cast an invalid op); decline UnknownOp rather than emit
+      // bytes a peer oracle would reject.
+      if (!BIN_OPS.has(e.op)) throw new BonsaiFail({ kind: "UnknownOp", op: String(e.op) });
       return `{"kind":"binary","op":${JSON.stringify(e.op)},"left":${emitAt(depth + 1, e.left)},"right":${emitAt(depth + 1, e.right)}}`;
+    }
     case "call":
       return `{"kind":"call","fn":${jstr(e.fn, "call.fn")},"args":[${e.args.map((a) => emitAt(depth + 1, a)).join(",")}]}`;
     case "cond":
