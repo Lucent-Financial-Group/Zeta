@@ -40,7 +40,7 @@ tags:
 Allocating a sequential **`B-NNNN`** id requires **cross-agent consensus**: check the
 highest id on `origin/main` **and** scan in-flight PRs for the next free number, and hope
 no peer grabs it first (the
-[`otto-channels-reference-card.md`](../../.claude/rules/otto-channels-reference-card.md)
+[`otto-channels-reference-card.md`](../../../.claude/rules/otto-channels-reference-card.md)
 ID-allocation discipline + the empirical B-0449/B-0450 collision). With N concurrent agents
 this is a coordination bottleneck + collision source — it **does not scale**.
 
