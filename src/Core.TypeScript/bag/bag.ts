@@ -11,7 +11,8 @@
  * every count. That non-idempotence is exactly what makes the Bag the counting
  * structure (DORA / metrics / the LGTM "M") and the step toward the Z-set's
  * signed ℤ weights + retraction. Per the database-design ADR (2026-05-31):
- * Bag = ℕ / sum (`docs/DECISIONS/2026-05-31-zeta-database-design-...`).
+ * Bag = ℕ / sum
+ * (`docs/DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md`).
  *
  * Like the G-Set, this is comms/counting substrate for the git-native stack:
  * the Z-set (signed) is one widening up; the G-Set (idempotent set) is one
