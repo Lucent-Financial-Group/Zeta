@@ -153,3 +153,40 @@ describe("fetchRemoteIndex", () => {
     expect("error" in await fetchRemoteIndex(remote, trust, { now })).toBe(true);
   });
 });
+
+import { loadRegistries } from "./registry-remote.ts";
+
+describe("loadRegistries merge precedence", () => {
+  let savedFetch: typeof globalThis.fetch, savedHome: string | undefined, savedUP: string | undefined;
+  beforeEach(() => { savedFetch = globalThis.fetch; savedHome = process.env.HOME; savedUP = process.env.USERPROFILE;
+    const h = mkdtempSync(pjoin(tmpdir(), "ace-load-")); process.env.HOME = h; process.env.USERPROFILE = h; });
+  afterEach(() => { globalThis.fetch = savedFetch;
+    if (savedHome !== undefined) process.env.HOME = savedHome; else delete process.env.HOME;
+    if (savedUP !== undefined) process.env.USERPROFILE = savedUP; else delete process.env.USERPROFILE; });
+
+  test("remote entries appear; user overrides remote on conflict", async () => {
+    const kp = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
+    const content = { format_version: 1 as const, sequence: 1, issued_at: new Date(now).toISOString(),
+      packages: { leaf: { "1.0.0": { url: "https://REMOTE/l.json", package_hash: "sha256:rr" } } } };
+    const body = JSON.stringify({ ...content, signature: sidx(content, kp.privatePem) });
+    globalThis.fetch = (async () => new Response(body, { status: 200 })) as unknown as typeof fetch;
+    const { writeRegistryRemote, addRegistryEntry } = await import("./store.ts");
+    writeRegistryRemote({ url: "https://x/index.json", key_id: kp.keyId });
+    addRegistryEntry("leaf", "1.0.0", { url: "https://LOCAL/l.json", package_hash: "sha256:ll" });
+    const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
+    const r = await loadRegistries({ trustStore: trust, now });
+    expect(r.errors).toEqual([]);
+    expect(r.registry.get("leaf")!.get("1.0.0")!.url).toBe("https://LOCAL/l.json");
+  });
+  test("a verify failure on a remote → errors (hard)", async () => {
+    const kp = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
+    const content = { format_version: 1 as const, sequence: 1, issued_at: new Date(now).toISOString(), packages: {} };
+    const body = JSON.stringify({ ...content, signature: sidx(content, kp.privatePem) });
+    globalThis.fetch = (async () => new Response(body, { status: 200 })) as unknown as typeof fetch;
+    const { writeRegistryRemote } = await import("./store.ts");
+    writeRegistryRemote({ url: "https://x/index.json", key_id: "ed25519:WRONGPIN" });
+    const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
+    const r = await loadRegistries({ trustStore: trust, now });
+    expect(r.errors.length).toBe(1);
+  });
+});

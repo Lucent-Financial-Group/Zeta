@@ -8,7 +8,7 @@ import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import type { Registry, RegistryEntry, RemoteRegistryConfig } from "./store.ts";
-import { registryCacheDir } from "./store.ts";
+import { loadRegistry, readRegistriesConfig, registryCacheDir } from "./store.ts";
 
 export type IndexDoc = IndexSignableContent & { signature: AceSignature };
 
@@ -176,4 +176,32 @@ export async function fetchRemoteIndex(
     ...(last_modified !== undefined ? { last_modified } : {}),
   });
   return { entries: toRegistryFragment(parsed) };
+}
+
+export interface LoadRegistriesOpts { trustStore: Map<string, TrustEntry>; offline?: boolean; now?: number }
+
+/** Merge: remotes (reverse listed order) ∪ bundled ∪ user → user > bundled > remote[0] > … */
+export async function loadRegistries(
+  opts: LoadRegistriesOpts,
+): Promise<{ registry: Registry; warnings: string[]; errors: string[] }> {
+  const warnings: string[] = []; const errors: string[] = [];
+  const remotes = readRegistriesConfig().remotes;
+  const fragments: Registry[] = [];
+  for (const remote of remotes) {
+    const r = await fetchRemoteIndex(remote, opts.trustStore, { offline: opts.offline === true, ...(opts.now !== undefined ? { now: opts.now } : {}) });
+    if ("error" in r) errors.push(r.error);
+    else if ("skipped" in r) warnings.push(r.skipped);
+    else fragments.push(r.entries);
+  }
+  const registry: Registry = new Map();
+  const merge = (frag: Registry): void => {
+    for (const [name, versions] of frag) {
+      const vm = registry.get(name) ?? new Map<string, RegistryEntry>();
+      for (const [v, e] of versions) vm.set(v, e);
+      registry.set(name, vm);
+    }
+  };
+  for (let i = fragments.length - 1; i >= 0; i--) merge(fragments[i]!);
+  merge(loadRegistry());
+  return { registry, warnings, errors };
 }
