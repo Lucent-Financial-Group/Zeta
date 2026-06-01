@@ -1,6 +1,6 @@
 ---
 name: alerting-expert
-description: Alerting — Prometheus AlertManager, burn-rate SLO alerts, alert fatigue, PagerDuty routing, runbook discipline, deadman switches.
+description: Alerting — AlertManager, burn-rate SLOs, alert fatigue, PagerDuty routing, runbooks, deadman switches.
 record_source: "skill-creator, round 34"
 load_datetime: "2026-04-19"
 last_updated: "2026-04-21"

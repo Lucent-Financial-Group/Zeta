@@ -1,6 +1,6 @@
 ---
 name: ai-researcher
-description: AI research — paper review, experiment design, LLMs / alignment / interpretability / generative models, evaluating novel architectures.
+description: AI research — paper review, experiment design, LLMs, alignment, interpretability, generative models, architecture eval.
 record_source: "skill-creator, round 34"
 load_datetime: "2026-04-19"
 last_updated: "2026-04-21"
