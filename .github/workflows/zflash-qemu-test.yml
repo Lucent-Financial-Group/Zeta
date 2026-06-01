@@ -69,5 +69,18 @@ jobs:
       - name: Validate zflash QEMU dry-run plan
         run: bun tools/zflash/test-harness/run.ts --dry-run
 
-      - name: Validate state-retention scenario remains fail-closed by default
-        run: bun tools/zflash/test-harness/run.ts --dry-run --scenario reformat-with-retention
+      - name: Validate state-retention runtime fails closed by default
+        run: |
+          set +e
+          bun tools/zflash/test-harness/run.ts --scenario reformat-with-retention zflash-qemu-retention-placeholder.iso > retention-runtime.json
+          exit_code="$?"
+          set -e
+          cat retention-runtime.json
+          if [ "$exit_code" -ne 1 ]; then
+            echo "::error::expected retention runtime to exit 1 without ZFLASH_QEMU_RETENTION_EXECUTE=1; got $exit_code"
+            exit 1
+          fi
+          if ! grep -Fq "fails closed" retention-runtime.json; then
+            echo "::error::retention runtime output did not document the fail-closed opt-in guard"
+            exit 1
+          fi
