@@ -475,8 +475,8 @@ export function recordReviewThreadObservationBatch(
   return input.observations.map((observationInput) =>
     recordReviewThreadObservation({
       repoRoot: input.repoRoot,
-      storeRelPath: input.storeRelPath,
-      fileDisagreement: input.fileDisagreement,
+      ...(input.storeRelPath === undefined ? {} : { storeRelPath: input.storeRelPath }),
+      ...(input.fileDisagreement === undefined ? {} : { fileDisagreement: input.fileDisagreement }),
       ...observationInput,
     }),
   );
