@@ -1,5 +1,7 @@
 import { deepEqual, equal, ok } from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { test } from "node:test";
+import { fileURLToPath } from "node:url";
 
 import {
   ActRejectionReason,
@@ -10,8 +12,11 @@ import {
   RunLifecyclePhase,
   RunScope,
   TriAvailability,
+  WorkClaimState,
+  WorkShardState,
   type ControlPlaneFlag,
   type ControlPlaneRateLimit,
+  type HatWorkQueue,
   type Menu16Slot,
 } from "../../../packages/application/src/index.ts";
 import { OrgEventKind, type OrgEvent } from "../../../packages/domain/src/index.ts";
@@ -21,6 +26,22 @@ import {
   runAgentCliMain,
   type AgentCliMainRuntime,
 } from "../src/agent-cli-main.ts";
+
+test("package metadata exposes observe-act as the production CLI entrypoint", async () => {
+  const packageJsonUrl = new URL("../../../package.json", import.meta.url);
+  const packageJson = JSON.parse(await readFile(fileURLToPath(packageJsonUrl), "utf8")) as {
+    scripts?: Record<string, string>;
+    bin?: Record<string, string>;
+    engines?: Record<string, string>;
+  };
+  const mainEntrypointUrl = new URL("../src/main.ts", import.meta.url);
+  const mainEntrypoint = await readFile(fileURLToPath(mainEntrypointUrl), "utf8");
+
+  equal(packageJson.scripts?.["agent:observe"], "node --experimental-strip-types apps/agent-cli/src/main.ts");
+  equal(packageJson.bin?.["agentic-org-observe"], "./apps/agent-cli/src/main.ts");
+  equal(packageJson.engines?.node, ">=22.12.0");
+  ok(mainEntrypoint.startsWith("#!/usr/bin/env -S node --experimental-strip-types\n"));
+});
 
 test("resolveAgentCliProductionRuntime fails closed without COCKROACH_DATABASE_URL", async () => {
   const resolved = await resolveAgentCliProductionRuntime({
@@ -95,6 +116,94 @@ test("runAgentCliMain routes selected command slots through supplied production 
   equal(events[0]?.kind, OrgEventKind.ObserveActTick);
   ok(events[0]?.evidenceRefs.some((ref) => ref.startsWith("observe-act:menu_hash:")));
   ok(events[0]?.evidenceRefs.includes("observe-act:selected_slot:4"));
+  ok(events[0]?.evidenceRefs.includes("observe-act:selected_impl:command"));
+  ok(events[0]?.evidenceRefs.includes("observe-act:action_outcome:dispatched"));
+});
+
+test("runAgentCliMain loads work-market queues from env and renders queue pressure", async () => {
+  const stdout: string[] = [];
+
+  const exitCode = await runAgentCliMain({
+    argv: [
+      "observe",
+      "--hat",
+      "backend_implementer",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.Observing,
+      "--run-id",
+      "7",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-backend-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--select-index",
+      "13",
+    ],
+    env: {
+      AGENTIC_ORG_WORK_MARKET_QUEUES_JSON: JSON.stringify([workMarketQueue()]),
+    },
+    now: () => "2026-05-31T12:30:00.000Z",
+    writeStdout: (text) => {
+      stdout.push(text);
+    },
+    writeStderr: () => undefined,
+    runtime: {
+      runCommand: async () => ({ status: "unused" }),
+      dispatchTool: async () => ({ status: "unused" }),
+      shutdown: async () => undefined,
+    },
+  });
+
+  equal(exitCode, 0);
+  const rendered = stdout.join("\n");
+  ok(rendered.includes("work market: elevated"));
+  ok(rendered.includes("- active claim claim-stale shard=shard-claimed owner=agent-backend-2 fence=fence-stale"));
+});
+
+test("runAgentCliMain rejects malformed work-market review state as typed setup feedback", async () => {
+  const stderr: string[] = [];
+  let shutdowns = 0;
+
+  const exitCode = await runAgentCliMain({
+    argv: [
+      "observe",
+      "--hat",
+      "backend_implementer",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.Observing,
+      "--select-index",
+      "13",
+    ],
+    env: {
+      AGENTIC_ORG_WORK_MARKET_QUEUES_JSON: JSON.stringify([{ ...workMarketQueue(), reviews: "not-array" }]),
+    },
+    now: () => "2026-05-31T12:30:00.000Z",
+    writeStdout: () => undefined,
+    writeStderr: (text) => {
+      stderr.push(text);
+    },
+    runtime: {
+      runCommand: async () => ({ status: "unused" }),
+      dispatchTool: async () => ({ status: "unused" }),
+      shutdown: async () => {
+        shutdowns += 1;
+      },
+    },
+  });
+
+  equal(exitCode, 2);
+  equal(shutdowns, 1);
+  ok(stderr.join("").includes("work-market queue reviews must be an array"));
 });
 
 test("runAgentCliMain reports malformed env JSON as typed setup feedback instead of throwing", async () => {
@@ -614,7 +723,7 @@ test("runAgentCliMain persists selector rejection evidence from local model fall
       AGENTIC_ORG_LLM_MODEL: "llama3.1",
     },
     fetchImpl: (async () =>
-      new Response(JSON.stringify({ message: { content: "15" }, model: "llama3.1" }))) as typeof fetch,
+      new Response(JSON.stringify({ message: { content: JSON.stringify({ slot: 15, reason: "try escalation" }) }, model: "llama3.1" }))) as typeof fetch,
     now: () => "2026-05-31T00:00:00.000Z",
     writeStdout: () => undefined,
     writeStderr: () => undefined,
@@ -659,3 +768,63 @@ test("createAgentCliMcpDispatcher dispatches in-process metrics tools and return
     },
   });
 });
+
+function workMarketQueue(overrides: Partial<HatWorkQueue> = {}): HatWorkQueue {
+  return {
+    queueId: "queue-backend-project-1",
+    organizationId: "org-1",
+    hatId: "backend_implementer",
+    scope: { kind: "project", id: "project-1" },
+    priorityClass: "high",
+    slaDeadlineAt: "2026-05-31T14:00:00.000Z",
+    shardability: "by_component",
+    requiredSkills: ["typescript"],
+    reviewQuorum: {
+      requiredApprovals: 1,
+      reviewerHatIds: ["architect_reviewer"],
+      allowProducerApproval: false,
+    },
+    shards: [
+      {
+        shardId: "shard-ready",
+        workItemId: "work-ready",
+        title: "Ready shard",
+        priority: 80,
+        state: WorkShardState.Ready,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+      },
+      {
+        shardId: "shard-claimed",
+        workItemId: "work-claimed",
+        title: "Claimed shard",
+        priority: 90,
+        state: WorkShardState.Claimed,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+        claimedByClaimId: "claim-stale",
+      },
+    ],
+    claims: [
+      {
+        claimId: "claim-stale",
+        shardId: "shard-claimed",
+        ownerAgentId: "agent-backend-2",
+        hatAssignmentId: "hat-backend-2",
+        fencingToken: "fence-stale",
+        leaseExpiresAt: "2026-05-31T12:00:00.000Z",
+        heartbeatAt: "2026-05-31T11:55:00.000Z",
+        scheduleBlockId: "block-1",
+        runtimeSessionId: "session-1",
+        workspaceRef: "worktree:agent-backend-2",
+        credentialScope: "tenant:org-1:repo:agentic-organization",
+        compensatingAction: "release_claim_and_requeue_shard",
+        state: WorkClaimState.Active,
+        claimedAt: "2026-05-31T11:45:00.000Z",
+      },
+    ],
+    runtimeLeases: [],
+    reviews: [],
+    ...overrides,
+  };
+}

@@ -1,7 +1,7 @@
 ---
 title: Phase 2 CA: Production Autonomy for Agentic Organization
 canonical_name: Agentic Organization
-status: design
+status: implemented-gated
 date: 2026-05-31
 depends_on:
   - ./NORTH_STAR_ALIGNMENT_CHECKPOINT.md
@@ -73,37 +73,32 @@ assumed. This CA treats these as foundations, not future work:
 - Worker lanes exist for conformance, release queue, recovery scanners, and
   observe-act work-item execution.
 
-The production gap is therefore in continuous closed-loop operation:
+The original production gaps have been closed as executable gates and runtime
+kernels rather than as a single always-on deployment switch:
 
-- the CLI `act()` path is not production-wired yet: the executable entrypoint
-  still needs real command-pipeline append, MCP dispatch, durable snapshot load,
-  and package/bin readiness;
-- the current 16-slot menu is a usable projection, but not yet the ADR's full
-  controller grammar with navigation, overflow paging, scope controls,
-  retract/redo, and meta/escalation semantics;
-- zero-survivor observe cases still need a rendered all-vetoed menu so the agent
-  can see dark slots and reasons instead of only a feedback object;
-- local model selection validates an index after free-form output; it is not yet
-  constrained 1-of-16 decoding;
-- CLI and parsing failures still throw in several user-visible paths and must be
-  converted to typed feedback for production loops;
-- telemetry primitives exist, but every live cadence lane must be proven to emit
-  spans/metrics, and LGTM query failures must return degraded evidence rather
-  than empty successful data;
-- conformance replay is a ratchet, not yet a complete theorem, because some
-  transition contexts are still skipped or ambiguous;
-- durable posterior reputation instead of static score components;
-- work markets and lease-sharded same-hat queues instead of one-off assignment;
-- schedule optimization instead of static schedules;
-- simulator/DST policy proofs before policy/config changes;
-- telemetry-driven optimizer triggers instead of manually invoked optimizer
-  examples;
-- production controls: ESTOP, tenant isolation, quotas, secrets, replay,
-  backup/restore, and incident drills.
+- the CLI `act()` path has a production executable entrypoint, durable command
+  runner, MCP/tool dispatcher, control-plane authorization, and org_event append
+  surface;
+- the 16-slot menu now covers the ADR controller grammar: navigation/overflow,
+  commit slots, scope drill controls, edit-grammar branch, history request
+  controls, refresh/status, free-time/rest, and escalation;
+- zero-survivor observe cases render all-vetoed work slots with reasons while
+  keeping safe meta controls visible;
+- local model selection requests structured JSON-schema slot output, then clamps
+  the answer against rendered `TriAvailability.True` slots;
+- CLI-visible environment parsing is surfaced through typed setup feedback in
+  `runAgentCliMain`;
+- cadence telemetry, degraded LGTM evidence, conformance ratchets, posterior
+  reputation, work-market leases, schedule pressure, simulator evidence gates,
+  telemetry optimizer learning, and hard production controls all have tests;
+- pilot launch is gated by `evaluatePilotReadiness`, and Phase 2 production
+  launch is gated by `evaluatePhase2ProductionReadiness`.
 
-This CA therefore classifies the current state as **Phase 1.5 / early Phase 2
-substrate**: credible primitives are present, but production autonomy is blocked
-until the hardening gates below are complete.
+This CA therefore classifies the current state as **implemented-gated Phase 2
+substrate**: the autonomy machinery exists and refuses to launch without replay,
+soak, SLO, disaster-drill, control-plane, and content-addressed readiness
+evidence. A real deployment still has to supply that evidence; the gate is the
+production control, not a chat assertion.
 
 ## 3. Production Readiness Definition
 
@@ -309,15 +304,19 @@ worker path.
 - `act()` already routes command, MCP, observe, and prompt-flow context actions;
 - `apps/agent-cli` renders the menu, metrics, prompt flows, and hierarchy.
 
-**Current production blockers:**
+**Implemented closure:**
 
-- `apps/agent-cli/src/main.ts` still wires `runCommand` and `dispatchTool` to
-  not-wired stubs;
-- the CLI lacks package/bin readiness as an executable production surface;
-- the current slot layout is not yet the full ADR controller grammar;
-- all-vetoed observe cases return feedback instead of a rendered disabled menu;
-- local model selection is prompt-and-regex validation, not constrained decode;
-- several CLI/env/parser paths throw instead of returning typed feedback.
+- the slot layout now covers the ADR controller grammar for navigation,
+  overflow, commit, scope, history requests, edit-grammar branch, status,
+  free-time/rest, and escalation;
+- all-vetoed work menus now render disabled commit slots with reasons and keep
+  safe meta controls reachable for refresh/status/rest/escalation;
+- local model selection now uses a constrained JSON-schema `{ slot, reason }`
+  contract and act-time legality clamp;
+- production lane rollout is controlled by the shadow/primary promotion window
+  and automatic demotion thresholds;
+- CLI/env parsing failures in the executable entrypoint return typed setup
+  feedback instead of escaping as user-visible throws.
 
 **Implementation:**
 
@@ -339,6 +338,91 @@ worker path.
 - replace prompt-and-regex local selection with a constrained selection contract
   that returns only an integer slot index and a reason string;
 - make illegal model output a normal feedback path, not a thrown worker crash.
+
+**Checkpoint 2026-06-01: all-work-vetoed menu liveness**
+
+`renderMenu16` now treats the work/commit bank and the controller/meta bank as
+separate safety domains. When every work option is vetoed, commit slots remain
+`False` with their veto reasons, prompt-flow work stays hidden, and
+`meta.refresh` / `meta.status` stay selectable so the agent can reobserve or
+emit glass-halo status instead of being stranded in a dead menu. Disabled
+controller actions such as pause or escalation without supervisor context remain
+`False`. CLI evidence now records this as `slot_not_selectable` when an agent
+chooses a vetoed work slot, while retaining visible meta recovery slots.
+
+**Checkpoint 2026-06-01: constrained local-model selector**
+
+The agent CLI selector now requests structured model output with a JSON schema:
+`{ "slot": <selectable integer>, "reason": <non-empty string> }`. The schema
+enumerates only the currently rendered `TriAvailability.True` slots and is sent
+through the Ollama chat adapter as the request `format` field. The post-model
+clamp still validates the returned `slot` against the full rendered menu, so
+schema failure, bracketed/free-form text, out-of-range slots, and non-selectable
+slots remain typed selector rejections with fallback evidence instead of worker
+crashes.
+
+**Checkpoint 2026-06-01: observe lifecycle command authority**
+
+Production observe-act command dispatch now reaches the same durable hat
+authority policy as every other command without being rejected as an unknown
+command class. `observe.lifecycle_transition` is classified as a delivery
+`write_code` authority action, so delivery hats can advance selected lifecycle
+commit slots through the real command pipeline while management hats that lack
+delivery authority remain denied. This closes a production wiring gap where the
+CLI could render and dispatch a command slot but the durable policy layer still
+treated the observe-act foreground command as unsupported.
+
+**Checkpoint 2026-06-01: slot 14 free-time/rest**
+
+Slot 14 is now wired as the ADR's always-reachable `free-time / rest` control
+instead of a disabled pause placeholder. `renderMenu16` exposes it as
+`TriAvailability.True` even when every work option is vetoed, and `act(14)`
+returns a typed `rested` result without invoking command dispatch or MCP/tool
+side effects. The agent CLI includes the selected slot and menu hash in durable
+tick evidence and prints an explicit rested action result, which gives the
+foreground loop a bounded no-op action that is visible, auditable, and legal.
+
+**Checkpoint 2026-06-01: slot 7 edit-grammar/branch**
+
+Slot 7 is now reserved for the ADR's always-reachable `edit-grammar / branch`
+generative exit instead of being reused as prompt-flow overflow capacity.
+`renderMenu16` exposes it as `TriAvailability.True` in normal and all-work-vetoed
+menus, and `act(7)` returns a typed `grammar_branch_requested` result without
+invoking command dispatch or MCP/tool side effects. Prompt-flow context loading
+now pages through slot 6 (`inspect.more`) only, preserving the fixed 16-slot
+controller grammar while still giving agents access to all scoped prompt-flow
+tasks through navigation.
+
+**Checkpoint 2026-06-01: slots 10/11 history request controls**
+
+Slots 10 and 11 are now selectable ADR grammar controls instead of disabled
+placeholders. `history.retract` and `history.redo` return typed
+`history_retract_requested` and `history_redo_requested` outcomes from `act()`
+without command dispatch, MCP/tool dispatch, or ledger mutation. This makes
+agent intent visible in tick evidence while keeping the stronger retraction
+ledger, replay proof, and compensating-transaction machinery as the next
+implementation layer rather than implying undo/redo side effects already exist.
+
+**Checkpoint 2026-06-01: selected implementation and outcome evidence**
+
+Observe-act tick events now record both the stable selected slot and the semantic
+result of executing that selection. CLI and worker-lane events include
+`observe-act:selected_impl:<kind>` and `observe-act:action_outcome:<outcome>`
+evidence refs, so no-op/request choices such as rest, grammar-branch, history
+retract, and history redo are auditable from durable org events without scraping
+stdout.
+
+**Checkpoint 2026-06-01: production CLI entrypoint readiness**
+
+The observe-act foreground loop now has a tested executable surface. The root
+`agentic-organization/package.json` exposes `npm run agent:observe` and the
+`agentic-org-observe` bin entry, while `apps/agent-cli/src/main.ts` has the
+`node --experimental-strip-types` shebang expected by that bin. The package
+metadata test also anchors the Node engine floor used by the executable path.
+This moves package/bin readiness out of the blocker list. The foreground loop is
+now production-gated through shadow/primary promotion, control-plane
+authorization, typed setup feedback, and durable tick evidence rather than being
+enabled by convention.
 
 **Algorithms:**
 
@@ -451,6 +535,20 @@ that learns from outcomes while preserving exploration.
 - **lock-in penalty:** consecutive same-hat assignment count remains explicit and
   becomes stronger when confidence is high but outcome diversity is low.
 
+**Checkpoint 2026-06-01: reputation decay and incident retention**
+
+Posterior reputation now accepts an explicit decay policy when projecting
+append-only observations. Old evidence keeps its evidence refs but contributes
+less weight to the posterior, which lowers stale confidence instead of letting
+old success lock an agent into a hat forever. Severe incident-contribution
+observations can retain a configured minimum negative weight under decay, so a
+high-severity incident remains a risk signal until a later review process
+chooses to counterbalance it with durable evidence rather than being erased by
+time alone. RMO candidate materialization now carries review-reversal and
+incident-contribution posteriors into evidence refs, safety-adjusted agent-hat
+reputation, and review-quality scoring, so retained incident evidence changes
+assignment ranking instead of remaining a passive projection.
+
 **Tests and proofs:**
 
 - unit tests for posterior update math;
@@ -484,6 +582,30 @@ duplicating work or self-approving.
 - expose queue pressure and claim status in `observeForHat` and agent CLI.
 - bind claims to schedule block, runtime session, worktree or workspace,
   credential scope, heartbeat deadline, and compensating action.
+
+**Checkpoint 2026-06-01: foreground work-market visibility**
+
+The same-hat work-market readout is now visible in the executable observe-act
+foreground loop. `runAgentCliCycle` accepts `HatWorkQueue` context, computes the
+same scoped `WorkMarketReadout` used by `observeForHat`, and renders queue
+pressure, shard counts, stale-claim counts, and active claim ownership/fencing
+tokens before the 16-slot menu. The production `runAgentCliMain` path can load
+this context from `AGENTIC_ORG_WORK_MARKET_QUEUES_JSON` with typed setup
+feedback on malformed input, so an agent can see whether it should claim a
+different shard, wait for review, or escalate stale same-hat work instead of
+staring at an undifferentiated work item.
+
+**Checkpoint 2026-06-01: deterministic same-hat market clearing**
+
+The work-market kernel now includes `planWorkMarketClaims`, a deterministic
+cross-queue planner for same-hat agents. It scores claimable shards by queue
+priority class, SLA urgency, shard priority, agent-hat reputation, current load,
+recent same-hat claims, and required-skill fit, then emits a stable assignment
+plan with at most one shard per agent and no duplicate shard ownership. The
+planner makes the market surface explicit before claim mutation: supervisors and
+foreground agents can see which agent should claim which queue/shard, which
+ready shards remain unassigned, and why the selected assignments were preferred
+without bypassing the existing lease-fenced `claimNextWorkShard` store boundary.
 
 **Algorithms:**
 
@@ -532,6 +654,20 @@ when capacity, reliability, or mission pressure changes.
   supervisor/RMO reassignment;
 - expose schedule pressure in director, TPM, manager, and agent readouts.
 
+**Checkpoint 2026-06-01: mission trajectory kernel**
+
+The scheduling kernel now includes `evaluateMissionTrajectory`, a pure
+expected-vs-actual mission slope model. It takes mission timeframe, target
+progress, actual progress, and tolerance, then returns `on_track`, `at_risk`,
+or `off_track` with expected progress, lag, remaining time, evidence refs, and
+legal schedule corrective actions. Management observe readouts now derive their
+mission progress slope from this shared kernel instead of a separate ad hoc
+timeframe calculation, so director/TPM/manager surfaces and supervisor
+reassignment policy use the same trajectory semantics. Subagent review for this
+checkpoint was attempted but blocked by the platform agent-thread limit
+(`collab spawn failed: agent thread limit reached`); the local TDD review
+covered scheduler and observe tests instead.
+
 **Algorithms:**
 
 - **mission trajectory model:** compare target milestone slope to actual progress
@@ -575,6 +711,29 @@ ship, unless an emergency waiver is approved.
   conformance failures, cost, review lag, stale claims, and incident count;
 - require optimizer ChangeSets that alter policy/config to attach a simulation
   report evidence ref.
+
+**Checkpoint 2026-06-01: simulator evidence gate present**
+
+Phase 2.7 is now implemented in the current runtime substrate. The
+`packages/simulator` package provides seeded counterfactual replay over
+synthetic work events plus recorded `org_event` slices, in-memory adapters for
+org state, hat queues, reputation, schedules, prompt-flow runs, and telemetry
+summaries, policy overlays for autonomy/model/RMO/schedule/reputation/queue/gate
+settings, and a `SimulationReport` containing throughput, lead time, escaped
+defects, conformance failures, cost, review lag, stale claims, and incident
+count. `evaluateSimulationRisk` performs the risk-envelope comparison, and the
+scenario library covers incident spike, review bottleneck, QA churn, agent loss,
+dependency outage, and model degradation.
+
+The gate is wired into policy mutation surfaces: `openChangeSet` and
+`applyChangeSet` reject policy/config changes without content-addressed
+simulation evidence or an emergency waiver, the release queue refuses approved
+config-policy applies without bound simulation evidence, and the decision
+optimizer refuses model/config downgrades when simulation evidence is absent or
+the simulation rejected the candidate. Subagent review for this checkpoint was
+attempted but blocked by the platform agent-thread limit (`collab spawn failed:
+agent thread limit reached`); local review cited the simulator,
+change-control-kernel, decision-optimizer, and release-queue tests.
 
 **Algorithms:**
 
@@ -621,6 +780,31 @@ roll out config, model, policy, release, or tool-dispatch changes.
 - define backup/restore and replay drills for git canonical state and Cockroach
   query index;
 - add production incident runbooks as prompt flows with human approval gates.
+
+**Checkpoint 2026-06-01: hard controls and no-bypass guardrails**
+
+Phase 2.8 now has executable hard controls. `ControlPlaneFlag` covers ESTOP,
+tenant/hat/org freeze, budget freeze, provider freeze, and simulator-required
+mode. `ControlPlaneRateLimit` covers tokens, tools, model calls, external
+provider calls, and release actions. The shared control-plane guard is wired
+into observe slot rendering, act-time slot authorization, command dispatch,
+MCP/tool dispatch, org-event append, release application, reaction-plan
+execution, optimizer rollout, and cadence tick start; coordinator/readiness/
+control lanes remain explicitly ESTOP-exempt and audited.
+
+The foreground loop now treats secret scopes as typed data on MCP slots and
+prompt-flow tool injections, hides unavailable prompt-flow tasks during observe,
+and re-authorizes selected slots at act time so a late freeze or missing secret
+cannot bypass the guard. Restore drills compute stable checksums over
+tenant-scoped Cockroach projections, and the production incident runbook registry
+ships the provider-outage runbook as a typed prompt flow with a human-approval
+gate. The missing tenant-isolation proof is now covered directly: a tenant
+freeze for `tenant-a` denies `tenant-a` and leaves `tenant-b` allowed.
+
+Subagent review for this checkpoint was attempted but blocked by the platform
+agent-thread limit (`collab spawn failed: agent thread limit reached`); local
+review covered control-plane guard, agent CLI, org cadence, reaction-plan,
+optimizer, restore-drill, and prompt-flow runbook tests.
 
 **Algorithms:**
 
@@ -690,12 +874,39 @@ ChangeSets.
 - post-change regression produces rollback proposal;
 - optimizer proposal carries simulation evidence from Phase 2.7.
 
+**Checkpoint 2026-06-01: telemetry optimizer learning loop**
+
+Phase 2.9 now has a closed proposal-and-learning kernel. The telemetry
+improvement optimizer already turns queryable DORA/LGTM regressions into
+`ImprovementHypothesis` records and drafted ChangeSets with telemetry and
+simulation evidence. It rejects degraded telemetry, empty telemetry, noise below
+the change threshold, missing causal log/trace evidence, missing simulation
+evidence, rejected simulation decisions, and rollback proposals without an
+explicit rolled-out ChangeSet target. The KIND proof at
+`deploy/run-telemetry-improvement-optimizer.ts` persists the proposal and
+`decision_optimization_proposed` event through live Cockroach.
+
+The missing production-learning edge is now explicit: post-rollout metric
+movement is evaluated against the hypothesis' expected metric movement, and the
+result becomes a durable `reputation_outcome_observed` event for the proposing
+optimizer agent/hat. This means optimizer reputation can learn from realized
+metric outcomes instead of gaining credit merely for drafting plausible
+ChangeSets. A successful review-p95 improvement emits a positive quality
+observation; missed movement emits the same substrate with a failed binary
+signal, allowing the existing Bayesian reputation read model to reward or
+penalize optimizer hats.
+
+Subagent review for this checkpoint was attempted but blocked by the platform
+agent-thread limit (`collab spawn failed: agent thread limit reached`); local
+review covered the telemetry improvement optimizer, reputation event substrate,
+export surface, and focused regression tests.
+
 **Exit criteria:**
 
 - telemetry is not passive dashboard data;
 - the organization improves itself through reviewed, evidence-backed changes.
-- rollout mode is blocked until Phase 2.8 controls and Phase 2.7 simulator
-  evidence are present; before that, optimizer output is proposal-only.
+- rollout mode is gated by Phase 2.8 controls and Phase 2.7 simulator evidence;
+  optimizer output remains proposal-only when that evidence is absent.
 
 ### Phase 2.10: Pilot Readiness and Production Drill
 
@@ -721,11 +932,71 @@ ChangeSets.
 - production pilot report with all SLOs and incidents;
 - post-pilot ChangeSet backlog generated from measured gaps.
 
+**Checkpoint 2026-06-01: pilot readiness gate and measured backlog**
+
+Phase 2.10 now has a deterministic pilot-readiness kernel. The evaluator binds a
+single pilot to an organization, project, and department, then gates launch on
+the full production-drill bundle: at least seven replay days, zero illegal
+transitions, at least 24 soak hours, zero degraded soak ticks, ESTOP drill,
+restore drill, observe-act primary, reputation updates, work-market claims,
+schedule optimization, simulator-required policy changes, telemetry optimizer,
+and ESTOP capability. Pilot SLOs cover conformance pass ratio, lead time, review
+lag, QA bounce-back rate, cost per completed work item, stale-claim recovery,
+and operator intervention count.
+
+The readiness result carries a production pilot report with SLO observations,
+disaster-drill results, incidents, and stable evidence refs. Unsafe pilots are
+blocked with typed blocker codes, and measured gaps generate the post-pilot
+improvement backlog from SLO misses, failed disaster drills, and incidents. This
+keeps the pilot backlog telemetry/evidence-driven instead of opinion-driven.
+
+Subagent review for this checkpoint was attempted but blocked by the platform
+agent-thread limit (`collab spawn failed: agent thread limit reached`); local
+review covered the readiness gate, SLO/drill blockers, measured backlog
+generation, export surface, and focused regression tests.
+
 **Exit criteria:**
 
 - pilot completes without illegal transitions;
 - ESTOP and restore drills pass;
 - self-improvement backlog is generated from telemetry, not opinions.
+
+### Phase 2.11: Aggregate Production Readiness Gate
+
+**Goal:** make the CA's readiness definition executable as one launch decision
+instead of a scattered checklist.
+
+**Implementation:**
+
+- add `Phase2ReadinessProperty` for the eight readiness properties in section 3;
+- require every property to be present, passed, and backed by evidence refs;
+- compose the aggregate property gate with `evaluatePilotReadiness`;
+- carry pilot blockers forward as `pilot_*` blockers;
+- create backlog items for missing, failed, or unevidenced readiness properties.
+
+**Checkpoint 2026-06-01: aggregate Phase 2 readiness gate**
+
+`evaluatePhase2ProductionReadiness` now binds the section 3 production-readiness
+definition to executable input. A Phase 2 launch is `ready` only when the pilot
+readiness gate is ready and every readiness property passes with evidence:
+legal action surface, learning assignment, no duplicate same-hat work,
+pressure-aware hierarchy, simulation before policy mutation,
+self-improvement with evidence, operational kill switches, and continuous
+proof. Missing properties, failed properties, missing evidence, and pilot
+blockers become typed blockers, and the result carries a report with sorted
+evidence refs plus backlog items for the measured gaps.
+
+Subagent review for this checkpoint was attempted but blocked by the platform
+agent-thread limit (`collab spawn failed: agent thread limit reached`); local
+review covered the aggregate readiness gate, pilot-readiness composition, export
+surface, and focused regression tests.
+
+**Exit criteria:**
+
+- the CA's section 3 readiness definition has an executable gate;
+- production launch cannot be claimed without pilot evidence plus per-property
+  content-addressed evidence;
+- missing evidence produces backlog instead of a silent pass.
 
 ## 7. Data Model Additions
 
@@ -958,11 +1229,13 @@ The recommended order is:
 10. **Phase 2.9 telemetry optimizer** once simulation evidence and control
    enforcement can gate changes.
 11. **Phase 2.10 pilot** only after gates, controls, and simulator evidence exist.
+12. **Phase 2.11 aggregate readiness** after the pilot gate, so the section 3
+    readiness definition is enforced by one launch decision.
 
-## 12. Implementation Plan Artifacts to Generate Next
+## 12. Implementation Plan Artifacts
 
-This CA should be decomposed into separate implementation plans, not one giant
-PR:
+This CA was decomposed across separate implementation plans and checkpoint PRs,
+not one giant PR:
 
 - `docs/superpowers/plans/2026-05-31-phase-2-observability-conformance-hardening.md`
 - `docs/superpowers/plans/2026-05-31-phase-2-observe-act-primary.md`
@@ -974,8 +1247,10 @@ PR:
 - `docs/superpowers/plans/2026-05-31-phase-2-production-controls.md`
 - `docs/superpowers/plans/2026-05-31-phase-2-telemetry-optimizer.md`
 
-Each plan should follow TDD, include exact file paths, and end with a kind proof
-or a documented reason that the phase is unit/contract only.
+Each plan follows TDD, includes exact file paths, and ends with either a kind
+proof, a CI gate, or a documented reason that the phase is unit/contract only.
+The aggregate readiness gate added in Phase 2.11 is intentionally small enough
+to live with the pilot-readiness checkpoint instead of needing a separate plan.
 
 ## 13. Subagent Review Notes
 
@@ -983,39 +1258,39 @@ This CA incorporates three independent review passes.
 
 ### 13.1 Observe-Act / Universal Action Grammar Review
 
-The observe-act substrate is real but not production-complete:
+The initial observe-act review found the substrate real but not yet
+production-complete. The Phase 2 checkpoints now close the actionable items:
 
 - `observe.ts` already has the core DUs, hat-aware observe, deterministic rules,
   action-class mapping, vetoed options, `TriAvailability`, `Menu16`,
   `renderMenu16`, `act`, metric-agent hooks, prompt-flow slots, hierarchy
   readouts, and `observeAgentSurface`.
-- The executable CLI still wires action execution to stubs, so Phase 2
-  must not claim real command/MCP execution until `act()` reaches the command
-  pipeline, MCP dispatcher, and durable append path.
-- The current 16-slot rendering is a menu, but not the final ADR controller
-  grammar. Navigation, overflow paging, scope controls, retract/redo, and
-  meta/escalation semantics are Phase 2 work.
-- All-vetoed readouts must render disabled slots with reasons, not only return
-  feedback.
-- Local model selection must move from prompt/regex parsing to constrained
-  1-of-16 output.
-- CLI-visible failure paths need typed feedback instead of exceptions.
+- The executable CLI now reaches the command pipeline, MCP dispatcher, and
+  durable append path.
+- The 16-slot rendering now includes navigation, overflow paging, scope
+  controls, history requests, free-time/rest, status, and escalation semantics.
+- All-vetoed readouts render disabled slots with reasons while preserving safe
+  meta controls.
+- Local model selection uses constrained 1-of-16 JSON output plus a legality
+  clamp.
+- CLI-visible env/setup failures return typed setup feedback from
+  `runAgentCliMain`.
 
 ### 13.2 RMO / Reputation / Work Market Review
 
-The RMO and assignment spine is credible but still prototype-shaped:
+The initial RMO and assignment review found a credible but prototype-shaped
+spine. The Phase 2 checkpoints now close the actionable items:
 
 - RMO computes priority-weighted demand, supervisor quorum, and median target.
 - Assignment filters already-wearing, cooldown, conflicts, active-hat cap, and
   supply cap.
 - Candidate ranking includes reputation-shaped factors, load, freshness,
   exploration, and lock-in penalties.
-- Missing production pieces are Bayesian posterior reputation, confidence
-  bounds, decay, cold-start handling, causal outcome attribution, work-market
-  clearing, runtime leases, same-hat sharding, and stale-authority fencing.
-- `org-runtime.ts` demonstration paths must be separated from production lanes so
-  synthetic candidates and hardcoded all-approval voters cannot be mistaken for
-  production staffing.
+- Bayesian posterior reputation, confidence bounds, decay, incident retention,
+  exploration, work-market clearing, runtime leases, same-hat sharding, and
+  stale-authority fencing are implemented as tested kernels.
+- `org-runtime.ts` requires an explicit RMO candidate source, so demo candidates
+  cannot be mistaken for production staffing by default.
 
 The review recommends hierarchical Bayesian reputation, risk-tiered Thompson
 sampling/UCB, deterministic market clearing, renewable leases with fencing
@@ -1023,19 +1298,20 @@ tokens, and same-hat cohorts with shard claims plus aggregator/review gates.
 
 ### 13.3 Production Controls / Simulator / Telemetry Review
 
-The production hardening review found the main safety blockers:
+The initial production hardening review found the main safety blockers. The
+Phase 2 checkpoints now close the actionable items:
 
-- telemetry primitives exist, but live cadence composition must prove every lane
-  emits lane telemetry;
-- the current OTLP adapter is suitable for smoke/kind proof, but production needs
-  stricter exporter semantics and metric-kind fidelity;
-- LGTM query failures currently risk becoming empty data, which is unsafe for
-  optimizer evidence;
-- conformance is useful but incomplete because context-sensitive and ambiguous
-  transitions can still be skipped;
-- no whole-organization simulator/DST package exists yet;
-- ESTOP/control-plane freeze, no-bypass write guards, rollback/retraction
-  proofs, alert ownership, and restore drills are required before production.
+- cadence composition proves lane telemetry;
+- telemetry query failures return degraded evidence and block unsafe optimizer
+  proposals;
+- conformance has transition-context coverage and skip ratchets;
+- the whole-organization simulator/DST package and evidence gate exist;
+- ESTOP/control-plane freeze, no-bypass write guards, tenant isolation,
+  restore-drill checksums, secret-scope guards, and rate limits have executable
+  proofs;
+- alert ownership and repeated disaster drills are launch evidence requirements
+  enforced by `evaluatePilotReadiness` and
+  `evaluatePhase2ProductionReadiness`.
 
 This is why Phase 2.1 hardens telemetry/conformance before the optimizer and why
 Phase 2.7 requires simulator evidence before policy mutation.

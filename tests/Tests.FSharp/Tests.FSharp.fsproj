@@ -18,6 +18,8 @@
     <Compile Include="Algebra/Weight.Tests.fs" />
     <Compile Include="Algebra/CayleyDickson.Tests.fs" />
     <Compile Include="Algebra/Units.Tests.fs" />
+    <Compile Include="Algebra/GSet.Tests.fs" />
+    <Compile Include="Algebra/Bag.Tests.fs" />
     <Compile Include="Algebra/ZSet.Tests.fs" />
     <Compile Include="Algebra/ZSet.Overflow.Tests.fs" />
     <Compile Include="Algebra/Residuated.Tests.fs" />
@@ -33,6 +35,9 @@
     <Compile Include="Algebra/Semiring.Tests.fs" />
     <Compile Include="TriBoolean/TriBoolean.Tests.fs" />
     <Compile Include="TriBoolean/Float.Tests.fs" />
+    <Compile Include="Bonsai/Bonsai.Tests.fs" />
+    <Compile Include="Bonsai/Resume.Tests.fs" />
+    <Compile Include="RangeSet.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
     <Compile Include="Observe/EventLog.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />

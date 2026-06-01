@@ -325,8 +325,12 @@ test("renderMenu16 prompt-flow overflow prefers executable tasks over vetoed tas
 
   equal(menu.slots[6]?.label, "Allowed task");
   equal(menu.slots[6]?.availability, "T");
-  equal(menu.slots[7]?.label, "Vetoed high task");
-  equal(menu.slots[7]?.availability, "F");
+  equal(menu.slots[7]?.label, "edit-grammar / branch");
+  equal(menu.slots[7]?.availability, "T");
+  deepEqual(menu.slots[7]?.impl, {
+    kind: "grammar_branch",
+    reason: "edit-grammar/branch selected; no side effects for this tick",
+  });
 });
 
 test("renderMenu16 pages prompt-flow overflow through fixed navigation slots", async () => {
@@ -349,7 +353,7 @@ test("renderMenu16 pages prompt-flow overflow through fixed navigation slots", a
     promptFlows: { tasks, vetoedTasks: [] },
   });
 
-  deepEqual(firstPage.page?.promptFlows, { page: 0, pageSize: 2, pageCount: 3, total: 5 });
+  deepEqual(firstPage.page?.promptFlows, { page: 0, pageSize: 1, pageCount: 5, total: 5 });
   equal(firstPage.slots[0]?.direction, "navigate.previous");
   equal(firstPage.slots[0]?.availability, "F");
   ok(firstPage.slots[0]?.reason?.includes("already at first prompt-flow page"));
@@ -360,7 +364,8 @@ test("renderMenu16 pages prompt-flow overflow through fixed navigation slots", a
     toScope: RunScope.WorkItem,
     menuPage: { promptFlows: 1 },
   });
-  deepEqual(firstPage.slots.slice(6, 8).map((slot) => slot.label), ["Task 1", "Task 2"]);
+  equal(firstPage.slots[6]?.label, "Task 1");
+  equal(firstPage.slots[7]?.label, "edit-grammar / branch");
 
   const nextResult = await act(1, firstPage, {
     runCommand: async () => ({ ok: true }),
@@ -396,7 +401,7 @@ test("renderMenu16 renders later prompt-flow overflow pages without changing slo
   });
 
   equal(middlePage.slots.length, 16);
-  deepEqual(middlePage.page?.promptFlows, { page: 1, pageSize: 2, pageCount: 3, total: 5 });
+  deepEqual(middlePage.page?.promptFlows, { page: 1, pageSize: 1, pageCount: 5, total: 5 });
   equal(middlePage.slots[0]?.availability, "T");
   deepEqual(middlePage.slots[0]?.impl, {
     kind: "observe",
@@ -409,22 +414,23 @@ test("renderMenu16 renders later prompt-flow overflow pages without changing slo
     toScope: RunScope.WorkItem,
     menuPage: { promptFlows: 2 },
   });
-  deepEqual(middlePage.slots.slice(6, 8).map((slot) => slot.label), ["Task 3", "Task 4"]);
+  equal(middlePage.slots[6]?.label, "Task 2");
+  equal(middlePage.slots[7]?.label, "edit-grammar / branch");
 
   const lastPage = renderMenu16(approved.readout, {
     hatAssignmentId: asZetaIdDecimal("99"),
-    promptFlowPage: 2,
+    promptFlowPage: 4,
     promptFlows: { tasks, vetoedTasks: [] },
   });
 
-  deepEqual(lastPage.page?.promptFlows, { page: 2, pageSize: 2, pageCount: 3, total: 5 });
+  deepEqual(lastPage.page?.promptFlows, { page: 4, pageSize: 1, pageCount: 5, total: 5 });
   equal(lastPage.slots[0]?.availability, "T");
   equal(lastPage.slots[1]?.availability, "F");
   ok(lastPage.slots[1]?.reason?.includes("already at last prompt-flow page"));
   equal(lastPage.slots[6]?.label, "Task 5");
   equal(lastPage.slots[6]?.availability, "T");
-  equal(lastPage.slots[7]?.label, "empty");
-  equal(lastPage.slots[7]?.availability, "N");
+  equal(lastPage.slots[7]?.label, "edit-grammar / branch");
+  equal(lastPage.slots[7]?.availability, "T");
 });
 
 test("renderMenu16 exposes ADR scope, history, and meta controller slots", async () => {
@@ -446,21 +452,39 @@ test("renderMenu16 exposes ADR scope, history, and meta controller slots", async
   equal(menu.slots[9]?.label, "scope in to run");
   equal(menu.slots[9]?.availability, "T");
   deepEqual(menu.slots[9]?.impl, { kind: "observe", toScope: RunScope.Run });
+  equal(menu.slots[7]?.direction, "branch.fork");
+  equal(menu.slots[7]?.label, "edit-grammar / branch");
+  equal(menu.slots[7]?.availability, "T");
+  deepEqual(menu.slots[7]?.impl, {
+    kind: "grammar_branch",
+    reason: "edit-grammar/branch selected; no side effects for this tick",
+  });
   equal(menu.slots[10]?.direction, "history.retract");
   equal(menu.slots[10]?.label, "retract");
-  equal(menu.slots[10]?.availability, "F");
-  ok(menu.slots[10]?.reason?.includes("retraction is not wired"));
+  equal(menu.slots[10]?.availability, "T");
+  deepEqual(menu.slots[10]?.impl, {
+    kind: "history_retract",
+    reason: "history.retract selected; no ledger mutation for this tick",
+  });
   equal(menu.slots[11]?.direction, "history.redo");
   equal(menu.slots[11]?.label, "redo");
-  equal(menu.slots[11]?.availability, "F");
-  ok(menu.slots[11]?.reason?.includes("redo is not wired"));
+  equal(menu.slots[11]?.availability, "T");
+  deepEqual(menu.slots[11]?.impl, {
+    kind: "history_redo",
+    reason: "history.redo selected; no ledger mutation for this tick",
+  });
   equal(menu.slots[12]?.direction, "meta.refresh");
   equal(menu.slots[12]?.label, "refresh");
   equal(menu.slots[12]?.availability, "T");
   equal(menu.slots[13]?.direction, "meta.status");
   equal(menu.slots[13]?.label, "status / glass-halo");
   equal(menu.slots[14]?.direction, "meta.pause");
-  equal(menu.slots[14]?.label, "pause");
+  equal(menu.slots[14]?.label, "free-time / rest");
+  equal(menu.slots[14]?.availability, "T");
+  deepEqual(menu.slots[14]?.impl, {
+    kind: "rest",
+    reason: "free-time/rest selected; no side effects for this tick",
+  });
   equal(menu.slots[15]?.direction, "meta.escalate");
   equal(menu.slots[15]?.label, "escalate");
 
@@ -481,6 +505,58 @@ test("renderMenu16 exposes ADR scope, history, and meta controller slots", async
     dispatchTool: async () => ({ ok: true }),
   });
   deepEqual(refreshResult, { outcome: "reobserve", scope: RunScope.WorkItem });
+
+  const restResult = await act(14, menu, {
+    runCommand: async () => {
+      throw new Error("rest must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("rest must not dispatch MCP side effects");
+    },
+  });
+  deepEqual(restResult, {
+    outcome: "rested",
+    reason: "free-time/rest selected; no side effects for this tick",
+  });
+
+  const branchResult = await act(7, menu, {
+    runCommand: async () => {
+      throw new Error("edit-grammar/branch must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("edit-grammar/branch must not dispatch MCP side effects");
+    },
+  });
+  deepEqual(branchResult, {
+    outcome: "grammar_branch_requested",
+    reason: "edit-grammar/branch selected; no side effects for this tick",
+  });
+
+  const retractResult = await act(10, menu, {
+    runCommand: async () => {
+      throw new Error("history.retract must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("history.retract must not dispatch MCP side effects");
+    },
+  });
+  deepEqual(retractResult, {
+    outcome: "history_retract_requested",
+    reason: "history.retract selected; no ledger mutation for this tick",
+  });
+
+  const redoResult = await act(11, menu, {
+    runCommand: async () => {
+      throw new Error("history.redo must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("history.redo must not dispatch MCP side effects");
+    },
+  });
+  deepEqual(redoResult, {
+    outcome: "history_redo_requested",
+    reason: "history.redo selected; no ledger mutation for this tick",
+  });
 });
 
 test("renderMenu16 makes meta.status emit a glass-halo status signal", async () => {
@@ -681,6 +757,83 @@ test("observe returns an all-vetoed readout so renderMenu16 can show dark slots 
   equal(menu.slots[5]?.action?.actionType, "block");
 });
 
+test("renderMenu16 keeps meta controls reachable when every work option is vetoed", async () => {
+  const blocked = observe(snapshot({
+    scope: RunScope.Project,
+    phase: RunLifecyclePhase.Observing,
+  }), {
+    clock: deps.clock,
+    deterministicRules: [
+      {
+        name: "maintenance-freeze",
+        veto: (option) => `maintenance freeze blocks ${option.actionType}`,
+      },
+    ],
+  });
+
+  equal(blocked.outcome, ObserveOutcome.Readout);
+  if (blocked.outcome !== ObserveOutcome.Readout) return;
+
+  const menu = renderMenu16(blocked.readout, {
+    status: {
+      metricBlockIds: ["queue.pressure"],
+      promptFlowIds: [],
+      promptFlowTaskCount: 0,
+      vetoedPromptFlowTaskCount: 0,
+    },
+  });
+
+  equal(menu.slots[4]?.availability, "F");
+  equal(menu.slots[5]?.availability, "F");
+  equal(menu.slots[12]?.direction, "meta.refresh");
+  equal(menu.slots[12]?.availability, "T");
+  deepEqual(menu.slots[12]?.impl, { kind: "observe", toScope: RunScope.Project });
+  equal(menu.slots[13]?.direction, "meta.status");
+  equal(menu.slots[13]?.availability, "T");
+  equal(menu.slots[14]?.direction, "meta.pause");
+  equal(menu.slots[14]?.label, "free-time / rest");
+  equal(menu.slots[14]?.availability, "T");
+  deepEqual(menu.slots[14]?.impl, {
+    kind: "rest",
+    reason: "free-time/rest selected; no side effects for this tick",
+  });
+  equal(menu.slots[15]?.direction, "meta.escalate");
+  equal(menu.slots[15]?.availability, "F");
+
+  const refreshResult = await act(12, menu, {
+    runCommand: async () => {
+      throw new Error("refresh must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("refresh must not dispatch MCP side effects");
+    },
+  });
+  deepEqual(refreshResult, { outcome: "reobserve", scope: RunScope.Project });
+
+  const statusResult = await act(13, menu, {
+    runCommand: async () => {
+      throw new Error("status must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("status must not dispatch MCP side effects");
+    },
+  });
+  equal(statusResult.outcome, "status_report");
+
+  const restResult = await act(14, menu, {
+    runCommand: async () => {
+      throw new Error("rest must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("rest must not dispatch MCP side effects");
+    },
+  });
+  deepEqual(restResult, {
+    outcome: "rested",
+    reason: "free-time/rest selected; no side effects for this tick",
+  });
+});
+
 test("renderMenu16 keeps all-vetoed menus dark even when prompt-flow tasks exist", () => {
   const blocked = observe(snapshot({ phase: RunLifecyclePhase.Observing }), {
     clock: deps.clock,
@@ -709,7 +862,8 @@ test("renderMenu16 keeps all-vetoed menus dark even when prompt-flow tasks exist
   equal(menu.slots[6]?.availability, "N");
   equal(menu.slots[6]?.label, "empty");
   equal(menu.slots[7]?.direction, "branch.fork");
-  equal(menu.slots[7]?.availability, "N");
+  equal(menu.slots[7]?.label, "edit-grammar / branch");
+  equal(menu.slots[7]?.availability, "T");
   equal(menu.slots[8]?.availability, "N");
 });
 
@@ -1094,8 +1248,9 @@ test("observeAgentSurface renders current hat-allowed prompt-flow tasks as conte
   equal(surface.actions.slots[6]?.availability, "T");
   equal(surface.actions.slots[6]?.label, "Implement work item");
   equal(surface.actions.slots[6]?.impl?.kind, "prompt_flow");
-  equal(surface.actions.slots[7]?.availability, "F");
-  equal(surface.actions.slots[7]?.label, "Approve review");
+  deepEqual(surface.actions.page?.promptFlows, { page: 0, pageSize: 1, pageCount: 2, total: 2 });
+  equal(surface.actions.slots[7]?.availability, "T");
+  equal(surface.actions.slots[7]?.label, "edit-grammar / branch");
 });
 
 test("observeAgentSurface shows C-suite projects with trajectories and policy violations", async () => {

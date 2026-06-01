@@ -48,6 +48,11 @@ import type {
   PromptFlowRollbackPolicy,
   PromptFlowRunState,
 } from "./prompt-flow.ts";
+import {
+  MissionTrajectoryStatus,
+  evaluateMissionTrajectory,
+  type MissionTrajectory,
+} from "./schedule-optimizer.ts";
 
 /**
  * ZetaId rendered as a base-10 string — the canonical index for git-as-db
@@ -347,7 +352,11 @@ export type SlotImpl =
   | { kind: "mcp"; tool: string; args?: unknown; requiredSecretScopes?: readonly string[] | undefined }
   | { kind: "observe"; toScope: RunScope; menuPage?: MenuPageTarget | undefined }
   | { kind: "status"; status: GlassHaloStatusSignal }
-  | { kind: "prompt_flow"; request: PromptFlowContextRequest };
+  | { kind: "prompt_flow"; request: PromptFlowContextRequest }
+  | { kind: "history_retract"; reason: string }
+  | { kind: "history_redo"; reason: string }
+  | { kind: "grammar_branch"; reason: string }
+  | { kind: "rest"; reason: string };
 
 export const ObserveCommandType = {
   LifecycleTransition: "observe.lifecycle_transition",
@@ -479,6 +488,10 @@ export type ActResult =
   | { outcome: "dispatched"; kind: "command" | "mcp"; result: unknown }
   | { outcome: "loaded_context"; context: PromptFlowContext }
   | { outcome: "status_report"; status: GlassHaloStatusSignal }
+  | { outcome: "history_retract_requested"; reason: string }
+  | { outcome: "history_redo_requested"; reason: string }
+  | { outcome: "grammar_branch_requested"; reason: string }
+  | { outcome: "rested"; reason: string }
   | { outcome: "reobserve"; scope: RunScope; menuPage?: MenuPageTarget | undefined }
   | { outcome: "rejected"; reason: ActRejectionReason; message: string };
 
@@ -813,7 +826,7 @@ const MENU16_DIRECTIONS: readonly string[] = [
   "meta.escalate",
 ];
 const COMMIT_SLOT_INDICES: readonly number[] = [4, 5];
-const PROMPT_FLOW_SLOT_INDICES: readonly number[] = [6, 7];
+const PROMPT_FLOW_SLOT_INDICES: readonly number[] = [6];
 const PROMPT_FLOW_PAGE_SIZE = PROMPT_FLOW_SLOT_INDICES.length;
 const MENU16_SLOT_COUNT = 16;
 const RUN_SCOPE_LADDER: readonly RunScope[] = [
@@ -844,9 +857,12 @@ export function renderMenu16(readout: RunStateReadout, options: RenderMenu16Opti
   }
   if (readout.options.length > 0) {
     renderScopeSlots(rendered, readout.scope);
-    renderMetaSlots(rendered, readout, options.status, options.escalation, options.escalationDisabledReason);
     const promptFlowPage = renderPromptFlowSlots(rendered, readout, options.promptFlows, options.hatAssignmentId, options.promptFlowPage);
     page = promptFlowPage === undefined ? undefined : { promptFlows: promptFlowPage };
+  }
+  if (readout.options.length > 0 || readout.vetoedOptions.length > 0) {
+    renderBranchSlot(rendered);
+    renderMetaSlots(rendered, readout, options.status, options.escalation, options.escalationDisabledReason);
   }
   return {
     slots: rendered,
@@ -907,8 +923,47 @@ function renderScopeSlots(rendered: Menu16Slot[], currentScope: RunScope): void 
   rendered[9] = finerScope === undefined
     ? createDisabledGrammarSlot(9, MENU16_DIRECTIONS[9]!, "scope in", "already at run scope")
     : createObserveSlot(9, MENU16_DIRECTIONS[9]!, `scope in to ${finerScope}`, finerScope);
-  rendered[10] = createDisabledGrammarSlot(10, MENU16_DIRECTIONS[10]!, "retract", "retraction is not wired for this run state");
-  rendered[11] = createDisabledGrammarSlot(11, MENU16_DIRECTIONS[11]!, "redo", "redo is not wired for this run state");
+  rendered[10] = createHistoryRetractSlot(10, MENU16_DIRECTIONS[10]!);
+  rendered[11] = createHistoryRedoSlot(11, MENU16_DIRECTIONS[11]!);
+}
+
+function renderBranchSlot(rendered: Menu16Slot[]): void {
+  rendered[7] = {
+    index: 7,
+    direction: MENU16_DIRECTIONS[7]!,
+    label: "edit-grammar / branch",
+    availability: TriAvailability.True,
+    impl: {
+      kind: "grammar_branch",
+      reason: "edit-grammar/branch selected; no side effects for this tick",
+    },
+  };
+}
+
+function createHistoryRetractSlot(index: number, direction: string): Menu16Slot {
+  return {
+    index,
+    direction,
+    label: "retract",
+    availability: TriAvailability.True,
+    impl: {
+      kind: "history_retract",
+      reason: "history.retract selected; no ledger mutation for this tick",
+    },
+  };
+}
+
+function createHistoryRedoSlot(index: number, direction: string): Menu16Slot {
+  return {
+    index,
+    direction,
+    label: "redo",
+    availability: TriAvailability.True,
+    impl: {
+      kind: "history_redo",
+      reason: "history.redo selected; no ledger mutation for this tick",
+    },
+  };
 }
 
 function renderMetaSlots(
@@ -921,8 +976,21 @@ function renderMetaSlots(
   const currentScope = readout.scope;
   rendered[12] = createObserveSlot(12, MENU16_DIRECTIONS[12]!, "refresh", currentScope);
   rendered[13] = createStatusSlot(13, MENU16_DIRECTIONS[13]!, readout, statusContext);
-  rendered[14] = createDisabledGrammarSlot(14, MENU16_DIRECTIONS[14]!, "pause", "pause mode is not wired for this run state");
+  rendered[14] = createRestSlot(14, MENU16_DIRECTIONS[14]!);
   rendered[15] = createEscalationSlot(15, MENU16_DIRECTIONS[15]!, readout, escalationContext, escalationDisabledReason);
+}
+
+function createRestSlot(index: number, direction: string): Menu16Slot {
+  return {
+    index,
+    direction,
+    label: "free-time / rest",
+    availability: TriAvailability.True,
+    impl: {
+      kind: "rest",
+      reason: "free-time/rest selected; no side effects for this tick",
+    },
+  };
 }
 
 function createEscalationSlot(
@@ -1271,6 +1339,26 @@ export async function act(index: number, menu: Menu16, deps: ActDependencies): P
       return {
         outcome: "status_report",
         status: slot.impl.status,
+      };
+    case "history_retract":
+      return {
+        outcome: "history_retract_requested",
+        reason: slot.impl.reason,
+      };
+    case "history_redo":
+      return {
+        outcome: "history_redo_requested",
+        reason: slot.impl.reason,
+      };
+    case "grammar_branch":
+      return {
+        outcome: "grammar_branch_requested",
+        reason: slot.impl.reason,
+      };
+    case "rest":
+      return {
+        outcome: "rested",
+        reason: slot.impl.reason,
       };
     case "prompt_flow":
       if (deps.loadPromptFlowContext === undefined) {
@@ -1878,12 +1966,13 @@ function hierarchyMissionReadoutForHat(
   const mission = mostSpecificMissionForHat(hat, missions, projects, initiatives);
   if (mission === undefined) return undefined;
 
-  const expectedProgressPercent = expectedMissionProgressPercent(mission.timeframe, observedAt);
-  const actualProgressPercent = clampPercent(mission.progressPercent);
+  const trajectory = missionTrajectoryForReadout(mission, hat, observedAt);
+  const expectedProgressPercent = Math.floor(trajectory.expectedProgress * 100);
+  const actualProgressPercent = Math.floor(trajectory.actualProgress * 100);
   const variancePercent = actualProgressPercent - expectedProgressPercent;
   const daysRemaining = missionDaysRemaining(mission.timeframe, observedAt);
   const lagSignals = missionLagSignals(mission, expectedProgressPercent, actualProgressPercent, daysRemaining);
-  const status = missionStatus(mission.status, lagSignals);
+  const status = missionStatus(mission.status, lagSignals, trajectory.status);
   const corrective = missionCorrectiveActions(status, actions, vetoedActions);
 
   return {
@@ -1955,13 +2044,22 @@ function missionSpecificityScore(
   return score;
 }
 
-function expectedMissionProgressPercent(timeframe: HierarchyMissionTimeframe, observedAt: string): number {
-  const start = Date.parse(timeframe.startsAt);
-  const target = Date.parse(timeframe.targetAt);
-  const observed = Date.parse(observedAt);
-  if (!Number.isFinite(start) || !Number.isFinite(target) || !Number.isFinite(observed)) return 0;
-  if (target <= start) return observed >= target ? 100 : 0;
-  return Math.floor(clampPercent(((observed - start) / (target - start)) * 100));
+function missionTrajectoryForReadout(
+  mission: HierarchyMission,
+  hat: HatDefinition,
+  observedAt: string,
+): MissionTrajectory {
+  return evaluateMissionTrajectory({
+    organizationId: "observe",
+    missionId: mission.missionId,
+    now: observedAt,
+    startsAt: mission.timeframe.startsAt,
+    targetAt: mission.timeframe.targetAt,
+    targetProgress: 1,
+    actualProgress: clampPercent(mission.progressPercent) / 100,
+    tolerance: 0.1,
+    correctiveActionHatId: mission.assignedHatId ?? hat.id,
+  });
 }
 
 function missionDaysRemaining(timeframe: HierarchyMissionTimeframe, observedAt: string): number {
@@ -2039,11 +2137,13 @@ function missionLagSignals(
 function missionStatus(
   declared: HierarchyMissionStatus,
   lagSignals: readonly HierarchyMissionLagSignal[],
+  trajectoryStatus: MissionTrajectoryStatus,
 ): HierarchyMissionStatus {
   if (declared === "complete") return "complete";
   if (lagSignals.some((signal) => signal.severity === "blocked")) return "blocked";
   if (lagSignals.some((signal) => signal.severity === "behind")) return "behind";
-  if (lagSignals.some((signal) => signal.severity === "at_risk")) return "at_risk";
+  if (trajectoryStatus === MissionTrajectoryStatus.OffTrack) return "behind";
+  if (lagSignals.some((signal) => signal.severity === "at_risk") || trajectoryStatus === MissionTrajectoryStatus.AtRisk) return "at_risk";
   return declared;
 }
 

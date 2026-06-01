@@ -13,9 +13,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
+    <ProjectReference Include="..\..\src\Core.CSharp\Core.CSharp.csproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.ZetaId\Zeta.Core.CSharp.ZetaId.csproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.TriBoolean\Zeta.Core.CSharp.TriBoolean.csproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Observe\Zeta.Core.CSharp.Observe.csproj" />
+    <ProjectReference Include="..\..\src\Core.CSharp.Bonsai\Zeta.Core.CSharp.Bonsai.csproj" />
+    <ProjectReference Include="..\..\src\Core.CSharp.Resume\Zeta.Core.CSharp.Resume.csproj" />
+    <ProjectReference Include="..\..\src\Core.CSharp.RangeSet\Zeta.Core.CSharp.RangeSet.csproj" />
   </ItemGroup>
 
   <ItemGroup>
