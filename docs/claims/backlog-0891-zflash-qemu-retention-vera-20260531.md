@@ -48,3 +48,6 @@
 - proof: `bun test tools/ci/test-iter-54-install-flow.test.ts`, `bash -n full-ai-cluster/usb-nixos-installer/zeta-install.sh`, `bun test tools/zflash/test-harness/`, `bun --bun tsc --noEmit -p tsconfig.json`, and `git diff --check` pass after the retained-preseed installer patch.
 - note: `shellcheck full-ai-cluster/usb-nixos-installer/zeta-install.sh` still reports the pre-existing SC2016 info finding on the SHA-512 hash regex; this patch did not change that line.
 - next: rerun the real scenario against a zflash-baked image. If retention markers still do not appear, the remaining work is full-install/reboot orchestration rather than credential preseed transport.
+- progress: `zflash-lib.ts` now exposes a pure `planFileBackedZflashImage` planning surface for QEMU-safe raw-image creation plus ESP pubkey/hostname/credential write intents, explicitly refusing `/dev/*` output targets.
+- proof: `bun test full-ai-cluster/tools/zflash-lib.test.ts`, `bun --bun tsc --noEmit -p tsconfig.json`, and `git diff --check` pass after the file-backed zflash image planner patch.
+- next: wire the planner to an executor that copies the ISO to a raw image and writes the ESP intents, then feed that artifact into the real QEMU retention run.

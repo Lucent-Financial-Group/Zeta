@@ -83,6 +83,115 @@ export function parseUuidFromDiskutilInfo(diskutilOutput: string): string | null
   return partition && partition.length > 0 ? partition : null;
 }
 
+export interface CommandPlan {
+  readonly command: string;
+  readonly args: readonly string[];
+}
+
+export interface FileBackedEspWrite {
+  readonly destination: "/zeta-authorized-keys.pub" | "/zeta-hostname.txt" | "/zeta-creds.enc";
+  readonly sourcePath?: string;
+  readonly content?: string;
+}
+
+export interface FileBackedZflashImagePlan {
+  readonly isoPath: string;
+  readonly outputImagePath: string;
+  readonly espOffsetBytes: number;
+  readonly imageCommand: CommandPlan;
+  readonly espWrites: readonly FileBackedEspWrite[];
+}
+
+export type FileBackedZflashImagePlanResult =
+  | { readonly ok: true; readonly value: FileBackedZflashImagePlan }
+  | { readonly ok: false; readonly error: string };
+
+export interface FileBackedZflashImagePlanInput {
+  readonly isoPath: string;
+  readonly outputImagePath: string;
+  readonly espOffsetBytes: number;
+  readonly pubkeyPath?: string;
+  readonly hostname?: string;
+  readonly credentialBlobPath?: string;
+}
+
+/**
+ * Plan the non-destructive, file-backed equivalent of zflash's current
+ * physical-device flow for QEMU tests.
+ *
+ * The existing zflash path intentionally talks to `/dev/diskN` via
+ * flash-usb.ts, then remounts the USB ESP with diskutil/mount_msdos. QEMU
+ * proof needs a raw image artifact instead. This pure planner captures the
+ * safe target shape and ESP-write intents before any executor exists.
+ */
+export function planFileBackedZflashImage(
+  input: FileBackedZflashImagePlanInput,
+): FileBackedZflashImagePlanResult {
+  const isoPath = input.isoPath.trim();
+  const outputImagePath = input.outputImagePath.trim();
+  if (isoPath.length === 0) {
+    return { ok: false, error: "isoPath is required" };
+  }
+  if (!isoPath.endsWith(".iso")) {
+    return { ok: false, error: `isoPath must end with .iso: ${isoPath}` };
+  }
+  if (outputImagePath.length === 0) {
+    return { ok: false, error: "outputImagePath is required" };
+  }
+  if (/^\/dev\//.test(outputImagePath)) {
+    return {
+      ok: false,
+      error: `outputImagePath must be file-backed, not a device path: ${outputImagePath}`,
+    };
+  }
+  if (!Number.isSafeInteger(input.espOffsetBytes) || input.espOffsetBytes <= 0) {
+    return { ok: false, error: "espOffsetBytes must be a positive safe integer" };
+  }
+
+  const espWrites: FileBackedEspWrite[] = [];
+  const pubkeyPath = input.pubkeyPath?.trim();
+  if (pubkeyPath !== undefined && pubkeyPath.length > 0) {
+    espWrites.push({
+      destination: "/zeta-authorized-keys.pub",
+      sourcePath: pubkeyPath,
+    });
+  }
+  const hostname = input.hostname?.trim();
+  if (hostname !== undefined && hostname.length > 0) {
+    if (!isValidHostname(hostname)) {
+      return { ok: false, error: `hostname is not RFC1123-valid: ${hostname}` };
+    }
+    espWrites.push({
+      content: `${hostname}\n`,
+      destination: "/zeta-hostname.txt",
+    });
+  }
+  const credentialBlobPath = input.credentialBlobPath?.trim();
+  if (credentialBlobPath !== undefined && credentialBlobPath.length > 0) {
+    espWrites.push({
+      destination: "/zeta-creds.enc",
+      sourcePath: credentialBlobPath,
+    });
+  }
+  if (espWrites.length === 0) {
+    return { ok: false, error: "at least one ESP write is required" };
+  }
+
+  return {
+    ok: true,
+    value: {
+      espOffsetBytes: input.espOffsetBytes,
+      espWrites,
+      imageCommand: {
+        command: "qemu-img",
+        args: ["convert", "-f", "raw", "-O", "raw", isoPath, outputImagePath],
+      },
+      isoPath,
+      outputImagePath,
+    },
+  };
+}
+
 /**
  * Generate an auto-name `node-<6hex>` (24-bit entropy = ~16M possible
  * names; negligible collision risk for any homelab cluster size).

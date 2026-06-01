@@ -22,6 +22,7 @@ import {
   parseFatPartitionFromDiskutilList,
   parseOutputFileMarker,
   parseUuidFromDiskutilInfo,
+  planFileBackedZflashImage,
   VALID_HOSTNAME_REGEX,
 } from "./zflash-lib";
 
@@ -244,6 +245,104 @@ describe("generateRandomNodeName", () => {
     expect(a).toBe("node-000000");
     expect(b).toBe("node-ffffff");
     expect(a).not.toBe(b);
+  });
+});
+
+describe("planFileBackedZflashImage", () => {
+  test("plans a qemu-img raw copy plus ESP writes for QEMU boot media", () => {
+    const result = planFileBackedZflashImage({
+      credentialBlobPath: "artifacts/zeta-creds.enc",
+      espOffsetBytes: 1_048_576,
+      hostname: "pikachu",
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      pubkeyPath: "fixtures/id_ed25519.pub",
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+    expect(result.value.imageCommand).toEqual({
+      command: "qemu-img",
+      args: [
+        "convert",
+        "-f",
+        "raw",
+        "-O",
+        "raw",
+        "artifacts/zeta-installer.iso",
+        "artifacts/zflash-baked.img",
+      ],
+    });
+    expect(result.value.espOffsetBytes).toBe(1_048_576);
+    expect(result.value.espWrites).toEqual([
+      {
+        destination: "/zeta-authorized-keys.pub",
+        sourcePath: "fixtures/id_ed25519.pub",
+      },
+      {
+        content: "pikachu\n",
+        destination: "/zeta-hostname.txt",
+      },
+      {
+        destination: "/zeta-creds.enc",
+        sourcePath: "artifacts/zeta-creds.enc",
+      },
+    ]);
+  });
+
+  test("refuses physical device output paths", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "/dev/disk6",
+      pubkeyPath: "fixtures/id_ed25519.pub",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "outputImagePath must be file-backed, not a device path: /dev/disk6",
+    });
+  });
+
+  test("rejects invalid hostname before planning ESP writes", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      hostname: "bad name",
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "hostname is not RFC1123-valid: bad name",
+    });
+  });
+
+  test("requires a positive ESP offset", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 0,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      pubkeyPath: "fixtures/id_ed25519.pub",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "espOffsetBytes must be a positive safe integer",
+    });
+  });
+
+  test("requires at least one ESP write intent", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "at least one ESP write is required",
+    });
   });
 });
 
