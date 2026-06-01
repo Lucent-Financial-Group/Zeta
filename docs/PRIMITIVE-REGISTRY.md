@@ -45,11 +45,31 @@ sweep order is **ZetaId → algebra ladder → bus**.
 
 | Primitive                                                          | TS  | F#  | C#  | Rust | Note                                                                                                                                                                                                                                                                                                                    |
 | ------------------------------------------------------------------ | --- | --- | --- | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **G-Set** — grow-only set CRDT                                     | ✅  | ✅  | ❌  | ❌   | TS has a `golden-vectors.json` fixture (`src/Core.TypeScript/g-set/`); F# `src/Core/GSet.fs`. Needs C# + Rust.                                                                                                                                                                                                          |
+| **G-Set** — grow-only set CRDT                                     | ✅  | ✅  | ❌  | ✅   | TS `src/Core.TypeScript/g-set/` (+ `golden-vectors.json` fixture); F# `src/Core/GSet.fs`; Rust `src/Core.Rust.Algebra/gset.rs` (#6360, cross-verified vs the fixture). Needs C# → then Tier-1.                                                                                                                          |
 | **Bag / multiset** — non-negative-weight multiset                  | ❌  | ⚠️  | ❌  | ❌   | The **missing middle rung**. Only implicit-in-Z-set in F# today; no named type anywhere. Cheapest gap.                                                                                                                                                                                                                  |
 | **Z-set** — signed-weight, retraction-native set (DBSP)            | ❌  | ✅  | ⚠️  | ❌   | F# `src/Core/ZSet.fs` (+`IndexedZSet.fs`); C# is a binding→F# (`ZetaCircuitBuilder`). Needs native TS + Rust.                                                                                                                                                                                                           |
 | **Bus (git-native)** — ZetaId-keyed G-Set of envelopes, no-PR      | ✅  | ❌  | ❌  | ❌   | `tools/agent-bus/` (B-0954, #6283/#6327). The wire is JSON-on-git, so cross-lang = a thin read/write/merge per language (each needs ZetaId first).                                                                                                                                                                      |
 | **Rx-Observable / Z-set delta-stream** — push-based reactive layer | ⚠️  | ⚠️  | ⚠️  | ❌   | The reactive layer **over** Z-set: an Rx query _is_ a Z-set delta-stream (B-0959 §3). Rx.NET / `FSharp.Control.Reactive` exist per-lang (`rx-expert` skill, B-0640); not yet a unified cross-lang primitive. **CALM** (Consistency As Logical Monotonicity) is the law that makes the monotone slice coordination-free. |
+
+## Candidate — BCL-like platform primitives (pull in slowly)
+
+Some primitives every runtime already provides — **JSON**, **UTF-8**, and other
+BCL/std-level facilities. We treat them as cross-registry primitives too, but
+**pull them in slowly**: rely on one only once we've verified a _good, consistent
+interface across all four_ we can depend on (per
+[`bcl-interface-boundary-own-your-interfaces-hexagonal`](../.claude/rules/bcl-interface-boundary-own-your-interfaces-hexagonal.md)
+— depend on BCL/std interfaces; wrap anything 3rd-party behind our own port; the
+de-facto-standard exception, e.g. `serde`, only when both provenance-signed AND
+widely-relied-on).
+
+| Primitive | TS                         | F#                          | C#                          | Rust                                                                                                 | Note — what "a good interface across all four" means here                                                                                                                                                                                                    |
+| --------- | -------------------------- | --------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **UTF-8** | native (`TextEncoder`)     | `System.Text.Encoding.UTF8` | `System.Text.Encoding.UTF8` | `str`/`String` (native)                                                                              | All four have it; the cross-lang concern is **byte-order consistency** — TS/.NET compare on UTF-16 code-units, Rust on UTF-8 bytes; they agree for BMP/ASCII (what the g-set comparator + ZetaId hex already rely on). Verify before depending beyond ASCII. |
+| **JSON**  | native `JSON` / `Bun.YAML` | `System.Text.Json`          | `System.Text.Json`          | our `ZetaJsonParser` (zero-dep, `Core.Rust.Observe/json.rs`) + `serde_json` adapter behind a feature | Rust std has **no** JSON, so the cross-lang primitive is _our JSON port_ (the hexagonal interface), not one library. Stabilize the port shape across all four (number precision, key order, escaping) before declaring it registry-stable.                   |
+
+**Other BCL-like candidates** to pull in the same way as each interface proves out:
+base64, SHA-256 hashing, time/clock, big integers, regex. Each is added only after
+the four-way interface is verified — not on first use.
 
 ## The algebra ladder (why three of the gaps are one build)
 
@@ -73,5 +93,6 @@ G-Set / Bag / Z-set gaps collapse into a single ladder build per language.
   harness that fails non-zero on mismatch (the `tests/cross-verification/zeta-id/`
   pattern is the template).
 
-_Last updated: 2026-06-01 — ZetaId reached Tier-1 4-oracle consensus (B-0679, Rust
-crate landed; 12/12 byte-identical across TS/F#/C#/Rust)._
+_Last updated: 2026-06-01 — ZetaId reached Tier-1 4-oracle consensus (B-0679); G-Set
+gained its Rust rung (#6360, now 3/4, C# → Tier-1); added the BCL-like candidate tier
+(JSON, UTF-8 — pull in slowly once the four-way interface is verified)._
