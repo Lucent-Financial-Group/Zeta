@@ -41,7 +41,8 @@ type ZSetGateOp =
 //   - Every WireId in ToffoliGateStep.ControlA / ControlB / Target must
 //     exist as a key in ToffoliCircuit.Wires.
 //   - ToffoliCircuit.Ancilla >= 0.
-//   - Ancilla wires occupy indices 0 .. Ancilla-1 by convention.
+//   - Ancilla records the allocated wire capacity for this closed model.
+//     Wire indices occupy 0 .. Ancilla-1 by convention.
 //   - No bit erasure: ancilla wires carry the inverse function, so the
 //     circuit is reversible over its full wire set.
 
@@ -67,9 +68,10 @@ type ToffoliGateStep = {
 ///
 /// Gates:   ordered sequence of gate applications (wire-index based).
 /// Wires:   current bit state of every named wire.
-/// Ancilla: number of ancilla (helper) wires. By convention, their
-///          indices occupy 0 .. Ancilla-1. Ancilla carry the inverse
-///          function — no bits are erased when the circuit runs.
+/// Ancilla: allocated wire capacity for this closed reversible circuit.
+///          By convention, wire indices occupy 0 .. Ancilla-1. The
+///          retained wires carry the inverse function — no bits are erased
+///          when the circuit runs.
 type ToffoliCircuit = {
     Gates   : ToffoliGateStep list
     Wires   : WireMap
@@ -117,9 +119,6 @@ module ToffoliGate =
         [ for bit in 0 .. width - 1 do
             if ((m >>> bit) &&& 1UL) = 1UL then One else Zero ]
 
-    let private wireRange start count : WireId list =
-        [ for offset in 0 .. count - 1 -> start + offset ]
-
     /// The Toffoli gate: (a, b, c) → (a, b, c ⊕ (a ∧ b)).
     ///
     /// Properties (all proved in ToffoliGate.Laws.Tests.fs):
@@ -166,6 +165,10 @@ module ToffoliGate =
     ///   1. compute and retain the partial product,
     ///   2. route it into the matching product column,
     ///   3. retain the column carry dependency for reversal.
+    ///
+    /// Carries can advance into the final high product column, so the
+    /// fragment retains leftWidth + rightWidth product magnitude wires even
+    /// though no partial product starts in the high column.
     ///
     /// This is intentionally the core multiplication primitive only;
     /// B-0366.2.3 layers laws over the fragment before full join(A,B).
