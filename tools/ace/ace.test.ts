@@ -12,6 +12,7 @@ import { parseLockfile } from "./lockfile.ts";
 // ---- Trust-path isolation: redirect ~/.ace to a temp dir in every test ----
 let savedHome: string | undefined;
 let savedUserProfile: string | undefined;
+let savedCwd: string | undefined;
 let tempHome: string;
 
 beforeEach(() => {
@@ -20,9 +21,12 @@ beforeEach(() => {
   tempHome = mkdtempSync(join(tmpdir(), "ace-test-home-"));
   process.env.HOME = tempHome;
   process.env.USERPROFILE = tempHome;
+  savedCwd = process.cwd();
+  process.chdir(tempHome);
 });
 
 afterEach(() => {
+  if (savedCwd !== undefined) process.chdir(savedCwd);
   if (savedHome !== undefined) process.env.HOME = savedHome;
   else delete process.env.HOME;
   if (savedUserProfile !== undefined) process.env.USERPROFILE = savedUserProfile;
@@ -733,6 +737,75 @@ describe("registry commands", () => {
     const code = await main(["install", rootPath, "--store", store, "--allow-no-signature"]);
     expect(code).toBe(1);
     expect(listInstalled(store).length).toBe(0);
+  });
+});
+
+// ---- frozen lockfile replay (slice 5.3) ----
+
+describe("install --frozen (slice 5.3)", () => {
+  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+
+  // Builds an inline root->A graph in a temp dir, installs it once with --lockfile to
+  // generate the lock (the lock's node url points at the temp A.json — registry never used),
+  // then returns paths so a --frozen run can replay it against an EMPTY registry.
+  function buildInlineGraph() {
+    const dir = mkdtempSync(join(tmpdir(), "ace-frozen-pkgs-"));
+    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
+    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(A));
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: packageHash(A as any) }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const lockPath = join(dir, "ace.lock");
+    return { dir, A, aPath, root, rootPath, lockPath };
+  }
+
+  test("--frozen installs from the lock with an EMPTY registry (registry-independence)", async () => {
+    const g = buildInlineGraph();
+    const genStore = mkdtempSync(join(tmpdir(), "ace-frozen-gen-"));
+    // 1. Generate the lock via a normal install (inline graph; no registry add ever happens).
+    expect(await main(["install", g.rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", g.lockPath])).toBe(0);
+    expect(existsSync(g.lockPath)).toBe(true);
+    // 2. Replay into a fresh store with --frozen. Registry is empty (no registry add); the
+    //    replay must install entirely from the lock's pinned url, never consulting the registry.
+    expect(loadRegistry().size).toBe(0);
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-replay-"));
+    const code = await main(["install", g.rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", g.lockPath, "--frozen"]);
+    expect(code).toBe(0);
+    expect(listInstalled(frozenStore).map((p)=>p.manifest.name).sort()).toEqual(["A","root"]);
+  });
+
+  test("--frozen with a drifted root (deps changed vs the lock) is refused", async () => {
+    const g = buildInlineGraph();
+    const genStore = mkdtempSync(join(tmpdir(), "ace-frozen-gen-"));
+    expect(await main(["install", g.rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", g.lockPath])).toBe(0);
+    // Mutate the root's dep set after the lock was written -> root packageHash drifts.
+    const drifted = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"2.0.0", url: g.aPath, package_hash: packageHash(g.A as any) }] }, files: { "r.txt":"r" } };
+    const driftedPath = join(g.dir, "root-drifted.json"); writeFileSync(driftedPath, JSON.stringify(drifted));
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-drift-"));
+    const code = await main(["install", driftedPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", g.lockPath, "--frozen"]);
+    expect(code).toBe(1);
+    expect(listInstalled(frozenStore).length).toBe(0);
+  });
+
+  test("--frozen with NO lockfile at the path is refused", async () => {
+    const g = buildInlineGraph();
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-nolock-"));
+    const missingLock = join(g.dir, "does-not-exist.lock");
+    const code = await main(["install", g.rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", missingLock, "--frozen"]);
+    expect(code).toBe(1);
+    expect(listInstalled(frozenStore).length).toBe(0);
+  });
+
+  test("--frozen with a tampered locked node (bytes at url != lock pin) is refused", async () => {
+    const g = buildInlineGraph();
+    const genStore = mkdtempSync(join(tmpdir(), "ace-frozen-gen-"));
+    expect(await main(["install", g.rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", g.lockPath])).toBe(0);
+    // Tamper the bytes at A's url AFTER the lock pinned A's package_hash.
+    const tamperedA = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"TAMPERED" }) }, files: { "a.txt":"TAMPERED" } };
+    writeFileSync(g.aPath, JSON.stringify(tamperedA));
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-tamper-"));
+    const code = await main(["install", g.rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", g.lockPath, "--frozen"]);
+    expect(code).toBe(1);
+    expect(listInstalled(frozenStore).length).toBe(0);
   });
 });
 

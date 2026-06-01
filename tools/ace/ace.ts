@@ -24,7 +24,7 @@ import {
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
 import { resolve, packageHash } from "./resolve.ts";
-import { buildLockfile, serializeLockfile } from "./lockfile.ts";
+import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock } from "./lockfile.ts";
 import { solve } from "./solver.ts";
 import { resolve as toAbsolutePath } from "node:path";
 
@@ -505,6 +505,42 @@ export async function main(argv: readonly string[]): Promise<number> {
       if (rootFilesHash !== pkg.manifest.content_hash) {
         console.error(`ace: install refused: bad-content-hash in ${pkg.manifest.name} (root)`);
         return 1;
+      }
+      if (parsed.frozen) {
+        // SLICE 5.3 frozen replay: install exactly the locked graph; never solve, never touch the registry.
+        let lockRaw: string;
+        try { lockRaw = readFileSync(parsed.lockfile, "utf8"); }
+        catch { console.error(`ace: install refused: no lockfile at ${parsed.lockfile} — run install without --frozen first`); return 1; }
+        const lf = parseLockfile(lockRaw);
+        if ("error" in lf) { console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${lf.error}`); return 1; }
+        if (!verifyRootMatchesLock(pkg, lf)) {
+          console.error(`ace: install refused: lockfile out of date for ${pkg.manifest.name} — re-run without --frozen to regenerate`);
+          return 1;
+        }
+        const trust = loadTrustStore();
+        // Replay each locked node: fetch → parse → verify pin + content_hash + signature + path-safety → install.
+        for (const node of lf.nodes) {
+          let raw: string;
+          try { raw = (node.url.startsWith("http://") || node.url.startsWith("https://")) ? await (await fetch(node.url)).text() : readFileSync(node.url, "utf8"); }
+          catch (e) { console.error(`ace: install refused: fetch failed for ${node.name}@${node.version} (${node.url}): ${(e as Error).message}`); return 1; }
+          let np: AcePackage;
+          try { np = JSON.parse(raw) as AcePackage; } catch { console.error(`ace: install refused: ${node.name}@${node.version} is not valid JSON`); return 1; }
+          if (packageHash(np) !== node.package_hash) { console.error(`ace: install refused: package_hash mismatch for ${node.name}@${node.version} (lock pin violated)`); return 1; }
+          const fh = contentHash(new TextEncoder().encode(JSON.stringify(np.files)));
+          if (fh !== np.manifest.content_hash) { console.error(`ace: install refused: bad-content-hash in ${node.name}@${node.version}`); return 1; }
+          const unsafe = validatePackagePaths(np);
+          if (unsafe !== null) { console.error(`ace: install refused: unsafe file path in ${node.name}@${node.version}: ${unsafe}`); return 1; }
+          const nv = verifySignature(np.manifest, trust);
+          if (!nv.ok && nv.reason !== "no-signature") { console.error(`ace: install refused: ${nv.reason} for ${node.name}@${node.version}`); return 1; }
+          if (!nv.ok && nv.reason === "no-signature" && !parsed.allowNoSignature) { console.error(`ace: install refused: unsigned ${node.name}@${node.version} (use --allow-no-signature)`); return 1; }
+          const ir = installPackage(parsed.storePath, np);
+          if (!ir.ok) { console.error(`ace: install refused: ${node.name}@${node.version}: ${ir.error}`); return 1; }
+        }
+        // Install the root last (already signature+content_hash verified above).
+        const rootIr = installPackage(parsed.storePath, pkg);
+        if (!rootIr.ok) { console.error(`ace: install refused: ${pkg.manifest.name} (root): ${rootIr.error}`); return 1; }
+        console.error(`ace: installed ${lf.nodes.length + 1} from lockfile ${parsed.lockfile} (frozen)`);
+        return 0;
       }
       const fetchPackage = async (u: string): Promise<string> =>
         (u.startsWith("http://") || u.startsWith("https://")) ? await (await fetch(u)).text() : readFileSync(u, "utf8");
