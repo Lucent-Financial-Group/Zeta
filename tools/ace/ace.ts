@@ -17,6 +17,7 @@ import { createPublicKey } from "node:crypto";
 import {
   defaultStorePath, listInstalled, installPackage, contentHash,
   loadTrustStore, addTrustedKey, listTrustedKeys, validatePackagePaths,
+  loadRegistry,
   type AcePackage,
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
@@ -407,7 +408,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
       const fetchPackage = async (u: string): Promise<string> =>
         (u.startsWith("http://") || u.startsWith("https://")) ? await (await fetch(u)).text() : readFileSync(u, "utf8");
-      const res = await resolve(pkg, fetchPackage, loadTrustStore(), { allowNoSignature: parsed.allowNoSignature });
+      const res = await resolve(pkg, fetchPackage, loadTrustStore(), loadRegistry(), { allowNoSignature: parsed.allowNoSignature });
       if (!res.ok) {
         console.error(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
         return 1;

@@ -104,7 +104,7 @@ describe("installPackage", () => {
     const pkg = {
       manifest: {
         format_version: 1, name: "demo", version: "1.0.0", content_hash,
-        dependencies: [{ name: "x", version: "1.0.0", url: "http://e/x.json", package_hash: "sha256:deadbeef" }],
+        dependencies: [{ kind: "inline" as const, name: "x", version: "1.0.0", url: "http://e/x.json", package_hash: "sha256:deadbeef" }],
       },
       files,
     };
