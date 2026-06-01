@@ -47,6 +47,24 @@ this is a coordination bottleneck + collision source — it **does not scale**.
 **Empirical anchor (this session):** filing B-0955 required exactly that dance. That's the
 cost this row removes.
 
+## Prior art — an incrementing ID is a hidden consensus (operator 2026-05-31)
+
+> Aaron: *"incrementing IDs are a hidden consensus most don't think of unless you are
+> designing a sharded database — which we are lol"*
+
+A monotonic/auto-increment id (`B-NNNN`, SQL `AUTO_INCREMENT`, Postgres `SERIAL`) needs a
+**single source of truth for "the next number"** — that source IS a consensus point. It's
+invisible at one node and becomes the bottleneck the moment you shard, which is the classic
+reason sharded databases abandon auto-increment PKs for **locally-mintable, conflict-free
+ids**: UUID(v4/v7), Twitter **Snowflake**, **ULID**, KSUID, Mongo ObjectId. Each encodes
+time/shard/random so every shard mints unique ids with **zero coordination**.
+
+**Zeta IS that sharded database:** agents/machines are the shards, git is the
+replication-log, the append-only event G-Set is the log, folds are the materialized views —
+and the **ZetaId is our distributed primary key** (128-bit, category-tagged, crypto-minted
+locally). So `B-NNNN → ZetaId WorkItem` is not a novel move; it is the **auto-increment-PK →
+distributed-ID migration every sharded system does**, applied to our work-item table.
+
 ## The model (operator correction 2026-05-31 — type vs state)
 
 > Aaron: *"backlog is a state of a workitem not it's type — types are tasks and bugs"*
