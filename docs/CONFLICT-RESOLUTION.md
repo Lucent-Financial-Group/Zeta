@@ -83,10 +83,11 @@ When two specialists (or a specialist and a human) disagree:
 
 Every specialist below is advisory. Their reviews carry weight
 proportional to their domain expertise; none carry veto power.
-Each expert carries a name — see `docs/EXPERT-REGISTRY.md` for
-the full roster + diversity notes. The name is how humans refer
-to them in conversation ("Kira flagged it"); the role title is
-how the skill system invokes them.
+Each expert has a name in `docs/EXPERT-REGISTRY.md` (the full
+roster + diversity notes); the entries below list them by role
+title. The name is how humans refer to them in conversation
+("Kira flagged it"); the role title is how the skill system
+invokes them.
 
 **Storage Specialist — Zara** — durability, storage format,
 commit protocols. Advises on WDC patterns, checkpoints.
