@@ -1,0 +1,52 @@
+import { describe, expect, test } from "bun:test";
+import { joinUrl, nextSequence, buildIndexDoc } from "./registry-publish.ts";
+import { generateKeypair, verifyIndexSignature, publicKeyInfoFromPrivatePem } from "./signing.ts";
+import { parseIndex } from "./registry-remote.ts";
+import { packageHash } from "./resolve.ts";
+import { contentHash } from "./store.ts";
+
+// helper: a minimal well-formed AcePackage with a correct content_hash
+function pkg(name: string, version: string, files: Record<string, string> = { "a.txt": "x" }) {
+  const content_hash = contentHash(new TextEncoder().encode(JSON.stringify(files)));
+  return { manifest: { format_version: 1, name, version, content_hash }, files };
+}
+
+describe("joinUrl", () => {
+  test("single separator regardless of trailing slash", () => {
+    expect(joinUrl("https://pkgs", "leaf-1.0.0.json")).toBe("https://pkgs/leaf-1.0.0.json");
+    expect(joinUrl("https://pkgs/", "leaf-1.0.0.json")).toBe("https://pkgs/leaf-1.0.0.json");
+    expect(joinUrl("https://pkgs///", "leaf-1.0.0.json")).toBe("https://pkgs/leaf-1.0.0.json");
+  });
+});
+
+describe("nextSequence", () => {
+  test("null → 1", () => { expect(nextSequence(null)).toBe(1); });
+  test("prev → prev+1", () => {
+    const prev = { format_version: 1 as const, sequence: 6, issued_at: "2026-06-01T12:00:00Z", packages: {}, signature: { algo: "ed25519" as const, key_id: "k", sig: "s" } };
+    expect(nextSequence(prev)).toBe(7);
+  });
+});
+
+describe("buildIndexDoc", () => {
+  const kp = generateKeypair();
+  const issuedAt = "2026-06-01T12:00:00Z";
+  test("assembles url + package_hash per package, signs, self-verifies", () => {
+    const p = pkg("leaf", "1.0.0");
+    const doc = buildIndexDoc({ packages: [p as never], baseUrl: "https://pkgs", sequence: 3, issuedAt, privatePem: kp.privatePem });
+    expect("error" in doc).toBe(false);
+    if ("error" in doc) return;
+    expect(doc.sequence).toBe(3);
+    expect(doc.issued_at).toBe(issuedAt);
+    expect(doc.packages.leaf!["1.0.0"]!.url).toBe("https://pkgs/leaf-1.0.0.json");
+    expect(doc.packages.leaf!["1.0.0"]!.package_hash).toBe(packageHash(p as never));
+    const reparsed = parseIndex(JSON.stringify(doc));
+    expect("error" in reparsed).toBe(false);
+    const info = publicKeyInfoFromPrivatePem(kp.privatePem);
+    const { signature, ...content } = doc;
+    expect(verifyIndexSignature(content, signature, new Map([[info.keyId, { public_key: info.public_key }]])).ok).toBe(true);
+  });
+  test("duplicate name@version → error", () => {
+    const doc = buildIndexDoc({ packages: [pkg("leaf", "1.0.0") as never, pkg("leaf", "1.0.0") as never], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
+    expect("error" in doc).toBe(true);
+  });
+});
