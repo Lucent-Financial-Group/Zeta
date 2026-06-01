@@ -76,6 +76,96 @@ Serializing the **expression tree itself** as data means the **pattern is
 durable AND mutable** — the strict superset the operator named. A running saga
 can be **rewritten** (retract a sub-tree, add a new one) without redeploying.
 
+## Correction — closure-serialization is *not* the crux; the no-handles discipline is shared (the operator 2026-06-01)
+
+An earlier framing of this comparison flagged "faithful serialization of live
+closure state — especially **non-serializable handles** — is the genuinely hard
+part our design has to solve and DF gets to skip." The operator corrected it, and
+the correction holds:
+
+> *"especially non-serializable handles — is genuinely hard — they don't do this
+> either in durable functions to my knowledge; they said just don't open
+> handles."*
+
+DF doesn't serialize handles — it **forbids** them. That is exactly the
+[orchestrator code-constraints](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-code-constraints):
+the orchestrator body must be deterministic and side-effect-free; **all I/O and
+handles live in activity functions** (run once, return a serializable result,
+which is what gets recorded). DF never holds a handle across a suspend point.
+
+So the "hard part" is not a DF advantage — **neither system serializes handles;
+both keep them out of the durable body.** Adopt the same discipline for sagas (no
+handles captured in the saga closure; handles live in the leaf / activity calls)
+and our closure is *all serializable values* — no harder to serialize than DF's
+history. Bonsai already solves the expression-tree half. **The closure-
+serialization crux largely evaporates.**
+
+What's left is sharper, and it tilts *further* toward resume — because the two
+models require **different** disciplines on the durable body:
+
+| Discipline on the durable body | Replay (DF / Temporal / Dapr Workflow) | Resume (self-evolving saga) |
+| --- | --- | --- |
+| No handles across suspend | required | required (**same**) |
+| **No non-determinism** (`DateTime.Now`, `Guid.NewGuid`, random) | **required** — replay would recompute differently | **not required** — we snapshot the *value*, so non-deterministic code is fine |
+
+Replay needs *both* constraints because it **re-runs the body** and must
+reproduce identical results. Resume needs **only** the no-handles one, because it
+**restores snapshotted values** and never re-runs the body. Resume is the
+strictly looser constraint set. The genuinely-hard residue is therefore not
+serialization — it is the *runtime guarantees* the replay engines have already
+built (durable timers, exactly-once-effect at the activity boundary,
+management/observability tooling, managed scale-out): engineering, not unknowns.
+
+## Minimal replay reference — replay is ~5 primitives (concept, not code)
+
+The operator has a minimal hand-rolled durable-operations spike that confirms
+the replay mechanism is *small*. It is a faithful minimal copy of the Durable
+Task Framework replay model — exactly what Durable Functions / Dapr Workflow do
+under the hood. (It sits on a proprietary platform, so this is **concept-not-code**:
+the *pattern* below is the public DTF replay model, nothing reproduced.)
+
+The whole replay model is ~5 pieces:
+
+1. **A step cursor** — `currentStep` + `checkpoint`, with
+   `stepIsComplete = currentStep <= checkpoint`. The "have I already done this on
+   a prior run?" test.
+2. **An activity wrapper** — `do<T>(action)`: if the step is complete, **skip and
+   return the cached result**; else **run it and checkpoint the result**; then
+   `currentStep++`. (This is "reads cached values before the next set.")
+3. **A break exception** — thrown to **exit mid-run** at a suspend point (after
+   firing an async request / waiting for an external reply). State is saved first.
+4. **A state provider** — persists the checkpointed step-results + the cursor +
+   the pending resume value.
+5. **A context object** — the cursor + state hang off it; `do` / `request` /
+   `notify` are the only surface. (`request` = fire-then-break-and-wait;
+   `notify` = fire-and-cache.)
+
+**NB (Result-over-exception):** the break-exception is how the *replay family*
+(DTF / the minimal spike) suspends — described here as the baseline, **not
+prescribed for our build**. Per the repo's Result-over-exception /
+exceptions-as-signals discipline, our **resume** model suspends at the **value
+level** — a `Suspended` / `AwaitingResume` variant returned from the yield (a
+`Result<…, Suspended>`-shaped control-flow value), not a thrown exception. Resume
+serializes state and *returns*; there is no replay, so no throw-to-suspend at
+all. The break-exception is a **replay artifact**, not a control-flow primitive
+we adopt.
+
+On resume the operation **re-runs from the start**, skips every completed step
+(reading cached values), reaches the suspend point, finds the resume value
+populated, and continues. That's the entire model.
+
+Two takeaways:
+
+- **Replay is cheap to build.** The replay-family backend (the DF/Temporal/Dapr
+  Workflow model) is ~5 primitives — we already have a working reference for it.
+- **It confirms the constraints + the limits.** The code *between* activity
+  wrappers re-executes on every replay ⇒ the body must be **deterministic**
+  (per the Correction above); handles never cross the break (they live inside the
+  run-once actions) ⇒ the **no-handles discipline**. And the "pattern" is the
+  method body — **fixed code, no self-evolution.** Our resume + Bonsai model is
+  the superset that lifts both (looser body + serialized-mutable pattern). The
+  replay spike is the baseline to meet on durability and beat on evolution.
+
 ## The sharp part — it rides the Z-set / IndexedZSet ladder (just completed 4/4)
 
 A serialized deferred computation is a **payload**: `(Bonsai expression-tree,
@@ -198,6 +288,55 @@ itself* can evolve. The mediator agent's tick stream is where Durable-Functions'
 | Partial failure | **Mitigation factors inside the saga** — compensate / retract (ℤ inverse) / retry / hold-resume |
 | Evolution | Compensation logic is **data**, so the mitigation strategy itself evolves |
 
+## The saga context IS the OTel context (propagation) — already IntrCtx (B-0917)
+
+The operator (2026-06-01): *"context ends up being same as otel context, it
+passes through function calls mostly."* This closes the "how does the context
+propagate?" question — and the repo already converges here.
+
+The durable/saga **context** (the thing state hangs off of — `currentStep`,
+cached results, resume value, identity) is the **same ambient object** as the
+**OTel context**, and as **B-0917 IntrCtx**. The propagation model is OTel's:
+
+- **In-process: implicit / ambient** — `AsyncLocal` / `Activity.Current` threads
+  the context through the call graph with no hand-passing. ("Passes through
+  function calls mostly" — ambient, not a parameter. The registry's Observability
+  line already names this: *"AsyncLocal immutable-stack scope … one mechanism for
+  trace + metric dims."*)
+- **Cross-process / cross-partition: explicit** — W3C `traceparent` /
+  `tracestate` + **baggage** carry it over the wire (the hop the cross-partition
+  mediator above needs).
+
+This is already substrate, not new:
+
+- **[B-0917](../backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md)** —
+  *Kleisli arrows for **context-propagation** (memetic / prompt / trust / **log** /
+  **otel**)*. The IntrCtx already carries `log` + `otel`; the durable/saga context
+  IS this. The ZSpike `do` / `request` / `notify` are the **Kleisli arrows that
+  thread the context** — the same shape B-0917 names.
+- **[B-0957](../backlog/P1/B-0957-first-class-labels-tags-scopes-on-every-gset-zset-entity-deferred-to-human-state-label-otel-baggage-di-scope-propagation-aaron-otto-2026-05-31.md)** —
+  scopes **propagate via OTel-baggage / DI-scope**. The mechanism.
+- **[B-0872](../backlog/P2/B-0872-otel-trace-id-composition-with-zetaid-baggage-propagation-kestrel-2026-05-28.md)** —
+  **OTel trace-ID composition with ZetaID** alongside W3C Trace Context. The
+  context carries **identity** (the saga's id = the trace/span id).
+- **Lightlike-observability** (Amara, PR cluster 2026-05-28) — *"OTel is ray
+  emission; spans are rays through the distributed system."* The context = the
+  ray; the saga rides the same rays.
+
+One honest split keeps the identity exact. OTel baggage is small + propagated on
+*every* hop (size-limited), so the layering is:
+
+- **OTel context = the propagation + identity layer** — trace/span id (= the
+  saga's id, B-0872) + small hot state in baggage. *This* is the part that "is
+  the same as OTel context."
+- **The heavy serialized state** (closure + Bonsai expr-tree) lives in the
+  **state store, keyed by the context-id** — not in baggage. The context
+  propagates the *handle*; the store holds the *payload*.
+
+So "context = OTel context" is exactly right for **propagation + identity**; the
+durable payload hangs off the store keyed by that context — which is why B-0917
+puts `log` + `otel` *inside* IntrCtx alongside the durable-relevant contexts.
+
 ## Composes with the DU workflow engine — a generic saga in `observe.ts` is just serialize(Rx) + serialize(state)
 
 The operator (2026-06-01): *"this composes with DUs workflow we can create a
@@ -235,6 +374,125 @@ control-flow generator → serialized, it is a saga) and the Xbox-controller
 universal-action-grammar (the move-next menu is the saga's next-transition
 surface). The generic combinator lives in `observe.ts`; the per-workflow DU is
 the input.
+
+## Dapr is the planned runtime — Workflow (replay family) + Actors (the mediator carrier)
+
+The operator (2026-06-01): *"we are going to have dapr and dapr actors and
+workflow."* Dapr is the planned runtime substrate (it is **already deployed** in
+the cluster per [B-0785](../backlog/P1/B-0785-unified-namespace-across-fsharp-kubernetes-ontology-plus-experiment-id-routing-via-argo-rollouts-cilium-service-mesh-aaron-mika-2026-05-25.md):
+`full-ai-cluster/k8s/applications/dapr`). Two pieces, two different relationships
+to this primitive:
+
+- **Dapr Workflow = same replay family as Durable Functions.** It is internally
+  implemented with **`durabletask-go`** (the Durable Task Framework) and runs on
+  Dapr's actor runtime — one workflow-actor per instance, event-sourced history,
+  turn-based, [deterministic replay required](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-features-concepts/).
+  So everything in the **Correction** + **subsumes-DF** sections above applies to
+  Dapr Workflow *identically*: replay → determinism-constrained body → **cannot
+  self-evolve**. Dapr Workflow joins DF/Temporal as a **conformance oracle in the
+  replay family**, not as the self-evolving target.
+- **Dapr Actors = the virtual-actor carrier (Orleans lineage).** Turn-based,
+  single-threaded-per-actor, state persisted via a state store — this maps
+  *directly* onto our **cross-partition-join mediator**: Dapr Agents already use
+  the virtual-actor model per agent instance, and the workflow-actor (one per
+  instance, holds history, turn-based) IS the "agent whose tick stream is the
+  carrier, holding both sides local." Dapr Actors are also the missing **Durable
+  Entities** primitive in the registry.
+
+The pragmatic shape this implies: **ride Dapr Actors as the runtime/carrier**
+(the mediator is a virtual actor; per-partition saga state lives in actor state)
+while the saga *body* uses **resume (serialize-restore)** rather than Dapr
+Workflow's **replay** — so we get Dapr's actor runtime + state stores + sidecar
+building-blocks *and* the looser body-constraints + live self-evolution. Dapr
+Workflow remains available as a replay-family backend for the cases that don't
+need self-evolution. (Per `default-to-both`: Dapr Workflow as conformance
+oracle + the resume-model saga as the superset, the same meet-in-the-middle the
+algebra ladder runs.)
+
+## Composes with the existing durable-execution backlog (verify-existing-substrate)
+
+This note's first cut under-cited the substrate — the operator's catch
+("we have some backlog around this too") is correct. The durable-execution
+cluster this primitive composes onto:
+
+- **[B-0251](../backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md)** —
+  *durable-computation stack: Temporal + Reaqtor + Orleans + Bonsai* (tags incl.
+  `durable-functions`). The canonical research row for this whole area.
+- **[B-0668](../backlog/P1/B-0668-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md)** +
+  **[B-0668.1](../backlog/P1/B-0668.1-fsharp-k8s-mapping.md)** — *our-own fork of
+  Azure/durabletask*; explicitly: **"durable-task state-history IS the DBSP
+  time-indexed-state substrate; saga compensation = retraction = additive inverse
+  in Z-set algebra."** The **saga = retraction = ℤ-inverse** insight this note's
+  "sharp part" leans on **already lives here** — this note sharpens + extends
+  B-0668, it does not mint it. The Integrate (∫) primitive gets its
+  retraction-aware persistence at the durabletask layer; the F# → Orleans →
+  our-own-durabletask-fork → K8s pipeline is B-0668's target.
+- **[B-0706](../backlog/P1/B-0706-zeta-on-orleans-deployment-architecture-servicetitan-scale-orleans-grains-jit-compilation-rented-tools-2026-05-22.md)** —
+  *Zeta-on-Orleans*: **grain identity = agent identity**, grains as ticksource +
+  cron. The agent-mediator = grain/actor mapping; composes with the Dapr-Actors
+  carrier above (Orleans grain ≈ Dapr virtual actor).
+- **[B-0776](../backlog/P1/B-0776-simplest-first-plugin-sequence-wrapping-already-deployed-cluster-substrate-redis-nats-cockroach-temporal-orleans-opa-aaron-2026-05-25.md)** /
+  **[B-0764](../backlog/P2/B-0764-cncf-ecosystem-as-force-multipliers-behind-zeta-interfaces-keda-dapr-opa-oam-kubevela-plus-ace-and-ontology-negotiation-aaron-2026-05-25.md)** —
+  Dapr (distributed-app runtime) + Temporal/Orleans/Argo (workflow/actors) as
+  already-deployed cluster substrate to wrap.
+- **[B-0777](../backlog/P1/B-0777-industry-sharp-categories-plus-per-persona-ontology-maps-plus-ace-package-manager-negotiation-aaron-2026-05-25.md)** `Zeta.Actors`
+  + **[B-0040](../backlog/P2/B-0040-actor-model-factory-register-lens.md)** (actor-model lens) +
+  **[B-0253](../backlog/P2/B-0253-realtime-interloop-messaging-orleans-grains-not-broadcast-files-2026-05-07.md)** — the actor-model surface.
+
+Net: the self-evolving-saga is the **crystallization + cross-language + self-evolution extension** of an existing backlog cluster (B-0251 research → B-0668 durabletask-fork-with-Z-set-retraction → B-0706 Orleans-deployment), now with Dapr named as the concrete runtime. The new contribution over the backlog is (1) the explicit replay-vs-resume fork + looser-body-constraints, (2) self-evolution (mutate the running pattern), (3) the cross-language Bonsai-subset/oracle discipline. The Z-set-retraction-as-saga-compensation core is B-0668's; cite it.
+
+## The interface is the hard part — Temporal (especially) and DF are the interface to beat
+
+The operator (2026-06-01): *"durable functs and especially temporal have the
+better interfaces than mine; their interfaces are much better."* This is the
+design call that matters most for adoption: **the feature set is solved; the
+developer-facing interface is where the work is** — and the minimal replay spike
+is *not* the interface model to copy.
+
+What makes the interfaces rank **Temporal > Durable Functions > minimal spike**:
+
+- **Temporal — durability is invisible in the body.** You write normal async
+  code; the SDK pauses, checkpoints, and resumes automatically — "business logic
+  that reads like pseudocode," no event handlers, callbacks, or explicit DB/
+  checkpoint calls. Plus first-class **signals** (push data into a *running*
+  workflow — human-in-the-loop: "approve", "payment confirmed"), **queries**
+  (read running state without changing history — real-time ops visibility), and
+  **updates**. Workflows-as-code in real languages (Go/Java/TS/Python).
+- **Durable Functions — clean but more explicit + Azure-coupled.** Durability is
+  good, but you call `CallActivityAsync` / `WaitForExternalEvent` / `CreateTimer`
+  explicitly, and it relies on Azure Storage / runs in Azure.
+- **Minimal replay spike — minimal but boilerplate.** Every step is hand-wrapped
+  in `context.do(...)`; correct, but the durability machinery is in the author's
+  face on every line. The right baseline for *understanding the model*, the wrong
+  one for the *interface*.
+
+**Design target: our self-evolving-saga interface aims for Temporal-grade
+ergonomics** — durability transparent in the body, **signals + queries
+first-class**, write-normal-code. Temporal is the **interface conformance
+oracle**, the same way Nuqleon Bonsai is the serialization oracle and
+DF/Temporal/Dapr-Workflow are the replay-feature oracle: study it, **own our
+interface (the port), meet-or-beat it** (per
+`bcl-interface-boundary-own-your-interfaces-hexagonal` — Temporal is a *design
+reference*, not a dependency).
+
+Two things make this *easier* for us than for the replay engines, not harder:
+
+- **Signals + queries map straight onto substrate we have.** A **signal** is an
+  external event on the stream / the `observe→act` move-next surface; a **query**
+  is a read of the saga state (the OTel-context-keyed store from the section
+  above) **without advancing the cursor** — a pure read of a Z-set at a key. Both
+  are already-shaped primitives, not new machinery.
+- **Resume loosens the body constraints Temporal authors trip on.** Temporal's
+  transparency comes *from* the replay model, which is also where its famous
+  determinism gotchas live (no `DateTime.Now`/random/non-deterministic iteration
+  in the body — see the "common pitfalls" the framework's own authors document).
+  Our **resume** model snapshots values, so non-determinism in the body is fine —
+  we can offer the *same* transparent interface with *fewer* footguns. The
+  interface lessons (hide the machinery; signals/queries first-class;
+  normal-code authoring) transfer regardless of replay-vs-resume underneath.
+
+So: copy Temporal's **interface**, keep our **resume + serialized-mutable-pattern**
+engine. Best interface of the family, plus self-evolution the family can't do.
 
 ## Build options (when the operator drives it — not now)
 
@@ -289,3 +547,9 @@ line + footer in, so the registry is internally consistent (4/4 everywhere).
 - [reaqtive/reaqtor — Nuqleon index](https://github.com/reaqtive/reaqtor/blob/main/Docfx/nuqleon/index.md)
 - [Nuqleon.DataModel conceptual docs](https://reaqtive.net/documentation/nuqleon/nuqleon.datamodel)
 - [dotnet/csharplang Discussion #5555 — serializing expression trees to/from JSON](https://github.com/dotnet/csharplang/discussions/5555)
+- [Temporal — Workflows (workflows-as-code, durable by default)](https://docs.temporal.io/workflows)
+- [Temporal — Handling Signals, Queries & Updates](https://docs.temporal.io/handling-messages)
+- [Temporal — Durable Execution / programming model](https://temporal.io/)
+- [Common pitfalls with durable-execution frameworks (Durable Functions / Temporal) — Chris Gillum](https://medium.com/@cgillum/common-pitfalls-with-durable-execution-frameworks-like-durable-functions-or-temporal-eaf635d4a8bb)
+- [Dapr — Workflow features & concepts (durabletask-go; replay; determinism)](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-features-concepts/)
+- [Dapr — Actors overview (virtual-actor model)](https://docs.dapr.io/developing-applications/building-blocks/actors/actors-overview/)
