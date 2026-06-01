@@ -87,4 +87,13 @@ public class RangeSetTests
         Assert.Equal(0L, RangeSets.Size(ParseOk("")));
         Assert.Equal(14L, RangeSets.Size(ParseOk("1-5,8,10-17")));
     }
+
+    [Fact]
+    public void ParseNullDeclinesMalformedRatherThanThrowing()
+    {
+        // result-over-throw / no-exception-crosses-boundary: null must decline a feedback
+        // variant, never NRE on s.Trim() (C#-specific parity; the other oracles are non-null by type).
+        var err = Assert.IsType<Result<IReadOnlyList<Interval>, RangeSetFeedback>.Err>(RangeSets.Parse(null!));
+        Assert.IsType<RangeSetFeedback.Malformed>(err.Error);
+    }
 }

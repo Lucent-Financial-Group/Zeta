@@ -114,6 +114,13 @@ public static class RangeSets
     /// <param name="s">The compact range expression.</param>
     public static Result<IReadOnlyList<Interval>, RangeSetFeedback> Parse(string s)
     {
+        // result-over-throw / no-exception-crosses-boundary: a null input declines a feedback
+        // variant rather than throwing (matches the sibling oracle BonsaiCodec.Parse on null).
+        if (s is null)
+        {
+            return Decline(new RangeSetFeedback.Malformed("input was not a string"));
+        }
+
         var trimmed = s.Trim();
         if (trimmed.Length == 0)
         {
