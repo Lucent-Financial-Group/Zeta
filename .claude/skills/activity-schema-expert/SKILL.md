@@ -1,6 +1,6 @@
 ---
 name: activity-schema-expert
-description: Activity Schema — single-stream analytics, customer_stream, before/after/between temporal patterns, post-Kimball event-driven modelling.
+description: Activity Schema — single-stream analytics, customer_stream, temporal patterns, post-Kimball event modelling.
 record_source: "skill-creator, round 34"
 load_datetime: "2026-04-19"
 last_updated: "2026-04-21"

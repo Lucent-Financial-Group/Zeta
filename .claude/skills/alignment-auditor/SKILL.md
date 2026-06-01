@@ -1,6 +1,6 @@
 ---
 name: alignment-auditor
-description: Alignment audit — scores commits against HC/SD/DIR clauses in ALIGNMENT.md; produces per-clause signal for measurable-AI-alignment research.
+description: Alignment audit — scores commits against ALIGNMENT.md clauses; emits per-clause measurable-alignment signals.
 project: zeta
 record_source: "skill-creator, round 37"
 load_datetime: "2026-04-20"
