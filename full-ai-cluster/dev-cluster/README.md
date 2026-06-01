@@ -72,7 +72,7 @@ open https://localhost:8443
 ./down.sh
 ./down.sh --config profiles/ci.k3d-config.yaml
 ./kind-down.sh --cluster-name zeta-ci
-CONTAINER_RUNTIME=podman ./kind-down.sh --cluster-name zeta-ci-podman
+ZETA_CONTAINER_RUNTIME=podman ./kind-down.sh --cluster-name zeta-ci-podman
 ```
 
 Removes the cluster, any matching registry, and clears the kubectl context.
@@ -101,11 +101,10 @@ bun tools/cluster/argocd-health-test.ts \
   --cluster-name zeta-ci \
   --git-ref main
 
-CONTAINER_RUNTIME=podman bun tools/cluster/argocd-health-test.ts \
+ZETA_CONTAINER_RUNTIME=podman bun tools/cluster/argocd-health-test.ts \
   --run \
   --provider kind \
   --scope smoke \
-  --runtime podman \
   --config full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml \
   --cluster-name zeta-ci-podman \
   --git-ref main
@@ -123,6 +122,12 @@ The harness names missing dependencies (`docker` or `podman`, provider CLI,
 `kubectl`, and `helm`), waits for ArgoCD readiness, asserts expected Application
 sync/health, and keeps this Kubernetes/ArgoCD proof separate from the USB/ISO
 zflash retention lane.
+
+`ZETA_CONTAINER_RUNTIME` is the repo-wide OCI runtime switch used by the
+effectful work substrate. The kind wrappers still accept the older
+`CONTAINER_RUNTIME` name as a compatibility alias, but new commands should use
+`ZETA_CONTAINER_RUNTIME`. `--runtime` remains available for one-off explicit
+harness runs.
 
 The current conservative CI path is kind-on-Docker smoke. k3d remains the
 closer Cilium-parity lane. The k3d configs pin `rancher/k3s:v1.36.1-k3s1`,

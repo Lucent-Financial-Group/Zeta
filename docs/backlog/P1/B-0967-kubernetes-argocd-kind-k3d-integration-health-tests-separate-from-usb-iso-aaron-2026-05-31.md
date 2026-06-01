@@ -144,6 +144,15 @@ The helper scripts now keep the desired-state source canonical:
 - `full-ai-cluster/dev-cluster/kind-up.sh` and `kind-down.sh` provide the
   smoke substrate for Docker and Podman.
 
+The Podman lane reuses the repo-wide B-0964 OCI runtime selector:
+`ZETA_CONTAINER_RUNTIME=podman` selects Podman, while the older
+`CONTAINER_RUNTIME` name remains a compatibility alias in the shell wrappers.
+This harness keeps provider choice explicit instead of fully auto-detecting the
+runtime because provider topology changes with the runtime. For now, k3d stays
+Docker-only because its profile depends on Docker-network and k3d registry
+behavior; the Podman-standard lane runs through kind until a k3d/Podman profile
+is proven separately.
+
 The USB/ISO zflash reformat-retention proof remains in B-0891. Its first
 cluster-health consumption should be narrow, but the intended installed-system
 target is a full Kubernetes cluster with the complete default ArgoCD stack.
@@ -183,6 +192,11 @@ Local outside-ISO evidence on Aaron's macOS host:
 - kind-on-Podman control-plane creation passed. Full Argo smoke on the current
   Podman VM is blocked by the 2 GiB Podman machine budget causing Kubernetes
   API timeouts under Argo/app reconciliation load.
+- The harness was aligned with the repo-wide OCI runtime swap convention after
+  comparing against the B-0964 `do_item` substrate: `ZETA_CONTAINER_RUNTIME` is
+  now the first-class environment switch, `CONTAINER_RUNTIME` remains accepted
+  by `kind-up.sh`/`kind-down.sh` as an alias, and `--runtime` remains available
+  for explicit one-off runs.
 
 ## Full-cluster target
 

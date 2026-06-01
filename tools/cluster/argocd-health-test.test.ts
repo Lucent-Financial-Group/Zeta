@@ -13,7 +13,7 @@ import {
 
 describe("B-0967 argocd-health-test argument parsing", () => {
   test("defaults to safe dry-run against the k3d dev cluster", () => {
-    const parsed = parseArgs([]);
+    const parsed = parseArgs([], {});
     expect("kind" in parsed).toBe(false);
     if ("kind" in parsed) throw new Error(parsed.message);
     expect(parsed.mode).toBe("dry-run");
@@ -24,7 +24,7 @@ describe("B-0967 argocd-health-test argument parsing", () => {
   });
 
   test("rejects git refs that could inject YAML or shell syntax", () => {
-    const parsed = parseArgs(["--git-ref", "feature/good\nbad"]);
+    const parsed = parseArgs(["--git-ref", "feature/good\nbad"], {});
     expect("kind" in parsed).toBe(true);
     if (!("kind" in parsed)) throw new Error("expected usage failure");
     expect(parsed.kind).toBe("UsageError");
@@ -42,7 +42,7 @@ describe("B-0967 argocd-health-test argument parsing", () => {
       "--poll-sec",
       "5",
       "--drift-check",
-    ]);
+    ], {});
     expect("kind" in parsed).toBe(false);
     if ("kind" in parsed) throw new Error(parsed.message);
     expect(parsed.mode).toBe("run");
@@ -53,7 +53,7 @@ describe("B-0967 argocd-health-test argument parsing", () => {
   });
 
   test("switches kind runs to the CI kind profile by default", () => {
-    const parsed = parseArgs(["--run", "--provider", "kind"]);
+    const parsed = parseArgs(["--run", "--provider", "kind"], {});
     expect("kind" in parsed).toBe(false);
     if ("kind" in parsed) throw new Error(parsed.message);
     expect(parsed.provider).toBe("kind");
@@ -62,7 +62,25 @@ describe("B-0967 argocd-health-test argument parsing", () => {
   });
 
   test("accepts kind on podman for the OCI-runtime lane", () => {
-    const parsed = parseArgs(["--run", "--provider", "kind", "--runtime", "podman"]);
+    const parsed = parseArgs(["--run", "--provider", "kind", "--runtime", "podman"], {});
+    expect("kind" in parsed).toBe(false);
+    if ("kind" in parsed) throw new Error(parsed.message);
+    expect(parsed.provider).toBe("kind");
+    expect(parsed.runtime).toBe("podman");
+  });
+
+  test("uses ZETA_CONTAINER_RUNTIME as the repo-wide OCI runtime switch", () => {
+    const parsed = parseArgs(["--run"], { ZETA_CONTAINER_RUNTIME: "podman" });
+    expect("kind" in parsed).toBe(false);
+    if ("kind" in parsed) throw new Error(parsed.message);
+    expect(parsed.provider).toBe("kind");
+    expect(parsed.runtime).toBe("podman");
+    expect(parsed.scope).toBe("smoke");
+    expect(parsed.configPath).toBe("full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml");
+  });
+
+  test("keeps CONTAINER_RUNTIME as a compatibility alias", () => {
+    const parsed = parseArgs(["--run", "--provider", "kind"], { CONTAINER_RUNTIME: "podman" });
     expect("kind" in parsed).toBe(false);
     if ("kind" in parsed) throw new Error(parsed.message);
     expect(parsed.provider).toBe("kind");
@@ -188,7 +206,7 @@ describe("B-0967 argocd-health-test Application verdicts", () => {
 
 describe("B-0967 argocd-health-test planning", () => {
   test("builds the B-0967 plan without touching Docker or Kubernetes", () => {
-    const parsed = parseArgs(["--dry-run"]);
+    const parsed = parseArgs(["--dry-run"], {});
     if ("kind" in parsed) throw new Error(parsed.message);
     const plan = buildPlan(parsed);
     if ("kind" in plan) throw new Error(plan.message);

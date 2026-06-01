@@ -4,7 +4,7 @@
 set -euo pipefail
 
 CLUSTER_NAME="zeta-ci"
-CONTAINER_RUNTIME="${CONTAINER_RUNTIME:-docker}"
+CONTAINER_RUNTIME="${ZETA_CONTAINER_RUNTIME:-${CONTAINER_RUNTIME:-docker}}"
 
 usage() {
   cat >&2 <<EOF
@@ -48,7 +48,7 @@ case "$CONTAINER_RUNTIME" in
     export KIND_EXPERIMENTAL_PROVIDER=podman
     ;;
   *)
-    echo "ERROR: CONTAINER_RUNTIME must be docker or podman (got: '${CONTAINER_RUNTIME}')" >&2
+    echo "ERROR: ZETA_CONTAINER_RUNTIME/CONTAINER_RUNTIME must be docker or podman (got: '${CONTAINER_RUNTIME}')" >&2
     exit 1
     ;;
 esac

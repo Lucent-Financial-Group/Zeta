@@ -158,9 +158,21 @@ interface ParseArgSuccess {
   readonly nextIndex: number;
 }
 
+interface ParseRuntimeEnvSuccess {
+  readonly ok: true;
+  readonly value: ContainerRuntime | null;
+}
+
+interface ParseOptionsSuccess {
+  readonly ok: true;
+  readonly value: MutableCliOptions;
+}
+
 type ParseNumberResult = ParseNumberSuccess | ParseFailure;
 type ParseStringResult = ParseStringSuccess | ParseFailure;
 type ParseArgResult = ParseArgSuccess | ParseFailure;
+type ParseRuntimeEnvResult = ParseRuntimeEnvSuccess | ParseFailure;
+type ParseOptionsResult = ParseOptionsSuccess | ParseFailure;
 
 const REPO_ROOT = resolve(import.meta.dir, "../..");
 const DEFAULT_K3D_CONFIG = "full-ai-cluster/dev-cluster/k3d-config.yaml";
@@ -206,6 +218,16 @@ function isContainerRuntime(value: string): value is ContainerRuntime {
   return value === "docker" || value === "podman";
 }
 
+function containerRuntimeFromEnv(env: NodeJS.ProcessEnv): ParseRuntimeEnvResult {
+  const raw = env.ZETA_CONTAINER_RUNTIME ?? env.CONTAINER_RUNTIME;
+  if (raw === undefined || raw === "") return { ok: true, value: null };
+  if (isContainerRuntime(raw)) return { ok: true, value: raw };
+  return {
+    ok: false,
+    failure: usageFailure(`ZETA_CONTAINER_RUNTIME/CONTAINER_RUNTIME must be docker or podman (got: ${raw})`),
+  };
+}
+
 function parsePositiveInteger(raw: string, flag: string): ParseNumberResult {
   if (!/^[1-9]\d*$/.test(raw)) {
     return { ok: false, failure: usageFailure(`${flag} requires a positive integer`) };
@@ -221,19 +243,26 @@ export function isSafeGitRef(value: string): boolean {
     !value.includes("//");
 }
 
-function defaultCliOptions(): MutableCliOptions {
+function defaultCliOptions(env: NodeJS.ProcessEnv): ParseOptionsResult {
+  const envRuntime = containerRuntimeFromEnv(env);
+  if (!envRuntime.ok) return envRuntime;
+  const runtime = envRuntime.value ?? "docker";
+  const provider: Provider = runtime === "podman" ? "kind" : "k3d";
   return {
-    mode: "dry-run",
-    provider: "k3d",
-    gitRef: "main",
-    clusterName: null,
-    configPath: DEFAULT_K3D_CONFIG,
-    existing: false,
-    timeoutSeconds: DEFAULT_TIMEOUT_SECONDS,
-    pollSeconds: DEFAULT_POLL_SECONDS,
-    driftCheck: false,
-    scope: "full",
-    runtime: "docker",
+    ok: true,
+    value: {
+      mode: "dry-run",
+      provider,
+      gitRef: "main",
+      clusterName: null,
+      configPath: provider === "kind" ? DEFAULT_KIND_CONFIG : DEFAULT_K3D_CONFIG,
+      existing: false,
+      timeoutSeconds: DEFAULT_TIMEOUT_SECONDS,
+      pollSeconds: DEFAULT_POLL_SECONDS,
+      driftCheck: false,
+      scope: provider === "kind" ? "smoke" : "full",
+      runtime,
+    },
   };
 }
 
@@ -353,8 +382,10 @@ function normalizeProviderDefaults(options: MutableCliOptions): void {
   }
 }
 
-export function parseArgs(argv: readonly string[]): CliOptions | Failure {
-  const options = defaultCliOptions();
+export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv = process.env): CliOptions | Failure {
+  const defaulted = defaultCliOptions(env);
+  if (!defaulted.ok) return defaulted.failure;
+  const options = defaulted.value;
   let index = 0;
   while (index < argv.length) {
     const parsed = parseArg(argv, index, options);
@@ -475,6 +506,7 @@ export function buildPlan(options: CliOptions): HarnessPlan | Failure {
     notes: [
       "B-0967 is separate from B-0891; this harness does not test USB reformat retention.",
       "Dev excludes cilium, longhorn, and GPU model-serving app directories; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
+      "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; CONTAINER_RUNTIME remains a compatibility alias for the kind shell wrappers.",
     ],
   };
 }
@@ -637,7 +669,7 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
     return runOrFail(
       "env",
       [
-        `CONTAINER_RUNTIME=${options.runtime}`,
+        `ZETA_CONTAINER_RUNTIME=${options.runtime}`,
         "full-ai-cluster/dev-cluster/kind-up.sh",
         "--config",
         options.configPath,
