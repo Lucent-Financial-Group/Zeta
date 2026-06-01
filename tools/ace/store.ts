@@ -361,7 +361,7 @@ export function readRegistriesConfig(p: string = registriesPath()): RegistriesCo
     if (!r || typeof r !== "object") continue;
     const url = (r as { url?: unknown }).url;
     const key_id = (r as { key_id?: unknown }).key_id;
-    if (typeof url !== "string" || typeof key_id !== "string") continue; // key_id REQUIRED (Codex #6424 P1)
+    if (typeof url !== "string" || url === "" || typeof key_id !== "string" || !key_id.startsWith("ed25519:")) continue; // key_id REQUIRED + well-formed (Codex #6424 P1)
     const msd = (r as { max_staleness_days?: unknown }).max_staleness_days;
     remotes.push(typeof msd === "number" ? { url, key_id, max_staleness_days: msd } : { url, key_id });
   }

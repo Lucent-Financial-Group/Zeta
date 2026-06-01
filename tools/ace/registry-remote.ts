@@ -89,6 +89,7 @@ export function readCache(url: string): { meta: CacheMeta; body: string } | null
   try {
     const meta = JSON.parse(readFileSync(metaPath(url), "utf8")) as CacheMeta;
     if (typeof meta.index_content_hash !== "string") return null;
+    if (typeof meta.sequence_high_water !== "number" || !Number.isFinite(meta.sequence_high_water)) return null;
     const body = readFileSync(blobPath(meta.index_content_hash), "utf8");
     return { meta, body };
   } catch { return null; }

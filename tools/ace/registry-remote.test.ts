@@ -152,6 +152,15 @@ describe("fetchRemoteIndex", () => {
     globalThis.fetch = (async () => new Response(indexJson(kp, 2, now), { status: 200 })) as unknown as typeof fetch;
     expect("error" in await fetchRemoteIndex(remote, trust, { now })).toBe(true);
   });
+  test("future-dated cached body refused even offline (future-skew always enforced)", async () => {
+    const { writeCache } = await import("./registry-remote.ts");
+    const kp = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
+    const futureBody = indexJson(kp, 1, now + 10 * 60 * 1000); // 10 min future > 5 min skew
+    writeCache("https://x/index.json", futureBody, { sequence_high_water: 1 });
+    const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
+    const r = await fetchRemoteIndex({ url: "https://x/index.json", key_id: kp.keyId }, trust, { offline: true, now });
+    expect("error" in r).toBe(true);
+  });
 });
 
 import { loadRegistries } from "./registry-remote.ts";
@@ -188,5 +197,22 @@ describe("loadRegistries merge precedence", () => {
     const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
     const r = await loadRegistries({ trustStore: trust, now });
     expect(r.errors.length).toBe(1);
+  });
+  test("two remotes: first-listed wins on conflict (remote[0] > remote[1])", async () => {
+    const kp0 = gkp(), kp1 = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
+    const mkBody = (kp: typeof kp0, url: string) => {
+      const content = { format_version: 1 as const, sequence: 1, issued_at: new Date(now).toISOString(),
+        packages: { leaf: { "1.0.0": { url, package_hash: "sha256:xx" } } } };
+      return JSON.stringify({ ...content, signature: sidx(content, kp.privatePem) });
+    };
+    const body0 = mkBody(kp0, "https://R0/l.json"), body1 = mkBody(kp1, "https://R1/l.json");
+    globalThis.fetch = (async (u: string) => new Response(u === "https://r0/index.json" ? body0 : body1, { status: 200 })) as unknown as typeof fetch;
+    const { writeRegistryRemote } = await import("./store.ts");
+    writeRegistryRemote({ url: "https://r0/index.json", key_id: kp0.keyId }); // listed first
+    writeRegistryRemote({ url: "https://r1/index.json", key_id: kp1.keyId }); // listed second
+    const trust = new Map([[kp0.keyId, { public_key: kp0.publicSpkiB64 }], [kp1.keyId, { public_key: kp1.publicSpkiB64 }]]);
+    const r = await loadRegistries({ trustStore: trust, now });
+    expect(r.errors).toEqual([]);
+    expect(r.registry.get("leaf")!.get("1.0.0")!.url).toBe("https://R0/l.json");
   });
 });

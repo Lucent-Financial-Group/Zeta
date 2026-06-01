@@ -364,4 +364,14 @@ describe("remote-registry config", () => {
     expect(removeRegistryRemote("https://nope").removed).toBe(false);
   });
   test("cacheDir under ~/.ace", () => { expect(registryCacheDir()).toBe(join(home, ".ace", "registry-cache")); });
+  test("malformed key_id dropped (empty or wrong prefix)", () => {
+    const p = registriesPath();
+    require("node:fs").mkdirSync(require("node:path").dirname(p), { recursive: true });
+    require("node:fs").writeFileSync(p, JSON.stringify({ remotes: [
+      { url: "https://r/a", key_id: "" },
+      { url: "https://r/b", key_id: "notprefixed" },
+      { url: "https://r/c", key_id: "ed25519:ok" },
+    ] }));
+    expect(readRegistriesConfig().remotes).toEqual([{ url: "https://r/c", key_id: "ed25519:ok" }]);
+  });
 });
