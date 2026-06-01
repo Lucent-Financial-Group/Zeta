@@ -53,39 +53,40 @@ public static class IndexedZSet
         IEnumerable<KeyGroup<TKey, TValue>> groups,
         IComparer<TKey>? compareK = null,
         IComparer<TValue>? compareV = null)
-        where TKey : notnull
     {
         ArgumentNullException.ThrowIfNull(groups);
         var ck = compareK ?? Comparer<TKey>.Default;
         var cv = compareV ?? Comparer<TValue>.Default;
 
-        var merged = new Dictionary<TKey, ZSet<TValue>>();
-        var order = new List<TKey>();
-        foreach (var g in groups)
+        // Sort + merge adjacent equal-by-COMPARER keys (mirrors ZSet.Canonicalize) — never key by
+        // TKey.Equals/GetHashCode, so the merge respects ck even when ck-equivalence differs from
+        // the type's default equality (Copilot P0, #6404).
+        var sorted = new List<KeyGroup<TKey, TValue>>(groups);
+        sorted.Sort((a, b) => ck.Compare(a.Key, b.Key));
+        var live = new List<KeyGroup<TKey, TValue>>(sorted.Count);
+        foreach (var g in sorted)
         {
-            if (merged.TryGetValue(g.Key, out var prior))
+            if (live.Count > 0 && ck.Compare(live[^1].Key, g.Key) == 0)
             {
-                merged[g.Key] = prior.Union(g.Values);
+                live[^1] = new KeyGroup<TKey, TValue>(live[^1].Key, live[^1].Values.Union(g.Values));
             }
             else
             {
-                order.Add(g.Key);
-                merged[g.Key] = g.Values;
+                live.Add(g);
             }
         }
 
-        var live = new List<KeyGroup<TKey, TValue>>(order.Count);
-        foreach (var key in order)
+        // Drop any group whose values are empty (a supplied-empty group, or one cancelled by merge).
+        var final = ImmutableArray.CreateBuilder<KeyGroup<TKey, TValue>>(live.Count);
+        foreach (var g in live)
         {
-            var values = merged[key];
-            if (!values.IsEmpty)
+            if (!g.Values.IsEmpty)
             {
-                live.Add(new KeyGroup<TKey, TValue>(key, values));
+                final.Add(g);
             }
         }
 
-        live.Sort((a, b) => ck.Compare(a.Key, b.Key));
-        return new IndexedZSet<TKey, TValue>(live.ToImmutableArray(), ck, cv);
+        return new IndexedZSet<TKey, TValue>(final.ToImmutable(), ck, cv);
     }
 
     /// <summary>
@@ -108,7 +109,6 @@ public static class IndexedZSet
         Func<TSource, TValue> valOf,
         IComparer<TKey>? compareK = null,
         IComparer<TValue>? compareV = null)
-        where TKey : notnull
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(keyOf);
@@ -116,34 +116,38 @@ public static class IndexedZSet
         var ck = compareK ?? Comparer<TKey>.Default;
         var cv = compareV ?? Comparer<TValue>.Default;
 
-        var buckets = new Dictionary<TKey, List<(TValue Value, long Weight)>>();
-        var order = new List<TKey>();
+        // Extract (key, value, weight) triples, sort by COMPARER, then group adjacent equal-by-ck
+        // runs — never bucket by TKey.Equals/GetHashCode, so grouping respects ck (Copilot P0, #6404).
+        var triples = new List<(TKey Key, TValue Value, long Weight)>();
         foreach (var entry in source.ToImmutableArray())
         {
-            var k = keyOf(entry.Key);
-            var v = valOf(entry.Key);
-            if (!buckets.TryGetValue(k, out var bucket))
-            {
-                bucket = new List<(TValue, long)>();
-                buckets[k] = bucket;
-                order.Add(k);
-            }
-
-            bucket.Add((v, entry.Weight));
+            triples.Add((keyOf(entry.Key), valOf(entry.Key), entry.Weight));
         }
 
-        var live = new List<KeyGroup<TKey, TValue>>(order.Count);
-        foreach (var key in order)
+        triples.Sort((a, b) => ck.Compare(a.Key, b.Key));
+        var live = ImmutableArray.CreateBuilder<KeyGroup<TKey, TValue>>();
+        var i = 0;
+        while (i < triples.Count)
         {
-            var values = ZSet.OfEntries(buckets[key], cv);
+            var key = triples[i].Key;
+            var bucket = new List<(TValue, long)>();
+            var j = i;
+            while (j < triples.Count && ck.Compare(triples[j].Key, key) == 0)
+            {
+                bucket.Add((triples[j].Value, triples[j].Weight));
+                j++;
+            }
+
+            var values = ZSet.OfEntries(bucket, cv); // per-key sum + drop-zero by cv
             if (!values.IsEmpty)
             {
                 live.Add(new KeyGroup<TKey, TValue>(key, values));
             }
+
+            i = j;
         }
 
-        live.Sort((a, b) => ck.Compare(a.Key, b.Key));
-        return new IndexedZSet<TKey, TValue>(live.ToImmutableArray(), ck, cv);
+        return new IndexedZSet<TKey, TValue>(live.ToImmutable(), ck, cv);
     }
 }
 
@@ -416,7 +420,24 @@ public sealed class IndexedZSet<TKey, TValue> : IEquatable<IndexedZSet<TKey, TVa
     /// <returns><see langword="true"/> if both have the same groups in canonical order.</returns>
     public bool Equals(IndexedZSet<TKey, TValue>? other)
     {
-        if (other is null || _groups.Length != other._groups.Length)
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        // The comparers are part of identity (mirrors ZSet/Bag/GSet; keeps Equals symmetric +
+        // consistent with RequireSameComparers/Join, and with GetHashCode) — Copilot P0, #6404.
+        if (!_compareK.Equals(other._compareK) || !_compareV.Equals(other._compareV))
+        {
+            return false;
+        }
+
+        if (_groups.Length != other._groups.Length)
         {
             return false;
         }
@@ -442,7 +463,11 @@ public sealed class IndexedZSet<TKey, TValue> : IEquatable<IndexedZSet<TKey, TVa
     /// <returns>The hash code.</returns>
     public override int GetHashCode()
     {
+        // Consistent with Equals: comparers are part of identity, so fold them in (Copilot P0, #6404).
         var hash = default(HashCode);
+        hash.Add(_compareK);
+        hash.Add(_compareV);
+        hash.Add(_groups.Length);
         var keyEq = _compareK as IEqualityComparer<TKey>;
         foreach (var g in _groups)
         {

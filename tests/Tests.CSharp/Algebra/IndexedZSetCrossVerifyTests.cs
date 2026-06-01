@@ -36,7 +36,10 @@ public class IndexedZSetCrossVerifyTests
     private static JsonElement Fixture()
     {
         var path = Path.Join(RepoRoot(), "src", "Core.TypeScript", "indexed-z-set", "golden-vectors.json");
-        return JsonDocument.Parse(File.ReadAllText(path)).RootElement.Clone();
+        // Clone() detaches the element so it stays valid after dispose (CA2000, Copilot P1 #6404) —
+        // JsonDocument holds unmanaged buffers and must be disposed.
+        using var doc = JsonDocument.Parse(File.ReadAllText(path));
+        return doc.RootElement.Clone();
     }
 
     /// <summary>Parse a Z-set <c>[{ e, w }]</c> array as <c>(key, weight)</c> tuples.</summary>
