@@ -395,6 +395,19 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
       let pkg: AcePackage;
       try { pkg = JSON.parse(raw) as AcePackage; } catch { console.error("ace: registry add: package is not valid JSON"); return 65; }
+      // Shape guard before hashing: a parseable-but-malformed package (missing manifest/files)
+      // would otherwise produce a bogus hash / throw; refuse with a clean exit. Also verify the
+      // package identity matches the CLI name/version so a package cannot be registered under the
+      // wrong name (mirrors the resolver declared-identity check, caught here at add-time).
+      const pm = pkg as { manifest?: { name?: unknown; version?: unknown }; files?: unknown };
+      if (typeof pkg !== "object" || pkg === null || typeof pm.manifest !== "object" || pm.manifest === null || typeof pm.files !== "object" || pm.files === null) {
+        console.error("ace: registry add: package is not a well-formed AcePackage (missing manifest/files)");
+        return 65;
+      }
+      if (pm.manifest.name !== parsed.regName || pm.manifest.version !== parsed.regVersion) {
+        console.error(`ace: registry add: package identity ${String(pm.manifest.name)}@${String(pm.manifest.version)} != ${parsed.regName}@${parsed.regVersion}`);
+        return 65;
+      }
       pkgHash = packageHash(pkg);
     }
     const res = addRegistryEntry(parsed.regName!, parsed.regVersion!, { url: storedUrl, package_hash: pkgHash });

@@ -650,6 +650,20 @@ describe("registry commands", () => {
     expect(isAbsolute(stored!)).toBe(true);
     expect(stored).toBe(absPath);
   });
+  test("registry add refuses a parseable-but-malformed package (no manifest/files) with exit 65", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const p = join(dir, "bad.json");
+    writeFileSync(p, JSON.stringify({ foo: "bar" }));
+    expect(await main(["registry", "add", "X", "1.0.0", p])).toBe(65);
+  });
+  test("registry add refuses a package whose identity != the CLI name/version with exit 65", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string, string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const D = { manifest: { format_version: 1, name: "D", version: "1.0.0", content_hash: h({ "d.txt": "d" }) }, files: { "d.txt": "d" } };
+    const p = join(dir, "D.json");
+    writeFileSync(p, JSON.stringify(D));
+    expect(await main(["registry", "add", "WRONGNAME", "1.0.0", p])).toBe(65);
+  });
   test("e2e: install a root with a registry dep resolves via the registry", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
