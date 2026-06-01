@@ -32,13 +32,13 @@ describe("buildIndexDoc", () => {
   const issuedAt = "2026-06-01T12:00:00Z";
   test("assembles url + package_hash per package, signs, self-verifies", () => {
     const p = pkg("leaf", "1.0.0");
-    const doc = buildIndexDoc({ packages: [p as never], baseUrl: "https://pkgs", sequence: 3, issuedAt, privatePem: kp.privatePem });
+    const doc = buildIndexDoc({ packages: [p], baseUrl: "https://pkgs", sequence: 3, issuedAt, privatePem: kp.privatePem });
     expect("error" in doc).toBe(false);
     if ("error" in doc) return;
     expect(doc.sequence).toBe(3);
     expect(doc.issued_at).toBe(issuedAt);
     expect(doc.packages.leaf!["1.0.0"]!.url).toBe("https://pkgs/leaf-1.0.0.json");
-    expect(doc.packages.leaf!["1.0.0"]!.package_hash).toBe(packageHash(p as never));
+    expect(doc.packages.leaf!["1.0.0"]!.package_hash).toBe(packageHash(p));
     const reparsed = parseIndex(JSON.stringify(doc));
     expect("error" in reparsed).toBe(false);
     const info = publicKeyInfoFromPrivatePem(kp.privatePem);
@@ -47,16 +47,16 @@ describe("buildIndexDoc", () => {
   });
 
   test.each(["__proto__", "constructor", "prototype"])("rejects reserved package name %s", (bad) => {
-    const doc = buildIndexDoc({ packages: [pkg(bad, "1.0.0") as never], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
+    const doc = buildIndexDoc({ packages: [pkg(bad, "1.0.0")], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
     expect("error" in doc).toBe(true);
   });
   test("rejects reserved package version", () => {
-    const doc = buildIndexDoc({ packages: [pkg("ok", "__proto__") as never], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
+    const doc = buildIndexDoc({ packages: [pkg("ok", "__proto__")], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
     expect("error" in doc).toBe(true);
   });
 
   test("duplicate name@version → error", () => {
-    const doc = buildIndexDoc({ packages: [pkg("leaf", "1.0.0") as never, pkg("leaf", "1.0.0") as never], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
+    const doc = buildIndexDoc({ packages: [pkg("leaf", "1.0.0"), pkg("leaf", "1.0.0")], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
     expect("error" in doc).toBe(true);
   });
 });

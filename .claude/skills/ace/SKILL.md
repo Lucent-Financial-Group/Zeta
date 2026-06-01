@@ -242,8 +242,10 @@ ace registry publish --packages <dir> --base-url <url> --key <pem-path> [--out i
 - **`--base-url <url>`** — base URL of the registry. Each package's consumer
   `url` is derived as `<base-url>/<name>-<version>.json` and its `package_hash`
   is the `packageHash` of the canonical whole package (`{ manifest, files }`) — the same hash the consumer pins.
-- **`--key <pem-path>`** — path to the Ed25519 **private** key (PEM format, mode
-  0600). The index is signed with this key.
+- **`--key <pem-path>`** — path to the Ed25519 **private** key (PEM format). The index is signed
+  with this key. Recommended: restrict the key file so only you can read it
+  (e.g. `chmod 600` on POSIX); `publish` reads the key but does not enforce
+  its file permissions.
 - **`--out <file>`** — path to write the signed index JSON (default: `./index.json`).
 
 ### Sequence auto-bump
