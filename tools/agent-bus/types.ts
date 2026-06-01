@@ -56,6 +56,21 @@ export function isSafeSegment(seg: string): boolean {
   return /^[A-Za-z0-9._-]+$/.test(seg) && !seg.startsWith(".") && !seg.includes("..");
 }
 
+/**
+ * A canonical envelope timestamp is exactly `Date.toISOString()` output
+ * (`YYYY-MM-DDTHH:mm:ss.sssZ`). This guarantees lexical string order == time order, which
+ * the readers' compound `(timestamp, id)` cursor relies on — a non-ISO timestamp (e.g.
+ * `2026/05/31`) would sort wrong and break cursor progression (Copilot #6283).
+ */
+export function isCanonicalTimestamp(ts: string): boolean {
+  return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(ts);
+}
+
+/** A canonical bus id is 32 lowercase hex chars (`mintBusZetaIdHex` output). */
+export function isCanonicalBusId(id: string): boolean {
+  return /^[0-9a-f]{32}$/.test(id);
+}
+
 /** `<root>/<persona>/<YYYY>/<MM>/<DD>/<id>.json` (UTC date partition). */
 export function envelopePath(root: string, persona: string, id: string, at: Date = new Date()): string {
   if (!isSafeSegment(persona) || !isSafeSegment(id)) {

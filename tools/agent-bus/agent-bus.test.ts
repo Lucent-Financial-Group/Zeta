@@ -99,6 +99,9 @@ describe("writeEnvelope — G-Set CRDT semantics (atomic, no TOCTOU)", () => {
     const r = writeEnvelope(env({ id, timestamp: "2026-05-31T23:59:00.000Z" }), ROOT);
     expect(r.path).toBe(join(ROOT, "otto-cli", "2026", "05", "31", `${id}.json`));
   });
+  it("refuses to write an envelope with a malformed timestamp (no NaN/NaN/NaN path) — Copilot #6283", () => {
+    expect(() => writeEnvelope(env({ timestamp: "not-a-date" }), ROOT)).toThrow();
+  });
 });
 
 describe("readEnvelopesSince", () => {
@@ -159,6 +162,15 @@ describe("readEnvelopesSince", () => {
     mkdirSync(dirname(bad), { recursive: true });
     writeFileSync(bad, JSON.stringify({ topic: "shadow-catch", payload: { content: "no keys" } })); // no timestamp/id
     expect(readEnvelopesSince(ROOT)).toHaveLength(1); // the good one; schema-invalid skipped, no crash
+  });
+  it("skips an envelope whose timestamp isn't canonical ISO (would corrupt ordering) — Copilot #6283", () => {
+    writeEnvelope(env(), ROOT, at);
+    const id = "dddddddddddddddddddddddddddddddd";
+    const bad = join(ROOT, "otto-cli", "2026", "05", "31", `${id}.json`);
+    mkdirSync(dirname(bad), { recursive: true });
+    // valid JSON, has id + timestamp strings, but timestamp is non-ISO (sorts wrong)
+    writeFileSync(bad, JSON.stringify({ ...env({ id }), timestamp: "2026/05/31 12:00" }));
+    expect(readEnvelopesSince(ROOT)).toHaveLength(1); // good one only; non-ISO skipped
   });
 });
 

@@ -10,7 +10,15 @@
 import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { execFileSync } from "node:child_process";
-import { AGENT_BUS_ROOT, envelopePath, serializeEnvelope, makeEnvelope, type AgentBusEnvelope } from "./types";
+import {
+  AGENT_BUS_ROOT,
+  envelopePath,
+  serializeEnvelope,
+  makeEnvelope,
+  isCanonicalTimestamp,
+  isCanonicalBusId,
+  type AgentBusEnvelope,
+} from "./types";
 import { SENDER_IDS, AGENT_IDS, TTL_MS, type AgentId, type SenderAgentId, type BusMessage } from "../bus/types";
 
 export { makeEnvelope };
@@ -35,6 +43,14 @@ export function writeEnvelope(
   // a wall-clock `new Date()` would write a 2nd file for one id (Copilot #6283).
   at: Date = new Date(env.timestamp),
 ): WriteResult {
+  // Guard the path-determining fields: a malformed timestamp would default `at` to an
+  // Invalid Date and write under NaN/NaN/NaN; a non-32-hex id breaks the dedup key
+  // (Copilot #6283). Refuse loudly rather than write a broken path.
+  if (!isCanonicalTimestamp(env.timestamp) || !isCanonicalBusId(env.id)) {
+    throw new Error(
+      `agent-bus: refusing to write malformed envelope (timestamp=${JSON.stringify(env.timestamp)}, id=${JSON.stringify(env.id)})`,
+    );
+  }
   const path = envelopePath(root, env.from, env.id, at);
   const content = serializeEnvelope(env);
   mkdirSync(dirname(path), { recursive: true });

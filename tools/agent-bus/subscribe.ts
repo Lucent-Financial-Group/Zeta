@@ -11,7 +11,7 @@
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
-import { AGENT_BUS_ROOT, type AgentBusEnvelope } from "./types";
+import { AGENT_BUS_ROOT, isCanonicalTimestamp, isCanonicalBusId, type AgentBusEnvelope } from "./types";
 import type { AgentId } from "../bus/types";
 
 /**
@@ -23,10 +23,22 @@ export function envelopeCursor(env: AgentBusEnvelope): string {
   return `${env.timestamp}|${env.id}`;
 }
 
-/** A parsed value is a usable envelope only if its ordering keys are present strings. */
+/**
+ * A parsed value is a usable envelope only if its ordering keys are present AND
+ * well-formed: timestamp a canonical ISO string (so lexical sort == time sort) and id a
+ * 32-hex (the deterministic tiebreak). typeof-string alone isn't enough — one malformed
+ * timestamp/id would corrupt ordering + cursor progression for everyone (Copilot #6283).
+ */
 function isReadableEnvelope(v: unknown): v is AgentBusEnvelope {
   const e = v as Partial<AgentBusEnvelope> | null;
-  return !!e && typeof e === "object" && typeof e.timestamp === "string" && typeof e.id === "string";
+  return (
+    !!e &&
+    typeof e === "object" &&
+    typeof e.timestamp === "string" &&
+    isCanonicalTimestamp(e.timestamp) &&
+    typeof e.id === "string" &&
+    isCanonicalBusId(e.id)
+  );
 }
 
 /** A subscriber sees envelopes addressed to it or broadcast to `*`; no recipient = all. */
