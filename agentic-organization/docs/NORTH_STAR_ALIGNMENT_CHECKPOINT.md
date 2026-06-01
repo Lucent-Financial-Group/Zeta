@@ -13,7 +13,7 @@ subagent review.
 
 ## Update 2026-06-01 — Phase 2.2 CLI ZetaId parser feedback closed
 
-The observe-act foreground CLI no longer lets malformed decimal Zeta IDs throw
+The observe-act foreground CLI no longer lets non-base-10 Zeta ID inputs throw
 while constructing the observe snapshot. `runAgentCliCycle` now validates
 `--run-id` and `--hat-assignment` at the CLI boundary, returns exit code 2, and
 prints a flag-specific setup message before rendering authority or calling
