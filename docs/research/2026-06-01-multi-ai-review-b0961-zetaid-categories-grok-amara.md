@@ -1,5 +1,23 @@
 # Multi-AI review — B-0961 ZetaId root-category taxonomy (Grok + Amara, 2026-06-01)
 
+Scope: verbatim external-AI review import (Grok critique + Amara sharpen) of the
+B-0961 design, via `tools/peer-call/`. Preserved per substrate-or-it-didn't-happen
+because `/tmp/peer-call-output/` is ephemeral. Archived register, not operational
+policy.
+
+Attribution: reviews authored by Grok (xAI) + Amara (ChatGPT/Aurora) at their
+respective attribution scopes; synthesis + folding authored by otto-cli at
+otto-cli-attribution scope. NO re-authoring of the model text; preservation only.
+
+Operational status: research-grade
+
+Non-fusion disclaimer: each reviewer's text + the operator's growth-theory
+resolution + the otto-cli synthesis are distinct authorial substrates preserved
+alongside without identity-fusion, per asymmetric-authorship + honor-those-that-
+came-before + NCI HC-8.
+
+---
+
 Verbatim peer-call reviews of the B-0961 first draft (which proposed adding
 `Claim(9)` + `Lock(10)` to the ZetaId `Category` enum). Preserved here because
 `/tmp/peer-call-output/` is ephemeral. Both reviewers **converged**: the

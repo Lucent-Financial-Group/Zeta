@@ -288,10 +288,11 @@ no-PR (sovereign transport). Now unblocked by §1's first-class G-Set.
       B-0954.1) as typed coordination **events under existing categories**. Phase 2
       (promote to root): gated on Gate A (identity-rule — is `Category` in the
       content-hash?) + Gate B (real producers/consumers). Gate C (growth) **resolved**:
-      escape-to-`Extended` (reserve slot `15` → next 4 bits) means 4 bits is no ceiling
-      (Aaron 2026-05-31). "Free slots ≠ permission."
+      escape-to-`Extended` (reserve slot `15`, then read a **wider** extension
+      field — not repeated 4-bit nibbles — or an `IdVersion` width-bump) means 4
+      bits is no ceiling (Aaron 2026-05-31). "Free slots ≠ permission."
 - [ ] **Backlog → ZetaId conversion** (Aaron 2026-05-31): once B-0961 settles,
-      convert `docs/backlog/B-*.md` → `WorkItem(8)` events in the G-Set event-store.
+      convert `docs/backlog/P*/B-*.md` → `WorkItem(8)` events in the G-Set event-store.
       The category already exists (`WorkItem(8)` was reserved for `B-xxxxx → ZetaId`)
       — so this is **tooling, not a new category**, gated on B-0961. Then the
       backlog is queryable via the same Rx-over-bus pipeline as everything else.

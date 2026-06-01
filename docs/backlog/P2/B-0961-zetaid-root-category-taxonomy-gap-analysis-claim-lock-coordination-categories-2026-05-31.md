@@ -4,6 +4,7 @@ title: ZetaId root-category taxonomy — gap analysis + DEFERRAL (model Claim/Lo
 status: open
 priority: P2
 created: 2026-05-31
+last_updated: 2026-05-31
 author: otto-cli
 composes_with:
   - B-0959 # sovereign-DB lane master (this is the coordination-category slice)
@@ -53,8 +54,8 @@ The full verbatim reviews are preserved at
 ## §1 Two findings that survive unchanged
 
 1. **Backlog-conversion is already covered.** `WorkItem(8)` was reserved
-   _explicitly_ for `B-xxxxx → ZetaId migration`. Converting `docs/backlog/B-*.md`
-   into ZetaId-keyed events needs the conversion **tooling** (parse each `B-*.md`
+   _explicitly_ for `B-xxxxx → ZetaId migration`. Converting `docs/backlog/P*/B-*.md`
+   into ZetaId-keyed events needs the conversion **tooling** (parse each `P*/B-*.md`
    → one `WorkItem` event), not a new category — tracked under B-0959.
    _(Review caveat: `WorkItem(8)` is itself an umbrella — bugs, epics, converted
    B-rows — which is the same category-smell this row guards against. If a router
