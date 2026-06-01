@@ -111,6 +111,8 @@ never written to disk):
      (record signer).
    - `signature` present but crypto-invalid → **hard refuse** (exit 1):
      `ace: install refused: bad signature`. **Not overridable.**
+   - `signature` present but `algo` is not `ed25519` → **hard refuse** (exit 1):
+     `ace: install refused: unsupported signature algorithm`. **Not overridable** — the algorithm is pinned verifier-side (algorithm-confusion / JWT-`alg:none` defense).
    - `signature` present but `key_id` not trusted → **hard refuse** (exit 1):
      `ace: install refused: signature from untrusted key <key_id> (ace trust add to trust it)`.
      **Not overridable** — `--allow-no-signature` does NOT apply to a present signature.
@@ -124,7 +126,7 @@ never written to disk):
    - unsigned+allowed → the slice-2 line: `ace: integrity-verified (content hash). NOT authenticity-verified (--allow-no-signature).`
 
 `verifySignature(manifest, trustStore)` is **pure**: returns
-`{ ok: true, key_id, label }` or `{ ok: false, reason: "no-signature" | "untrusted-key" | "bad-signature" }`. The enforcement *policy* (which reasons refuse-always vs which the `--allow-no-signature` flag may override — **only `no-signature`**) lives in `ace.ts`, not in the crypto.
+`{ ok: true, key_id, label }` or `{ ok: false, reason: "no-signature" | "untrusted-key" | "bad-signature" | "unsupported-algo" }`. The enforcement *policy* (which reasons refuse-always vs which the `--allow-no-signature` flag may override — **only `no-signature`**) lives in `ace.ts`, not in the crypto.
 
 ## 7. Module boundaries
 

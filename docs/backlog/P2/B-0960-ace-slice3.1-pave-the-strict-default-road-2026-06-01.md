@@ -75,9 +75,7 @@ The default stays strict (shipped in the slice-3 build PR). This row tracks the
 
 Key rotation/revocation/expiry; order-independent `content_hash`; guardian-AI
 oversight; minisign/sigstore interop (all per slice-3 design §10). Also the open
-operator resolved 2026-06-01: the install opt-out flag was RENAMED from `--allow-unsigned` to `--allow-no-signature` (clearer that it only covers genuinely-unsigned, never a present signature)
-— a CLI-contract decision deferred to the operator; the slice-3 build applied only
-the help-text gloss.
+operator resolved 2026-06-01: the install opt-out flag was RENAMED from `--allow-unsigned` to `--allow-no-signature` (clearer that it only covers genuinely-unsigned, never a present signature). The slice-3 cluster shipped the rename across code + tests + docs, not just a help-text gloss.
 
 ## Composes with
 

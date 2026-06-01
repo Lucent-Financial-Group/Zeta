@@ -306,6 +306,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     // parse as an SPKI DER, AND have asymmetricKeyType === "ed25519".
     // createPublicKey accepts RSA/EC SPKI too; a non-Ed25519 key can never
     // verify any Ace package signature and must be rejected early.
+    let canonicalB64: string;
     try {
       const der = Buffer.from(publicB64, "base64");
       if (der.length < 32) throw new Error("too short");
@@ -314,12 +315,18 @@ export async function main(argv: readonly string[]): Promise<number> {
         console.error(`ace: trust add: not an Ed25519 public key (got ${pub.asymmetricKeyType ?? "unknown"}) — only Ed25519 keys are accepted`);
         return 65;
       }
+      // Normalize to the canonical SPKI: createPublicKey accepts an SPKI with trailing
+      // bytes but re-exports the canonical 44-byte form. Compute key_id + store from the
+      // canonical bytes so trust-add's key_id matches what signManifest/verify derive
+      // (they hash the re-exported SPKI); a padded input would otherwise be stored under a
+      // key_id no signature ever presents -> that publisher's packages never authenticate.
+      canonicalB64 = (pub.export({ type: "spki", format: "der" }) as Buffer).toString("base64");
     } catch {
       console.error("ace: trust add: invalid Ed25519 public key (not a valid SPKI DER) -- check the .pub file or b64 string");
       return 65;
     }
-    const kid = keyId(publicB64);
-    const entry: { key_id: string; public_key: string; label?: string } = { key_id: kid, public_key: publicB64 };
+    const kid = keyId(canonicalB64);
+    const entry: { key_id: string; public_key: string; label?: string } = { key_id: kid, public_key: canonicalB64 };
     if (parsed.label !== undefined) entry.label = parsed.label;
     const res = addTrustedKey(entry);
     console.log(res.added ? `ace: trusted ${kid}${parsed.label ? " (" + parsed.label + ")" : ""} [${inputForm}]` : `ace: ${kid} already trusted`);

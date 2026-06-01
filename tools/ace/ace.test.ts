@@ -2,9 +2,9 @@ import { describe, expect, test, beforeEach, afterEach } from "bun:test";
 import { chmodSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync, closeSync, openSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { generateKeyPairSync } from "node:crypto";
+import { generateKeyPairSync, createHash } from "node:crypto";
 import { parseArgs, main } from "./ace.ts";
-import { listInstalled, contentHash } from "./store.ts";
+import { listInstalled, contentHash, listTrustedKeys } from "./store.ts";
 import { generateKeypair, signManifest } from "./signing.ts";
 
 // ---- Trust-path isolation: redirect ~/.ace to a temp dir in every test ----
@@ -449,6 +449,23 @@ describe("main", () => {
     writeFileSync(pubPath, JSON.stringify({ algo: "ec", key_id: "ec:test", public_key: spkiB64 }));
     const code = await main(["trust", "add", pubPath]);
     expect(code).toBe(65);
+  });
+
+  test("trust add normalizes a padded SPKI to the canonical key_id (not the padded bytes)", async () => {
+    // createPublicKey accepts an Ed25519 SPKI with trailing bytes but re-exports the
+    // canonical 44-byte form. trust add must store the CANONICAL key_id so it matches
+    // what signManifest/verify derive — else that publisher's packages never authenticate.
+    const { publicKey } = generateKeyPairSync("ed25519");
+    const canon = publicKey.export({ type: "spki", format: "der" }) as Buffer;
+    const padded = Buffer.concat([canon, Buffer.from([0, 0])]);
+    const canonKeyId = "ed25519:" + createHash("sha256").update(canon).digest("hex").slice(0, 16);
+    const paddedKeyId = "ed25519:" + createHash("sha256").update(padded).digest("hex").slice(0, 16);
+    expect(canonKeyId).not.toBe(paddedKeyId); // sanity: padded vs canonical differ
+    const code = await main(["trust", "add", padded.toString("base64")]);
+    expect(code).toBe(0);
+    const ids = listTrustedKeys().map((r) => r.key_id);
+    expect(ids).toContain(canonKeyId);      // stored under the canonical key_id
+    expect(ids).not.toContain(paddedKeyId); // NOT the raw padded bytes' id
   });
 
   // ---- install authenticity gate ----
