@@ -49,7 +49,7 @@ per node, identity-pinned by `package_hash`) and preflights path-safety + store-
 uniqueness BEFORE extracting anything — any failure installs nothing. Refusal reasons:
 `version-skew`, `tamper`, `pin-mismatch`, `bad-content-hash`, `bad-signature`,
 `untrusted-key`, `unsupported-algo`, `no-signature`, `cycle`, `fetch-failed`,
-`invalid-package`, `store-collision`, `registry-miss`, `registry-unsatisfiable`.
+`invalid-package`, `store-collision`, `registry-miss`, `unsatisfiable`.
 `--allow-no-signature` applies graph-wide
 (permits only genuinely-unsigned nodes; a bad/untrusted signature on any node always refuses).
 
@@ -74,7 +74,7 @@ Deferred to B-0970: `||` (OR ranges), hyphen ranges (`1.0.0 - 2.0.0`), pre-relea
 
 Inline edges stay exact-pinned by `package_hash` and are never registry-routed. An
 unsatisfiable range (no registry version matches any constraint) refuses with exit 1 and
-installs nothing (`registry-unsatisfiable` reason).
+installs nothing (`unsatisfiable` reason).
 
 ### `--print-resolution`
 

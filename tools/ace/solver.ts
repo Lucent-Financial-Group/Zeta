@@ -27,6 +27,14 @@ function parsePackage(json: string, url: string, path: string[]): AcePackage | {
 const depsOf = (pkg: AcePackage): ReadonlyArray<AceDependency> =>
   Array.isArray(pkg.manifest.dependencies) ? pkg.manifest.dependencies : [];
 
+/** A registry range constraint tagged with the decision that introduced it. `source` is one of:
+ *  "root" (the root seed), `name@version` (a registry version's transitive deps), or
+ *  `inline:<url>` (an inline package's transitive deps). The source tag is what makes constraint
+ *  accumulation retraction-aware: when a registry version is abandoned during repair, every
+ *  constraint it contributed is removed by source, so a version-dependent transitive dep no longer
+ *  over-constrains unrelated packages into a false `unsatisfiable`. */
+type TaggedRange = { range: Range; source: string };
+
 /** Highest registry version of `name` (newest-first) satisfying EVERY accumulated range, strictly
  *  below `belowExclusive` when given (the version a later constraint just ruled out — try lower).
  *  null = no candidate. */
@@ -48,25 +56,46 @@ function pickCandidate(
  * AND source; never registry-looked-up); registry edges contribute semver ranges solved against the
  * registry's versions. On EVERY new constraint the current assignment is re-validated (the load-bearing
  * correctness rule): a now-invalid assignment is repaired to its next-lower satisfying candidate, and
- * its replacement's transitive deps are re-explored. Never verifies hashes/signatures — that is
- * resolve()'s job (Task 5).
+ * its replacement's transitive deps are re-explored. When a registry version is abandoned during repair,
+ * every constraint it contributed is retracted by source (so a dropped version's deps cannot over-
+ * constrain unrelated packages into a false `unsatisfiable`). Never verifies hashes/signatures — that
+ * is resolve()'s job (Task 5).
  */
 export async function solve(root: AcePackage, fetchPackage: FetchPackage, registry: Registry): Promise<SolveResult> {
   const inlineFixed = new Map<string, string>();      // name -> inline version (authoritative; never registry-solved)
-  const constraints = new Map<string, Range[]>();     // name -> accumulated registry ranges (monotone: only added)
+  const constraints = new Map<string, TaggedRange[]>(); // name -> accumulated registry ranges, each tagged by source (retraction-aware: a source's constraints are dropped when its decision is abandoned/re-explored)
   const assigned = new Map<string, string>();         // name -> chosen registry version
   const cache = new Map<string, AcePackage>();         // "name@version" / "inline:<url>" -> pkg (fetch at most once)
   const toExplore = new Set<string>();                // registry names queued for a decision
-  const inlinePending = new Map<string, AcePackage>(); // inline pkgs whose deps still need exploring
+  const inlinePending = new Map<string, { pkg: AcePackage; source: string }>(); // inline pkgs whose deps still need exploring (source = inline:<url>)
 
-  const addConstraint = (name: string, r: Range): void => {
-    const arr = constraints.get(name); if (arr) arr.push(r); else constraints.set(name, [r]);
+  const addConstraint = (name: string, r: Range, source: string): void => {
+    const arr = constraints.get(name); if (arr) arr.push({ range: r, source }); else constraints.set(name, [{ range: r, source }]);
   };
 
-  /** Ingest a manifest's dependency edges. Inline edges fix the name (version + source) and fetch the
-   *  inline package for dep recursion; registry edges add a range constraint and queue the name.
+  /** Drop every accumulated constraint (across ALL names) contributed by `source`. Makes re-ingesting
+   *  a source idempotent (clear before re-add) and is the repair-path retraction for an abandoned
+   *  registry version. Never call with "root" — the root seed's constraints are permanent. */
+  const retractSource = (source: string): void => {
+    for (const [name, arr] of constraints) {
+      const kept = arr.filter((c) => c.source !== source);
+      if (kept.length !== arr.length) {
+        if (kept.length === 0) constraints.delete(name); else constraints.set(name, kept);
+      }
+    }
+  };
+
+  /** Accumulated registry ranges for `name`, without their source tags (for satisfaction checks). */
+  const rangesOf = (name: string): ReadonlyArray<Range> => (constraints.get(name) ?? []).map((c) => c.range);
+
+  /** Ingest a manifest's dependency edges under a given `source` tag (the decision contributing them:
+   *  "root", `name@version`, or `inline:<url>`). Ingest is idempotent per source: it first retracts
+   *  any constraints previously tagged with `source`, so re-exploring the same version does not
+   *  duplicate constraints. Inline edges fix the name (version + source) and fetch the inline package
+   *  for dep recursion; registry edges add a source-tagged range constraint and queue the name.
    *  Returns a failure or null. */
-  const ingest = async (deps: ReadonlyArray<AceDependency>, ownerPath: string[]): Promise<SolveResult | null> => {
+  const ingest = async (deps: ReadonlyArray<AceDependency>, ownerPath: string[], source: string): Promise<SolveResult | null> => {
+    retractSource(source); // idempotency: clear this source's prior constraints before re-adding
     for (const edge of deps) {
       const here = [...ownerPath, edge.name];
       const ek = (edge as { readonly kind?: unknown }).kind;
@@ -77,7 +106,7 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
       if (edge.kind === "registry") {
         const parsed = parseRange(edge.version);
         if ("error" in parsed) return { ok: false, reason: "bad-range", detail: `${edge.name}: ${parsed.error}`, path: here };
-        addConstraint(edge.name, parsed);
+        addConstraint(edge.name, parsed, source);
         // Inline-fixed names are authoritative: a registry range on them is a constraint the inline
         // pin must satisfy, not a name to solve.
         if (inlineFixed.has(edge.name)) {
@@ -97,30 +126,32 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
       if (inlineFixed.has(edge.name)) continue; // already pinned inline (diamond dedup on inline source)
       inlineFixed.set(edge.name, edge.version);
       // Any registry ranges already accumulated for this name must be satisfied by the inline pin.
-      for (const r of constraints.get(edge.name) ?? []) {
+      for (const r of rangesOf(edge.name)) {
         if (!satisfies(edge.version, r)) {
           return { ok: false, reason: "unsatisfiable", detail: `${edge.name}@${edge.version} (inline) violates an accumulated registry range`, path: here };
         }
       }
       toExplore.delete(edge.name);    // inline pin wins; never registry-solve this name
+      const droppedReg = assigned.get(edge.name);
+      if (droppedReg !== undefined) retractSource(`${edge.name}@${droppedReg}`); // drop the abandoned registry version's contributed constraints
       assigned.delete(edge.name);     // drop any prior registry assignment (inline is authoritative)
-      const cacheKey = `inline:${edge.url}`;
-      let dep = cache.get(cacheKey);
+      const inlineSource = `inline:${edge.url}`;
+      let dep = cache.get(inlineSource);
       if (dep === undefined) {
         let json: string;
         try { json = await fetchPackage(edge.url); }
         catch (e) { return { ok: false, reason: "fetch-failed", detail: `${edge.url}: ${(e as Error).message}`, path: here }; }
         const p = parsePackage(json, edge.url, here);
         if ("fail" in p) return p.fail;
-        dep = p; cache.set(cacheKey, dep);
+        dep = p; cache.set(inlineSource, dep);
       }
-      inlinePending.set(edge.name, dep);
+      inlinePending.set(edge.name, { pkg: dep, source: inlineSource });
     }
     return null;
   };
 
   // 1) Seed from the root's deps.
-  const seedFail = await ingest(depsOf(root), ["root"]);
+  const seedFail = await ingest(depsOf(root), ["root"], "root");
   if (seedFail) return seedFail;
 
   // 2) Fixed-point loop: explore inline-pending packages, then make/repair registry assignments,
@@ -134,9 +165,9 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
     // 2a) Explore inline-pending packages first — their edges feed the constraint set.
     if (inlinePending.size > 0) {
       const name = [...inlinePending.keys()].sort()[0]!;
-      const pkg = inlinePending.get(name)!;
+      const { pkg, source } = inlinePending.get(name)!;
       inlinePending.delete(name);
-      const f = await ingest(depsOf(pkg), ["root", name]);
+      const f = await ingest(depsOf(pkg), ["root", name], source);
       if (f) return f;
       continue;
     }
@@ -148,7 +179,7 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
     for (const name of candidates) {
       if (inlineFixed.has(name)) continue; // inline-fixed names are never registry-solved
       const cur = assigned.get(name);
-      const ranges = constraints.get(name) ?? [];
+      const ranges = rangesOf(name);
       if (cur === undefined) { target = name; break; }                          // unassigned → decide
       if (!ranges.every((r) => satisfies(cur, r))) { target = name; break; }    // invalidated → repair
     }
@@ -158,7 +189,7 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
     if (!registry.has(target)) {
       return { ok: false, reason: "registry-miss", detail: `${target} not found in registry`, path: ["root", target] };
     }
-    const ranges = constraints.get(target) ?? [];
+    const ranges = rangesOf(target);
     const prev = assigned.get(target);
     // Repairing an invalidated assignment: try strictly below the version that was ruled out.
     const belowExclusive = prev !== undefined && !ranges.every((r) => satisfies(prev, r)) ? prev : null;
@@ -167,6 +198,11 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
       return { ok: false, reason: "unsatisfiable", detail: `${target}: no version satisfies all accumulated ranges`, path: ["root", target] };
     }
     if (pick === prev) { toExplore.delete(target); continue; } // already at the valid pick; just clear the queue
+
+    // Abandoning `target@prev` (repair to a different version): retract every constraint that the
+    // dropped version contributed, so its transitive deps stop over-constraining unrelated packages
+    // (the P1 false-unsatisfiable fix). The fixed-point loop then re-converges on the retracted set.
+    if (prev !== undefined) retractSource(`${target}@${prev}`);
 
     // Assign, then fetch + explore the chosen version's deps (which may add constraints → trigger 2b repairs).
     assigned.set(target, pick);
@@ -182,7 +218,8 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
       if ("fail" in p) return p.fail;
       dep = p; cache.set(cacheKey, dep);
     }
-    const f = await ingest(depsOf(dep), ["root", target]);
+    // Ingest under the chosen version's source tag (idempotent: clears `target@pick` first).
+    const f = await ingest(depsOf(dep), ["root", target], cacheKey);
     if (f) return f;
   }
 

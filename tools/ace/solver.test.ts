@@ -109,3 +109,31 @@ describe("solve — determinism", () => {
     if (r1.ok && r2.ok) expect([...r1.versions].sort()).toEqual([...r2.versions].sort());
   });
 });
+describe("solve — constraint retraction on backtrack (P1 regression)", () => {
+  test("stale constraint from an abandoned version is retracted (registry-availability variant)", async () => {
+    const A1 = pkgAt("A", "1.0.0");                                   // no deps
+    const A2 = pkgAt("A", "2.0.0", [regEdge("C", ">=2.0.0")]);        // version-dependent dep
+    const B1 = pkgAt("B", "1.0.0", [regEdge("A", "<2.0.0")]);
+    const C1 = pkgAt("C", "1.0.0");
+    const { registry, fetch } = world([
+      { pkg: A1, url: "u/A/1" }, { pkg: A2, url: "u/A/2" }, { pkg: B1, url: "u/B/1" }, { pkg: C1, url: "u/C/1" },
+    ]);
+    const root = pkgAt("root", "1.0.0", [regEdge("A", "*"), regEdge("B", "*"), regEdge("C", "*")]);
+    const r = await solve(root, fetch, registry);
+    expect(r.ok).toBe(true);
+    if (r.ok) { expect(r.versions.get("A")).toBe("1.0.0"); expect(r.versions.get("B")).toBe("1.0.0"); expect(r.versions.get("C")).toBe("1.0.0"); }
+  });
+  test("stale constraint from an abandoned version is retracted (peer-conflict variant)", async () => {
+    const A1 = pkgAt("A", "1.0.0");
+    const A2 = pkgAt("A", "2.0.0", [regEdge("C", ">=2.0.0")]);
+    const B1 = pkgAt("B", "1.0.0", [regEdge("A", "<2.0.0"), regEdge("C", "<2.0.0")]);
+    const C1 = pkgAt("C", "1.0.0"); const C2 = pkgAt("C", "2.0.0");
+    const { registry, fetch } = world([
+      { pkg: A1, url: "u/A/1" }, { pkg: A2, url: "u/A/2" }, { pkg: B1, url: "u/B/1" }, { pkg: C1, url: "u/C/1" }, { pkg: C2, url: "u/C/2" },
+    ]);
+    const root = pkgAt("root", "1.0.0", [regEdge("A", "*"), regEdge("B", "*"), regEdge("C", "*")]);
+    const r = await solve(root, fetch, registry);
+    expect(r.ok).toBe(true);
+    if (r.ok) { expect(r.versions.get("A")).toBe("1.0.0"); expect(r.versions.get("C")).toBe("1.0.0"); }
+  });
+});
