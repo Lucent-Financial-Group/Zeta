@@ -258,3 +258,36 @@ let ``serialize declines an expression past the v1 maximum nesting depth with To
             | Bonsai.TooDeep _ -> true
             | _ -> false)
     )
+
+// ---- total contract: no exception escapes serialize/parse, even on CLR null ----
+
+[<Fact>]
+let ``serialize declines a null string field with ExpectedString (no NRE)`` () =
+    // A CLR caller can construct Param null directly (the DU permits it).
+    let nullName: string = null
+    Assert.True(
+        Bonsai.serialize (Bonsai.Param nullName)
+        |> isErr (function
+            | Bonsai.ExpectedString _ -> true
+            | _ -> false)
+    )
+
+[<Fact>]
+let ``serialize declines a null const string value with ExpectedString`` () =
+    let nullVal: string = null
+    Assert.True(
+        Bonsai.serialize (Bonsai.Const(Bonsai.CStr nullVal))
+        |> isErr (function
+            | Bonsai.ExpectedString _ -> true
+            | _ -> false)
+    )
+
+[<Fact>]
+let ``parse declines null input with MalformedJson (no ArgumentNullException)`` () =
+    let nullInput: string = null
+    Assert.True(
+        Bonsai.parse nullInput
+        |> isErr (function
+            | Bonsai.MalformedJson _ -> true
+            | _ -> false)
+    )

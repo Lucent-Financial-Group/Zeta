@@ -171,6 +171,12 @@ module Bonsai =
     /// unpaired UTF-16 surrogate as lowercase \uXXXX (a valid surrogate pair is
     /// emitted literally, as JSON.stringify does, so the bytes stay valid UTF-8).
     let private jsonString (s: string) : string =
+        if isNull s then
+            // A CLR caller can construct an Expr with a null string field
+            // (Param null / CStr null / null call fn / null lambda param);
+            // decline cleanly instead of NRE-ing here, keeping serialize total.
+            raise (BonsaiFail(ExpectedString "null string field"))
+
         let sb = StringBuilder(s.Length + 2)
         sb.Append('"') |> ignore
         let mutable i = 0
@@ -330,6 +336,7 @@ module Bonsai =
                 | Ok round -> if round = s then Ok node else Error NonCanonical
         with
         | BonsaiFail f -> Error f
+        | :? System.ArgumentNullException -> Error(MalformedJson "input was null")
         | :? JsonException as ex -> Error(MalformedJson ex.Message)
         | :? KeyNotFoundException -> Error(MalformedJson "missing required property")
         | :? System.InvalidOperationException as ex -> Error(MalformedJson ex.Message)
