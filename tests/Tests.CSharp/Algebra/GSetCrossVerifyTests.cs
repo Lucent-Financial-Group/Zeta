@@ -35,7 +35,10 @@ public class GSetCrossVerifyTests
     }
 
     private static string[] Strings(JsonElement array) =>
-        array.EnumerateArray().Select(e => e.GetString()!).ToArray();
+        array.EnumerateArray()
+            .Select(e => e.GetString()
+                ?? throw new InvalidOperationException($"fixture element is not a string: {e.GetRawText()}"))
+            .ToArray();
 
     [Fact]
     public void GSetReplayMatchesGoldenVectors()
@@ -87,24 +90,25 @@ public class GSetCrossVerifyTests
     }
 
     [Fact]
-    public void UnionRecanonicalizesAMismatchedComparer()
+    public void UnionThrowsOnMismatchedComparer()
     {
-        // `other` built with a REVERSE comparer is stored descending; union under the
-        // ordinal set must recanonicalize it (PR review 2026-06-01) so the result stays
-        // canonical-ascending and binary-search Contains stays correct.
+        // The comparer is part of a set's identity; unioning across different comparers is
+        // a programming error (it would break commutativity), surfaced loudly rather than
+        // silently recanonicalized (PR review 2026-06-01).
         var ordinal = StringComparer.Ordinal;
         var reverse = Comparer<string>.Create((x, y) => string.CompareOrdinal(y, x));
 
         string[] aItems = ["a", "b"];
-        string[] otherItems = ["c", "a"]; // stored descending under the reverse comparer
+        string[] otherItems = ["c", "a"];
         string[] expected = ["a", "b", "c"];
 
         var a = GSet.OfSeq(aItems, ordinal);
-        var other = GSet.OfSeq(otherItems, reverse);
+        var otherReverse = GSet.OfSeq(otherItems, reverse);
+        Assert.Throws<ArgumentException>(() => a.Union(otherReverse));
 
-        var merged = a.Union(other);
-        Assert.Equal(expected, merged.ToArray()); // canonical ascending
-        Assert.True(merged.Contains("a")); // binary search works on the canonical run
-        Assert.True(merged.Contains("c"));
+        // Same comparer still unions cleanly + symmetric Equals holds.
+        var otherOrdinal = GSet.OfSeq(otherItems, ordinal);
+        Assert.Equal(GSet.OfSeq(expected, ordinal), a.Union(otherOrdinal));
+        Assert.False(GSet.OfSeq(aItems, ordinal).Equals(GSet.OfSeq(aItems, reverse))); // diff comparer ⇒ not equal
     }
 }

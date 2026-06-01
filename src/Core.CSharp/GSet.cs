@@ -135,14 +135,11 @@ public sealed class GSet<T> : IEquatable<GSet<T>>
     {
         ArgumentNullException.ThrowIfNull(other);
 
-        // If `other` was built with a different comparer, its run is not sorted under
-        // THIS set's comparer — recanonicalize before the linear merge (which assumes
-        // both runs are sorted under _comparer, else it can emit a non-canonical run
-        // and break later binary-search Contains). Fast path: same comparer instance.
-        if (!ReferenceEquals(_comparer, other._comparer))
-        {
-            other = new GSet<T>(GSet.Canonicalize(other._items, _comparer), _comparer);
-        }
+        // The comparer is part of a set's identity: two sets with different comparers are
+        // not union-compatible. Silently recanonicalizing would break commutativity
+        // (a∪b under a's order ≠ b∪a under b's order), so fail fast on mismatch
+        // (PR review 2026-06-01). Same comparer ⇒ both runs are sorted alike ⇒ linear merge.
+        RequireSameComparer(other);
 
         if (_items.IsEmpty)
         {
@@ -200,6 +197,18 @@ public sealed class GSet<T> : IEquatable<GSet<T>>
     public GSet<T> Add(T x) =>
         Contains(x) ? this : Union(new GSet<T>(ImmutableArray.Create(x), _comparer));
 
+    /// <summary>Throw if <paramref name="other"/> uses a different comparer (the comparer is part of the set's identity).</summary>
+    /// <param name="other">The set being combined.</param>
+    private void RequireSameComparer(GSet<T> other)
+    {
+        if (!_comparer.Equals(other._comparer))
+        {
+            throw new ArgumentException(
+                "GSet.Union requires both sets to use the same comparer (the comparer is part of the set's identity).",
+                nameof(other));
+        }
+    }
+
     /// <summary>The canonical (ascending) elements as an immutable array.</summary>
     /// <returns>The canonical run.</returns>
     public ImmutableArray<T> ToImmutableArray() => _items;
@@ -226,6 +235,14 @@ public sealed class GSet<T> : IEquatable<GSet<T>>
             return true;
         }
 
+        // The comparer is part of the set's identity: sets with different comparers are
+        // not equal. Keeps Equals symmetric (a.Equals(b) == b.Equals(a)) and keeps
+        // GetHashCode consistent. (PR review 2026-06-01.)
+        if (!_comparer.Equals(other._comparer))
+        {
+            return false;
+        }
+
         if (_items.Length != other._items.Length)
         {
             return false;
@@ -248,12 +265,13 @@ public sealed class GSet<T> : IEquatable<GSet<T>>
     /// <inheritdoc/>
     public override int GetHashCode()
     {
-        // The hash must follow the SAME equivalence relation as Equals (which compares
-        // under _comparer). When the comparer is also an equality comparer (e.g.
-        // StringComparer.Ordinal), hash each element through it; otherwise fall back to
-        // the count alone — weaker spread, but still consistent with comparer-based
-        // equality (equal sets share a count), so GSet stays a valid dictionary key.
+        // Consistent with Equals (which includes the comparer in identity): hash the
+        // comparer + the elements. When the comparer is also an equality comparer (e.g.
+        // StringComparer.Ordinal) hash each element through it so Compare==0 values hash
+        // alike; otherwise count-only for the element part (still consistent with the
+        // comparer-based Equals). (PR review 2026-06-01.)
         var hash = default(HashCode);
+        hash.Add(_comparer);
         hash.Add(_items.Length);
         if (_comparer is IEqualityComparer<T> eq)
         {
