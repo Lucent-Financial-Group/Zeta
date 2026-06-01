@@ -16,7 +16,7 @@
 // Future commands (not yet implemented): remove, inspect.
 
 import { chmodSync, existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { createPublicKey } from "node:crypto";
+import { createPublicKey, createPrivateKey } from "node:crypto";
 import {
   defaultStorePath, listInstalled, installPackage, contentHash,
   loadTrustStore, addTrustedKey, listTrustedKeys, validatePackagePaths,
@@ -537,6 +537,13 @@ export async function main(argv: readonly string[]): Promise<number> {
       let pem: string;
       try { pem = readFileSync(parsed.pubKeyPath!, "utf8"); }
       catch (e) { console.error(`ace: publish: cannot read key ${parsed.pubKeyPath}: ${(e as Error).message}`); return 1; }
+      // P2-A: a non-Ed25519 key (RSA/EC) would sign + self-verify but the index claims algo:"ed25519",
+      // so consumers reject it. Refuse non-ed25519 (and malformed) keys here, before building the index.
+      try {
+        if (createPrivateKey(pem).asymmetricKeyType !== "ed25519") {
+          console.error("ace: publish refused: --key must be an ed25519 private key"); return 1;
+        }
+      } catch (e) { console.error(`ace: publish refused: invalid private key: ${(e as Error).message}`); return 1; }
       let entries: string[];
       try { entries = readdirSync(parsed.pubPackagesDir!).filter((f) => f.endsWith(".json")); }
       catch (e) { console.error(`ace: publish: cannot read dir ${parsed.pubPackagesDir}: ${(e as Error).message}`); return 1; }
@@ -552,13 +559,27 @@ export async function main(argv: readonly string[]): Promise<number> {
           || typeof (obj as AcePackage).files !== "object" || (obj as AcePackage).files === null) {
           console.error(`ace: publish: skip non-package ${f}`); continue;
         }
+        // P2-C: a package whose content_hash is missing or does not match its files would be indexed
+        // but fail the consumer's content-hash gate. Skip + warn (consistent with the non-package skip).
+        if (typeof (obj as AcePackage).manifest.content_hash !== "string") {
+          console.error(`ace: publish: skip ${f} — missing manifest.content_hash`); continue;
+        }
+        const fh = contentHash(new TextEncoder().encode(JSON.stringify((obj as AcePackage).files)));
+        if (fh !== (obj as AcePackage).manifest.content_hash) {
+          console.error(`ace: publish: skip ${f} — content_hash does not match files`); continue;
+        }
         packages.push(obj as AcePackage);
       }
       if (packages.length === 0) { console.error(`ace: publish refused: no valid packages in ${parsed.pubPackagesDir}`); return 1; }
       const outPath = parsed.pubOut ?? "index.json";
       let prev: IndexDoc | null = null;
       if (existsSync(outPath)) {
-        try { const p = parseIndex(readFileSync(outPath, "utf8")); if (!("error" in p)) prev = p; } catch { /* no prev */ }
+        let prevRaw: string;
+        try { prevRaw = readFileSync(outPath, "utf8"); }
+        catch (e) { console.error(`ace: publish refused: cannot read existing ${outPath}: ${(e as Error).message}`); return 1; }
+        const p = parseIndex(prevRaw);
+        if ("error" in p) { console.error(`ace: publish refused: existing ${outPath} is not a valid index (${p.error}) — refusing to reset sequence (would look like a rollback to consumers); remove or fix it`); return 1; }
+        prev = p;
       }
       const seq = nextSequence(prev);
       // Anti-rollback guard (defense-in-depth): unreachable while sequence is auto-bumped (+1),

@@ -1419,4 +1419,44 @@ describe("ace registry publish (slice 6.1)", () => {
     expect(code).toBe(1);
     expect(existsSyncLocal(outPath)).toBe(false);
   });
+
+  test("non-ed25519 key → publish refused (exit 1, no index)", async () => {
+    const { existsSync: existsLocal } = await import("node:fs");
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-rsa-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const rsa = generateKeyPairSync("rsa", { modulusLength: 2048 }).privateKey.export({ type: "pkcs8", format: "pem" }).toString();
+    const keyPath = join(tempHome, "rsa.pem"); writeFileSync(keyPath, rsa);
+    const outPath = join(tempHome, "rsa-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(1);
+    expect(existsLocal(outPath)).toBe(false);
+  });
+
+  test("existing unparseable --out → publish refused (no rollback reset)", async () => {
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-corrupt-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const keyPath = join(tempHome, "ck.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "corrupt-index.json"); writeFileSync(outPath, "{ truncated");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(1);
+  });
+
+  test("package with mismatched content_hash is skipped (not indexed)", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-badhash-"));
+    writeSignedPkg(pkgDir, "good", "1.0.0");
+    // a package whose content_hash does NOT match files
+    const kp = generateKeypair();
+    const m = { format_version: 1, name: "bad", version: "1.0.0", content_hash: "sha256:deadbeef" };
+    const bad = { manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files: { "bad.txt": "x" } };
+    writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(bad));
+    const keyPath = join(tempHome, "bh.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "badhash-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    if (!("error" in doc)) { expect(doc.packages.good).toBeDefined(); expect(doc.packages.bad).toBeUndefined(); }
+  });
 });
