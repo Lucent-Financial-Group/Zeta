@@ -76,7 +76,8 @@ function assertCount(n: number): void {
  * stored. Two valid (safe-integer) counts can sum past `Number.MAX_SAFE_INTEGER`
  * — e.g. `MAX_SAFE_INTEGER + 2` rounds in JS — which would silently lose
  * precision where the int64 F#/C#/Rust oracles would not, so every summed count
- * (the `union` / `ofEntries` merge of a shared key) is guarded at the store.
+ * (the `union` / `ofEntries` merge of a shared key, and the `total` aggregate)
+ * is guarded.
  */
 function addCounts(a: number, b: number): number {
   const sum = a + b;
@@ -85,13 +86,15 @@ function addCounts(a: number, b: number): number {
 }
 
 /**
- * Ascending ordinal (UTF-16 code-unit) order — JS `<` on strings. This is the
- * canonical key comparator for the stack: it matches F# ordinal + C#
- * `StringComparer.Ordinal`, and for the BMP-non-surrogate keys the fixtures use
- * (ASCII `b-XXX`) it coincides with code-point order and a byte-ordered Rust
- * `Ord`, so all four oracles agree on those vectors. Astral-plane keys — where
- * UTF-16 code-unit order and Unicode code-point order diverge — are out of scope
- * for the v1 contract; pass an explicit code-point comparator if you need them.
+ * Ascending ordinal (UTF-16 code-unit) order — JS `<` on strings — matching
+ * C# `StringComparer.Ordinal` and a byte-ordered Rust `Ord`. NOTE the F# G-Set
+ * oracle currently sorts via `Comparer<'T>.Default` (`src/Core/GSet.fs`), which
+ * for `string` is CULTURE-SENSITIVE, not ordinal; it coincides with ordinal for
+ * the ASCII `b-XXX` fixture keys (where ordinal also equals code-point order),
+ * so all four oracles agree on those vectors — but moving F# to ordinal for true
+ * non-ASCII parity is a known gap. Astral-plane keys (UTF-16 code-unit
+ * vs Unicode code-point divergence) are out of scope for the v1 contract; pass
+ * an explicit code-point comparator if you need them.
  */
 export const stringCompare: Compare<string> = (a, b) => {
   if (a < b) return -1;
@@ -220,10 +223,10 @@ export function distinctCount<T>(g: Bag<T>): number {
   return g.length;
 }
 
-/** The sum of all multiplicities (the total count across keys). */
+/** The sum of all multiplicities (the total count across keys); throws if the sum overflows safe-integer range. */
 export function total<T>(g: Bag<T>): number {
   let s = 0;
-  for (const entry of g) s += entry.n;
+  for (const entry of g) s = addCounts(s, entry.n); // guarded: the running sum stays a safe integer
   return s;
 }
 

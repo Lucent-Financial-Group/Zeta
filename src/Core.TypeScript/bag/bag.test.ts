@@ -84,6 +84,11 @@ describe("Bag — canonicalization", () => {
     // a sum that stays safe is fine
     expect(toEntries(union(cmp, singleton("x", 2), singleton("x", 3)))).toEqual([entry("x", 5)]);
   });
+  it("total throws if the aggregate sum overflows safe-integer range", () => {
+    const b = bag(entry("a", Number.MAX_SAFE_INTEGER), entry("b", 1));
+    expect(() => total(b)).toThrow(RangeError);
+    expect(total(bag(entry("a", 2), entry("b", 3)))).toBe(5); // safe total is fine
+  });
 });
 
 describe("Bag — commutative-monoid laws (and NON-idempotence)", () => {
