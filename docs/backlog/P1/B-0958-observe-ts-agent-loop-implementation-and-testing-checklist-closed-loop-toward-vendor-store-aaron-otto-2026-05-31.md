@@ -83,6 +83,17 @@ only effectful seam; the folder sink is the sovereign transport. Full picture:
 - [ ] **`observe-loop` TS skill** — `.claude/skills/observe-loop/` packaging the four modules + a
       fresh-git-repo bootstrap procedure (per `zeta-ships-with-skills-immediate-value`). After the
       above are tested.
+- [ ] **4-language loop fan-out** — once the **TS loop APIs are stable** (the items above) AND
+      **golden-vectors ✓ in all 4** (TS/Rust/C#/F#, against the one canonical `golden-vectors.json`
+      oracle — DONE, the safe ground), build the observe loop in F#/C#/Rust on that locked oracle.
+      Don't build on shaky ground (Aaron 2026-05-31): golden-vectors first, then the loop. The
+      4-language fold (B-0867.28) is the proof the pattern works.
+- [ ] **F# dual-track backend — git-native + filesystem-binary-efficient** (Aaron 2026-05-31).
+      The EventSink today is folder-direct-to-main (git-native). The DB-design ADR's "two backends"
+      means the loop is backend-agnostic: a **git-native** sink AND a **filesystem binary-efficient**
+      sink. **F# carries the binary-efficient filesystem-native track first** (F# = the binary
+      backend per the DB-design ADR); as each track becomes not-shaky, **all 4 languages get the same
+      dual mode** (git-native + binary), F# leading the binary side.
 - [ ] **Vendor-agent-store distribution** — gated on all the above + "lots of testing" (Aaron).
 
 ## Composes with
