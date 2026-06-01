@@ -30,7 +30,7 @@ detour.
 | D3 | Version skew (same name, different version, in one graph) | **Strict-refuse** — hard error, install nothing. One name → one version per install graph. Easiest to relax later behind a flag. |
 | D4 | Same name + same version + different `package_hash` | **Always hard-refuse** (`tamper`) — two different packages cannot both be that declared identity. |
 | D5 | Diamond (same name + same version + same `package_hash` via multiple paths) | **Dedup** — visit/install once. Identical `package_hash` ⇒ byte-identical package (manifest+signature+files), so the already-verified node is safe to reuse. |
-| D6 | Atomicity | **Resolve+verify the whole graph, THEN preflight every node's file-path safety, THEN extract.** Any resolution / verification / preflight failure → install nothing. |
+| D6 | Atomicity | **Resolve+verify the whole graph, THEN preflight every node's file-path safety + store-key uniqueness, THEN extract.** Any resolution / verification / preflight failure → install nothing. |
 | D7 | Lockfile | **None this slice.** The manifest's inline pins already *are* the transitive lock. (Lockfile becomes relevant in slice 5, where a solver's output needs pinning.) |
 | D8 | Signature policy | Per-node slice-3 gate. A present-but-bad / untrusted / unsupported-algo signature on **any** node hard-refuses always. `--allow-no-signature` applies **graph-wide** and only permits nodes that carry **no** signature. |
 
@@ -155,7 +155,7 @@ whole `{manifest, files}` (signature included). The resolver verifies; it does
 3. If `root.manifest.dependencies` is absent/empty → install the single package exactly as today (no behavior change for leaf packages).
 4. Else call `resolve(root, fetchPackage, loadTrustStore(), {allowNoSignature})`:
    - `ok:false` → print `reason`, `detail`, and the dependency `path`; **exit non-zero; install nothing** (atomic — D6).
-   - `ok:true` → **preflight**: run the file-path safety validation `installPackage` does (reject `..` / absolute / backslash paths) for **every** node in `order` *without writing*; if any node fails → print the offending node + path; **exit non-zero; install nothing**. Only once every node passes preflight, `installPackage(storePath, node)` each node in `order` (leaves first, root last).
+   - `ok:true` → **preflight**: run the file-path safety validation `installPackage` does (reject `..` / absolute / backslash paths) for **every** node in `order` *without writing*; if any node fails → print the offending node + path; **exit non-zero; install nothing**. It also rejects a store-key collision — two nodes sharing a content_hash (the store directory key) but differing in package_hash (identity) → refuse store-collision; the content-addressed store keys by files-hash and cannot hold two distinct packages with identical files (re-keying the store by package identity is a possible slice-5+ evolution, out of scope here). Only once every node passes preflight, `installPackage(storePath, node)` each node in `order` (leaves first, root last).
 5. Print the resolved set on success: `installed 3: D@1.0, A@2.1, root@1.0`.
 
 The preflight closes the graph-atomicity gap: without it, `resolve` could succeed
@@ -210,6 +210,7 @@ registry caching/signing; per-node signature-policy granularity.
 - e2e install of a small graph → all nodes present in store, in order
 - resolver-refuse (a bad node mid-graph) → store left **empty**
 - **preflight-refuse**: a graph where a non-first node has an unsafe file path (passes hash + signature, fails path safety) → store left **empty** (nothing extracted)
+- **store-collision-refuse**: a graph with two distinct packages sharing content_hash but different package_hash → install refuses store-collision; store left **empty**
 - `--allow-no-signature` permits an unsigned graph end-to-end
 
 ## Files
@@ -220,5 +221,5 @@ registry caching/signing; per-node signature-policy granularity.
 | `tools/ace/resolve.test.ts` | **new** — resolver tests |
 | `tools/ace/store.ts` | extend `AceManifest` with `dependencies?`; export `AceDependency`; factor `validatePackagePaths(pkg)` out of `installPackage` (shared with the install preflight) |
 | `tools/ace/ace.ts` | wire `resolve` into `install`; graph preflight; graph-wide `--allow-no-signature`; resolved-set output |
-| `tools/ace/ace.test.ts` | extend — e2e graph install + resolver-refuse + preflight-refuse + unsigned-graph |
+| `tools/ace/ace.test.ts` | extend — e2e graph install + resolver-refuse + preflight-refuse + store-collision-refuse + unsigned-graph |
 | `.claude/skills/ace/SKILL.md` | document transitive install + the new refusal reasons |
