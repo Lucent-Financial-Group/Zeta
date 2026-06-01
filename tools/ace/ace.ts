@@ -766,15 +766,10 @@ export async function main(argv: readonly string[]): Promise<number> {
       let next: IndexSignableContent | { error: string };
       if (verb === "revoke") next = applyRevoke(prevContent, name, version, parsed.revReason, at);
       else if (verb === "quarantine") next = applyQuarantine(prevContent, name, version, parsed.revReason, at);
-      else next = applyUnquarantine(prevContent, name, version);
+      else next = applyUnquarantine(prevContent, name, version, at);
       if ("error" in next) { console.error(`ace: ${verb} refused: ${next.error}`); return 1; }
       const seq = p.sequence + 1;
-      // Drop any now-empty mark map so a format_version-1 index never carries an empty
-      // `revoked`/`quarantined` key (parseIndex rejects a v1 index that carries either map).
-      const isEmpty = (m?: RevocationMap) => !m || Object.keys(m).length === 0;
       const content: IndexSignableContent = { ...next, sequence: seq };
-      if (isEmpty(content.revoked)) delete content.revoked;
-      if (isEmpty(content.quarantined)) delete content.quarantined;
       let serialized: string;
       try {
         const sig = signIndex(content, pem);

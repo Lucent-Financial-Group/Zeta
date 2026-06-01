@@ -97,7 +97,7 @@ describe("applyUnquarantine", () => {
     const q = applyQuarantine(prev, "leaf", "1.0.0", "q", "2026-06-01T00:00:00Z");
     if ("error" in q) throw new Error("unexpected error");
     prev = q;
-    const next = applyUnquarantine(prev, "leaf", "1.0.0");
+    const next = applyUnquarantine(prev, "leaf", "1.0.0", "2026-06-01T01:00:00Z");
     expect("error" in next).toBe(false);
     if ("error" in next) return;
     expect(next.quarantined?.["leaf"]?.["1.0.0"]).toBeUndefined();
@@ -106,7 +106,7 @@ describe("applyUnquarantine", () => {
   test("reverts format_version to 1 when it was the last mark", () => {
     const q = applyQuarantine(baseContent(), "leaf", "1.0.0", "q", "2026-06-01T00:00:00Z");
     if ("error" in q) throw new Error("unexpected");
-    const next = applyUnquarantine(q, "leaf", "1.0.0");
+    const next = applyUnquarantine(q, "leaf", "1.0.0", "2026-06-01T01:00:00Z");
     if ("error" in next) throw new Error("unexpected");
     expect(next.format_version).toBe(1);
   });
@@ -119,14 +119,14 @@ describe("applyUnquarantine", () => {
     const q2 = applyQuarantine(prev, "beta", "2.0.0", "q2", "2026-06-01T00:00:00Z");
     if ("error" in q2) throw new Error("unexpected");
     prev = q2;
-    const next = applyUnquarantine(prev, "alpha", "1.0.0");
+    const next = applyUnquarantine(prev, "alpha", "1.0.0", "2026-06-01T01:00:00Z");
     if ("error" in next) throw new Error("unexpected");
     expect(next.format_version).toBe(2);
     expect(next.quarantined?.["beta"]?.["2.0.0"]).toBeDefined();
   });
 
   test("errors when not quarantined", () => {
-    const result = applyUnquarantine(baseContent(), "leaf", "1.0.0");
+    const result = applyUnquarantine(baseContent(), "leaf", "1.0.0", "2026-06-01T01:00:00Z");
     expect("error" in result).toBe(true);
     if ("error" in result) expect(result.error).toMatch(/not quarantined/);
   });
@@ -135,7 +135,57 @@ describe("applyUnquarantine", () => {
     const q = applyQuarantine(baseContent(), "leaf", "1.0.0", "q", "2026-06-01T00:00:00Z");
     if ("error" in q) throw new Error("unexpected");
     const snap = JSON.stringify(q);
-    applyUnquarantine(q, "leaf", "1.0.0");
+    applyUnquarantine(q, "leaf", "1.0.0", "2026-06-01T01:00:00Z");
     expect(JSON.stringify(q)).toBe(snap);
+  });
+});
+
+describe("issued_at refresh", () => {
+  test("applyRevoke sets issued_at to the `at` param", () => {
+    const prev = baseContent(); // issued_at "2026-06-01T00:00:00Z"
+    const at = "2026-06-01T12:00:00Z";
+    const next = applyRevoke(prev, "leaf", "1.0.0", "bug", at);
+    expect(next.issued_at).toBe(at);
+    expect(next.issued_at).not.toBe(prev.issued_at);
+  });
+
+  test("applyQuarantine sets issued_at to the `at` param", () => {
+    const prev = baseContent();
+    const at = "2026-06-01T12:00:00Z";
+    const next = applyQuarantine(prev, "leaf", "1.0.0", "suspicious", at);
+    if ("error" in next) throw new Error("unexpected error");
+    expect(next.issued_at).toBe(at);
+    expect(next.issued_at).not.toBe(prev.issued_at);
+  });
+
+  test("applyUnquarantine sets issued_at to the `at` param", () => {
+    const q = applyQuarantine(baseContent(), "leaf", "1.0.0", "q", "2026-06-01T00:00:00Z");
+    if ("error" in q) throw new Error("unexpected");
+    const at = "2026-06-01T12:00:00Z";
+    const next = applyUnquarantine(q, "leaf", "1.0.0", at);
+    if ("error" in next) throw new Error("unexpected");
+    expect(next.issued_at).toBe(at);
+    expect(next.issued_at).not.toBe(q.issued_at);
+  });
+});
+
+describe("empty mark map stripping (pure layer)", () => {
+  test("applyUnquarantine of last quarantined mark leaves no quarantined key", () => {
+    const q = applyQuarantine(baseContent(), "leaf", "1.0.0", "q", "2026-06-01T00:00:00Z");
+    if ("error" in q) throw new Error("unexpected");
+    const next = applyUnquarantine(q, "leaf", "1.0.0", "2026-06-01T01:00:00Z");
+    if ("error" in next) throw new Error("unexpected");
+    expect("quarantined" in next).toBe(false);
+    expect(next.format_version).toBe(1);
+  });
+
+  test("applyRevoke of only quarantined version clears quarantined key, keeps revoked", () => {
+    const q = applyQuarantine(baseContent(), "leaf", "1.0.0", "q", "2026-06-01T00:00:00Z");
+    if ("error" in q) throw new Error("unexpected");
+    // revoke supersedes quarantine: quarantined becomes empty
+    const next = applyRevoke(q, "leaf", "1.0.0", "bad", "2026-06-01T01:00:00Z");
+    expect("quarantined" in next).toBe(false);
+    expect(next.revoked?.["leaf"]?.["1.0.0"]).toBeDefined();
+    expect(next.format_version).toBe(2);
   });
 });
