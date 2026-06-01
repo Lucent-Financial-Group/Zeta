@@ -91,14 +91,25 @@ elif [ -f "$APT_MANIFEST" ]; then
     # third-party PPAs the host image shipped that we don't control. Under
     # `set -euo pipefail` a single unreachable source (e.g. a launchpad PPA
     # returning 403 behind a restricted-network policy) aborts the whole
-    # install before any runtime tooling is set up. Per
+    # install before any runtime tooling is set up.
+    #
+    # apt's EXIT CODE is an unreliable partial-failure signal: a signature/403
+    # error exits non-zero, but a DNS/connection failure on one source can exit
+    # 0 with only `W: Some index files failed to download` (Codex review on
+    # PR #6419, confirmed by docker-ubuntu-install-sh-test). So detect partial
+    # failure from BOTH the exit code AND the output, and warn in either case —
+    # otherwise a real third-party-source outage stays silent, which is the very
+    # failure this guard exists to surface. Per
     # `.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md`
-    # ("grace in the artifact, assert in the test"): keep the update GRACEFUL
-    # (warn + continue on partial-source failure) while the install below stays
-    # STRICT — `apt-get install` still fails loudly if a package we actually
-    # need is unavailable, so the assert is preserved at install time rather
-    # than skipped to a false-green.
-    if ! $SUDO apt-get update -y; then
+    # ("grace in the artifact, assert in the test"): the update is GRACEFUL
+    # (warn + continue) while the install below stays STRICT — `apt-get install`
+    # still fails loudly if a package we actually need is unavailable, so the
+    # assert is preserved at install time rather than skipped to a false-green.
+    apt_update_rc=0
+    apt_update_out="$($SUDO apt-get update -y 2>&1)" || apt_update_rc=$?
+    printf '%s\n' "$apt_update_out"
+    if [ "$apt_update_rc" -ne 0 ] \
+       || printf '%s' "$apt_update_out" | grep -qiE 'Failed to fetch|Some index files failed to download|^Err:'; then
       echo "⚠ apt-get update reported errors — likely an unreachable third-party" >&2
       echo "  source the host image shipped (not a Zeta manifest source). Continuing;" >&2
       echo "  the apt-get install below still asserts the packages we need are present." >&2
