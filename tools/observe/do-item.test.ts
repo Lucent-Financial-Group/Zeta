@@ -107,7 +107,7 @@ describe("executeDoItem — the fact envelope", () => {
     expect(sink.appended).toHaveLength(0);
   });
 
-  it("terminal-append failure (executor RAN): reconcile-needed feedback, not blind-retryable (Copilot 2026-06-01)", async () => {
+  it("terminal-append failure (executor RAN): reconcile-needed feedback, not blind-retryable (PR review 2026-06-01)", async () => {
     const world = w([item("B-1")]);
     const sink = failingFactSink(2); // Started lands; the terminal Succeeded append fails
     let ran = false;
@@ -127,6 +127,41 @@ describe("executeDoItem — the fact envelope", () => {
     if (r.feedback.kind !== "terminal-append-failed") return;
     expect(r.feedback.ranOutcome).toBe("succeeded");
     expect(r.feedback.durableFacts.map((f) => f.kind)).toEqual(["ActionExecutionStarted"]); // only Started is durable
+  });
+
+  it("executor THROWS/rejects: converted to ActionExecutionFailed, never an unhandled rejection (PR review 2026-06-01)", async () => {
+    const world = w([item("B-1")]);
+    const sink = fakeFactSink();
+    const throwingExecutor: CommandExecutor = {
+      tier: "fake",
+      run: () => Promise.reject(new Error("spawn ENOENT")),
+    };
+
+    const r = await executeDoItem(world, item("B-1"), sink, throwingExecutor, opts);
+    // a throw must still produce a clean terminal fact (Started→Failed), not crash
+    expect(r.ok).toBe(true); // machinery worked: both facts landed
+    if (!r.ok) return;
+    expect(r.completed).toBe(false); // the WORK failed
+    expect(sink.appended.map((f) => f.kind)).toEqual(["ActionExecutionStarted", "ActionExecutionFailed"]);
+    const failed = sink.appended[1];
+    if (failed?.kind !== "ActionExecutionFailed") return;
+    expect(failed.reason).toContain("executor threw"); // the throw is captured in the fact's reason
+    expect(failed.reason).toContain("spawn ENOENT");
+    expect(world.backlog.some((b) => b.id === "B-1")).toBe(true); // failed work leaves the item in the backlog
+  });
+
+  it("terminal-append failure on a FAILED run preserves the executor reason via ranReason (PR review 2026-06-01)", async () => {
+    const world = w([item("B-1")]);
+    const sink = failingFactSink(2); // Started lands; the terminal Failed append fails
+    const r = await executeDoItem(world, item("B-1"), sink, fakeExecutor(failRun), opts);
+    expect(r.ok).toBe(false);
+    if (r.ok) return;
+    expect(r.feedback.kind).toBe("terminal-append-failed");
+    if (r.feedback.kind !== "terminal-append-failed") return;
+    expect(r.feedback.ranOutcome).toBe("failed");
+    expect(r.feedback.reason).toBe("remote ahead"); // the APPEND failure (why we're reconcile-needed)
+    expect(r.feedback.ranReason).toBe("build failed"); // the EXECUTOR failure preserved (why the work failed)
+    expect(r.feedback.durableFacts.map((f) => f.kind)).toEqual(["ActionExecutionStarted"]);
   });
 });
 

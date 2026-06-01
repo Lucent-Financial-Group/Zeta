@@ -29,7 +29,7 @@
  * Integrating `executeDoItem` into the unified `execute`/log/sink is a follow-up
  * (Phase 1 keeps it a sibling so the existing `execute` + its tests stay green).
  *
- * At-least-once corner (Copilot 2026-06-01): if the executor RUNS but the terminal
+ * At-least-once corner (PR review 2026-06-01): if the executor RUNS but the terminal
  * fact append fails, the side-effect happened yet only `Started` is durable. That
  * surfaces as `terminal-append-failed` (NOT `append-failed`) so the caller does not
  * blind-retry (which would duplicate the side-effect). A `Started`-only log is a
@@ -124,7 +124,7 @@ export interface DoItemOptions {
 
 /**
  * Machinery feedback (durability failure) — distinct from work-failure. Two cases,
- * because they have OPPOSITE retry-safety (Copilot 2026-06-01):
+ * because they have OPPOSITE retry-safety (PR review 2026-06-01):
  *   - `append-failed`: the `Started` append failed → the executor NEVER ran (no
  *     side-effect). Safe to retry the whole do_item.
  *   - `terminal-append-failed`: the executor ALREADY RAN (side-effect happened) but
@@ -133,7 +133,10 @@ export interface DoItemOptions {
  *     would duplicate the side-effect under at-least-once). The caller must reconcile
  *     (re-append the known terminal fact, or check the world + decide). Re-execution
  *     is only safe if the item's work is idempotent (the always-active idempotency
- *     discipline — `dv2-data-split`). `durableFacts` carries what DID land.
+ *     discipline — `dv2-data-split`). `durableFacts` carries what DID land; `reason`
+ *     is the APPEND failure; `ranReason` preserves the executor's own failure reason
+ *     when `ranOutcome === "failed"` (so reconciliation doesn't lose WHY the work
+ *     failed, only that the terminal fact didn't land) (PR review 2026-06-01).
  */
 export type DoItemFeedback =
   | { readonly kind: "append-failed"; readonly reason: string }
@@ -141,6 +144,7 @@ export type DoItemFeedback =
       readonly kind: "terminal-append-failed";
       readonly ranOutcome: "succeeded" | "failed";
       readonly reason: string;
+      readonly ranReason?: string;
       readonly durableFacts: readonly ActionFact[];
     };
 
@@ -185,7 +189,22 @@ export async function executeDoItem(
     return { ok: false, feedback: { kind: "append-failed", reason: startedAppend.reason } };
   }
 
-  const outcome = await executor.run(opts.spec);
+  // The port contract is `Promise<RunOutcome>`, but a real impl (spawn / timeout
+  // wrapper / container start) can REJECT instead of returning a failed outcome.
+  // Convert a throw into a failed outcome so an effectful run ALWAYS produces a
+  // terminal fact — never an unhandled rejection that leaves a dangling `Started`
+  // (PR review 2026-06-01).
+  let outcome: RunOutcome;
+  try {
+    outcome = await executor.run(opts.spec);
+  } catch (err) {
+    outcome = {
+      ok: false,
+      reason: `executor threw: ${err instanceof Error ? err.message : String(err)}`,
+      exitCode: -1,
+      stderr: "",
+    };
+  }
 
   if (outcome.ok) {
     const succeeded: ActionFact = { kind: "ActionExecutionSucceeded", item };
@@ -209,12 +228,15 @@ export async function executeDoItem(
   const append: AppendOutcome = await sink.append(failed);
   if (!append.ok) {
     // executor RAN (and failed); the terminal fact didn't land → reconcile-needed.
+    // Preserve the executor's own failure reason (`outcome.reason`) so reconciliation
+    // doesn't lose WHY the work failed — only that the Failed fact didn't land.
     return {
       ok: false,
       feedback: {
         kind: "terminal-append-failed",
         ranOutcome: "failed",
         reason: append.reason,
+        ranReason: outcome.reason,
         durableFacts: [started],
       },
     };
