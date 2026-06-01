@@ -15,6 +15,12 @@ on. The work that fills the gaps is tracked by
 [B-0959](backlog/P1/B-0959-zeta-sovereign-distributed-db-and-agent-loop-master-checklist-one-git-native-zset-substrate-aaron-otto-2026-05-31.md)
 (master checklist); this file is the _status view_ over it.
 
+**What this is becoming** (Aaron 2026-06-01): a **cross-language BCL** — a documented,
+compatibility-guaranteed set of primitives we can count on across all four languages, so
+crossing languages is safe and a dev doesn't relearn the basics four times. Built up
+slowly, one verified primitive at a time, under the same three-requirement bar as the
+BCL-like tier below (cross-compatible + one common surface + still idiomatic).
+
 ## Consensus tiers
 
 A primitive's trust is only as strong as how its four implementations are checked
@@ -45,7 +51,7 @@ sweep order is **ZetaId → algebra ladder → bus**.
 
 | Primitive                                                          | TS  | F#  | C#  | Rust | Note                                                                                                                                                                                                                                                                                                                    |
 | ------------------------------------------------------------------ | --- | --- | --- | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **G-Set** — grow-only set CRDT                                     | ✅  | ✅  | ❌  | ✅   | TS `src/Core.TypeScript/g-set/` (+ `golden-vectors.json` fixture); F# `src/Core/GSet.fs`; Rust `src/Core.Rust.Algebra/src/gset.rs` (#6360, merged; cross-verified vs the fixture). Needs C# → then Tier-1.                                                                                                              |
+| **G-Set** — grow-only set CRDT                                     | ✅  | ✅  | ✅  | ✅   | TS `src/Core.TypeScript/g-set/` (+ `golden-vectors.json` fixture); F# `src/Core/GSet.fs`; Rust `src/Core.Rust.Algebra/src/gset.rs` (#6360); C# `src/Core.CSharp/GSet.cs` (#6363). **Now 4/4 → Tier-1.**                                                                                                                 |
 | **Bag / multiset** — non-negative-weight multiset                  | ❌  | ⚠️  | ❌  | ❌   | The **missing middle rung**. Only implicit-in-Z-set in F# today; no named type anywhere. Cheapest gap.                                                                                                                                                                                                                  |
 | **Z-set** — signed-weight, retraction-native set (DBSP)            | ❌  | ✅  | ⚠️  | ❌   | F# `src/Core/ZSet.fs` (+`IndexedZSet.fs`); C# is a binding→F# (`ZetaCircuitBuilder`). Needs native TS + Rust.                                                                                                                                                                                                           |
 | **Bus (git-native)** — ZetaId-keyed G-Set of envelopes, no-PR      | ✅  | ❌  | ❌  | ❌   | `tools/agent-bus/` (B-0954, #6283/#6327). The wire is JSON-on-git, so cross-lang = a thin read/write/merge per language (each needs ZetaId first).                                                                                                                                                                      |
@@ -103,6 +109,47 @@ HTTP). These are a harder cross-language-surface problem than the data/codec pri
 the concurrency models diverge sharply (Tokio vs .NET `Task` vs the JS event loop) — so
 they come later and need extra care to find a common surface that stays idiomatic in each
 runtime. Listed now so they're on the map; the same three-requirement bar applies.
+
+## Category / numeric primitives — the cross-language number BCL
+
+The base value types mapped across the four oracles, with the compatibility caveats that
+bite when you cross languages (Aaron 2026-06-01: "category primitives too like all the
+ints floats decimal etc."). These are the "count on it" primitives the cross-language BCL
+is built from. ✅ native / ⚠️ caveat / ❌ no native (needs a library).
+
+| Primitive                         | C#                                 | F#                          | Rust                        | TS                                      | Cross-language caveat                                                                                                                             |
+| --------------------------------- | ---------------------------------- | --------------------------- | --------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **bool**                          | `bool`                             | `bool`                      | `bool`                      | `boolean`                               | clean everywhere                                                                                                                                  |
+| **bool? (plain Kleene 3-valued)** | `bool?` (built-in `&`/`\|` Kleene) | `bool option`               | `Option<bool>`              | `boolean \| null`                       | C# `bool?` is the cleanest (free Kleene operators); **coexists** with the digital-qubit `Tri` (different semantics — `Tri.N` is held, not absent) |
+| **int8/uint8 … int64/uint64**     | `sbyte/byte … long/ulong`          | `sbyte/byte … int64/uint64` | `i8/u8 … i64/u64`           | ⚠️ `number` is f64 — exact only to 2^53 | TS has **no native fixed-width ints**; round-trip 64-bit via `bigint` or it loses precision                                                       |
+| **int128/uint128**                | `Int128/UInt128`                   | `System.Int128`             | `i128/u128`                 | ❌ `bigint` only                        | not native in TS                                                                                                                                  |
+| **float32/float64**               | `float` / `double`                 | `float32` / `float`         | `f32` / `f64`               | ⚠️ `number` = f64 only                  | TS has no native f32 (use `Float32Array` for buffers)                                                                                             |
+| **decimal** (base-10, 128-bit)    | `decimal`                          | `decimal`                   | ❌ (crate `rust_decimal`)   | ❌ (lib `decimal.js`)                   | **.NET-native only** — Rust/TS need a library; a real cross-lang gap                                                                              |
+| **bigint** (arbitrary precision)  | `BigInteger`                       | `bigint`                    | ❌ std (crate `num-bigint`) | `bigint` (native)                       | native in C#/F#/TS; **not in Rust std**                                                                                                           |
+
+The pattern: the **.NET pair (C#/F#) is richest** (decimal + Int128 + BigInteger all
+native); **Rust** has fixed-width ints/floats natively but no std decimal/bigint; **TS**
+is the outlier (one numeric type, f64) — fixed-width, full 64-bit, and decimal all need
+care. Documenting the mapping + the caveat tells a dev crossing languages exactly where
+the floor is.
+
+## DST / test primitives — F# is ahead; the cross-language target
+
+The deterministic-simulation + test substrate (Aaron 2026-06-01: "F# we are way ahead
+here"). These make seeded, replayable simulation possible — the backbone of the
+"compilers don't lie" verification + the DST discipline.
+
+| Primitive                                                 | Where                                                        | Note                                                                                                                    |
+| --------------------------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| **IClock / SystemClock / FrozenClock**                    | F# `src/Core/Injection.fs`                                   | `UtcNow` + monotonic `Elapsed`; `FrozenClock` is the virtual-time test double                                           |
+| **ChaosEnvironment** (seeded)                             | F# `src/Core/ChaosEnv.fs` (+ TLA+ `ChaosEnvDeterminism.tla`) | seeded chaos injection; same (seed, policy, schedule) replays deterministically; shrinks to the minimal triggering seed |
+| **LawRunner**                                             | F# `src/Core/LawRunner.fs`                                   | property/law-test runner (trace from seed, run samples, surface `LawViolation`)                                         |
+| **Injection DI seams** (`IBackingStore` / `IMetricsSink`) | F# `src/Core/Injection.fs`                                   | narrow interfaces so a prod path can be shadowed by a test double                                                       |
+| **DeterministicEnv** (seeded env)                         | all 4 (ZetaId)                                               | the one DST primitive already 4-oracle — fixed-seed source for reproducible cross-verify                                |
+
+F# leads here (`IClock` / `ChaosEnvironment` / `LawRunner` are F#-only today); the
+cross-language target is a common seedable clock + chaos + property-runner surface so DST
+works the same in all four. `DeterministicEnv` already shows the shape — 4-oracle.
 
 ## The algebra ladder (why three of the gaps are one build)
 
