@@ -62,6 +62,27 @@ interface across all four_ we can depend on (per
 de-facto-standard exception, e.g. `serde`, only when both provenance-signed AND
 widely-relied-on).
 
+**"A good interface across all four" is a higher bar than "all four have it"**
+(Aaron 2026-06-01) — three requirements, all of which must hold before we rely on a
+BCL-like primitive:
+
+1. **Cross-compatible** — the four implementations interoperate on the wire (JSON
+   written by TS parses identically in Rust; a UTF-8 string round-trips byte-for-byte
+   across all four). Same bar as the algebra primitives' golden-vector consensus.
+2. **One common surface + idioms** — our interface exposes the primitive's features
+   _the same way_ in every language, so a dev moving across the four doesn't relearn
+   JSON (or UTF-8, or …) four times. We **own the surface** (the port); we do not
+   re-export four different vendor APIs (per the hexagonal rule above).
+3. **Still idiomatic per language** — each binding feels native and uses language
+   features (F# computation expressions, C# `System.Text.Json` source-gen, Rust
+   traits, TS structural types). The common surface is a shared _shape_, not a
+   lowest-common-denominator wrapper that fights every language.
+
+The tension (common-surface **and** idiomatic) resolves the way the algebra primitives
+already do: a shared interface + golden-vector cross-checks, with idiomatic
+per-language adapters underneath. "Pull in slowly" = land a primitive in this tier
+only once all three hold.
+
 | Primitive | TS                         | F#                          | C#                          | Rust                                                                                                 | Note — what "a good interface across all four" means here                                                                                                                                                                                                    |
 | --------- | -------------------------- | --------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **UTF-8** | native (`TextEncoder`)     | `System.Text.Encoding.UTF8` | `System.Text.Encoding.UTF8` | `str`/`String` (native)                                                                              | All four have it; the cross-lang concern is **byte-order consistency** — TS/.NET compare on UTF-16 code-units, Rust on UTF-8 bytes; they agree for BMP/ASCII (what the g-set comparator + ZetaId hex already rely on). Verify before depending beyond ASCII. |
