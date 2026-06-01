@@ -428,6 +428,32 @@ describe("planFileBackedZflashImageExecution", () => {
     ]);
   });
 
+  test("normalizes Windows inline staging paths before handing them to mtools", () => {
+    const planned = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      hostname: "pikachu",
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+    });
+    expect(planned.ok).toBe(true);
+    if (!planned.ok) throw new Error(planned.error);
+
+    const result = planFileBackedZflashImageExecution({
+      inlineStagingDirectory: "C:\\Temp\\zflash-inline\\",
+      plan: planned.value,
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+    expect(result.value.inlineFiles).toEqual([
+      {
+        content: "pikachu\n",
+        destination: "/zeta-hostname.txt",
+        path: "C:/Temp/zflash-inline/zeta-hostname.txt",
+      },
+    ]);
+  });
+
   test("requires an inline staging directory before planning content writes", () => {
     const planned = planFileBackedZflashImage({
       espOffsetBytes: 1_048_576,

@@ -265,7 +265,7 @@ export function planFileBackedZflashImage(
 }
 
 function joinFileBackedPath(directory: string, basename: string): string {
-  const trimmed = directory.trim().replace(/\/+$/, "");
+  const trimmed = directory.trim().replace(/\\/g, "/").replace(/\/+$/, "");
   return `${trimmed}/${basename}`;
 }
 

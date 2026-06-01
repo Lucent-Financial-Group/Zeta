@@ -27,7 +27,15 @@ function parseManifest(name: string): string[] {
 
 function expectMiseTool(name: string, version: string): void {
   const raw = readFileSync(join(repoRoot, ".mise.toml"), "utf8");
-  expect(raw).toMatch(new RegExp(`^${name}\\s*=\\s*"${version}"$`, "m"));
+  expect(raw).toMatch(miseToolPattern(name, version));
+}
+
+function escapeRegExpLiteral(value: string): string {
+  return value.replace(/[\\^$.*+?()[\]{}|]/g, "\\$&");
+}
+
+function miseToolPattern(name: string, version: string): RegExp {
+  return new RegExp(`^${escapeRegExpLiteral(name)}\\s*=\\s*"${escapeRegExpLiteral(version)}"$`, "m");
 }
 
 // Windows disposition for Unix system tools NOT carried in manifests/windows.
@@ -85,6 +93,13 @@ test("USB/QEMU and cluster integration tools are declared in install substrate",
   expectMiseTool("kind", "0.31.0");
   expectMiseTool("kubectl", "1.36.1");
   expectMiseTool("helm", "4.2.0");
+});
+
+test("mise tool matcher treats names and versions as literals", () => {
+  const pattern = miseToolPattern("helm", "4.2.0");
+
+  expect('helm = "4.2.0"').toMatch(pattern);
+  expect('helm = "4x2x0"').not.toMatch(pattern);
 });
 
 test("Windows agent CLI install consumes the shared agent-clis manifest", () => {
