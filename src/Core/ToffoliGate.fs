@@ -218,21 +218,30 @@ module ToffoliGate =
         let intermediateWires = takeWires (List.replicate partialCount Zero)
         let carryWires = ResizeArray<WireId>()
 
-        let rec addBitToProductColumn (sourceWire: WireId) (column: int) : ToffoliGateStep list =
-            if column >= productWidth then
-                []
-            else
-                let productWire = productMagnitudeWires.[column]
-                let carryWire = takeZero ()
-                carryWires.Add carryWire
+        let addBitToProductColumn (sourceWire: WireId) (column: int) : ToffoliGateStep list =
+            let rec loop currentSource currentColumn acc =
+                if currentColumn >= productWidth then
+                    List.rev acc
+                else
+                    let productWire = productMagnitudeWires.[currentColumn]
+                    let carryWire = takeZero ()
+                    carryWires.Add carryWire
 
-                [ { ControlA = sourceWire
-                    ControlB = productWire
-                    Target = carryWire }
-                  { ControlA = sourceWire
-                    ControlB = constantOneWire
-                    Target = productWire } ]
-                @ addBitToProductColumn carryWire (column + 1)
+                    let carryStep = {
+                        ControlA = currentSource
+                        ControlB = productWire
+                        Target = carryWire
+                    }
+
+                    let routeStep = {
+                        ControlA = currentSource
+                        ControlB = constantOneWire
+                        Target = productWire
+                    }
+
+                    loop carryWire (currentColumn + 1) (routeStep :: carryStep :: acc)
+
+            loop sourceWire column []
 
         let indexedBitPairs =
             [ for leftIndex, leftWire in List.indexed leftMagnitudeWires do
