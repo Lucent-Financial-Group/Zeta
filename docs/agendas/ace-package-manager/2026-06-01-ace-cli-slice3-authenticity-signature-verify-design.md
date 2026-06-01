@@ -4,8 +4,9 @@
 > brainstorming: trust model = **both** bundled-root + user-addable; enforcement =
 > **signed-enforced, unsigned needs `--allow-unsigned`**; scope = **verify + trust
 > add + minimal `ace sign`**). This doc is the faithful transcription for review
-> before the implementation plan. Updated 2026-06-01 for two PR #6315 review
-> findings (keygen key permissions; `--allow-unsigned` override scope).
+> before the implementation plan. Updated 2026-06-01 for PR #6315 review findings
+> (keygen key permissions; `--allow-unsigned` override scope; whole-manifest
+> canonicalization; resolvable custody-doc link).
 
 Builds on slice 1 (`bun link` distribution + skill surface, #6301) and slice 2
 (content-hash **integrity** install/verify, #6308). Slice 2 deliberately shipped
@@ -33,17 +34,23 @@ attacker also controls when they control the distribution surface).
 
 ## 3. Signature format (additive, back-compatible)
 
-A signature is computed over the **canonical manifest with its own `signature`
-field excluded** — and the manifest already carries `content_hash` (sha256 of the
-canonical `files` JSON, slice 2), so **one signature binds both identity
-(name/version) and content** without inventing a second hash.
+A signature is computed over the **entire canonical manifest with its own
+`signature` field removed** — and the manifest already carries `content_hash`
+(sha256 of the canonical `files` JSON, slice 2), so **one signature binds both
+identity (name/version) and content** without inventing a second hash.
 
-- **Canonical manifest bytes:** the manifest object rebuilt in a FIXED key order
-  `[format_version, name, version, content_hash, description?]` (omit `description`
-  when absent; **exclude `signature`**), then `JSON.stringify` with no extra spaces.
-  Deterministic regardless of the input object's key order.
+- **Canonical manifest bytes:** the manifest object with the `signature` field
+  removed, serialized as **deterministic canonical JSON — recursively key-sorted,
+  no insignificant whitespace** (an RFC 8785 / JCS-style canonicalization;
+  for the MVP: recursively sort all object keys then `JSON.stringify`, which is
+  stable for the manifest's string/integer value types). **The whole object is
+  covered, not a fixed field allowlist** — so every present field AND any future
+  field is bound by the signature. (An allowlist would be a footgun: a later
+  reader could act on a new field that an old signature never bound. Covering the
+  whole object closes that.)
 - **`manifest.signature`** (new, optional): `{ algo: "ed25519", key_id, sig }`
-  where `sig` = base64 of the raw 64-byte Ed25519 signature.
+  where `sig` = base64 of the raw 64-byte Ed25519 signature. The `signature` field
+  itself is excluded from the canonical bytes (you can't sign over the signature).
 - **`key_id`** = `"ed25519:" + sha256(<SPKI-DER public key bytes>).hex().slice(0,16)`
   — selects which trusted key the verifier checks against.
 - **Absent `signature`** = unsigned. Every slice-2 package is a valid unsigned
@@ -54,9 +61,10 @@ canonical `files` JSON, slice 2), so **one signature binds both identity
 - **Bundled root:** `tools/ace/trusted-keys.json`, checked into the repo, ships as
   an **empty JSON array `[]`**. This design does **NOT fabricate a Zeta root
   keypair** — minting the real root key is an operator custody ceremony (the
-  private key must be held per the `2026-05-31-agent-native-key-custody-design`
-  doc), out of scope here. Slice 3 builds the *mechanism* that reads the bundled
-  anchor; the anchor starts empty and is populated by that later ceremony.
+  private key must be held per the
+  [agent-native key-custody design](../../research/2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)),
+  out of scope here. Slice 3 builds the *mechanism* that reads the bundled anchor;
+  the anchor starts empty and is populated by that later ceremony.
 - **User store:** `~/.ace/trusted-keys.json` (sibling of `~/.ace/store`), managed
   by `ace trust add`. Created on first add.
 - **Schema (both files):** JSON array of
@@ -73,7 +81,7 @@ canonical `files` JSON, slice 2), so **one signature binds both identity
 | Verb | Form | Behavior |
 |---|---|---|
 | `keygen` | `ace keygen [--out <prefix>]` | Generate an Ed25519 keypair. Writes `<prefix>.key` (PKCS8 PEM, private) **with owner-only `0600` permissions — secure-create, never world-readable** (see §8) + `<prefix>.pub` (JSON `{ algo, key_id, public_key }`, normal perms). Default prefix `ace-key`. |
-| `sign` | `ace sign <pkg> --key <priv> [--out <file>]` | Read package JSON; **recompute content_hash and refuse to sign if it doesn't match** `files` (never sign tampered content); build canonical manifest bytes; Ed25519-sign with the private key; set `manifest.signature`; write to `--out` (else stdout). |
+| `sign` | `ace sign <pkg> --key <priv> [--out <file>]` | Read package JSON; **recompute content_hash and refuse to sign if it doesn't match** `files` (never sign tampered content); build canonical manifest bytes (§3); Ed25519-sign with the private key; set `manifest.signature`; write to `--out` (else stdout). |
 | `trust add` | `ace trust add <pub-or-b64> [--label <name>]` | Append a public key to `~/.ace/trusted-keys.json` (create if absent; dedup by key_id). `<pub-or-b64>` = path to a `.pub` file OR a raw base64 SPKI-DER string. |
 | `trust list` | `ace trust list` | List trusted keys (bundled ∪ user) with key_id, label, source. |
 | `install` | `ace install <url-or-path> [--allow-unsigned]` | **Changed** — adds the authenticity gate (§6). |
@@ -108,7 +116,8 @@ never written to disk):
 ## 7. Module boundaries
 
 - **`tools/ace/signing.ts`** (NEW, pure crypto, no fs/process): `generateKeypair()`
-  → `{ privatePem, publicSpkiB64, keyId }`; `keyId(spkiB64)`; `canonicalManifestBytes(manifest)`;
+  → `{ privatePem, publicSpkiB64, keyId }`; `keyId(spkiB64)`; `canonicalManifestBytes(manifest)`
+  (whole-manifest-minus-`signature`, recursively key-sorted — §3);
   `signManifest(manifest, privatePem)` → signature object; `verifySignature(manifest, trustStore)`.
   (Key-file *writing* — including the `0600` private-key permission — is I/O and
   lives in `ace.ts`/`store.ts`, not in this pure module.)
@@ -129,9 +138,10 @@ never written to disk):
 **Defends:** a malicious or compromised **distribution surface** (the untrusted
 skills store) — an attacker who controls the bytes cannot forge a signature without
 a trusted **private** key, cannot reuse another package's signature (the signature
-binds name+version+content_hash), and **cannot bypass verification by stapling an
-untrusted/garbage signature** (a present signature is always validated; only a
-genuinely-absent one is `--allow-unsigned`-overridable).
+binds name+version+content_hash via the whole-manifest canonicalization), and
+**cannot bypass verification by stapling an untrusted/garbage signature** (a present
+signature is always validated; only a genuinely-absent one is
+`--allow-unsigned`-overridable).
 
 **Private-key permissions (PR #6315 P1):** `ace keygen` writes the PKCS8 private
 key with **owner-only `0600`** (secure-create — open with mode `0o600`, or write
@@ -149,7 +159,9 @@ where the OS honors it.)
   explicit + inspectable via `trust list`).
 - **Private-key custody** — where a publisher's private key lives long-term is a
   publisher concern (`ace keygen` produces one with `0600`; secure storage/HSM
-  references the `agent-native-key-custody` design; not implemented here).
+  references the
+  [agent-native key-custody design](../../research/2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md);
+  not implemented here).
 - **Revocation / rotation** — no CRL/expiry in this slice (a compromised key is
   removed by editing the trust store). Tracked for 3.1.
 - **Guardian-AI oversight** (B-0288 AC) — not in this slice.
@@ -157,9 +169,11 @@ where the OS honors it.)
 ## 9. Testing
 
 - **`tools/ace/signing.test.ts`** (new): keygen→sign→verify roundtrip; tampered
-  manifest (mutated `content_hash`) → `bad-signature`; key not in trust store →
-  `untrusted-key`; missing signature → `no-signature`; `key_id` deterministic +
-  stable; `canonicalManifestBytes` identical regardless of input key order.
+  manifest (mutated `content_hash`) → `bad-signature`; tampered manifest (mutated
+  an arbitrary/unknown field) → `bad-signature` (proves whole-manifest coverage,
+  not a fixed allowlist); key not in trust store → `untrusted-key`; missing
+  signature → `no-signature`; `key_id` deterministic + stable; `canonicalManifestBytes`
+  identical regardless of input key order.
 - **`tools/ace/store.test.ts`** (additions): `loadTrustStore` union (bundled ∪
   user); `addTrustedKey` creates + dedups; user overrides bundled on key_id;
   `listTrustedKeys` reports source.
@@ -177,7 +191,8 @@ where the OS honors it.)
 
 ## 10. Out of scope → follow-ons (3.1+)
 
-- Real Zeta root keypair ceremony (operator custody; `agent-native-key-custody`).
+- Real Zeta root keypair ceremony (operator custody;
+  [agent-native key-custody design](../../research/2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)).
 - Key rotation / revocation / expiry.
 - Guardian-AI oversight (B-0288 AC).
 - Interop with `minisign` / `sigstore`/`cosign` signature formats (this slice uses
@@ -187,7 +202,7 @@ where the OS honors it.)
 
 ## Plan shape (4 tasks, subagent-driven like slices 1–2)
 
-1. `signing.ts` — Ed25519 primitives + `signing.test.ts` (pure, no I/O).
+1. `signing.ts` — Ed25519 primitives (whole-manifest canonicalization) + `signing.test.ts` (pure, no I/O).
 2. Trust store in `store.ts` + bundled `trusted-keys.json` + `store.test.ts` additions.
 3. `ace.ts` — `keygen` (with `0600` private key) / `sign` / `trust` verbs + install
    authenticity gate (`--allow-unsigned` overrides only genuinely-unsigned) + `ace.test.ts` additions.
