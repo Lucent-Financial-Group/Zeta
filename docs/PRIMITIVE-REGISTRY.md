@@ -1,0 +1,245 @@
+# Cross-Language Primitive Registry
+
+The stable-ish primitives we implement in **all four oracle languages** —
+**TypeScript** (the distribution default), **F#**, **C#**, **Rust** — and the
+consensus mechanism that says each one is _right_.
+
+Per [`m-acc-multi-oracle`](../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md):
+no single language is the source of truth. Each language's compiler is an
+**independent, non-Byzantine oracle** — _the compilers don't lie_ — so a primitive
+that compiles + agrees across all four is right **by construction**
+(governance model: [`docs/DECISIONS/2026-05-31-four-language-compiler-bft-...`](DECISIONS/2026-05-31-four-language-compiler-bft-governance-axes-per-artifact-gate-golden-vectors-oracle-tiebreak.md)).
+
+This file is the **living list** Aaron asked for — the API-doc of what we can build
+on. The work that fills the gaps is tracked by
+[B-0959](backlog/P1/B-0959-zeta-sovereign-distributed-db-and-agent-loop-master-checklist-one-git-native-zset-substrate-aaron-otto-2026-05-31.md)
+(master checklist); this file is the _status view_ over it.
+
+**What this is becoming** (the maintainer 2026-06-01): a **cross-language BCL** — a documented,
+compatibility-guaranteed set of primitives we can count on across all four languages, so
+crossing languages is safe and a dev doesn't relearn the basics four times. Built up
+slowly, one verified primitive at a time, under the same three-requirement bar as the
+BCL-like tier below (cross-compatible + one common surface + still idiomatic).
+
+## The wish list — every primitive we want (so we don't forget)
+
+The complete set, built + wished, in one place (the maintainer 2026-06-01: "the uber
+primitive wish list … so we don't forget what we want"). ✅ shipped (Tier-1/2) · 🚧
+building · ⬜ wished (not started). Per-language cells + detail are in the sections below;
+**add anything new here with ⬜ the moment it's named, so it's never lost.**
+
+Every primitive also gets **our own wrapper** (the hexagonal port), not just the native
+type — so the surface stays uniform across the four langs and a native-or-dep impl can be
+swapped underneath without changing callers (the dep-behind-port strategy below).
+
+- **Identity** — ✅ ZetaId (4/4)
+- **Event / reactive** — ✅ Observe loop (4/4) · ⬜ Rx-Observable = Z-set delta-stream (per-lang Rx exists; unify) · ⬜ CALM coordination-free marker
+- **Algebra ladder** — ✅ G-Set (4/4, **Tier 1/2** — per-lang golden-vector replay, no N-way byte-diff harness yet; C# #6363 merged) · 🚧 Bag / multiset (TS reference in-flight #6364) · 🚧 Z-set (F# only) · ✅ IndexedZSet (F#) · ✅ CRDTs — G-Counter / PN-Counter / OR-Set / Delta-CRDT (F# `Crdt.fs` / `DeltaCrdt.fs`)
+- **Numerics / algebra tower** — ⬜ complex/imaginary + the **Cayley–Dickson** tower ℝ→ℂ→ℍ→𝕆→𝕊 (F# `src/Core/CayleyDickson.fs` — the "imaginary stack", B-0623) · ⬜ Clifford / geometric algebra (F# substrate) · ✅ Z-set weight ring ℤ (F# `src/Core/Algebra.fs`)
+- **Inference** — ⬜ Infer.NET **BP/EP** factor-graph (F# substrate; architecture B-0365.5 closed + B-0637) · ⬜ uncertainty semiring (B-0367) · ⬜ posterior quorum (B-0255)
+- **Comms** — 🚧 git-native Bus (TS only)
+- **Discovery / transport** (decentralized, further-out) — ⬜ Nostr (signed event relay) · ⬜ DHT (BitTorrent-style peer routing) · ⬜ IPFS (content-addressed object store) · ⬜ Reticulum-over-IP · ⬜ Reticulum-over-mesh · ⬜ 802.11ah Wi-Fi HaLow (sub-GHz long-range). Multi-channel by design — redundant transports so a blocked/slow channel just fails over to the next. Already backlogged: Reticulum B-0704 / B-0726 / B-0772; Green Lantern + HaLow B-0246 / B-0289 / B-0290.
+- **Observability** — ⬜ structured logging · ⬜ metrics · ⬜ benchmarking. **Hexagonal it — own our port; OTel is a swappable _adapter_ behind it, not our interface** (per [`hexagonal-own-interfaces`]; OTel's interfaces are rough and its .NET deps carry test-hostile global/static state — so default OTel **off** in tests, on only for the explicit OTel-adapter tests; everything else goes through our port). The BCL `System.Diagnostics.Metrics` `Meter` API (System.\*, depend-directly per the BCL-interface-boundary rule) is the clean anchor to model on — `Counter<T>` (monotonic) ≈ a Bag-fold, `UpDownCounter<T>` (up+down) ≈ a Z-set / PN-Counter-fold, `Histogram<T>` ≈ a Bag-over-buckets — but standard OTel itself may not even be needed (verify current .NET OTel maturity first per `dep-pin-search-first-authority` — it was ugly years ago; Microsoft's support may have improved). Metrics are the **Bag-fold view of the event log** (database-design ADR) — instruments as folds over the algebra, not bolt-on.
+- **Test framework** — ⬜ cross-lang assert/expect + property-based + golden-vector harness primitive (today: bun:test / xUnit / FsCheck / Rust `#[test]` per-lang — unify the surface). Composes with the DST / test primitives below.
+- **Logic / numeric** (the cross-language number BCL) — ✅ TriBoolean (digital qubit) · ✅ TriBoolean middle-out float · ⬜ `bool?` plain-Kleene · ⬜ int8…int128 / uint8…uint128 · ⬜ float32/64 · ⬜ decimal (dep-behind-port) · ⬜ bigint (dep-behind-port)
+- **Nullable / optional** — ⬜ an `Option<T>` / `T?` / nullable wrapper for **every** primitive, all four langs (F# `option`, C# `Nullable<T>` + reference-nullable, Rust `Option<T>`, TS `T | null`) — one common surface
+- **Codec / BCL-like** — ⬜ JSON · ⬜ UTF-8 · ⬜ base64 · ⬜ SHA-256 · ⬜ regex · ⬜ time/clock
+- **DST / test** — ✅ DeterministicEnv (4/4) · ✅ (F#) IClock / FrozenClock · ✅ (F#) ChaosEnvironment (seeded) · ✅ (F#) LawRunner · ✅ (F#) Injection DI seams · ⬜ cross-lang versions of all of these
+- **Concurrency / runtime / IO** (further-out) — ⬜ channels · ⬜ pipelines · ⬜ concurrent dictionary · ⬜ work-stealing / ActionBlock · ⬜ async runtime (Tokio / .NET `Task` / JS event loop) · ⬜ TCP/UDP sockets · ⬜ ASP.NET-class server
+- **Consensus** (furthest-out — gated) — ⬜ gossip · ⬜ Raft · ⬜ Paxos. Deferred until they compose with **CAS / idempotency** as the substrate (built on the algebra + compare-and-set, not specialized per-case). Per the CAP-per-layer model: the per-agent G-Set/Bag/Z-set stay AP / coordination-free (CALM); the CP boundary is taken only at the git-merge / claim layer where mutual exclusion genuinely needs it (`git push` IS the truth-machine — and it's not central: every agent has its own repos / busses / mains, so even that is federated).
+- **Type-system shims** — ✅ Variance (C# `Variance.cs`) · ✅ ZetaCircuitBuilder (C# Z-set binding)
+
+### Itron-surveyed clean-room concepts (2026-06-01)
+
+Concept-only / clean-room extractions from a 4-agent deep survey of the Itron
+.NET platform (7.8 GB, 37 `Platform.*` modules) — production-hardened
+**interface shapes** worth a clean-room F# port (no code copied; F# port in our
+idiom: `Result<T, TFeedback>`, ports/adapters, injected `IClock`). All ⬜ wished.
+**The meta-lesson Itron validates** (adopt as convention, not just primitives):
+every port ships an **in-memory adapter** (their `Messaging.Memory` /
+`Workflow.Memory`) — that in-memory twin IS the **DST seam**; and every vendor
+import (Confluent.Kafka, Azure) is confined to its adapter assembly — a vendor
+import in the core should be a **lint failure** (== our own-your-interfaces +
+BCL-boundary rule, independently arrived at in a shipped commercial system).
+
+- **Caching** — ⬜ soft/hard-TTL read-through cache (**stale-while-revalidate**: soft-TTL serves-stale + background-refresh, hard-TTL blocks; thundering-herd answer; clock-injected = DST-ready) · ⬜ batch-miss handler + key-partitioner (coalesce N misses into one set-fetch — the N+1 killer) · ⬜ cache-metrics port distinguishing **soft-miss vs hard-miss** (the actionable split most caches collapse)
+- **Concurrency / scheduling** — ⬜ **throttler / batch-throttle** (`IThrottler<TItem,TResult>`: bounded-concurrency work scheduler with **backpressure** — `tryProcess` refuses when the queue is full → `Result<Async<'T>, QueueFull|Stopped>`; `MaxDegreeOfParallelism` + `MaxQueueSize`; `StopAsync` graceful drain; semaphore impl + batch impl behind one port). The **batch** variant coalesces items via a `BatchProcessor` + `BatchPartitioner` (route by key) + `BatchSizeLimiter` (flush on accumulated _state_, e.g. total bytes, not just count) + overflow-handler. This is the **production form of the "work-stealing / ActionBlock" wish-item** and **subsumes** the cache batch-miss/partitioner + `BatchItemResult` finds above — one primitive, not three. Backpressure IS a TFeedback channel (asymmetric-authorship); the scheduler is a prime DST target (seeded ordering, deterministic drain). — ⬜ timeout-with-cancellation helper (NOTE the anti-pattern to avoid: Itron's `TaskExtensions.TimeoutAfter` times out the _wait_ but **leaks** the operation; our timeout MUST propagate cancellation — `CancellationTokenSource(timeout)` / BCL `Task.WaitAsync`, never fire-and-forget)
+- **Resource / lifecycle** — ⬜ `AtomicBool` CAS once-latch (`falseToTrue() : bool` — "did I win the flip?"; dispose-once/init-once; serves lock-free + idempotency) · ⬜ idempotent composite disposable (dispose-all, collect-failures, run-once) · ⬜ **readiness/liveness two-phase health probe** (fast cadence until ready → slow liveness cadence; k8s-aligned; clock-injected) · ⬜ app-host lifecycle (ordered start / **reverse-order stop** / aggregate-all-stop-failures / unified signal gate) · ⬜ DST-friendly **periodic-background-loop** (linked-CTS, survive-transient-errors, drain-on-stop, **injected clock** = replayable) · ⬜ declarative **error-category map** (`TFeedback → {status, severity, payload}`, first-match-wins — the Result→transport boundary table; in F# it's a DU pattern-match)
+- **Messaging / distributed** — ⬜ broker produce/consume **port** (Kafka/Rabbit/ServiceBus/EventHub/**in-memory** adapters; in-memory = deterministic DST adapter) · ⬜ **workflow-as-data** resumable step-index state machine (execution position = a tiny `int list`; event-sourceable/diffable/replayable — composes with our agent-loop) · ⬜ workflow-state-provider port (load/save/expire + injected partition fn; CAS-on-epoch = idempotent replay) · ⬜ `BatchItemResult<Key,T,Feedback>` (per-item partial-success with correlation key — what `Result<list,err>` can't express; idempotent dedup-by-key) · ⬜ direct-request-state-manager (correlation-keyed request/response **over** a one-way bus) · ⬜ message segmenter (chunk oversize payload + correlation-keyed reassembly) · ⬜ `ConsumerGroup` fanout-scope DU (cluster-wide / per-service / per-instance) · ⬜ retry-policy-as-data (`{ maxAttempts; delay: n→TimeSpan }`, returned-not-thrown) · ⬜ versioned self-describing codec negotiation (`canDecode` sniff + `isPreferred` write — schema-evolution without a flag day)
+- **Path / variant** — ⬜ `PropertyPath` (parse/render `"Foo.Bar[3].Baz"` → segment chain; address into nested structures for config/metadata/diff-patch/event-deltas) · ⬜ path-addressable variant tree (`DVal` DU over JSON: `Object|Array|Scalar`, `tryGet<'T> path : Result`, immutable → free Z-set composition over paths) · ⬜ source-addressed diagnostics (`Diagnostic { at: PropertyPath; … }` — validators report against a stable address, not bare strings)
+- **Codec / IO** (extends the Codec line above) — ⬜ `BitReader`/`BitWriter` (sub-byte variable-width int codec — `readBit`/`readBits(n)` + bit-level `seek`/`flush` + leave-open; foundation for bit-packing/FOR/delta compression) · ⬜ `ChunkedMemoryStream` (a `Stream` that grows in **chunked buffers**, not one contiguous array — no large-object-heap pressure / no giant realloc on growth; the right buffer for large-payload serialization/spooling. In F#/Rust: a `Vec<Vec<u8>>`/rope-style backing behind a stream port) · ⬜ `RangeSet` (`"1-5,8,10-17"` parse/contains/render, auto-merged ranges — sparse-int-set primitive). (Skipped from `Source/IO`: `FileAttributesHelper` = BCL-thin; `Utf8StringWriter` = a .NET XML-serialization gotcha-fix, not cross-language.)
+- **Observability (Itron finds, extends the line above)** — ⬜ metric **register/value split + `IsDelta` discriminator** (Counter monotonic ≈ Bag-fold; Gauge `Set`-vs-`Delta` ≈ Z-set/PN-counter-fold; Histogram ≈ Bag-over-buckets — the cleanest expression of the metrics→algebra mapping) · ⬜ `ScaleTimer` lock-free EWMA running-stats (min/max/avg/deviation via CAS; sample-every-N; **pure fold split from CAS wrapper** = FsCheck-able) · ⬜ tracer **HOF** (`trace(desc, op)` wraps the op → impossible to leak an unclosed span; structure enforces correctness) · ⬜ **`forceSample`** retroactive parent-chain sampling (errors rescue their whole trace from sampling — tie to the `Result` Error channel) · ⬜ AsyncLocal immutable-stack scope (async-safe baggage; strict-LIFO-dispose check; one mechanism for trace + metric dims) · ⬜ Welford latency-aggregate with commutative-monoid `merge` (min/max=join, count=+; CRDT-shaped fleet aggregation — use Welford, not Itron's naive running-avg) · ⬜ noop **warn-once** default adapter (unconfigured port works + is loud — DST-safe default)
+
+## Consensus tiers
+
+A primitive's trust is only as strong as how its four implementations are checked
+to agree. Three tiers, strongest first:
+
+| Tier  | Name                                     | What it means                                                                                                                                                                                                                 |
+| ----- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | **golden-vector byte-consensus**         | All implementations run a **shared fixture** and produce **byte-identical** output; a harness diffs them and fails on any mismatch. The strongest tier — disagreement is impossible to miss.                                  |
+| **2** | **compiler-parity + per-language tests** | Each language **independently reimplements** the primitive and its own tests pass. "The compilers don't lie" — parity is proven by independent reconstruction, but there is not (yet) a shared byte fixture diffing all four. |
+| **3** | **implemented (no cross-verify yet)**    | Present in a language, but no parity check binds it to the others.                                                                                                                                                            |
+| —     | **absent**                               | Not implemented in that language.                                                                                                                                                                                             |
+
+Cells below use ✅ (present) / ⚠️ (partial — see note) / ❌ (absent).
+
+## Tier-1/2 — the stable base (4-oracle)
+
+| Primitive                                                                         | TS  | F#  | C#  | Rust | Consensus                                                                                    | Locations                                                                                                                                                  |
+| --------------------------------------------------------------------------------- | --- | --- | --- | ---- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ZetaId** — 128-bit content/structure-addressed id (Category enum incl. `Bus=6`) | ✅  | ✅  | ✅  | ✅   | **Tier 1** — 12-vector byte-consensus, 4-way `compare.ts` (TS≡F#≡C#≡Rust)                    | `src/Core.{TypeScript/zeta-id,FSharp.ZetaId,CSharp.ZetaId,Rust.ZetaId}/`; fixture `tests/cross-verification/zeta-id/` (B-0679, B-0681, B-0682)             |
+| **Observe loop** — `observe`/`simulate`/`fold`/`replay` event algebra             | ✅  | ✅  | ✅  | ✅   | **Tier 1/2** — shared `golden-vectors.json` (Rust verifies against it; F#/C# crates present) | `src/Core.{FSharp,CSharp,Rust}.Observe/`, `tools/observe/`; fixture `tools/observe/golden-vectors.json` (B-0867.27)                                        |
+| **TriBoolean** — digital qubit (true/false/middle)                                | ✅  | ✅  | ✅  | ✅   | **Tier 2** — compiler-parity + per-lang tests                                                | `src/Core.{TypeScript,FSharp,CSharp,Rust}.TriBoolean/`; tests `tests/Tests.{CSharp,FSharp}/TriBoolean/` (B-0944)                                           |
+| **TriBoolean float** — "middle-out" self-describing float                         | ✅  | ✅  | ✅  | ✅   | **Tier 2** — per-lang tests; **v0 spec** (evolving)                                          | `…TriBoolean/{Float.fs,TriFloat.cs,float.rs}`, `src/Core.TypeScript/tri-boolean-float/`; specs `docs/research/2026-05-3{0,1}-tri-boolean-float-*` (B-0944) |
+| **G-Set** — grow-only set CRDT (bottom rung of the algebra ladder)                | ✅  | ✅  | ✅  | ✅   | **Tier 1/2** — shared `g-set/golden-vectors.json` (Rust verifies; TS reference; F#/C# join)  | TS `src/Core.TypeScript/g-set/`, F# `src/Core/GSet.fs`, C# `src/Core.CSharp/GSet.cs` (#6363), Rust `src/Core.Rust.Algebra/src/gset.rs` (#6360) (B-0954)    |
+
+## In-progress — the base sweep (the gaps we're closing)
+
+These are the building blocks for the **common observe loop + sovereign DB**; the
+sweep order is **ZetaId → algebra ladder → bus**.
+
+| Primitive                                                          | TS  | F#  | C#  | Rust | Note                                                                                                                                                                                                                                                                                                                    |
+| ------------------------------------------------------------------ | --- | --- | --- | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Bag / multiset** — non-negative-weight multiset                  | 🚧  | ⚠️  | ❌  | ❌   | The **middle rung** (G-Set ⊂ Bag ⊂ Z-set; ℕ / per-key sum). TS reference + `bag/golden-vectors.json` in-flight (#6364); F# only implicit-in-Z-set today. Combiner is SUM (NOT idempotent — `union(a,a)` doubles counts), the step toward Z-set's signed ℤ.                                                              |
+| **Z-set** — signed-weight, retraction-native set (DBSP)            | ❌  | ✅  | ⚠️  | ❌   | F# `src/Core/ZSet.fs` (+`IndexedZSet.fs`); C# is a binding→F# (`ZetaCircuitBuilder`). Needs native TS + Rust.                                                                                                                                                                                                           |
+| **Bus (git-native)** — ZetaId-keyed G-Set of envelopes, no-PR      | ✅  | ❌  | ❌  | ❌   | `tools/agent-bus/` (B-0954, #6283/#6327). The wire is JSON-on-git, so cross-lang = a thin read/write/merge per language (each needs ZetaId first).                                                                                                                                                                      |
+| **Rx-Observable / Z-set delta-stream** — push-based reactive layer | ⚠️  | ⚠️  | ⚠️  | ❌   | The reactive layer **over** Z-set: an Rx query _is_ a Z-set delta-stream (B-0959 §3). Rx.NET / `FSharp.Control.Reactive` exist per-lang (`rx-expert` skill, B-0640); not yet a unified cross-lang primitive. **CALM** (Consistency As Logical Monotonicity) is the law that makes the monotone slice coordination-free. |
+
+## Candidate — BCL-like platform primitives (pull in slowly)
+
+Some primitives every runtime already provides — **JSON**, **UTF-8**, and other
+BCL/std-level facilities. We treat them as cross-registry primitives too, but
+**pull them in slowly**: rely on one only once we've verified a _good, consistent
+interface across all four_ we can depend on (per
+[`bcl-interface-boundary-own-your-interfaces-hexagonal`](../.claude/rules/bcl-interface-boundary-own-your-interfaces-hexagonal.md)
+— depend on BCL/std interfaces; wrap anything 3rd-party behind our own port; the
+de-facto-standard exception, e.g. `serde`, only when both provenance-signed AND
+widely-relied-on).
+
+**"A good interface across all four" is a higher bar than "all four have it"**
+(the maintainer 2026-06-01) — three requirements, all of which must hold before we rely on a
+BCL-like primitive:
+
+1. **Cross-compatible** — the four implementations interoperate on the wire (JSON
+   written by TS parses identically in Rust; a UTF-8 string round-trips byte-for-byte
+   across all four). Same bar as the algebra primitives' golden-vector consensus.
+2. **One common surface + idioms** — our interface exposes the primitive's features
+   _the same way_ in every language, so a dev moving across the four doesn't relearn
+   JSON (or UTF-8, or …) four times. We **own the surface** (the port); we do not
+   re-export four different vendor APIs (per the hexagonal rule above).
+3. **Still idiomatic per language** — each binding feels native and uses language
+   features (F# computation expressions, C# `System.Text.Json` source-gen, Rust
+   traits, TS structural types). The common surface is a shared _shape_, not a
+   lowest-common-denominator wrapper that fights every language.
+
+The tension (common-surface **and** idiomatic) resolves the way the algebra primitives
+already do: a shared interface + golden-vector cross-checks, with idiomatic
+per-language adapters underneath. "Pull in slowly" = land a primitive in this tier
+only once all three hold.
+
+| Primitive | TS                     | F#                          | C#                          | Rust                                                                                                         | Note — what "a good interface across all four" means here                                                                                                                                                                                                                                                                                                          |
+| --------- | ---------------------- | --------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **UTF-8** | native (`TextEncoder`) | `System.Text.Encoding.UTF8` | `System.Text.Encoding.UTF8` | `str`/`String` (native)                                                                                      | All four have it; UTF-8 has no endianness, so the cross-lang concern is **string ordering/comparison consistency**, not byte order — TS/.NET sort on UTF-16 code-units, Rust on UTF-8 bytes, which diverge once you move beyond ASCII/BMP. They agree for ASCII/BMP (what the g-set comparator + ZetaId hex already rely on); verify before depending beyond that. |
+| **JSON**  | native `JSON`          | `System.Text.Json`          | `System.Text.Json`          | our `ZetaJsonParser` (zero-dep, `src/Core.Rust.Observe/src/json.rs`) + `serde_json` adapter behind a feature | Rust std has **no** JSON, so the cross-lang primitive is _our JSON port_ (the hexagonal interface), not one library. Stabilize the port shape across all four (number precision, key order, escaping) before declaring it registry-stable.                                                                                                                         |
+
+**Other BCL-like candidates — data / codec** (the maintainer 2026-06-01: "for sure yes", pull
+in slowly): **base64**, **SHA-256** hashing, **big integers**, **regex**, and
+**time/clock** — the last is a load-bearing **DST primitive** (deterministic simulation
+needs a seedable/controllable clock, not wall-clock; F# is already well ahead here).
+Each lands only after the four-way interface is verified — not on first use.
+
+**Further-out — concurrency / runtime / IO primitives** (the maintainer 2026-06-01, naming them
+for the map): **channels** + **pipelines** (`System.Threading.Channels` /
+`System.IO.Pipelines`), **concurrent dictionary**, **work-stealing / `ActionBlock`-like**
+dataflow, an **async runtime** (Tokio in Rust; the TPL/`Task` scheduler in .NET; the
+event loop in JS), **TCP/UDP sockets**, and eventually a **server side** (ASP.NET-class
+HTTP). These are a harder cross-language-surface problem than the data/codec primitives —
+the concurrency models diverge sharply (Tokio vs .NET `Task` vs the JS event loop) — so
+they come later and need extra care to find a common surface that stays idiomatic in each
+runtime. Listed now so they're on the map; the same three-requirement bar applies.
+
+## Category / numeric primitives — the cross-language number BCL
+
+The base value types mapped across the four oracles, with the compatibility caveats that
+bite when you cross languages (the maintainer 2026-06-01: "category primitives too like all the
+ints floats decimal etc."). These are the "count on it" primitives the cross-language BCL
+is built from. ✅ native / ⚠️ caveat / ❌ no native (needs a library).
+
+| Primitive                         | C#                                 | F#                          | Rust                        | TS                                      | Cross-language caveat                                                                                                                             |
+| --------------------------------- | ---------------------------------- | --------------------------- | --------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **bool**                          | `bool`                             | `bool`                      | `bool`                      | `boolean`                               | clean everywhere                                                                                                                                  |
+| **bool? (plain Kleene 3-valued)** | `bool?` (built-in `&`/`\|` Kleene) | `bool option`               | `Option<bool>`              | `boolean \| null`                       | C# `bool?` is the cleanest (free Kleene operators); **coexists** with the digital-qubit `Tri` (different semantics — `Tri.N` is held, not absent) |
+| **int8/uint8 … int64/uint64**     | `sbyte/byte … long/ulong`          | `sbyte/byte … int64/uint64` | `i8/u8 … i64/u64`           | ⚠️ `number` is f64 — exact only to 2^53 | TS has **no native fixed-width ints**; round-trip 64-bit via `bigint` or it loses precision                                                       |
+| **int128/uint128**                | `Int128/UInt128`                   | `System.Int128`             | `i128/u128`                 | ❌ `bigint` only                        | not native in TS                                                                                                                                  |
+| **float32/float64**               | `float` / `double`                 | `float32` / `float`         | `f32` / `f64`               | ⚠️ `number` = f64 only                  | TS has no native f32 (use `Float32Array` for buffers)                                                                                             |
+| **decimal** (base-10, 128-bit)    | `decimal`                          | `decimal`                   | ❌ (crate `rust_decimal`)   | ❌ (lib `decimal.js`)                   | **.NET-native only** — Rust/TS need a library; a real cross-lang gap                                                                              |
+| **bigint** (arbitrary precision)  | `BigInteger`                       | `bigint`                    | ❌ std (crate `num-bigint`) | `bigint` (native)                       | native in C#/F#/TS; **not in Rust std**                                                                                                           |
+
+The pattern: the **.NET pair (C#/F#) is richest** (decimal + Int128 + BigInteger all
+native); **Rust** has fixed-width ints/floats natively but no std decimal/bigint; **TS**
+is the outlier (one numeric type, f64) — fixed-width, full 64-bit, and decimal all need
+care. Documenting the mapping + the caveat tells a dev crossing languages exactly where
+the floor is.
+
+**Filling the ❌ gaps — dep behind our port, replaced over time** (the maintainer
+2026-06-01): a missing primitive (Rust `bigint`/`decimal`, TS `decimal`) is brought up by
+pulling a dep (`num-bigint`, `rust_decimal`, `decimal.js`) **behind our own hexagonal
+interface** — never depending on the dep's interface directly (per
+[`bcl-interface-boundary`](../.claude/rules/bcl-interface-boundary-own-your-interfaces-hexagonal.md)).
+The dep is the bootstrap implementation **and** the differential-test oracle (our impl vs
+the dep, the way `Core.Rust.Observe` keeps `serde_json` behind a feature); over time we
+replace the dep with our own impl while keeping it for the differential test. So a ❌ cell
+becomes "⚠️ via dep behind our port" → eventually "✅ ours" — the gap closes without ever
+exposing four different vendor APIs to devs.
+
+## DST / test primitives — F# is ahead; the cross-language target
+
+The deterministic-simulation + test substrate (the maintainer 2026-06-01: "F# we are way ahead
+here"). These make seeded, replayable simulation possible — the backbone of the
+"compilers don't lie" verification + the DST discipline.
+
+| Primitive                                                 | Where                                                        | Note                                                                                                                    |
+| --------------------------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| **IClock / SystemClock / FrozenClock**                    | F# `src/Core/Injection.fs`                                   | `UtcNow` + monotonic `Elapsed`; `FrozenClock` is the virtual-time test double                                           |
+| **ChaosEnvironment** (seeded)                             | F# `src/Core/ChaosEnv.fs` (+ TLA+ `ChaosEnvDeterminism.tla`) | seeded chaos injection; same (seed, policy, schedule) replays deterministically; shrinks to the minimal triggering seed |
+| **LawRunner**                                             | F# `src/Core/LawRunner.fs`                                   | property/law-test runner (trace from seed, run samples, surface `LawViolation`)                                         |
+| **Injection DI seams** (`IBackingStore` / `IMetricsSink`) | F# `src/Core/Injection.fs`                                   | narrow interfaces so a prod path can be shadowed by a test double                                                       |
+| **DeterministicEnv** (seeded env)                         | all 4 (ZetaId)                                               | the one DST primitive already 4-oracle — fixed-seed source for reproducible cross-verify                                |
+
+F# leads here (`IClock` / `ChaosEnvironment` / `LawRunner` are F#-only today); the
+cross-language target is a common seedable clock + chaos + property-runner surface so DST
+works the same in all four. `DeterministicEnv` already shows the shape — 4-oracle.
+
+## The algebra ladder (why three of the gaps are one build)
+
+```
+G-Set   ⊂   Bag / multiset   ⊂   Z-set
+weights {0,1}    weights ℕ          weights ℤ (retraction-native)
+```
+
+Each rung is the next by widening the weight codomain. Built **once per language,
+parameterized over the weight monoid**, one type yields all three rungs — so the
+G-Set / Bag / Z-set gaps collapse into a single ladder build per language.
+
+## How to use / maintain this file
+
+- **Building on the base?** Use the Tier-1/2 table. Tier 1 (ZetaId) is byte-safe to
+  depend on across machines + languages. Tier 2 is reimplementation-verified.
+- **Landed a primitive in a new language?** Add/flip its cell, name the location,
+  and state the consensus tier honestly (don't claim Tier 1 without a shared
+  byte-diff harness — implement the fixture + `compare` first).
+- **Promotion gate to Tier 1**: a shared golden-vector fixture + an N-way `compare`
+  harness that fails non-zero on mismatch (the `tests/cross-verification/zeta-id/`
+  pattern is the template).
+
+_Last updated: 2026-06-01 — ZetaId + **G-Set now 4/4 (Tier 1/2)** (C# #6363 merged →
+G-Set joined ZetaId/Observe/TriBoolean in the stable base; per-lang golden-vector replay,
+no N-way byte-diff harness yet so Tier 1/2 not pure Tier 1); Bag (middle rung) TS reference
+in-flight (#6364). Added wish-list categories the maintainer named: Discovery / transport
+(Nostr, DHT, IPFS, Reticulum-over-IP/-mesh, 802.11ah HaLow — xref'd to existing backlog),
+Observability (structured logging, OTel / `System.Diagnostics.Metrics` Meter model,
+benchmarking — instruments as Bag/Z-set folds), Test framework, and Consensus (gossip /
+Raft / Paxos — gated on CAS-composability, CP only at the federated git-merge boundary).
+Prior: cross-language-BCL framing, numeric/category + numerics-tower + inference + nullable
+wish items, DST/test section, BCL-like candidate tier (JSON, UTF-8 — pull in slowly)._
