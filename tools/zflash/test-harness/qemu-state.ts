@@ -188,8 +188,7 @@ export const RETENTION_SERIAL_MARKERS: readonly string[] = [
 ];
 
 export const INITIAL_INSTALL_SERIAL_MARKERS: readonly string[] = [
-  "zeta-installer login:",
-  "nixos@zeta-installer:~",
+  "[iter-5.1]",
 ];
 
 export const RETENTION_FAILURE_SERIAL_MARKERS: readonly string[] = [
@@ -331,6 +330,7 @@ export function planQcow2SnapshotRetention(
         serialLogPath: normalized.serialLogPath,
         successMarkers: INITIAL_INSTALL_SERIAL_MARKERS,
         failureMarkers: RETENTION_FAILURE_SERIAL_MARKERS,
+        terminalFailureMarkers: RETENTION_ABSENT_TERMINAL_MARKERS,
       },
       createBaselineSnapshot: {
         bin: "qemu-img",

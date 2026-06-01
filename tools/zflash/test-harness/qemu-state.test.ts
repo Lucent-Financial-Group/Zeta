@@ -159,6 +159,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
     expect(result.ok.initialInstallStopCondition.serialLogPath).toBe("/tmp/serial.log");
     expect(result.ok.initialInstallStopCondition.successMarkers).toEqual(INITIAL_INSTALL_SERIAL_MARKERS);
     expect(result.ok.initialInstallStopCondition.failureMarkers).toEqual(RETENTION_FAILURE_SERIAL_MARKERS);
+    expect(result.ok.initialInstallStopCondition.terminalFailureMarkers).toEqual(RETENTION_ABSENT_TERMINAL_MARKERS);
     expect(result.ok.restartStopCondition.successMarkers).toContain("zeta-creds-restore:");
     expect(result.ok.restartStopCondition.successMarkers).toContain("already-present");
     expect(result.ok.restartStopCondition.terminalFailureMarkers).toEqual(RETENTION_ABSENT_TERMINAL_MARKERS);
@@ -272,10 +273,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
       readSerialOutput: (serialLogPath) => {
         serialPaths.push(serialLogPath);
         if (managedObserved.length === 1) {
-          return [
-            "zeta-installer login: nixos (automatic login)",
-            "nixos@zeta-installer:~]$",
-          ].join("\n");
+          return "[iter-5.1] install reached post-nixos-install marker";
         }
         return [
           "zeta-creds-restore: reading preserved ESP blob",
@@ -304,10 +302,30 @@ describe("B-0891 QEMU state-preservation planner", () => {
       expect(managedObserved.every((entry) => entry.options.timeoutMs === 1234)).toBe(true);
       expect(serialPaths).toEqual(["/tmp/serial.log", "/tmp/serial.log", "/tmp/serial.log"]);
       expect(stoppedPids).toEqual([4201, 4202]);
-      expect(result.ok.commandExecutions[1]?.serialStop?.matchedMarkers).toContain("zeta-installer login:");
-      expect(result.ok.commandExecutions[1]?.serialStop?.matchedMarkers).toContain("nixos@zeta-installer:~");
+      expect(result.ok.commandExecutions[1]?.serialStop?.matchedMarkers).toContain("[iter-5.1]");
       expect(result.ok.commandExecutions[5]?.serialStop?.matchedMarkers).toContain("already-present");
       expect(result.ok.serialAssertion.matchedMarkers).toContain("already-present");
+    }
+  });
+
+  test("fails initial install when the installer prompt appears before post-install marker", () => {
+    const executor = createSpawnSyncQcow2RetentionExecutor({
+      pollIntervalMs: 1,
+      spawnCommand: () => ({ exitCode: 0, stdout: "ok", stderr: "" }),
+      spawnManagedCommand: () => managedProcess(5201, []),
+      readSerialOutput: () => "nixos@zeta-installer:~]$",
+    });
+
+    const result = executeQcow2SnapshotRetentionPlan(retentionPlan(), executor);
+
+    expect("error" in result).toBe(true);
+    if ("error" in result) {
+      expect(result.error.kind).toBe("command-failed");
+      if (result.error.kind === "command-failed") {
+        expect(result.error.step).toBe("initial-install-from-iso-with-disk");
+        expect(result.error.stderr).toContain("terminal marker observed before required serial markers");
+        expect(result.error.stderr).toContain("[iter-5.1]");
+      }
     }
   });
 
@@ -322,10 +340,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
       },
       readSerialOutput: () => {
         if (managedObserved.length === 1) {
-          return [
-            "zeta-installer login: nixos (automatic login)",
-            "nixos@zeta-installer:~]$",
-          ].join("\n");
+          return "[iter-5.1] install reached post-nixos-install marker";
         }
         return "nixos@zeta-installer:~]$";
       },
