@@ -74,6 +74,13 @@ interface TrustArgs {
   readonly label?: string;
 }
 
+interface UpdateArgs {
+  readonly command: "update";
+  readonly source: string;
+  readonly lockfile: string;
+  readonly allowNoSignature: boolean;
+}
+
 interface RegistryArgs {
   readonly command: "registry";
   readonly sub: "list" | "add";
@@ -83,7 +90,7 @@ interface RegistryArgs {
   readonly regHash?: string;
 }
 
-type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs | RegistryArgs;
+type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs | RegistryArgs | UpdateArgs;
 
 interface ArgError {
   readonly error: string;
@@ -197,6 +204,25 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
       return result;
     }
     return { error: "registry requires 'add' or 'list'" };
+  }
+
+  if (command === "update") {
+    const source = argv[1];
+    if (!source || source.startsWith("-")) return { error: "update requires a <url-or-path> argument" };
+    let lockfilePath = "ace.lock";
+    let allowNoSignature = false;
+    for (let i = 2; i < argv.length; i++) {
+      if (argv[i] === "--lockfile") {
+        const next = argv[++i];
+        if (!next || next.startsWith("-")) return { error: "--lockfile requires a path argument" };
+        lockfilePath = next;
+      } else if (argv[i] === "--allow-no-signature") {
+        allowNoSignature = true;
+      } else {
+        return { error: `Unknown option for update: ${argv[i]}` };
+      }
+    }
+    return { command: "update", source, lockfile: lockfilePath, allowNoSignature };
   }
 
   if (command === "install") {
@@ -479,6 +505,51 @@ export async function main(argv: readonly string[]): Promise<number> {
       console.log(`  ${pkg.manifest.name}@${pkg.manifest.version}${desc}`);
       console.log(`    hash: ${pkg.hash}`);
     }
+    return 0;
+  }
+
+  if (parsed.command === "update") {
+    let raw: string;
+    try {
+      raw = parsed.source.startsWith("http://") || parsed.source.startsWith("https://")
+        ? await (await fetch(parsed.source)).text() : readFileSync(parsed.source, "utf8");
+    } catch (e) { console.error(`ace: download/read failed: ${(e as Error).message}`); return 1; }
+    let pkg: AcePackage;
+    try { pkg = JSON.parse(raw) as AcePackage; } catch { console.error("ace: package is not valid JSON"); return 65; }
+    if (typeof pkg !== "object" || pkg === null || typeof pkg.manifest !== "object" || pkg.manifest === null || typeof pkg.files !== "object" || pkg.files === null) {
+      console.error("ace: update refused: not a well-formed AcePackage"); return 1;
+    }
+    // Signature gate (same policy as install): hard-refuse a present-but-invalid signature;
+    // no-signature is only overridable with --allow-no-signature.
+    const v = verifySignature(pkg.manifest, loadTrustStore());
+    if (!v.ok && v.reason !== "no-signature") { console.error(`ace: update refused: ${v.reason}`); return 1; }
+    if (!v.ok && v.reason === "no-signature" && !parsed.allowNoSignature) { console.error("ace: update refused: unsigned package (use --allow-no-signature)"); return 1; }
+    // Root content_hash.
+    const rootFilesHash = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
+    if (rootFilesHash !== pkg.manifest.content_hash) { console.error(`ace: update refused: bad-content-hash in ${pkg.manifest.name} (root)`); return 1; }
+
+    if (pkg.manifest.dependencies && pkg.manifest.dependencies.length > 0) {
+      const fetchPackage = async (u: string): Promise<string> =>
+        (u.startsWith("http://") || u.startsWith("https://")) ? await (await fetch(u)).text() : readFileSync(u, "utf8");
+      const registry = loadRegistry();
+      const solveResult = await solve(pkg, fetchPackage, registry);
+      if (!solveResult.ok) { console.error(`ace: update refused: ${solveResult.reason} — ${solveResult.detail} (path: ${solveResult.path.join(" → ")})`); return 1; }
+      const res = await resolve(pkg, fetchPackage, loadTrustStore(), registry, solveResult.versions, { allowNoSignature: parsed.allowNoSignature });
+      if (!res.ok) { console.error(`ace: update refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`); return 1; }
+      // Preflight BEFORE writing — never write a lock for a graph install would reject (Codex #6412).
+      const pf = preflightGraph(res.order);
+      if (pf !== null) { console.error(`ace: update refused: ${pf}`); return 1; }
+      const lf = buildLockfile(pkg, res.order, registry);
+      if ("error" in lf) { console.error(`ace: update refused: could not build lockfile: ${lf.error}`); return 1; }
+      try { writeFileSync(parsed.lockfile, serializeLockfile(lf)); }
+      catch (e) { console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`); return 1; }
+      console.log(`ace: wrote lockfile ${parsed.lockfile} (${lf.nodes.length} deps)`);
+      return 0;
+    }
+    // Leaf: trivial lock.
+    try { writeFileSync(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg))); }
+    catch (e) { console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`); return 1; }
+    console.log(`ace: wrote lockfile ${parsed.lockfile} (0 deps)`);
     return 0;
   }
 

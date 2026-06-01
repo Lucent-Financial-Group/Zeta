@@ -1124,3 +1124,80 @@ describe("leaf-install lockfiles (slice 5.4)", () => {
     expect(listInstalled(store).length).toBe(0);
   });
 });
+
+describe("parseArgs — update", () => {
+  test("update requires a source", () => {
+    expect("error" in parseArgs(["update"])).toBe(true);
+  });
+  test("update parses source + default lockfile", () => {
+    const a = parseArgs(["update", "pkg.json"]);
+    if ("command" in a && a.command === "update") { expect(a.source).toBe("pkg.json"); expect(a.lockfile).toBe("ace.lock"); }
+  });
+  test("update --lockfile override", () => {
+    const a = parseArgs(["update", "pkg.json", "--lockfile", "x.lock"]);
+    if ("command" in a && a.command === "update") expect(a.lockfile).toBe("x.lock");
+  });
+});
+
+describe("ace update (slice 5.4)", () => {
+  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+
+  test("update rewrites ./ace.lock to the freshly-solved graph + installs NOTHING", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-update-pkgs-"));
+    const A1 = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a1" }) }, files: { "a.txt":"a1" } };
+    const a1Path = join(dir, "A-1.0.0.json"); writeFileSync(a1Path, JSON.stringify(A1)); await main(["registry","add","A","1.0.0",a1Path]);
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const lockPath = join(dir, "ace.lock");
+    const genStore = mkdtempSync(join(tmpdir(), "ace-update-gen-"));
+    // 1. Normal install locks A@1.0.0.
+    expect(await main(["install", rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", lockPath])).toBe(0);
+    const before = parseLockfile(readFileSync(lockPath, "utf8"));
+    expect("error" in before).toBe(false);
+    if (!("error" in before)) expect(before.nodes.map((n)=>`${n.name}@${n.version}`)).toEqual(["A@1.0.0"]);
+    const installedBefore = listInstalled(genStore).map((p)=>p.manifest.name).sort();
+    // 2. Add A@1.1.0 (in-range) → a fresh solve now picks A@1.1.0.
+    const A11 = { manifest: { format_version:1, name:"A", version:"1.1.0", content_hash: h({ "a.txt":"a11" }) }, files: { "a.txt":"a11" } };
+    const a11Path = join(dir, "A-1.1.0.json"); writeFileSync(a11Path, JSON.stringify(A11)); await main(["registry","add","A","1.1.0",a11Path]);
+    // 3. ace update → rewrites the lock to A@1.1.0, extracts NOTHING (no --store; gen-store unchanged).
+    const code = await main(["update", rootPath, "--lockfile", lockPath, "--allow-no-signature"]);
+    expect(code).toBe(0);
+    const after = parseLockfile(readFileSync(lockPath, "utf8"));
+    expect("error" in after).toBe(false);
+    if (!("error" in after)) {
+      expect(after.nodes.map((n)=>`${n.name}@${n.version}`)).toEqual(["A@1.1.0"]);
+      expect(after.nodes[0]!.package_hash).toBe(packageHash(A11 as any));
+    }
+    // The gen-store is unchanged — update never extracted A@1.1.0.
+    expect(listInstalled(genStore).map((p)=>p.manifest.name).sort()).toEqual(installedBefore);
+  });
+
+  test("update on a leaf writes an empty-nodes lock", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-update-leaf-"));
+    const pkg = { manifest: { format_version:1, name:"leaf", version:"1.0.0", content_hash: h({ "leaf.txt":"v1" }) }, files: { "leaf.txt":"v1" } };
+    const pkgPath = join(dir, "leaf.json"); writeFileSync(pkgPath, JSON.stringify(pkg));
+    const lockPath = join(dir, "ace.lock");
+    const code = await main(["update", pkgPath, "--lockfile", lockPath, "--allow-no-signature"]);
+    expect(code).toBe(0);
+    const lf = parseLockfile(readFileSync(lockPath, "utf8"));
+    expect("error" in lf).toBe(false);
+    if (!("error" in lf)) {
+      expect(lf.root.name).toBe("leaf");
+      expect(lf.root.package_hash).toBe(packageHash(pkg as any));
+      expect(lf.nodes).toEqual([]);
+    }
+  });
+
+  test("update refuses (no lock written) when a freshly-solved node fails preflight", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-update-bad-"));
+    // A dep with an unsafe file path → preflightGraph fails → no lock written (preflight-before-write).
+    const bad = { manifest: { format_version:1, name:"BAD", version:"1.0.0", content_hash: h({ "../escape":"x" }) }, files: { "../escape":"x" } };
+    const badPath = join(dir, "BAD.json"); writeFileSync(badPath, JSON.stringify(bad)); await main(["registry","add","BAD","1.0.0",badPath]);
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"BAD", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const lockPath = join(dir, "ace.lock");
+    const code = await main(["update", rootPath, "--lockfile", lockPath, "--allow-no-signature"]);
+    expect(code).toBe(1);
+    expect(existsSync(lockPath)).toBe(false);
+  });
+});
