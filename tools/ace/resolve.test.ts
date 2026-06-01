@@ -81,3 +81,33 @@ describe("resolve — dedup", () => {
     if (r.ok) expect(r.order.map((p) => p.manifest.name).sort()).toEqual(["X", "Y", "root"]);
   });
 });
+
+describe("resolve — conflicts", () => {
+  test("version-skew (A->D@1.0, B->D@2.0) refuses", async () => {
+    const D1 = pkgOf("D", { "d.txt": "d1" });
+    const D2: AcePackage = { manifest: { ...D1.manifest, version: "2.0.0" }, files: { "d.txt": "d2" } };
+    const A = pkgOf("A", { "a.txt": "a" }, [{ pkg: D1, url: "http://e/D1" }]);
+    const B: AcePackage = { manifest: { ...pkgOf("B", { "b.txt": "b" }).manifest, dependencies: [{ name: "D", version: "2.0.0", url: "http://e/D2", package_hash: packageHash(D2) }] }, files: { "b.txt": "b" } };
+    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: A, url: "http://e/A" }, { pkg: B, url: "http://e/B" }]);
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B, "http://e/D1": D1, "http://e/D2": D2 }), NO_TRUST, { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("version-skew");
+  });
+  test("root-involving skew (root@1 -> A -> root@2) refuses (root seeded)", async () => {
+    const root2: AcePackage = { manifest: { format_version: 1, name: "root", version: "2.0.0", content_hash: "sha256:zzz" }, files: { "r.txt": "two" } };
+    const A: AcePackage = { manifest: { ...pkgOf("A", { "a.txt": "a" }).manifest, dependencies: [{ name: "root", version: "2.0.0", url: "http://e/root2", package_hash: packageHash(root2) }] }, files: { "a.txt": "a" } };
+    const root = pkgOf("root", { "r.txt": "one" }, [{ pkg: A, url: "http://e/A" }]);
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/root2": root2 }), NO_TRUST, { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(["version-skew", "cycle"]).toContain(r.reason);
+  });
+  test("root cycle (root@1 -> A -> root@1) refuses as cycle", async () => {
+    const root1Files = { "r.txt": "one" };
+    const rootPlaceholder = pkgOf("root", root1Files);
+    const A: AcePackage = { manifest: { ...pkgOf("A", { "a.txt": "a" }).manifest, dependencies: [{ name: "root", version: "1.0.0", url: "http://e/root", package_hash: packageHash(rootPlaceholder) }] }, files: { "a.txt": "a" } };
+    const root = pkgOf("root", root1Files, [{ pkg: A, url: "http://e/A" }]);
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/root": root }), NO_TRUST, { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("cycle");
+  });
+});
