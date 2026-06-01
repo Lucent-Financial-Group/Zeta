@@ -228,6 +228,10 @@ describe("B-0891 QEMU state-preservation planner", () => {
         observedSteps.push(step);
         return successfulExecution(step, command);
       },
+      runCommandUntilSerialMarkers: (step, command) => {
+        observedSteps.push(step);
+        return successfulExecution(step, command);
+      },
       readSerialOutput: () => [
         "zeta-creds-restore: reading preserved ESP blob",
         "zeta-creds-restore: already-present, skipping credential rewrite",
@@ -246,6 +250,31 @@ describe("B-0891 QEMU state-preservation planner", () => {
       ]);
       expect(result.ok.commandExecutions).toHaveLength(6);
       expect(result.ok.serialAssertion.matchedMarkers).toContain("already-present");
+    }
+  });
+
+  test("fails closed when serial-gated QEMU steps lack a lifecycle executor", () => {
+    const observedSteps: Qcow2RetentionExecutionStep[] = [];
+    const result = executeQcow2SnapshotRetentionPlan(retentionPlan(), {
+      runCommand: (step, command) => {
+        observedSteps.push(step);
+        return successfulExecution(step, command);
+      },
+      readSerialOutput: () => {
+        throw new Error("serial should not be read when lifecycle executor is missing");
+      },
+    });
+
+    expect(observedSteps).toEqual(["create-disk-image"]);
+    expect("error" in result).toBe(true);
+    if ("error" in result) {
+      expect(result.error.kind).toBe("command-failed");
+      expect(result.error.commandExecutions).toHaveLength(1);
+      if (result.error.kind === "command-failed") {
+        expect(result.error.step).toBe("initial-install-from-iso-with-disk");
+        expect(result.error.exitCode).toBe(null);
+        expect(result.error.stderr).toContain("missing runCommandUntilSerialMarkers");
+      }
     }
   });
 
@@ -521,6 +550,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
         }
         return successfulExecution(step, command);
       },
+      runCommandUntilSerialMarkers: successfulExecution,
       readSerialOutput: () => {
         throw new Error("serial should not be read after command failure");
       },
@@ -539,6 +569,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
   test("returns marker feedback after command execution when retention was not observed", () => {
     const result = executeQcow2SnapshotRetentionPlan(retentionPlan(), {
       runCommand: successfulExecution,
+      runCommandUntilSerialMarkers: successfulExecution,
       readSerialOutput: () => "zeta-creds-restore: restored credentials",
     });
 

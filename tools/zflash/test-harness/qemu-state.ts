@@ -690,9 +690,23 @@ export function executeQcow2SnapshotRetentionPlan(
   for (const { step, command, stopCondition } of retentionExecutionSteps(plan)) {
     let execution: QemuCommandExecution;
     try {
-      execution = stopCondition !== undefined && executor.runCommandUntilSerialMarkers !== undefined
-        ? executor.runCommandUntilSerialMarkers(step, command, stopCondition)
-        : executor.runCommand(step, command);
+      if (stopCondition !== undefined) {
+        if (executor.runCommandUntilSerialMarkers === undefined) {
+          return {
+            error: {
+              kind: "command-failed",
+              step,
+              command,
+              exitCode: null,
+              stderr: `missing runCommandUntilSerialMarkers executor for serial-gated QEMU step ${step}`,
+              commandExecutions,
+            },
+          };
+        }
+        execution = executor.runCommandUntilSerialMarkers(step, command, stopCondition);
+      } else {
+        execution = executor.runCommand(step, command);
+      }
     } catch (error) {
       return {
         error: {
