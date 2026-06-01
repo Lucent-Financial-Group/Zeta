@@ -4,12 +4,9 @@ import { join, dirname } from "node:path";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
-export interface AceDependency {
-  readonly name: string;
-  readonly version: string;
-  readonly url: string;
-  readonly package_hash: string; // sha256 of the canonical FULL package (manifest incl. signature + files)
-}
+export type AceDependency =
+  | { readonly kind: "inline"; readonly name: string; readonly version: string; readonly url: string; readonly package_hash: string }
+  | { readonly kind: "registry"; readonly name: string; readonly version: string };
 
 export interface AceManifest {
   readonly format_version: number;
@@ -233,4 +230,50 @@ export function listTrustedKeys(
     if (v.label !== undefined) row.label = v.label;
     return row;
   });
+}
+
+// ---- Registry (slice 5.1) ----
+
+export interface RegistryEntry { readonly url: string; readonly package_hash: string; }
+export type Registry = Map<string, Map<string, RegistryEntry>>; // name → version → entry
+
+/** ~/.ace/registry.json — operator-managed (sibling of trusted-keys.json). */
+export function registryPath(): string {
+  const home = process.env.HOME ?? process.env.USERPROFILE ?? ".";
+  return join(home, ".ace", "registry.json");
+}
+
+/** tools/ace/registry.json — bundled root anchor (ships `{}`). Portable ESM idiom (per bundledTrustPath). */
+export function bundledRegistryPath(): string {
+  return join(dirname(fileURLToPath(import.meta.url)), "registry.json");
+}
+
+/** Parse a registry file into the on-disk object shape; {} on missing/malformed (non-fatal). */
+function readRegistryFile(p: string): Record<string, Record<string, RegistryEntry>> {
+  if (!existsSync(p)) return {};
+  try {
+    const obj = JSON.parse(readFileSync(p, "utf8"));
+    if (typeof obj !== "object" || obj === null || Array.isArray(obj)) return {};
+    return obj as Record<string, Record<string, RegistryEntry>>;
+  } catch { return {}; }
+}
+
+/** bundled ∪ user; user overrides bundled on (name, version). */
+export function loadRegistry(bundledPath: string = bundledRegistryPath(), userPath: string = registryPath()): Registry {
+  const m: Registry = new Map();
+  const merge = (src: Record<string, Record<string, RegistryEntry>>): void => {
+    for (const [name, versions] of Object.entries(src)) {
+      if (typeof versions !== "object" || versions === null) continue;
+      let vm = m.get(name);
+      if (!vm) { vm = new Map(); m.set(name, vm); }
+      for (const [version, entry] of Object.entries(versions)) {
+        if (entry && typeof (entry as RegistryEntry).url === "string" && typeof (entry as RegistryEntry).package_hash === "string") {
+          vm.set(version, { url: (entry as RegistryEntry).url, package_hash: (entry as RegistryEntry).package_hash });
+        }
+      }
+    }
+  };
+  merge(readRegistryFile(bundledPath));
+  merge(readRegistryFile(userPath));
+  return m;
 }

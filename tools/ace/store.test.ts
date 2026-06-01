@@ -3,7 +3,7 @@ import { mkdtempSync, existsSync, readFileSync, statSync, writeFileSync, chmodSy
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
-import { contentHash, installPackage, validatePackagePaths, loadTrustStore, addTrustedKey, listTrustedKeys, trustStorePath } from "./store.ts";
+import { contentHash, installPackage, validatePackagePaths, loadTrustStore, addTrustedKey, listTrustedKeys, trustStorePath, bundledRegistryPath, registryPath, loadRegistry } from "./store.ts";
 
 describe("contentHash", () => {
   test("sha256 of known bytes matches the sha256:<hex> form", () => {
@@ -236,5 +236,19 @@ describe("trust store", () => {
     } else {
       console.log("[skip] POSIX dir-mode assertion not applicable on Windows; dir exists:", existsSync(aceDir));
     }
+  });
+});
+
+describe("registry paths + empty load", () => {
+  test("registryPath is under ~/.ace", () => {
+    expect(registryPath().replace(/\\/g, "/")).toMatch(/\.ace\/registry\.json$/);
+  });
+  test("bundledRegistryPath ends in tools/ace/registry.json", () => {
+    expect(bundledRegistryPath().replace(/\\/g, "/")).toMatch(/tools\/ace\/registry\.json$/);
+  });
+  test("loadRegistry on two missing files is an empty Map", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
+    const m = loadRegistry(join(dir, "b.json"), join(dir, "u.json"));
+    expect(m.size).toBe(0);
   });
 });
