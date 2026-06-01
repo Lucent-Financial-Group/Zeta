@@ -178,40 +178,47 @@ module ToffoliGate =
         let partialCount = leftWidth * rightWidth
 
         let mutable nextWire = 0
+        let mutable wireValues = []
 
-        let takeOne () =
+        let takeWire value =
             let wire = nextWire
             nextWire <- nextWire + 1
+            wireValues <- (wire, value) :: wireValues
             wire
 
-        let take count =
-            let wires = wireRange nextWire count
-            nextWire <- nextWire + count
-            wires
+        let takeZero () = takeWire Zero
 
-        let constantOneWire = takeOne ()
-        let leftSignWire = takeOne ()
-        let leftMagnitudeWires = take leftWidth
-        let rightSignWire = takeOne ()
-        let rightMagnitudeWires = take rightWidth
-        let productSignWire = takeOne ()
-        let productMagnitudeWires = take productWidth
-        let intermediateWires = take partialCount
-        let carryWires = take partialCount
+        let takeWires values =
+            values |> List.map takeWire
 
         let leftBits = magnitudeBits leftWidth leftMagnitude
         let rightBits = magnitudeBits rightWidth rightMagnitude
 
-        let wireValues =
-            [ yield constantOneWire, One
-              yield leftSignWire, signBit left
-              yield! List.zip leftMagnitudeWires leftBits
-              yield rightSignWire, signBit right
-              yield! List.zip rightMagnitudeWires rightBits
-              yield productSignWire, Zero
-              yield! productMagnitudeWires |> List.map (fun wire -> wire, Zero)
-              yield! intermediateWires |> List.map (fun wire -> wire, Zero)
-              yield! carryWires |> List.map (fun wire -> wire, Zero) ]
+        let constantOneWire = takeWire One
+        let leftSignWire = takeWire (signBit left)
+        let leftMagnitudeWires = takeWires leftBits
+        let rightSignWire = takeWire (signBit right)
+        let rightMagnitudeWires = takeWires rightBits
+        let productSignWire = takeZero ()
+        let productMagnitudeWires = takeWires (List.replicate productWidth Zero)
+        let intermediateWires = takeWires (List.replicate partialCount Zero)
+        let carryWires = ResizeArray<WireId>()
+
+        let rec addBitToProductColumn (sourceWire: WireId) (column: int) : ToffoliGateStep list =
+            if column >= productWidth then
+                []
+            else
+                let productWire = productMagnitudeWires.[column]
+                let carryWire = takeZero ()
+                carryWires.Add carryWire
+
+                [ { ControlA = sourceWire
+                    ControlB = productWire
+                    Target = carryWire }
+                  { ControlA = sourceWire
+                    ControlB = constantOneWire
+                    Target = productWire } ]
+                @ addBitToProductColumn carryWire (column + 1)
 
         let indexedBitPairs =
             [ for leftIndex, leftWire in List.indexed leftMagnitudeWires do
@@ -222,18 +229,12 @@ module ToffoliGate =
             indexedBitPairs
             |> List.mapi (fun index (leftIndex, rightIndex, leftWire, rightWire) ->
                 let partialWire = intermediateWires.[index]
-                let carryWire = carryWires.[index]
-                let productWire = productMagnitudeWires.[leftIndex + rightIndex]
+                let productColumn = leftIndex + rightIndex
 
                 [ { ControlA = leftWire
                     ControlB = rightWire
-                    Target = partialWire }
-                  { ControlA = partialWire
-                    ControlB = constantOneWire
-                    Target = productWire }
-                  { ControlA = partialWire
-                    ControlB = productWire
-                    Target = carryWire } ])
+                    Target = partialWire } ]
+                @ addBitToProductColumn partialWire productColumn)
 
         let signGates =
             [ { ControlA = leftSignWire
@@ -245,7 +246,7 @@ module ToffoliGate =
 
         let circuit =
             { Gates = signGates @ List.collect id peresChains
-              Wires = Map.ofList wireValues
+              Wires = wireValues |> List.rev |> Map.ofList
               Ancilla = nextWire }
 
         { Circuit = circuit
@@ -257,5 +258,5 @@ module ToffoliGate =
           ProductSignWire = productSignWire
           ProductMagnitudeWires = productMagnitudeWires
           IntermediateWires = intermediateWires
-          CarryWires = carryWires
+          CarryWires = carryWires |> Seq.toList
           PeresChains = peresChains }

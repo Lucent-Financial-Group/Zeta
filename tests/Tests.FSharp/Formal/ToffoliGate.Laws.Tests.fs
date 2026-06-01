@@ -175,13 +175,13 @@ let ``Weight multiplication fragment records Peres-shaped chains`` () =
 
     fragment.PeresChains.Length |> should equal pairCount
     fragment.PeresChains
-    |> List.forall (fun chain -> chain.Length = 3)
+    |> List.forall (fun chain -> chain.Length >= 3)
     |> should equal true
 
     fragment.ProductMagnitudeWires.Length
     |> should equal (fragment.LeftMagnitudeWires.Length + fragment.RightMagnitudeWires.Length)
     fragment.IntermediateWires.Length |> should equal pairCount
-    fragment.CarryWires.Length |> should equal pairCount
+    fragment.CarryWires.Length >= pairCount |> should equal true
     fragment.Circuit.Gates |> List.skip 2 |> should equal (fragment.PeresChains |> List.collect id)
 
 
@@ -209,3 +209,25 @@ let ``Weight multiplication fragment keeps zero weight as one magnitude bit`` ()
     wireBits fragment fragment.RightMagnitudeWires |> should equal [ Zero ]
     fragment.ProductMagnitudeWires.Length |> should equal 2
     fragment.PeresChains.Length |> should equal 1
+
+
+[<Fact>]
+let ``Weight multiplication fragment propagates colliding partial-product carries`` () =
+    let fragment = ToffoliGate.modelWeightMul 3L 3L
+    let columnOne = fragment.ProductMagnitudeWires.[1]
+    let columnTwo = fragment.ProductMagnitudeWires.[2]
+    let gates = fragment.Circuit.Gates
+
+    gates
+    |> List.filter (fun step -> step.Target = columnOne)
+    |> List.length
+    |> should be (greaterThanOrEqualTo 2)
+
+    fragment.CarryWires
+    |> List.exists (fun carry ->
+        gates
+        |> List.exists (fun step ->
+            step.ControlA = carry
+            && step.ControlB = fragment.ConstantOneWire
+            && step.Target = columnTwo))
+    |> should equal true
