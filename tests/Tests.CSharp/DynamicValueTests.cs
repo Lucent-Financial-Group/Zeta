@@ -2,12 +2,13 @@ using System.Collections.Immutable;
 using System.Linq;
 using Xunit;
 using Zeta.Core.CSharp;
+using static Zeta.Core.CSharp.DynamicValues;
 
 namespace Zeta.Tests.CSharp;
 
-// DynamicValue — the C# oracle (#3 of TS/F#/C#/Rust). Mirrors the F# canonical-shape tests
-// (tests/Tests.FSharp/DynamicValue.Tests.fs) so the C# impl conforms to the same shape, lazy-bind
-// accessors, structural equality (incl. native Bytes), and PropertyPath semantics.
+// DynamicValue — the C# oracle (#3 of TS/F#/C#/Rust). Mirrors the F# canonical-shape tests so the
+// C# impl conforms to the same shape, lazy-bind accessors, structural equality (incl. native
+// Bytes), and PropertyPath semantics. Accessors are on the DynamicValues static companion.
 public class DynamicValueTests
 {
     private static DynamicValue.Bytes Bytes(params byte[] xs) => new(ImmutableArray.Create(xs));
@@ -41,47 +42,47 @@ public class DynamicValueTests
     [Fact]
     public void IsNullOnlyForNull()
     {
-        Assert.True(new DynamicValue.Null().IsNull);
-        Assert.False(new DynamicValue.Bool(false).IsNull);
+        Assert.True(IsNull(new DynamicValue.Null()));
+        Assert.False(IsNull(new DynamicValue.Bool(false)));
     }
 
     [Fact]
     public void TryAccessorsBindMatchingShapeAndDeclineTheRest()
     {
-        Assert.True(new DynamicValue.Bool(true).TryBool()!.Value);
-        Assert.Null(new DynamicValue.Int(1L).TryBool());
+        Assert.True(TryBool(new DynamicValue.Bool(true))!.Value);
+        Assert.Null(TryBool(new DynamicValue.Int(1L)));
 
-        Assert.Equal(7L, new DynamicValue.Int(7L).TryInt()!.Value);
-        Assert.Null(new DynamicValue.Float(7.0).TryInt());
+        Assert.Equal(7L, TryInt(new DynamicValue.Int(7L))!.Value);
+        Assert.Null(TryInt(new DynamicValue.Float(7.0)));
 
-        Assert.Equal(2.5, new DynamicValue.Float(2.5).TryFloat()!.Value);
-        Assert.Null(new DynamicValue.Int(2L).TryFloat()); // strict: no widening
+        Assert.Equal(2.5, TryFloat(new DynamicValue.Float(2.5))!.Value);
+        Assert.Null(TryFloat(new DynamicValue.Int(2L))); // strict: no widening
 
-        Assert.Equal("hi", new DynamicValue.String("hi").TryString());
-        Assert.Null(new DynamicValue.Null().TryString());
+        Assert.Equal("hi", TryString(new DynamicValue.String("hi")));
+        Assert.Null(TryString(new DynamicValue.Null()));
 
-        Assert.True(Bytes(9).TryBytes().HasValue);
-        Assert.False(new DynamicValue.String("9").TryBytes().HasValue);
+        Assert.True(TryBytes(Bytes(9)).HasValue);
+        Assert.False(TryBytes(new DynamicValue.String("9")).HasValue);
 
-        Assert.True(Arr().TryArray().HasValue);
-        Assert.False(Obj().TryArray().HasValue);
+        Assert.True(TryArray(Arr()).HasValue);
+        Assert.False(TryArray(Obj()).HasValue);
 
-        Assert.True(Obj().TryObject().HasValue);
-        Assert.False(Arr().TryObject().HasValue);
+        Assert.True(TryObject(Obj()).HasValue);
+        Assert.False(TryObject(Arr()).HasValue);
     }
 
     [Fact]
     public void TryFieldAndTryItem()
     {
-        Assert.Equal(new DynamicValue.Bool(true), Sample.TryField("flag"));
-        Assert.Null(Sample.TryField("missing"));
-        Assert.Null(new DynamicValue.Int(1L).TryField("flag"));
+        Assert.Equal(new DynamicValue.Bool(true), TryField(Sample, "flag"));
+        Assert.Null(TryField(Sample, "missing"));
+        Assert.Null(TryField(new DynamicValue.Int(1L), "flag"));
 
         var arr = Arr(new DynamicValue.Int(10L), new DynamicValue.Int(20L));
-        Assert.Equal(new DynamicValue.Int(20L), arr.TryItem(1));
-        Assert.Null(arr.TryItem(5)); // out of range
-        Assert.Null(arr.TryItem(-1)); // negative
-        Assert.Null(Obj().TryItem(0)); // not an array
+        Assert.Equal(new DynamicValue.Int(20L), TryItem(arr, 1));
+        Assert.Null(TryItem(arr, 5)); // out of range
+        Assert.Null(TryItem(arr, -1)); // negative
+        Assert.Null(TryItem(Obj(), 0)); // not an array
     }
 
     [Fact]
@@ -124,48 +125,54 @@ public class DynamicValueTests
     [Fact]
     public void GetNavigatesDottedAndIndexedPaths()
     {
-        Assert.Equal(new DynamicValue.Int(20L), Sample.Get("a.b[1]"));
-        Assert.Equal(new DynamicValue.Bool(true), Sample.Get("flag"));
-        Assert.Equal(new DynamicValue.Null(), Sample.Get("a.n"));
+        Assert.Equal(new DynamicValue.Int(20L), Get(Sample, "a.b[1]"));
+        Assert.Equal(new DynamicValue.Bool(true), Get(Sample, "flag"));
+        Assert.Equal(new DynamicValue.Null(), Get(Sample, "a.n"));
     }
 
     [Fact]
     public void GetReturnsTheValueItselfForAnEmptyPath()
     {
-        Assert.Equal(Sample, Sample.Get(""));
+        Assert.Equal(Sample, Get(Sample, ""));
     }
 
     [Fact]
     public void GetDeclinesMissOutOfRangeAndTypeMismatch()
     {
-        Assert.Null(Sample.Get("a.missing")); // key absent
-        Assert.Null(Sample.Get("a.b[9]")); // index out of range
-        Assert.Null(Sample.Get("flag.x")); // descend into a non-object
+        Assert.Null(Get(Sample, "a.missing")); // key absent
+        Assert.Null(Get(Sample, "a.b[9]")); // index out of range
+        Assert.Null(Get(Sample, "flag.x")); // descend into a non-object
     }
 
     [Fact]
     public void GetSupportsABareLeadingIndex()
     {
         var arr = Arr(new DynamicValue.String("zero"), new DynamicValue.String("one"));
-        Assert.Equal(new DynamicValue.String("one"), arr.Get("[1]"));
+        Assert.Equal(new DynamicValue.String("one"), Get(arr, "[1]"));
     }
 
     [Fact]
     public void GetDeclinesMalformedPaths()
     {
-        Assert.Null(Sample.Get("a.b[")); // unterminated bracket
-        Assert.Null(Sample.Get("a.b[x]")); // non-digit index
-        Assert.Null(Sample.Get("a]b")); // stray close bracket
-        Assert.Null(Sample.Get("a.b[99999999999999999999]")); // index overflows Int32 -> null, not an exception
+        Assert.Null(Get(Sample, "a.b[")); // unterminated bracket
+        Assert.Null(Get(Sample, "a.b[x]")); // non-digit index
+        Assert.Null(Get(Sample, "a]b")); // stray close bracket
+        Assert.Null(Get(Sample, "a.b[99999999999999999999]")); // index overflows Int32 -> null, not an exception
     }
 
     [Fact]
     public void GetDeclinesEmptySegments()
     {
-        Assert.Null(Sample.Get(".flag")); // leading dot
-        Assert.Null(Sample.Get("a..b")); // doubled dot
-        Assert.Null(Sample.Get("a.")); // trailing dot
-        Assert.Null(Sample.Get(".")); // lone dot
+        Assert.Null(Get(Sample, ".flag")); // leading dot
+        Assert.Null(Get(Sample, "a..b")); // doubled dot
+        Assert.Null(Get(Sample, "a.")); // trailing dot
+        Assert.Null(Get(Sample, ".")); // lone dot
+    }
+
+    [Fact]
+    public void GetDeclinesNullPath()
+    {
+        Assert.Null(Get(Sample, null!)); // null path -> null, not a NullReferenceException
     }
 
     [Fact]
@@ -183,8 +190,8 @@ public class DynamicValueTests
         Assert.Equal(obj, new DynamicValue.Object(ImmutableArray<KeyValuePair<string, DynamicValue>>.Empty));
 
         // and navigation/accessors over them don't throw
-        Assert.Null(arr.TryItem(0));
-        Assert.Null(obj.TryField("x"));
-        Assert.True(bytes.TryBytes()!.Value.IsEmpty);
+        Assert.Null(TryItem(arr, 0));
+        Assert.Null(TryField(obj, "x"));
+        Assert.True(TryBytes(bytes)!.Value.IsEmpty);
     }
 }
