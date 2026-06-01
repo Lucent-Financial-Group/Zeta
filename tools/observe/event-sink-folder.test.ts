@@ -14,7 +14,7 @@ import { join } from "node:path";
 import { unpack } from "../../src/Core.TypeScript/zeta-id/zeta-id";
 import { Category, type ZetaId } from "../../src/Core.TypeScript/zeta-id/types";
 import { execute } from "./execute";
-import { folderSink, gitCommitToMain, mintObserveEventIdHex, type CommitOutcome, type EventEnvelope } from "./event-sink-folder";
+import { coauthorFor, folderSink, gitCommitToMain, mintObserveEventIdHex, type CommitOutcome, type EventEnvelope } from "./event-sink-folder";
 import type { NextAction, World } from "./observe";
 
 let dir: string;
@@ -48,11 +48,20 @@ describe("folderSink — write the fact envelope + commit", () => {
     expect(env).toEqual({ id: "abc123", at: "2026-05-31T12:00:00.000Z", by: "otto-cli", action: freeTime });
   });
 
-  it("is idempotent: same id appended twice → both ok (EEXIST is a no-op, G-Set)", async () => {
+  it("is idempotent: same id + same content appended twice → both ok (EEXIST no-op, G-Set)", async () => {
     const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => "dup", now: () => FIXED, commit: okCommit });
     const a = await sink.append(freeTime);
     const b = await sink.append(freeTime);
     expect(a.ok && b.ok).toBe(true);
+  });
+
+  it("rejects a same-id collision with DIFFERENT content (not a silent no-op)", async () => {
+    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => "clash", now: () => FIXED, commit: okCommit });
+    const first = await sink.append(freeTime);
+    const second = await sink.append({ kind: "self_reflect", reason: "different action, same id" });
+    expect(first.ok).toBe(true);
+    expect(second.ok).toBe(false);
+    if (!second.ok) expect(second.reason).toContain("collision");
   });
 
   it("surfaces a commit failure as ok:false (never throws)", async () => {
@@ -97,6 +106,17 @@ describe("folderSink composes with execute (the real adapter end-to-end)", () =>
     expect(committed).toHaveLength(1);
     const env = JSON.parse(readFileSync(join(dir, "evt.json"), "utf-8")) as EventEnvelope;
     expect(env.action).toEqual(freeTime);
+  });
+});
+
+describe("coauthorFor — harness-specific trailer from the acting agent (shared sink)", () => {
+  it("maps each surface to its trailer; falls back to naming the sender", () => {
+    expect(coauthorFor("otto-cli")).toBe("Co-Authored-By: Claude <noreply@anthropic.com>");
+    expect(coauthorFor("alexa-kiro")).toBe("Co-Authored-By: Kiro <noreply@kiro.dev>");
+    expect(coauthorFor("riven-cursor")).toBe("Co-Authored-By: Grok <noreply@x.ai>");
+    expect(coauthorFor("vera-codex")).toBe("Co-Authored-By: Codex <noreply@openai.com>");
+    expect(coauthorFor("lior-antigravity")).toBe("Co-Authored-By: Gemini <noreply@google.com>");
+    expect(coauthorFor("addison")).toBe("Co-Authored-By: addison <noreply@zeta.local>");
   });
 });
 

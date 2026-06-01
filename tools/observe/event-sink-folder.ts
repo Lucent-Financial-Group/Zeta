@@ -45,7 +45,7 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pack, DEFAULT_ENV, type SimulationEnvironment } from "../../src/Core.TypeScript/zeta-id/zeta-id";
 import {
@@ -119,9 +119,37 @@ function writeEventFile(envelope: EventEnvelope, eventDir: string): { ok: true; 
     return { ok: true, path };
   } catch (err) {
     const e = err as NodeJS.ErrnoException;
-    if (e.code === "EEXIST") return { ok: true, path }; // idempotent: this event id already landed (G-Set)
+    if (e.code === "EEXIST") {
+      // Same id already on disk. Idempotent SUCCESS only if the content matches
+      // (the true G-Set property). A reused id with a different action/by/at is a
+      // real collision — surface it, never silently accept stale (Codex #6312 P2).
+      try {
+        const existing = readFileSync(path, "utf-8");
+        if (existing === `${JSON.stringify(envelope, null, 2)}\n`) return { ok: true, path };
+        return { ok: false, reason: `id collision: ${envelope.id} already exists with different content` };
+      } catch (readErr) {
+        return { ok: false, reason: `EEXIST but re-read failed: ${(readErr as Error).message}` };
+      }
+    }
     return { ok: false, reason: `write failed: ${e.message}` };
   }
+}
+
+/**
+ * Harness-specific `Co-Authored-By` trailer derived from the acting agent id.
+ * The sink is SHARED — Vera/Riven/Alexa/Lior all use it — and the repo requires
+ * per-surface trailers (agent-roster-reference-card), so a hardcoded Claude
+ * trailer mis-attributes every non-Otto surface's events (Codex #6312 P2).
+ * Mirrors the agent-bus `coauthorFor` map; falls back to naming the sender.
+ */
+export function coauthorFor(by: string): string {
+  const id = by.toLowerCase();
+  if (id.startsWith("otto")) return "Co-Authored-By: Claude <noreply@anthropic.com>";
+  if (id.startsWith("alexa")) return "Co-Authored-By: Kiro <noreply@kiro.dev>";
+  if (id.startsWith("riven")) return "Co-Authored-By: Grok <noreply@x.ai>";
+  if (id.startsWith("vera")) return "Co-Authored-By: Codex <noreply@openai.com>";
+  if (id.startsWith("lior")) return "Co-Authored-By: Gemini <noreply@google.com>";
+  return `Co-Authored-By: ${by} <noreply@zeta.local>`;
 }
 
 /**
@@ -152,7 +180,7 @@ export function gitCommitToMain(filePath: string, envelope: EventEnvelope): Comm
       "",
       `Observe event ${envelope.id} appended folder-direct-to-main (sovereign transport, B-0890.1).`,
       "",
-      "Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>",
+      coauthorFor(envelope.by),
     ].join("\n");
     run(["commit", "--no-verify", "-q", "-m", msg, "--", gitPath]);
     for (let attempt = 0; attempt < 3; attempt++) {
@@ -163,7 +191,15 @@ export function gitCommitToMain(filePath: string, envelope: EventEnvelope): Comm
         try {
           run(["pull", "--rebase", "origin", "main"]);
         } catch {
-          return { ok: false, reason: "push rejected and rebase failed (peer contention)" };
+          // Leave the checkout clean: abort the in-progress rebase (best-effort) so the
+          // next append / any unrelated git op isn't blocked. Result-only contract
+          // means we never leave a dangling rebase behind (Codex #6312 P2).
+          try {
+            run(["rebase", "--abort"]);
+          } catch {
+            /* no rebase in progress to abort — fine */
+          }
+          return { ok: false, reason: "push rejected and rebase failed (peer contention); rebase aborted" };
         }
       }
     }
