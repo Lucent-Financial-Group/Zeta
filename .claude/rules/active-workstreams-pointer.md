@@ -6,7 +6,8 @@ Carved sentence:
 > master row + driving surface. Current lanes (operator-confirmed 2026-06-01):
 > workflow→sovereign-DB · encryption · zflash · git-accelerator · Ace-distribution.
 > It is a **map, not a queue**: `claim acquire` before working any item, respect
-> surface lanes, and check the git-native bus + open PRs for live claims. A bridge
+> surface lanes, and check the claim-coordinator + open PRs for live claims (the
+> git-native bus once B-0954 populates `docs/agent-bus/`). A bridge
 > until observe.ts coordinates lanes automatically.
 
 ## Why this rule exists
@@ -23,7 +24,8 @@ make every surface pile onto the same items.
 index: each active lane → its master row(s) + the surface working it, plus the
 coordination discipline. Distinct from `ROADMAP.md` (shipped features) and
 `CURRENT-ROUND.md` (round status); this is _who is building what, per lane._ Update
-it there when lanes shift; the bus + open PRs are the live, always-current truth.
+it there when lanes shift; the claim-coordinator + open PRs are the live,
+always-current truth (the git-native bus joins once B-0954 populates it).
 
 ## Map, not a queue — the collision-guard
 
@@ -31,8 +33,11 @@ it there when lanes shift; the bus + open PRs are the live, always-current truth
    a second surface that tries a claimed item gets exit-1 and picks another.
 2. **Respect lanes** — per [`agent-roster-reference-card.md`](agent-roster-reference-card.md);
    don't cross into another surface's active lane.
-3. **Check the live registry** — the git-native bus (`docs/agent-bus/`, B-0954) +
-   open PRs, cross-machine. Authoritative; the doc's snapshot is only a cold-boot hint.
+3. **Check the live registry** — **today** the claim-coordinator
+   (`bun tools/bus/claim.ts check`) + open PRs (authoritative now). The git-native
+   cross-machine bus (`docs/agent-bus/`, B-0954) becomes the registry **once B-0954
+   populates that folder** — it is absent on main today, so don't rely on it yet.
+   The doc's lane snapshot is only a cold-boot hint.
 
 This is the B-0959 §0 agent-partition recognition applied to the agents themselves:
 each surface is a shard, `claim acquire` is the join-point, lanes are the partition,

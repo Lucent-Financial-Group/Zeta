@@ -7,9 +7,11 @@ built, each lane pointing at its master row + the surface driving it. Distinct f
 (round status): this is **who is building what, per lane.**
 
 > **Map, not a queue.** Before working any item: `claim acquire` it (split-brain
-> guard), respect lanes/surfaces, and check the git-native bus (`docs/agent-bus/`,
-> B-0954) + open PRs for the live picture. The bus + claims are authoritative; the
-> tables below are a dated, reconstructed hint.
+> guard), respect lanes/surfaces, and check the live registry — **today** that is
+> the claim-coordinator (`bun tools/bus/claim.ts check`) + open PRs; the git-native
+> cross-machine bus (`docs/agent-bus/`) becomes the registry **once B-0954 populates
+> it** (the folder is absent on main today). The claim-coordinator + PRs are
+> authoritative now; the tables below are a dated, reconstructed hint.
 
 ## Two axes — don't conflate them
 
@@ -42,10 +44,15 @@ The **workflow / state-machine** lane **grew into the sovereign-DB arc**
 
 ## Per-lane detail
 
-- **state-machine / sovereign-DB / agent-loop** — the whole arc is in **B-0959**:
-  one git-native Z-set substrate; the unbundled engine; algebra ladder (G-Set → Bag
-  → Z-set); observe loop (B-0958); the git-native bus; distributed-time primitive;
-  4-language 4-oracle; dual-mode transport. Remember one handle: **B-0959**.
+- **workflow / state-machine → sovereign-DB / observe-loop** — the whole arc is in
+  **B-0959**: one git-native Z-set substrate; the unbundled engine; algebra ladder
+  (G-Set → Bag → Z-set); observe loop (B-0958); the git-native bus; distributed-time
+  primitive; 4-language 4-oracle; dual-mode transport. Remember one handle: **B-0959**.
+  **Possible future split** (operator 2026-06-01): this single lane may eventually
+  split into (a) **workflow / DU creation per plugin** — github / gitlab / jira / …
+  action grammars (the B-0867 workflow-engine side) — and (b) **distributed
+  agent-home / intelligence-DB** — the encrypted-home + Z-set substrate side. One
+  lane today; two later.
 - **encryption** — better-git-crypt (post-quantum, retraction-native diff-readable,
   B-0883) + per-agent private encrypted state (Otto-first, B-0885). The "encrypted
   home" floor of the §0 topology.
