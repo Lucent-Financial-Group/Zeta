@@ -96,6 +96,21 @@ describe("installPackage", () => {
     const dir = join(store, content_hash.replace(":", "-"));
     expect(existsSync(dir)).toBe(false);
   });
+
+  test("installPackage ignores a manifest's dependencies field (leaf back-compat)", () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-store-"));
+    const files = { "r.txt": "hi" };
+    const content_hash = "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const pkg = {
+      manifest: {
+        format_version: 1, name: "demo", version: "1.0.0", content_hash,
+        dependencies: [{ name: "x", version: "1.0.0", url: "http://e/x.json", package_hash: "sha256:deadbeef" }],
+      },
+      files,
+    };
+    const result = installPackage(store, pkg);
+    expect(result.ok).toBe(true);
+  });
 });
 
 describe("trust store", () => {

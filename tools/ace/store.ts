@@ -4,13 +4,21 @@ import { join, dirname } from "node:path";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
+export interface AceDependency {
+  readonly name: string;
+  readonly version: string;
+  readonly url: string;
+  readonly package_hash: string; // sha256 of the canonical FULL package (manifest incl. signature + files)
+}
+
 export interface AceManifest {
   readonly format_version: number;
   readonly name: string;
   readonly version: string;
-  readonly content_hash: string;
+  readonly content_hash: string; // slice-2: sha256(files)
   readonly description?: string;
   readonly signature?: { readonly algo: string; readonly key_id: string; readonly sig: string };
+  readonly dependencies?: ReadonlyArray<AceDependency>;
 }
 
 export interface InstalledPackage {
