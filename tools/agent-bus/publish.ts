@@ -82,7 +82,24 @@ function gitPushEnvelope(path: string, from: SenderAgentId, topic: string): void
       execFileSync("git", ["push", "origin", "HEAD:main"], opts);
       return;
     } catch {
-      execFileSync("git", ["pull", "--rebase", "origin", "main"], opts);
+      try {
+        execFileSync("git", ["pull", "--rebase", "origin", "main"], opts);
+      } catch {
+        // A rebase CONFLICT here means a peer pushed the SAME ZetaId path with DIFFERENT
+        // content — a genuine same-path collision (only reachable with deterministic ids;
+        // crypto DEFAULT_ENV ids make it astronomically improbable). Disjoint files never
+        // conflict, so this is NOT the ordinary non-fast-forward case. Abort to leave a
+        // clean repo and fail loudly — the publisher should re-mint (use DEFAULT_ENV) and
+        // retry rather than silently merge over a peer's envelope (Codex #6283 P2).
+        try {
+          execFileSync("git", ["rebase", "--abort"], opts);
+        } catch {
+          /* no rebase in progress to abort */
+        }
+        throw new Error(
+          "agent-bus publish: rebase conflict — a peer published the same ZetaId path with different content (same-path collision). Re-mint with DEFAULT_ENV (crypto) and retry.",
+        );
+      }
     }
   }
   execFileSync("git", ["push", "origin", "HEAD:main"], opts); // final attempt — throws if still failing
