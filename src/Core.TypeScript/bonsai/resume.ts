@@ -283,6 +283,17 @@ function bad(message: string): never {
   throw new ResumeFail({ kind: "MalformedState", message });
 }
 
+/** The valid binary operators, for validating ops restored from a persisted state. */
+const BIN_OPS: ReadonlySet<string> = new Set<BinOp>(["add", "sub", "mul", "eq", "lt", "and", "or"]);
+
+/** Validate a restored operator against the known `BinOp` tags. A tampered / future-version
+ * state carrying an unknown op (e.g. "xor") declines `MalformedState` here, rather than
+ * casting through to `applyBinOp` (whose exhaustive switch would otherwise yield `undefined`). */
+function readBinOp(v: unknown, where: string): BinOp {
+  if (typeof v !== "string" || !BIN_OPS.has(v)) bad(`${where} unknown operator`);
+  return v as BinOp;
+}
+
 function readConstValue(n: unknown, where: string): ConstValue {
   if (typeof n !== "object" || n === null) bad(`${where} is not an object`);
   const o = n as Record<string, unknown>;
@@ -323,9 +334,9 @@ function readFrame(n: unknown): Frame {
   const o = n as Record<string, unknown>;
   switch (o.k) {
     case "evalRight":
-      return { k: "evalRight", op: o.op as BinOp, right: readExpr(o.right, "evalRight.right"), env: readEnv(o.env, "evalRight.env") };
+      return { k: "evalRight", op: readBinOp(o.op, "evalRight.op"), right: readExpr(o.right, "evalRight.right"), env: readEnv(o.env, "evalRight.env") };
     case "applyOp":
-      return { k: "applyOp", op: o.op as BinOp, left: readConstValue(o.left, "applyOp.left") };
+      return { k: "applyOp", op: readBinOp(o.op, "applyOp.op"), left: readConstValue(o.left, "applyOp.left") };
     case "branch":
       return { k: "branch", then: readExpr(o.then, "branch.then"), els: readExpr(o.els, "branch.els"), env: readEnv(o.env, "branch.env") };
     case "evalArgs": {

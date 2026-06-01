@@ -109,3 +109,21 @@ test("parseState declines MalformedState on junk + on an unsupported version", (
   expect(b.ok).toBe(false);
   if (!b.ok) expect(b.error.kind).toBe("MalformedState");
 });
+
+test("parseState declines MalformedState on a tampered/unknown operator in a restored frame", () => {
+  // a real suspension whose kont carries an evalRight 'add' frame: add(a(), b()) at activity a
+  const program = binary("add", { kind: "call", fn: "a", args: [] }, { kind: "call", fn: "b", args: [] });
+  const s0 = stepOk(start(program));
+  expect(s0.kind).toBe("suspended");
+  if (s0.kind !== "suspended") return;
+  const ser = serializeState(s0.state);
+  expect(ser.ok).toBe(true);
+  if (!ser.ok) return;
+  // tamper the persisted op to an unknown one — must be rejected at the parse boundary,
+  // never cast through to applyBinOp (which would silently yield undefined)
+  const tampered = ser.value.replace('"op":"add"', '"op":"xor"');
+  expect(tampered).not.toBe(ser.value);
+  const r = parseState(tampered);
+  expect(r.ok).toBe(false);
+  if (!r.ok) expect(r.error.kind).toBe("MalformedState");
+});
