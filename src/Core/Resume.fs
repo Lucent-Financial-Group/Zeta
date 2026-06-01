@@ -92,20 +92,34 @@ module Resume =
         | CBool b -> b
         | _ -> raise (ResumeFail(TypeMismatch(where, "bool")))
 
-    /// Build an int ConstValue, declining if the (possibly arithmetic) result left the shared
-    /// JS-safe-integer domain — an overflowing add/sub/mul can't become a value the peer
-    /// oracles' parse would reject (the Bonsai safe-int wire contract).
-    let private intResult (v: int64) : ConstValue =
-        if v > MaxSafeInt || v < MinSafeInt then
-            raise (ResumeFail(NonSafeInt v))
+    /// Build an int ConstValue from a wide (overflow-free) result, declining if it left the
+    /// shared JS-safe-integer domain — an overflowing add/sub/mul can't become a value the peer
+    /// oracles' parse would reject (the Bonsai safe-int wire contract). The arithmetic is done
+    /// in `bigint` FIRST: F# `int64` silently WRAPS on overflow (unlike JS floats, which lose
+    /// precision and are still caught by `Number.isSafeInteger` — so the TS reference is immune),
+    /// meaning a safe-int × safe-int multiply (≤ ~8.1e31) overflows int64 and could wrap to a
+    /// wrong *in-range* value before any bounds check. The bigint never overflows; we range-check
+    /// then narrow. (Add/Sub of two safe-ints can't overflow int64, but routing them through the
+    /// same path keeps the semantics uniform and obviously correct.)
+    let private toSafe (p: bigint) : ConstValue =
+        if p >= bigint MinSafeInt && p <= bigint MaxSafeInt then
+            // within the safe domain ⊂ int64 — narrowing is total
+            CInt(int64 p)
+        else
+            // out of the safe domain; report the exact value when it still fits int64, else a
+            // sign sentinel (the value was never a usable result — NonSafeInt is the signal)
+            let v =
+                if p > bigint System.Int64.MaxValue then System.Int64.MaxValue
+                elif p < bigint System.Int64.MinValue then System.Int64.MinValue
+                else int64 p
 
-        CInt v
+            raise (ResumeFail(NonSafeInt v))
 
     let private applyBinOp (op: BinOp) (left: ConstValue) (right: ConstValue) : ConstValue =
         match op with
-        | Add -> intResult (asInt left "add.left" + asInt right "add.right")
-        | Sub -> intResult (asInt left "sub.left" - asInt right "sub.right")
-        | Mul -> intResult (asInt left "mul.left" * asInt right "mul.right")
+        | Add -> toSafe (bigint (asInt left "add.left") + bigint (asInt right "add.right"))
+        | Sub -> toSafe (bigint (asInt left "sub.left") - bigint (asInt right "sub.right"))
+        | Mul -> toSafe (bigint (asInt left "mul.left") * bigint (asInt right "mul.right"))
         | Eq -> CBool(left = right)
         | Lt -> CBool(asInt left "lt.left" < asInt right "lt.right")
         | And -> CBool(asBool left "and.left" && asBool right "and.right")
@@ -219,7 +233,48 @@ module Resume =
 
     // ---- state serialization (persist a suspension; round-trips) ----------
 
-    let private jstr (s: string) : string = JsonSerializer.Serialize s
+    /// Escape a string to canonical JSON — byte-identical to JS `JSON.stringify` (and to
+    /// `Bonsai`'s embedded-expr escaper), NOT `JsonSerializer.Serialize` (which escapes more
+    /// chars, e.g. astral as `\uXXXX\uXXXX` and `<`/`>`/`&`). State strings (fn names, env keys,
+    /// CStr values) must match the reference so a TS-persisted state restores byte-for-byte on
+    /// F#/C#/Rust — the whole point of the cross-oracle resume ferry.
+    let private jstr (s: string) : string =
+        if isNull s then
+            // a CLR caller can hand us a null fn / param key / CStr — decline cleanly so
+            // serializeState stays total (it catches ResumeFail)
+            raise (ResumeFail(MalformedState "null string field"))
+
+        let sb = System.Text.StringBuilder(s.Length + 2)
+        sb.Append('"') |> ignore
+        let mutable i = 0
+
+        while i < s.Length do
+            let ch = s.[i]
+
+            match ch with
+            | '"' -> sb.Append("\\\"") |> ignore
+            | '\\' -> sb.Append("\\\\") |> ignore
+            | '\b' -> sb.Append("\\b") |> ignore
+            | '\f' -> sb.Append("\\f") |> ignore
+            | '\n' -> sb.Append("\\n") |> ignore
+            | '\r' -> sb.Append("\\r") |> ignore
+            | '\t' -> sb.Append("\\t") |> ignore
+            | c when c < ' ' -> sb.AppendFormat("\\u{0:x4}", int c) |> ignore
+            | c when System.Char.IsHighSurrogate c && i + 1 < s.Length && System.Char.IsLowSurrogate(s.[i + 1]) ->
+                // valid surrogate pair — emit both code units literally (JSON.stringify emits
+                // the astral character, not an escape)
+                sb.Append(c) |> ignore
+                sb.Append(s.[i + 1]) |> ignore
+                i <- i + 1 // also consume the low surrogate
+            | c when System.Char.IsHighSurrogate c || System.Char.IsLowSurrogate c ->
+                // unpaired surrogate — escape it (well-formed JSON.stringify does)
+                sb.AppendFormat("\\u{0:x4}", int c) |> ignore
+            | c -> sb.Append(c) |> ignore
+
+            i <- i + 1
+
+        sb.Append('"') |> ignore
+        sb.ToString()
 
     let private emitConstValue (c: ConstValue) : string =
         match c with
@@ -395,11 +450,18 @@ module Resume =
             EvalArgs(fn, pending, doneArgs, readEnv (prop el "env") "evalArgs.env")
         | _ -> bad "unknown frame kind"
 
+    /// JSON tokenizer depth ceiling for restore. A persisted state embeds Bonsai-serialized
+    /// Exprs INLINE (nested objects, up to `Bonsai.MaxDepth` = 1024 deep) wrapped in a few state
+    /// levels (state → kont → frame → "right"/"then"/… → bonsai doc → "expr" → node…). The
+    /// default `JsonDocument` MaxDepth is 64, which would reject a perfectly valid deep program;
+    /// allow generous headroom above the worst case (embedded-expr depth + state wrapping).
+    let private stateDepthCeiling = Bonsai.MaxDepth * 4
+
     /// Parse a persisted state string back to a `SagaState` (the inverse of `serializeState`).
     let parseState (s: string) : Result<SagaState, ResumeFeedback> =
         let parsed =
             try
-                Ok(JsonDocument.Parse s)
+                Ok(JsonDocument.Parse(s, JsonDocumentOptions(MaxDepth = stateDepthCeiling)))
             with ex ->
                 Error(MalformedState ex.Message)
 

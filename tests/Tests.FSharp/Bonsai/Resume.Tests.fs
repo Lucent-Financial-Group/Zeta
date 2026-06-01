@@ -175,6 +175,51 @@ let ``F# resume: serializeState/parseState round-trip + restored resume equals o
         Assert.Equal(fromOriginal, fromRestored)
 
 [<Fact>]
+let ``F# resume: multiply that overflows int64 but wraps back into safe range declines NonSafeInt (not silent-wrong)`` () =
+    // 4294967296 (= 2^32) is a valid safe int (≈4.3e9 ≪ 2^53-1); its square is 2^64, which wraps
+    // to *exactly 0* in signed int64. A naive `int64 a * int64 b` then `0 in-range -> CInt 0`
+    // returns a silently-wrong result. The bigint-first path must catch the true product as
+    // out-of-safe-range. (TS is immune: JS floats lose precision but Number.isSafeInteger catches it.)
+    match start (Binary(Mul, Const(CInt 4294967296L), Const(CInt 4294967296L))) Map.empty with
+    | Error(NonSafeInt _) -> ()
+    | Ok(Done v) -> failwithf "int64-wrap silent-wrong leak: expected NonSafeInt, got Done %A" v
+    | other -> failwithf "expected Error NonSafeInt, got %A" other
+
+[<Fact>]
+let ``F# resume: a deep-but-valid embedded program restores (parseState depth ceiling > default 64)`` () =
+    // The persisted state embeds the Bonsai-serialized right operand INLINE; a default
+    // JsonDocument MaxDepth (64) would reject a valid program nested deeper than that.
+    let rec deepNest n =
+        if n <= 0 then Const(CInt 0L) else Binary(Add, Const(CInt 1L), deepNest (n - 1))
+
+    // left is a no-arg Call -> suspends immediately, leaving the deep right operand in the
+    // EvalRight frame (≈200 JSON levels once serialized — well past 64, well under MaxDepth=1024).
+    let program = Binary(Add, Call("a", []), deepNest 100)
+
+    match stepOk (start program Map.empty) with
+    | Done v -> failwithf "expected suspension, got Done %A" v
+    | Suspended(state, _) ->
+        let ser = strOk (serializeState state)
+        let restored = stateOk (parseState ser) // would be MalformedState under the default depth
+        Assert.Equal(ser, strOk (serializeState restored)) // round-trip is byte-stable
+
+[<Fact>]
+let ``F# resume: state strings escape like JSON.stringify (literal '<', not JsonSerializer's <)`` () =
+    // Cross-machine durability: F#/C#/Rust state bytes must match the TS reference. JsonSerializer
+    // escapes '<' as < (and astral as surrogate \u escapes); JSON.stringify emits '<' literally.
+    let program = Call("act", [ Const(CStr "x<y\"z\n") ])
+
+    match stepOk (start program Map.empty) with
+    | Suspended(state, _) ->
+        let ser = strOk (serializeState state)
+        Assert.Contains("<", ser) // literal '<' — JsonSerializer would have written <
+        Assert.DoesNotContain("\\u003", ser) // no < / > style escaping of '<'
+        Assert.Contains("\\n", ser) // newline as the canonical short escape
+        let restored = stateOk (parseState ser)
+        Assert.Equal(ser, strOk (serializeState restored)) // round-trips byte-stable
+    | Done v -> failwithf "expected suspension, got Done %A" v
+
+[<Fact>]
 let ``F# resume: parseState declines MalformedState on junk + bad version + tampered op + unsafe int`` () =
     Assert.True(
         (match parseState "not json" with
