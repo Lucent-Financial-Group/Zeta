@@ -1,6 +1,11 @@
 import { spawnSync as nodeSpawnSync } from "node:child_process";
-import { mkdirSync as nodeMkdirSync, writeFileSync as nodeWriteFileSync } from "node:fs";
-import { dirname } from "node:path";
+import {
+  mkdirSync as nodeMkdirSync,
+  mkdtempSync as nodeMkdtempSync,
+  writeFileSync as nodeWriteFileSync,
+} from "node:fs";
+import { tmpdir as nodeTmpdir } from "node:os";
+import { dirname, join } from "node:path";
 import type {
   CommandPlan,
   FileBackedInlineFile,
@@ -33,6 +38,11 @@ export interface NodeFileBackedZflashImageExecutorEffects {
     args: readonly string[],
     options: SpawnSyncLikeOptions,
   ) => SpawnSyncLikeResult;
+}
+
+export interface NodeFileBackedZflashInlineStagingEffects {
+  readonly mkdtempSync?: (prefix: string) => string;
+  readonly tmpdir?: () => string;
 }
 
 function textFromSpawnOutput(output: string | Buffer | undefined): string {
@@ -75,4 +85,12 @@ export function createNodeFileBackedZflashImageExecutor(
       };
     },
   };
+}
+
+export function createNodeFileBackedZflashInlineStagingDirectory(
+  effects: NodeFileBackedZflashInlineStagingEffects = {},
+): string {
+  const mkdtempSync = effects.mkdtempSync ?? nodeMkdtempSync;
+  const tmpdir = effects.tmpdir ?? nodeTmpdir;
+  return mkdtempSync(join(tmpdir(), "zflash-inline-"));
 }

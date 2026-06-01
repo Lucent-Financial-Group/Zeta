@@ -1,5 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import { createNodeFileBackedZflashImageExecutor } from "./zflash-file-backed-runtime";
+import {
+  createNodeFileBackedZflashImageExecutor,
+  createNodeFileBackedZflashInlineStagingDirectory,
+} from "./zflash-file-backed-runtime";
 
 describe("createNodeFileBackedZflashImageExecutor", () => {
   test("creates the inline staging directory before writing UTF-8 content", () => {
@@ -16,13 +19,28 @@ describe("createNodeFileBackedZflashImageExecutor", () => {
     executor.writeFile({
       content: "pikachu\n",
       destination: "/zeta-hostname.txt",
-      path: "/tmp/zflash-inline/zeta-hostname.txt",
+      path: "artifacts/zflash-inline/zeta-hostname.txt",
     });
 
     expect(observed).toEqual([
-      "mkdir:/tmp/zflash-inline:true",
-      "write:/tmp/zflash-inline/zeta-hostname.txt:pikachu\n:utf8",
+      "mkdir:artifacts/zflash-inline:true",
+      "write:artifacts/zflash-inline/zeta-hostname.txt:pikachu\n:utf8",
     ]);
+  });
+
+  test("allocates inline staging under a secure mkdtemp-created directory", () => {
+    const observed: string[] = [];
+
+    const path = createNodeFileBackedZflashInlineStagingDirectory({
+      mkdtempSync: (prefix) => {
+        observed.push(prefix);
+        return `${prefix}abc123`;
+      },
+      tmpdir: () => "/private/tmp",
+    });
+
+    expect(observed).toEqual(["/private/tmp/zflash-inline-"]);
+    expect(path).toBe("/private/tmp/zflash-inline-abc123");
   });
 
   test("runs commands with argv-array spawnSync and captures text output", () => {
