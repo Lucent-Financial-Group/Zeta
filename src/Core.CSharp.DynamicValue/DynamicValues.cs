@@ -4,6 +4,7 @@
 
 using System.Collections.Immutable;
 using System.Globalization;
+using System.Text;
 
 namespace Zeta.Core.CSharp;
 
@@ -178,5 +179,130 @@ public static class DynamicValues
         return int.TryParse(segment.AsSpan(start, j - start), NumberStyles.None, CultureInfo.InvariantCulture, out index)
             ? j + 1
             : -1;
+    }
+
+    /// <summary>Canonical JSON encoding — the byte-lock target (the shared seed is
+    /// <c>src/Core.TypeScript/dynamic-value/golden-vectors.json</c>). Minified; <see
+    /// cref="DynamicValue.Object"/> keys in INSERTION order — NOT sorted, because Object is
+    /// order-significant, so a key-sorting canonical form (JCS / RFC 8785 / CBOR §4.2) would be
+    /// lossy / non-bijective; <see cref="DynamicValue.Int"/> = bare exact decimal (invariant);
+    /// strings per RFC 8259 minimal escaping. v1 locks null/bool/int/string/array/object;
+    /// <see cref="DynamicValue.Float"/> and <see cref="DynamicValue.Bytes"/> are DEFERRED (no
+    /// canonical JSON form yet — they lock under CBOR or a tagged-JSON convention) and throw
+    /// <see cref="InvalidOperationException"/>.</summary>
+    /// <param name="value">the value to encode.</param>
+    /// <returns>the canonical JSON text.</returns>
+    public static string ToCanonicalJson(DynamicValue value)
+    {
+        var sb = new StringBuilder();
+        WriteCanonical(sb, value);
+        return sb.ToString();
+    }
+
+    private static void WriteCanonical(StringBuilder sb, DynamicValue value)
+    {
+        switch (value)
+        {
+            case DynamicValue.Null:
+                sb.Append("null");
+                break;
+            case DynamicValue.Bool b:
+                sb.Append(b.Value ? "true" : "false");
+                break;
+            case DynamicValue.Int i:
+                sb.Append(i.Value.ToString(CultureInfo.InvariantCulture));
+                break;
+            case DynamicValue.String s:
+                AppendEscaped(sb, s.Value);
+                break;
+            case DynamicValue.Array a:
+                sb.Append('[');
+                for (int k = 0; k < a.Items.Length; k++)
+                {
+                    if (k > 0)
+                    {
+                        sb.Append(',');
+                    }
+
+                    WriteCanonical(sb, a.Items[k]);
+                }
+
+                sb.Append(']');
+                break;
+            case DynamicValue.Object o:
+                sb.Append('{');
+                for (int k = 0; k < o.Pairs.Length; k++)
+                {
+                    if (k > 0)
+                    {
+                        sb.Append(',');
+                    }
+
+                    AppendEscaped(sb, o.Pairs[k].Key);
+                    sb.Append(':');
+                    WriteCanonical(sb, o.Pairs[k].Value);
+                }
+
+                sb.Append('}');
+                break;
+            case DynamicValue.Float:
+                throw new InvalidOperationException(
+                    "DynamicValue.Float canonical JSON is DEFERRED (no canonical shortest-float in plain JSON); locks under CBOR or a tagged-JSON convention");
+            case DynamicValue.Bytes:
+                throw new InvalidOperationException(
+                    "DynamicValue.Bytes canonical JSON is DEFERRED (no native JSON byte type); locks under CBOR or a tagged-JSON convention");
+            default:
+                throw new InvalidOperationException($"unknown DynamicValue shape: {value.Type}");
+        }
+    }
+
+    // JSON string literal (incl. surrounding quotes), RFC 8259 minimal escaping: '"' and '\' and
+    // control chars U+0000..U+001F (short forms where they exist, else \u00XX lowercase-hex); '/'
+    // is NOT escaped; all else (incl. non-ASCII / astral surrogate pairs, by UTF-16 code unit)
+    // emitted raw.
+    private static void AppendEscaped(StringBuilder sb, string s)
+    {
+        sb.Append('"');
+        foreach (char ch in s)
+        {
+            switch (ch)
+            {
+                case '"':
+                    sb.Append("\\\"");
+                    break;
+                case '\\':
+                    sb.Append("\\\\");
+                    break;
+                case '\b':
+                    sb.Append("\\b");
+                    break;
+                case '\f':
+                    sb.Append("\\f");
+                    break;
+                case '\n':
+                    sb.Append("\\n");
+                    break;
+                case '\r':
+                    sb.Append("\\r");
+                    break;
+                case '\t':
+                    sb.Append("\\t");
+                    break;
+                default:
+                    if (ch < 0x20)
+                    {
+                        sb.Append("\\u");
+                        sb.Append(((int)ch).ToString("x4", CultureInfo.InvariantCulture));
+                    }
+                    else
+                    {
+                        sb.Append(ch);
+                    }
+
+                    break;
+            }
+        }
+
+        sb.Append('"');
     }
 }
