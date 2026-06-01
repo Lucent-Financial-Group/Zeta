@@ -317,7 +317,7 @@ worker path.
 - the CLI lacks package/bin readiness as an executable production surface;
 - the current slot layout is not yet the full ADR controller grammar;
 - all-vetoed work menus now render disabled commit slots with reasons and keep
-  safe meta controls reachable for refresh/status/escalation;
+  safe meta controls reachable for refresh/status/rest/escalation;
 - local model selection now uses a constrained JSON-schema `{ slot, reason }`
   contract, but broader primary-lane rollout still needs proof windows;
 - several CLI/env/parser paths throw instead of returning typed feedback.
@@ -364,6 +364,27 @@ clamp still validates the returned `slot` against the full rendered menu, so
 schema failure, bracketed/free-form text, out-of-range slots, and non-selectable
 slots remain typed selector rejections with fallback evidence instead of worker
 crashes.
+
+**Checkpoint 2026-06-01: observe lifecycle command authority**
+
+Production observe-act command dispatch now reaches the same durable hat
+authority policy as every other command without being rejected as an unknown
+command class. `observe.lifecycle_transition` is classified as a delivery
+`write_code` authority action, so delivery hats can advance selected lifecycle
+commit slots through the real command pipeline while management hats that lack
+delivery authority remain denied. This closes a production wiring gap where the
+CLI could render and dispatch a command slot but the durable policy layer still
+treated the observe-act foreground command as unsupported.
+
+**Checkpoint 2026-06-01: slot 14 free-time/rest**
+
+Slot 14 is now wired as the ADR's always-reachable `free-time / rest` control
+instead of a disabled pause placeholder. `renderMenu16` exposes it as
+`TriAvailability.True` even when every work option is vetoed, and `act(14)`
+returns a typed `rested` result without invoking command dispatch or MCP/tool
+side effects. The agent CLI includes the selected slot and menu hash in durable
+tick evidence and prints an explicit rested action result, which gives the
+foreground loop a bounded no-op action that is visible, auditable, and legal.
 
 **Algorithms:**
 
