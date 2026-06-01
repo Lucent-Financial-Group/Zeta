@@ -6,7 +6,7 @@ title: Zeta sovereign distributed-DB + agent-loop MASTER checklist — one git-n
 effort: XL
 ask: aaron 2026-05-31
 created: 2026-05-31
-last_updated: 2026-05-31
+last_updated: 2026-06-01
 depends_on: []
 composes_with:
   - B-0958
@@ -224,6 +224,41 @@ no-PR (sovereign transport). Now unblocked by §1's first-class G-Set.
       self-reflect surfaces own trajectory; play surfaces peer chatter). The bus
       is just the first source — Rx-over-anything → dashboard. Wires §2 (observe)
       to §3 (bus): the dashboard becomes a live, mode-aware view of the substrate.
+
+### What an Rx query IS, in G-Set/Z-set terms (the math note)
+
+An Rx query over the bus is an **incremental view (incremental view maintenance,
+IVM)** — in DBSP terms the incremental operator **`Q^Δ = D ∘ ↑Q ∘ I`** (integrate
+the deltas → run the query lifted over the stream → differentiate back to
+output-deltas). Rx is the _runtime_; DBSP / Z-set is the _algebra_; same object
+two ways (the repo already maps Rx ↔ DBSP in B-0688 / B-0662, and `Spine.fs` IS
+DBSP).
+
+| Rx thing                         | G-Set / Z-set / DBSP term                                                                                                                    |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| bus state                        | a **G-Set** (grow-only); Z-set in general                                                                                                    |
+| one new message                  | a **delta**: a singleton Z-set, weight **+1**                                                                                                |
+| the `Observable`                 | a **stream** = a time-indexed sequence of Z-sets                                                                                             |
+| an Rx query                      | a **morphism over Z-sets**, run incrementally = IVM; `Q^Δ = D∘↑Q∘I`                                                                          |
+| `map` / `filter` / `union`       | **linear / monotone** ops — Z-set is the **free abelian group** on the keys, so these are **group homomorphisms** (`f(a ⊎ b) = f(a) ⊎ f(b)`) |
+| `join` / `aggregate` / `groupBy` | bilinear / non-linear, each with a known incremental form                                                                                    |
+| conditional-by-mode              | a **family of queries indexed by mode** (a parameterized view)                                                                               |
+
+**The G-Set/Z-set choice IS the CALM boundary** ([CALM theorem](https://arxiv.org/abs/1901.01930):
+consistent-and-coordination-free **iff** monotone):
+
+- **Monotone** queries (`map` / `filter` / `union`) stay in **G-Set** →
+  **coordination-free** across machines (the result only grows). These dashboard
+  widgets — "what's been said" — are free.
+- **Non-monotone** queries need the full **Z-set** because they emit **retraction
+  deltas (weight −1)** a G-Set can't represent: "not-yet-acked" (set difference),
+  "latest status per agent", "count then drop below threshold". These are the
+  "current / pending / latest" widgets.
+
+Operational payoff: **the dashboard tells you which live queries are
+coordination-free by whether they're monotone** — and the moment a widget needs
+"current/latest/pending" it has reached into Z-set (retraction) territory and the
+§4 coordination layer. (DBSP arXiv:2203.16684; CALM arXiv:1901.01930.)
 
 ## 4. Distributed F# DB + the time primitive (the part we forgot)
 
