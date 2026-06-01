@@ -88,9 +88,21 @@ only once all three hold.
 | **UTF-8** | native (`TextEncoder`) | `System.Text.Encoding.UTF8` | `System.Text.Encoding.UTF8` | `str`/`String` (native)                                                                                      | All four have it; UTF-8 has no endianness, so the cross-lang concern is **string ordering/comparison consistency**, not byte order — TS/.NET sort on UTF-16 code-units, Rust on UTF-8 bytes, which diverge once you move beyond ASCII/BMP. They agree for ASCII/BMP (what the g-set comparator + ZetaId hex already rely on); verify before depending beyond that. |
 | **JSON**  | native `JSON`          | `System.Text.Json`          | `System.Text.Json`          | our `ZetaJsonParser` (zero-dep, `src/Core.Rust.Observe/src/json.rs`) + `serde_json` adapter behind a feature | Rust std has **no** JSON, so the cross-lang primitive is _our JSON port_ (the hexagonal interface), not one library. Stabilize the port shape across all four (number precision, key order, escaping) before declaring it registry-stable.                                                                                                                         |
 
-**Other BCL-like candidates** to pull in the same way as each interface proves out:
-base64, SHA-256 hashing, time/clock, big integers, regex. Each is added only after
-the four-way interface is verified — not on first use.
+**Other BCL-like candidates — data / codec** (Aaron 2026-06-01: "for sure yes", pull
+in slowly): **base64**, **SHA-256** hashing, **big integers**, **regex**, and
+**time/clock** — the last is a load-bearing **DST primitive** (deterministic simulation
+needs a seedable/controllable clock, not wall-clock; F# is already well ahead here).
+Each lands only after the four-way interface is verified — not on first use.
+
+**Further-out — concurrency / runtime / IO primitives** (Aaron 2026-06-01, naming them
+for the map): **channels** + **pipelines** (`System.Threading.Channels` /
+`System.IO.Pipelines`), **concurrent dictionary**, **work-stealing / `ActionBlock`-like**
+dataflow, an **async runtime** (Tokio in Rust; the TPL/`Task` scheduler in .NET; the
+event loop in JS), **TCP/UDP sockets**, and eventually a **server side** (ASP.NET-class
+HTTP). These are a harder cross-language-surface problem than the data/codec primitives —
+the concurrency models diverge sharply (Tokio vs .NET `Task` vs the JS event loop) — so
+they come later and need extra care to find a common surface that stays idiomatic in each
+runtime. Listed now so they're on the map; the same three-requirement bar applies.
 
 ## The algebra ladder (why three of the gaps are one build)
 
