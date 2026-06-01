@@ -198,6 +198,44 @@ itself* can evolve. The mediator agent's tick stream is where Durable-Functions'
 | Partial failure | **Mitigation factors inside the saga** — compensate / retract (ℤ inverse) / retry / hold-resume |
 | Evolution | Compensation logic is **data**, so the mitigation strategy itself evolves |
 
+## Composes with the DU workflow engine — a generic saga in `observe.ts` is just serialize(Rx) + serialize(state)
+
+The operator (2026-06-01): *"this composes with DUs workflow we can create a
+generic saga pattern around these in observe.ts that's just serialize rx and
+state."*
+
+The lifecycle-DU workflow engine (B-0867 + the
+`implicit-not-explicit-in-DUs` discipline) already models a workflow as an
+**explicit discriminated-union state machine** (legal transitions enforced at
+compile time). A **self-evolving saga is the generic pattern that engine
+instantiates** once two things are serializable:
+
+- **serialize Rx** — the reactive query / expression tree: the *pattern* (the
+  DU's transition structure as Bonsai data); and
+- **serialize state** — the closure / accumulator: the DU's current variant +
+  fields.
+
+`serialize(Rx) + serialize(state)` **is** the saga. So `observe.ts` (the
+observe→act loop / universal action grammar / move-next) can host **one generic
+saga combinator**: given any DU workflow, lift it to a self-evolving saga by
+serializing its Rx-expression + its state onto the retraction-native stream.
+
+| Layer | Role in the generic saga |
+| --- | --- |
+| Lifecycle DU (B-0867) | **legal transitions** — compile-time-enforced structure |
+| Bonsai-serialized expr-tree | the pattern in **serialized, runtime-mutable** form |
+| Closure / state capture | the saga's accumulator (`Checkpoint.fs`) |
+| Tick stream (agent) | the **carrier** (per-partition + cross-partition mediator) |
+| ℤ retraction | **evolution + compensation** (retract/add a sub-tree) |
+
+One generic pattern, and **every DU workflow becomes a durable, movable,
+self-evolving saga** — no per-workflow orchestrator code. This closes the loop
+with `function-is-tiny-control-flow-generator` (a function is a tiny
+control-flow generator → serialized, it is a saga) and the Xbox-controller
+universal-action-grammar (the move-next menu is the saga's next-transition
+surface). The generic combinator lives in `observe.ts`; the per-workflow DU is
+the input.
+
 ## Build options (when the operator drives it — not now)
 
 The operator named two: **(a) Nuqleon Bonsai** directly (it is .NET, MIT-ish
