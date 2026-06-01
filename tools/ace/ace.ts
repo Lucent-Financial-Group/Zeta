@@ -15,7 +15,7 @@
 //
 // Future commands (not yet implemented): remove, inspect.
 
-import { chmodSync, readFileSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createPublicKey } from "node:crypto";
 import {
   defaultStorePath, listInstalled, installPackage, contentHash,
@@ -24,12 +24,14 @@ import {
   writeRegistryRemote, removeRegistryRemote, readRegistriesConfig,
   type AcePackage,
 } from "./store";
-import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
+import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFromPrivatePem, verifyIndexSignature } from "./signing";
 import { resolve, packageHash } from "./resolve.ts";
 import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock, lockfilesEqual, buildLeafLockfile } from "./lockfile.ts";
 import { solve } from "./solver.ts";
-import { loadRegistries } from "./registry-remote.ts";
-import { resolve as toAbsolutePath } from "node:path";
+import { buildIndexDoc, nextSequence } from "./registry-publish.ts";
+import { loadRegistries, parseIndex } from "./registry-remote.ts";
+import type { IndexDoc } from "./registry-remote.ts";
+import { resolve as toAbsolutePath, join } from "node:path";
 
 interface ListArgs {
   readonly command: "list";
@@ -88,7 +90,7 @@ interface UpdateArgs {
 
 interface RegistryArgs {
   readonly command: "registry";
-  readonly sub: "list" | "add" | "remote-add" | "remote-list" | "remote-rm";
+  readonly sub: "list" | "add" | "remote-add" | "remote-list" | "remote-rm" | "publish";
   readonly regName?: string;
   readonly regVersion?: string;
   readonly regUrl?: string;
@@ -96,6 +98,10 @@ interface RegistryArgs {
   readonly remoteUrl?: string;
   readonly remoteKey?: string;
   readonly remoteMaxStaleness?: number;
+  readonly pubPackagesDir?: string;
+  readonly pubBaseUrl?: string;
+  readonly pubKeyPath?: string;
+  readonly pubOut?: string;
 }
 
 type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs | RegistryArgs | UpdateArgs;
@@ -234,6 +240,21 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
       }
       return { error: "registry remote requires 'add', 'list', or 'rm'" };
     }
+    if (sub === "publish") {
+      let dir: string | undefined, base: string | undefined, key: string | undefined, out: string | undefined;
+      for (let i = 2; i < argv.length; i++) {
+        if (argv[i] === "--packages") { dir = argv[++i]; if (!dir || dir.startsWith("-")) return { error: "--packages requires a value" }; }
+        else if (argv[i] === "--base-url") { base = argv[++i]; if (!base || base.startsWith("-")) return { error: "--base-url requires a value" }; }
+        else if (argv[i] === "--key") { key = argv[++i]; if (!key || key.startsWith("-")) return { error: "--key requires a value" }; }
+        else if (argv[i] === "--out") { out = argv[++i]; if (!out || out.startsWith("-")) return { error: "--out requires a value" }; }
+        else return { error: `Unknown option for registry publish: ${argv[i]}` };
+      }
+      if (!dir) return { error: "registry publish requires --packages <dir>" };
+      if (!base) return { error: "registry publish requires --base-url <url>" };
+      if (!key) return { error: "registry publish requires --key <pem-path>" };
+      const r: RegistryArgs = { command: "registry", sub: "publish", pubPackagesDir: dir, pubBaseUrl: base, pubKeyPath: key };
+      return out !== undefined ? { ...r, pubOut: out } : r;
+    }
     return { error: "registry requires 'add' or 'list'" };
   }
 
@@ -358,6 +379,7 @@ Usage:
   ace trust list                                 List all trusted keys
   ace registry add <name> <version> <url> [--hash <h>] Register a package in the local registry
   ace registry list                              List all registry entries
+  ace registry publish --packages <dir> --base-url <url> --key <pem> [--out <path>] Build + sign an index from a dir of packages
   ace registry remote add <url> --key <keyid> [--max-staleness-days <n>] Add a signed remote registry
   ace registry remote list                       List configured remote registries
   ace registry remote rm <url>                   Remove a configured remote registry
@@ -509,6 +531,52 @@ export async function main(argv: readonly string[]): Promise<number> {
       const rows = listRegistry();
       if (rows.length === 0) { console.log("No registry entries. (add one: ace registry add <name> <version> <url>)"); return 0; }
       for (const r of rows) console.log(`  ${r.name}@${r.version}  ${r.url}  [${r.source}]`);
+      return 0;
+    }
+    if (parsed.sub === "publish") {
+      let pem: string;
+      try { pem = readFileSync(parsed.pubKeyPath!, "utf8"); }
+      catch (e) { console.error(`ace: publish: cannot read key ${parsed.pubKeyPath}: ${(e as Error).message}`); return 1; }
+      let entries: string[];
+      try { entries = readdirSync(parsed.pubPackagesDir!).filter((f) => f.endsWith(".json")); }
+      catch (e) { console.error(`ace: publish: cannot read dir ${parsed.pubPackagesDir}: ${(e as Error).message}`); return 1; }
+      const packages: AcePackage[] = [];
+      for (const f of entries) {
+        const full = join(parsed.pubPackagesDir!, f);
+        let raw: string;
+        try { raw = readFileSync(full, "utf8"); } catch { console.error(`ace: publish: skip unreadable ${f}`); continue; }
+        let obj: unknown;
+        try { obj = JSON.parse(raw); } catch { console.error(`ace: publish: skip non-JSON ${f}`); continue; }
+        if (typeof obj !== "object" || obj === null || typeof (obj as AcePackage).manifest !== "object" || (obj as AcePackage).manifest === null
+          || typeof (obj as AcePackage).manifest.name !== "string" || typeof (obj as AcePackage).manifest.version !== "string"
+          || typeof (obj as AcePackage).files !== "object" || (obj as AcePackage).files === null) {
+          console.error(`ace: publish: skip non-package ${f}`); continue;
+        }
+        packages.push(obj as AcePackage);
+      }
+      if (packages.length === 0) { console.error(`ace: publish refused: no valid packages in ${parsed.pubPackagesDir}`); return 1; }
+      const outPath = parsed.pubOut ?? "index.json";
+      let prev: IndexDoc | null = null;
+      if (existsSync(outPath)) {
+        try { const p = parseIndex(readFileSync(outPath, "utf8")); if (!("error" in p)) prev = p; } catch { /* no prev */ }
+      }
+      const seq = nextSequence(prev);
+      if (prev && seq <= prev.sequence) { console.error(`ace: publish refused: sequence ${seq} <= prev ${prev.sequence}`); return 1; }
+      let serialized: string;
+      try {
+        const doc = buildIndexDoc({ packages, baseUrl: parsed.pubBaseUrl!, sequence: seq, issuedAt: new Date().toISOString(), privatePem: pem });
+        if ("error" in doc) { console.error(`ace: publish refused: ${doc.error}`); return 1; }
+        serialized = JSON.stringify(doc, null, 2);
+        const reparsed = parseIndex(serialized);
+        if ("error" in reparsed) { console.error(`ace: publish refused: self-verify parse failed: ${reparsed.error}`); return 1; }
+        const info = publicKeyInfoFromPrivatePem(pem);
+        const { signature, ...content } = doc;
+        const sv = verifyIndexSignature(content, signature, new Map([[info.keyId, { public_key: info.public_key }]]));
+        if (!sv.ok) { console.error(`ace: publish refused: self-verify signature failed: ${sv.reason}`); return 1; }
+      } catch (e) { console.error(`ace: publish refused: signing failed (check --key is a valid Ed25519 PEM): ${(e as Error).message}`); return 1; }
+      try { writeFileSync(outPath, serialized); }
+      catch (e) { console.error(`ace: publish failed: cannot write ${outPath}: ${(e as Error).message}`); return 1; }
+      console.log(`ace: published ${packages.length} package(s) at sequence ${seq} → ${outPath}`);
       return 0;
     }
     // sub === "add"

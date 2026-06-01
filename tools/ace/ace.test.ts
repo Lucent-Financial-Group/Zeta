@@ -1352,3 +1352,41 @@ describe("ace install via remote registry (slice 6)", () => {
     }
   });
 });
+
+describe("ace registry publish (slice 6.1)", () => {
+  function writeSignedPkg(dir: string, name: string, version: string) {
+    const files = { [`${name}.txt`]: "hi" };
+    const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
+    const kp = generateKeypair();
+    const m = { format_version: 1, name, version, content_hash: ch };
+    const pkg = { manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files };
+    writeFileSync(join(dir, `${name}-${version}.json`), JSON.stringify(pkg));
+    return { kp, pkg };
+  }
+
+  test("publish a dir → signed index; sequence auto-bumps; non-package skipped", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    writeFileSync(join(pkgDir, "not-a-package.json"), JSON.stringify({ hello: "world" }));
+    const keyPath = join(tempHome, "registry.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    expect("error" in doc).toBe(false);
+    if (!("error" in doc)) {
+      expect(doc.sequence).toBe(1);
+      expect(doc.packages.leaf!["1.0.0"]!.url).toBe("https://pkgs/leaf-1.0.0.json");
+    }
+    const code2 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code2).toBe(0);
+    const doc2 = parseIndex(readFileSync(outPath, "utf8"));
+    if (!("error" in doc2)) expect(doc2.sequence).toBe(2);
+  });
+
+  test("publish without --key is a parse error", () => {
+    expect("error" in parseArgs(["registry", "publish", "--packages", "d", "--base-url", "https://x"])).toBe(true);
+  });
+});
