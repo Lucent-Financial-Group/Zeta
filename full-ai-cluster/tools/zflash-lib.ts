@@ -115,6 +115,34 @@ export interface FileBackedZflashImagePlanInput {
   readonly credentialBlobPath?: string;
 }
 
+export interface FileBackedInlineFile {
+  readonly destination: FileBackedEspWrite["destination"];
+  readonly path: string;
+  readonly content: string;
+}
+
+export type FileBackedZflashImageExecutionStep =
+  | { readonly kind: "command"; readonly command: CommandPlan }
+  | { readonly kind: "write-inline-file"; readonly file: FileBackedInlineFile };
+
+export interface FileBackedZflashImageExecutionPlan {
+  readonly imagePath: string;
+  readonly mtoolsImageSpecifier: string;
+  readonly imageCommand: CommandPlan;
+  readonly inlineFiles: readonly FileBackedInlineFile[];
+  readonly espWriteCommands: readonly CommandPlan[];
+  readonly steps: readonly FileBackedZflashImageExecutionStep[];
+}
+
+export interface FileBackedZflashImageExecutionPlanInput {
+  readonly plan: FileBackedZflashImagePlan;
+  readonly inlineStagingDirectory?: string;
+}
+
+export type FileBackedZflashImageExecutionPlanResult =
+  | { readonly ok: true; readonly value: FileBackedZflashImageExecutionPlan }
+  | { readonly ok: false; readonly error: string };
+
 /**
  * Plan the non-destructive, file-backed equivalent of zflash's current
  * physical-device flow for QEMU tests.
@@ -188,6 +216,103 @@ export function planFileBackedZflashImage(
       },
       isoPath,
       outputImagePath,
+    },
+  };
+}
+
+function joinFileBackedPath(directory: string, basename: string): string {
+  const trimmed = directory.trim().replace(/\/+$/, "");
+  return `${trimmed}/${basename}`;
+}
+
+function stagingBasename(destination: FileBackedEspWrite["destination"]): string {
+  return destination.replace(/^\//, "");
+}
+
+/**
+ * Expand a pure file-backed zflash plan into the concrete command/file steps
+ * an I/O executor needs.
+ *
+ * `qemu-img` creates the writable raw image from the ISO. `mcopy` then writes
+ * each payload directly into the FAT ESP at `image@@offset`, avoiding loop
+ * mounts and keeping the future executor usable on CI runners.
+ */
+export function planFileBackedZflashImageExecution(
+  input: FileBackedZflashImageExecutionPlanInput,
+): FileBackedZflashImageExecutionPlanResult {
+  const plan = input.plan;
+  if (/^\/dev\//.test(plan.outputImagePath.trim())) {
+    return {
+      ok: false,
+      error: `outputImagePath must be file-backed, not a device path: ${plan.outputImagePath}`,
+    };
+  }
+  if (!Number.isSafeInteger(plan.espOffsetBytes) || plan.espOffsetBytes <= 0) {
+    return { ok: false, error: "espOffsetBytes must be a positive safe integer" };
+  }
+  if (plan.espWrites.length === 0) {
+    return { ok: false, error: "at least one ESP write is required" };
+  }
+
+  const contentWrites = plan.espWrites.filter((write) => write.content !== undefined);
+  const inlineStagingDirectory = input.inlineStagingDirectory?.trim();
+  if (contentWrites.length > 0 && (inlineStagingDirectory === undefined || inlineStagingDirectory.length === 0)) {
+    return { ok: false, error: "inlineStagingDirectory is required for content ESP writes" };
+  }
+
+  const mtoolsImageSpecifier = `${plan.outputImagePath}@@${plan.espOffsetBytes}`;
+  const inlineFiles: FileBackedInlineFile[] = [];
+  const espWriteCommands: CommandPlan[] = [];
+  const steps: FileBackedZflashImageExecutionStep[] = [
+    { kind: "command", command: plan.imageCommand },
+  ];
+
+  for (const write of plan.espWrites) {
+    const sourcePath = write.sourcePath?.trim();
+    const hasSourcePath = sourcePath !== undefined && sourcePath.length > 0;
+    const hasContent = write.content !== undefined;
+    if (hasSourcePath === hasContent) {
+      return {
+        ok: false,
+        error: `ESP write ${write.destination} must specify exactly one of sourcePath or content`,
+      };
+    }
+
+    let source: string;
+    if (hasSourcePath) {
+      source = sourcePath;
+    } else {
+      const content = write.content ?? "";
+      if (content.length === 0) {
+        return { ok: false, error: `ESP write ${write.destination} content must be non-empty` };
+      }
+      const file = {
+        content,
+        destination: write.destination,
+        path: joinFileBackedPath(inlineStagingDirectory!, stagingBasename(write.destination)),
+      };
+      inlineFiles.push(file);
+      steps.push({ kind: "write-inline-file", file });
+      source = file.path;
+    }
+
+    const command = {
+      command: "mcopy",
+      args: ["-o", "-i", mtoolsImageSpecifier, source, `::${write.destination}`],
+    };
+    espWriteCommands.push(command);
+    steps.push({ kind: "command", command });
+  }
+
+  return {
+    ok: true,
+    value: {
+      espWriteCommands,
+      imageCommand: plan.imageCommand,
+      imagePath: plan.outputImagePath,
+      inlineFiles,
+      mtoolsImageSpecifier,
+      steps,
     },
   };
 }

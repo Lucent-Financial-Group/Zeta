@@ -23,6 +23,7 @@ import {
   parseOutputFileMarker,
   parseUuidFromDiskutilInfo,
   planFileBackedZflashImage,
+  planFileBackedZflashImageExecution,
   VALID_HOSTNAME_REGEX,
 } from "./zflash-lib";
 
@@ -342,6 +343,124 @@ describe("planFileBackedZflashImage", () => {
     expect(result).toEqual({
       ok: false,
       error: "at least one ESP write is required",
+    });
+  });
+});
+
+describe("planFileBackedZflashImageExecution", () => {
+  test("expands a file-backed zflash plan into qemu-img plus mtools steps", () => {
+    const planned = planFileBackedZflashImage({
+      credentialBlobPath: "artifacts/zeta-creds.enc",
+      espOffsetBytes: 1_048_576,
+      hostname: "pikachu",
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      pubkeyPath: "fixtures/id_ed25519.pub",
+    });
+    expect(planned.ok).toBe(true);
+    if (!planned.ok) throw new Error(planned.error);
+
+    const result = planFileBackedZflashImageExecution({
+      inlineStagingDirectory: "/tmp/zflash-inline/",
+      plan: planned.value,
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+    expect(result.value.mtoolsImageSpecifier).toBe("artifacts/zflash-baked.img@@1048576");
+    expect(result.value.inlineFiles).toEqual([
+      {
+        content: "pikachu\n",
+        destination: "/zeta-hostname.txt",
+        path: "/tmp/zflash-inline/zeta-hostname.txt",
+      },
+    ]);
+    expect(result.value.espWriteCommands).toEqual([
+      {
+        command: "mcopy",
+        args: [
+          "-o",
+          "-i",
+          "artifacts/zflash-baked.img@@1048576",
+          "fixtures/id_ed25519.pub",
+          "::/zeta-authorized-keys.pub",
+        ],
+      },
+      {
+        command: "mcopy",
+        args: [
+          "-o",
+          "-i",
+          "artifacts/zflash-baked.img@@1048576",
+          "/tmp/zflash-inline/zeta-hostname.txt",
+          "::/zeta-hostname.txt",
+        ],
+      },
+      {
+        command: "mcopy",
+        args: [
+          "-o",
+          "-i",
+          "artifacts/zflash-baked.img@@1048576",
+          "artifacts/zeta-creds.enc",
+          "::/zeta-creds.enc",
+        ],
+      },
+    ]);
+    const [pubkeyCommand, hostnameCommand, credsCommand] = result.value.espWriteCommands;
+    const [hostnameFile] = result.value.inlineFiles;
+    if (!pubkeyCommand || !hostnameCommand || !credsCommand || !hostnameFile) {
+      throw new Error("expected complete file-backed execution plan");
+    }
+    expect(result.value.steps).toEqual([
+      { kind: "command", command: planned.value.imageCommand },
+      { kind: "command", command: pubkeyCommand },
+      { kind: "write-inline-file", file: hostnameFile },
+      { kind: "command", command: hostnameCommand },
+      { kind: "command", command: credsCommand },
+    ]);
+  });
+
+  test("requires an inline staging directory before planning content writes", () => {
+    const planned = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      hostname: "pikachu",
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+    });
+    expect(planned.ok).toBe(true);
+    if (!planned.ok) throw new Error(planned.error);
+
+    expect(planFileBackedZflashImageExecution({ plan: planned.value })).toEqual({
+      ok: false,
+      error: "inlineStagingDirectory is required for content ESP writes",
+    });
+  });
+
+  test("rejects ambiguous ESP writes before producing mcopy commands", () => {
+    const result = planFileBackedZflashImageExecution({
+      inlineStagingDirectory: "/tmp/zflash-inline",
+      plan: {
+        espOffsetBytes: 1_048_576,
+        espWrites: [
+          {
+            content: "pikachu\n",
+            destination: "/zeta-hostname.txt",
+            sourcePath: "fixtures/hostname.txt",
+          },
+        ],
+        imageCommand: {
+          command: "qemu-img",
+          args: ["convert", "-f", "raw", "-O", "raw", "a.iso", "b.img"],
+        },
+        isoPath: "a.iso",
+        outputImagePath: "b.img",
+      },
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "ESP write /zeta-hostname.txt must specify exactly one of sourcePath or content",
     });
   });
 });

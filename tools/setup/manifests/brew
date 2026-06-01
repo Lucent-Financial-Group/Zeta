@@ -33,5 +33,8 @@ ollama  # CPU-served tiny model for the move-next selector + observe.ts
 
 # USB/ISO QEMU acceptance substrate (operator 2026-05-31): B-0891 uses
 # qemu-system-x86_64 for boot/full-install/retention scenarios and qemu-img
-# for qcow2 snapshot/restart state preservation.
+# for qcow2 snapshot/restart state preservation. The file-backed zflash
+# image builder uses mtools' mcopy to write ESP payloads into raw images
+# without mounting physical USB devices.
 qemu
+mtools

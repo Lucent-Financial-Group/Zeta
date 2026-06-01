@@ -53,6 +53,8 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
     "covered on Windows by the qemu manifest line; apt splits qemu-system-* from qemu-utils",
   "qemu-utils":
     "covered on Windows by the qemu manifest line; apt splits qemu-img utilities from qemu-system-*",
+  mtools:
+    "file-backed zflash ESP-image writer for Unix/NixOS QEMU proof; no scoop/winget/choco package source is declared yet, so Windows keeps QEMU-only coverage until a Windows package source is selected",
 };
 
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {
@@ -68,8 +70,8 @@ test("git is present in manifests/windows (loop clone + repo-ops prerequisite)",
 });
 
 test("USB/QEMU and cluster integration tools are declared in install substrate", () => {
-  expect(parseManifest("apt")).toEqual(expect.arrayContaining(["qemu-system-x86", "qemu-utils"]));
-  expect(parseManifest("brew")).toContain("qemu");
+  expect(parseManifest("apt")).toEqual(expect.arrayContaining(["qemu-system-x86", "qemu-utils", "mtools"]));
+  expect(parseManifest("brew")).toEqual(expect.arrayContaining(["qemu", "mtools"]));
   expect(parseManifest("windows")).toContain("qemu");
 
   expectMiseTool("k3d", "5.8.3");
@@ -133,10 +135,19 @@ test("NixOS and USB installer surfaces delegate agent/runtime drift to install g
     join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "zeta-install.sh"),
     "utf8",
   );
+  const fullClusterFlake = readFileSync(
+    join(repoRoot, "full-ai-cluster", "flake.nix"),
+    "utf8",
+  );
+  const usbInstallerFlake = readFileSync(
+    join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "flake.nix"),
+    "utf8",
+  );
 
   // Installed NixOS gets declarative system packages from Nix, but runtime/agent CLI drift
   // comes from the same install.sh manifest graph as dev machines and CI.
   expect(commonNix).toContain("mise");
+  expect(commonNix).toContain("mtools");
   expect(commonNix).toContain("tools/setup/manifests/agent-clis");
   expect(aiAgentNix).toContain("tools/setup/manifests/agent-clis");
 
@@ -145,6 +156,9 @@ test("NixOS and USB installer surfaces delegate agent/runtime drift to install g
   expect(installerNix).toContain('writeShellScriptBin "zeta-install"');
   expect(installerNix).toContain("p7zip");
   expect(installerNix).toContain("gh");
+  expect(installerNix).toContain("mtools");
+  expect(fullClusterFlake).toContain("qemu mtools");
+  expect(usbInstallerFlake).toContain("mtools");
   expect(zetaInstall).toContain("ZETA_INSTALL_NIXOS_MODE=installed");
   expect(zetaInstall).toContain("ZETA_INSTALL_FULL=1");
   expect(zetaInstall).toContain("tools/setup/manifests/agent-clis");

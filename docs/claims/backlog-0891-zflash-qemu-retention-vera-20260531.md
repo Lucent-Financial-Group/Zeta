@@ -51,3 +51,7 @@
 - progress: `zflash-lib.ts` now exposes a pure `planFileBackedZflashImage` planning surface for QEMU-safe raw-image creation plus ESP pubkey/hostname/credential write intents, explicitly refusing `/dev/*` output targets.
 - proof: `bun test full-ai-cluster/tools/zflash-lib.test.ts`, `bun --bun tsc --noEmit -p tsconfig.json`, and `git diff --check` pass after the file-backed zflash image planner patch.
 - next: wire the planner to an executor that copies the ISO to a raw image and writes the ESP intents, then feed that artifact into the real QEMU retention run.
+- progress: `planFileBackedZflashImageExecution` now expands the pure file-backed plan into executable `qemu-img` plus `mcopy -i <image>@@<esp-offset>` command/file-write steps, and `mtools` is declared in the apt/brew/NixOS zflash/USB/ISO surfaces instead of being an implicit executor dependency.
+- proof: `bun test full-ai-cluster/tools/zflash-lib.test.ts`, `bun test tools/ci/manifest-symmetry.test.ts`, `bun --bun tsc --noEmit -p tsconfig.json`, and `git diff --check` pass after the file-backed execution-plan/declarative-dependency patch.
+- limitation: `mtools` has no selected Windows package-manager source in `tools/setup/manifests/windows` yet, so the manifest symmetry shield records it as a Windows exception while preserving QEMU-only Windows coverage.
+- next: add the small I/O executor that materializes inline staging files, runs the planned `qemu-img`/`mcopy` steps, and passes the resulting raw image to `ZFLASH_QEMU_RETENTION_BOOT_IMAGE` for a real retention run.

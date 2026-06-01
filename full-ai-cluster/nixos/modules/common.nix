@@ -211,6 +211,9 @@
                     # precise per-node hardware inventory.
     dmidecode
     skopeo
+    # File-backed zflash image substrate: mcopy writes ESP payloads
+    # into raw QEMU boot images without touching physical /dev disks.
+    mtools
     kubectl kubernetes-helm k9s argocd
     cilium-cli hubble
 
