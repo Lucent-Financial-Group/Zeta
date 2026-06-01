@@ -144,8 +144,11 @@ export function equals<T>(compare: Compare<T>, a: GSet<T>, b: GSet<T>): boolean 
 // empty+concat, never subtraction/negation/product.
 
 /**
- * A monoid: an identity element (`empty`) + an associative binary combiner (`concat`),
- * with `concat(empty, x) === x === concat(x, empty)`.
+ * A monoid: an identity element (`empty`) + an associative binary combiner (`concat`).
+ * The identity law holds by VALUE/semantic equality (not reference `===`): combining with
+ * `empty` yields a value equal to the other operand — `concat(empty, x)` equals `x` equals
+ * `concat(x, empty)`. (For {@link GSet}, `concat` = `union` returns a fresh array except for
+ * the empty short-circuit, so compare with {@link equals}, never `===`.)
  */
 export interface Monoid<T> {
   /** The identity element. */
