@@ -2,9 +2,10 @@
 // Composes the two trust-core primitives — canonical-JSON (8.1, via canonicalBytes) and
 // SHA-256 — over the package CONTENT: the manifest MINUS its signature, plus files. The
 // signature is excluded so identity (what the package is) is separate from authenticity
-// (who vouches for it — verified separately by signing.ts). This aligns the identity input
-// with signing.ts's canonicalManifestBytes (which also strips the signature): one "content"
-// notion underlies both signing and identity, and the hash is stable across re-signing.
+// (who vouches for it — verified separately by signing.ts). Same EXCLUSION as signing.ts's
+// canonicalManifestBytes (which also strips the signature) but a different SCOPE: signing
+// covers the manifest alone; package identity covers { manifest, files }. The hash is stable
+// across re-signing.
 // Runtime hasher is node:crypto SHA-256 (native; byte-identical to the slice-8 SHA-256
 // oracle, which exists for cross-language verification, not as the runtime hasher).
 import { createHash } from "node:crypto";

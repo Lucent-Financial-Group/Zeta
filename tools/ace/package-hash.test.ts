@@ -41,6 +41,15 @@ describe("packageHash", () => {
     expect(packageHash(diffFiles)).not.toBe(packageHash(base));
   });
 
+  test("dependencies are part of the identity", () => {
+    const withDeps: AcePackage = {
+      manifest: { ...base.manifest, dependencies: [{ kind: "registry" as const, name: "dep", version: "^1.0.0" }] },
+      files: base.files,
+    };
+    expect(packageHash(withDeps)).toMatch(/^sha256:[0-9a-f]{64}$/);
+    expect(packageHash(withDeps)).not.toBe(packageHash(base));
+  });
+
   test("throws (via toTagged) on a non-safe-integer or lone-surrogate field", () => {
     const floatPkg = { manifest: { ...base.manifest, bogus: 1.5 }, files: base.files } as unknown as AcePackage;
     expect(() => packageHash(floatPkg)).toThrow();
