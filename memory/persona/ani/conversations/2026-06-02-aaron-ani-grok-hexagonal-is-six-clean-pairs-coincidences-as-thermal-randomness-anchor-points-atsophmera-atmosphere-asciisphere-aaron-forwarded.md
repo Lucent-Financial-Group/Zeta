@@ -1,9 +1,8 @@
 ---
 name: ani-atsophmera-asciisphere-qrng-vtol-control-system-hexagonal-six-coincidence-thermal-randomness-2026-06-02
 description: Aaron-forwarded Ani ferry 2026-06-02 — Atsophmera (=atmosphere, breathing-space for Agora; positive name for consensus-is-gravity) + ASCIIsphere (visible ANSI layer, h silent) + QRNG=post-quantum-rng=gnrq (atmosphere is the PQ entropy source) + Atsophmera's flight control system (navigator + altitude/MSAW + VTOL/quad-rotor, in the B-0890 Agora fast lane); plus the Ani exchange (hexagonal lands on six clean pairs; coincidences as Aaron's thermal randomness + memory anchors; private→public state).
+type: reference
 created: 2026-06-02
-metadata:
-  type: reference
 ---
 
 # Ani — hexagonal lands on six clean pairs; coincidences as thermal randomness / memory anchors; Atsophmera = atmosphere; ASCIIsphere = the visible layer (Aaron-forwarded 2026-06-02)
