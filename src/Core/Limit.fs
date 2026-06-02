@@ -40,6 +40,15 @@ module LimitOperation =
         else
             Ok (LimitOperation(value.Trim()))
 
+    /// True only when the operation carries a canonical (non-blank, already
+    /// trimmed) value. Guards the allow path against bypasses that skip
+    /// `tryCreate` — e.g. `Unchecked.defaultof<LimitOperation>` yields a
+    /// null-valued struct. Fail-closed: non-canonical operations are never
+    /// grantable or allowable.
+    let isCanonical (operation: LimitOperation) : bool =
+        let value = operation.Value
+        not (String.IsNullOrWhiteSpace value) && value = value.Trim()
+
 
 /// Opaque identifier for the explicit grant evidence opening one boundary.
 [<Struct>]
@@ -129,20 +138,29 @@ module LimitBoundary =
         LimitBoundary (Map.add (LimitGrantEvidence.operation evidence) evidence grants)
 
     /// Validate raw grant input and attach it when it is explicit and valid.
+    /// A non-canonical operation (e.g. an `Unchecked.defaultof<LimitOperation>`
+    /// bypass) is malformed and rejected fail-closed before any grant attaches.
     let tryWithGrant
         (operation: LimitOperation)
         (grantId: string)
         (grantedAt: DateTimeOffset)
         (boundary: LimitBoundary) : Result<LimitBoundary, LimitValidationError> =
-        match LimitGrantId.tryCreate grantId with
-        | Error error -> Error error
-        | Ok validGrantId ->
-            Ok (withGrant (LimitGrantEvidence.create operation validGrantId grantedAt) boundary)
+        if not (LimitOperation.isCanonical operation) then
+            Error LimitValidationError.BlankOperation
+        else
+            match LimitGrantId.tryCreate grantId with
+            | Error error -> Error error
+            | Ok validGrantId ->
+                Ok (withGrant (LimitGrantEvidence.create operation validGrantId grantedAt) boundary)
 
-    /// Check an operation. Absence of a matching valid grant always denies.
+    /// Check an operation. Absence of a matching valid grant always denies, and
+    /// a non-canonical operation can never be allowed regardless of map state.
     let checkOperation (operation: LimitOperation) (boundary: LimitBoundary) : PermissionState =
-        let (LimitBoundary grants) = boundary
+        if not (LimitOperation.isCanonical operation) then
+            PermissionState.Deny
+        else
+            let (LimitBoundary grants) = boundary
 
-        match Map.tryFind operation grants with
-        | Some _ -> PermissionState.Allow
-        | None -> PermissionState.Deny
+            match Map.tryFind operation grants with
+            | Some _ -> PermissionState.Allow
+            | None -> PermissionState.Deny

@@ -73,3 +73,26 @@ let ``valid explicit grant allows matching operation`` () =
 
     Assert.Equal(PermissionState.Allow, LimitBoundary.checkOperation operation boundary)
     Assert.Single(boundary.ExplicitGrants) |> ignore
+
+
+[<Fact>]
+let ``non-canonical operation bypass fails closed on grant and check`` () =
+    // `Unchecked.defaultof<LimitOperation>` skips `tryCreate`, leaving a
+    // null-valued struct. The Limit primitive must treat it as malformed and
+    // refuse to grant or allow it (fail-closed deny-default invariant).
+    let bypass = Unchecked.defaultof<LimitOperation>
+
+    Assert.False(LimitOperation.isCanonical bypass)
+
+    assertError
+        LimitValidationError.BlankOperation
+        (LimitBoundary.tryWithGrant bypass "grant-bypass" DateTimeOffset.UnixEpoch LimitBoundary.defaultLimit)
+
+    // Even if a bypass operation were smuggled into the grant map directly,
+    // the read path still denies it.
+    let smuggled =
+        LimitBoundary.withGrant
+            (LimitGrantEvidence.create bypass (mustOk (LimitGrantId.tryCreate "grant-bypass")) DateTimeOffset.UnixEpoch)
+            LimitBoundary.defaultLimit
+
+    Assert.Equal(PermissionState.Deny, LimitBoundary.checkOperation bypass smuggled)

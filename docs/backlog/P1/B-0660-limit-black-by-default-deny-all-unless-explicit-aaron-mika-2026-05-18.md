@@ -6,7 +6,7 @@ title: "Limit primitive defaults to BLACK (deny-all unless explicitly allowed) â
 tier: design
 effort: S
 created: 2026-05-18
-last_updated: 2026-05-18
+last_updated: 2026-06-02
 depends_on: [B-0629, B-0644]
 composes_with: [B-0629, B-0644, B-0659, B-0643, B-0654, B-0631]
 tags: [design, aaron, mika, limit-black-by-default, deny-all-by-default, security-first, fail-closed, architectural-posture, locked-in]
