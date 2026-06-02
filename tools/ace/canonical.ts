@@ -7,6 +7,25 @@
 import { canonicalJson, type Tagged } from "../../src/Core.TypeScript/dynamic-value/json.ts";
 
 /**
+ * Reject strings carrying a lone surrogate (e.g. "\uD800") before they reach the
+ * hashing/signing seam. `canonicalJson` preserves a lone surrogate (it emits string chars
+ * raw above U+001F), but `TextEncoder` in `canonicalBytes` silently maps EVERY lone
+ * surrogate to U+FFFD — so byte-distinct strings ("\uD800", "\uD801", and the real
+ * "�") collapse to identical canonical bytes. Since canonicalBytes is the shared
+ * package_hash + index/manifest signing seam, that collapse would let one signature /
+ * package hash be replayed across distinct metadata. `isWellFormed()` is the spec
+ * primitive (false iff the string contains a lone surrogate); fail loud here — matching the
+ * `Number.isSafeInteger` throw below — rather than silently hashing a collidable value.
+ */
+function assertWellFormed(s: string, what: string): void {
+  if (!s.isWellFormed()) {
+    throw new Error(
+      `toTagged: ${what} contains a lone surrogate — lone surrogates collapse to U+FFFD under UTF-8 encoding and would collide byte-distinct values at the package_hash/signing seam`,
+    );
+  }
+}
+
+/**
  * Convert a plain JS value into the shared `Tagged` form. Object entries are emitted in
  * lexicographically-SORTED key order, so the order-preserving `canonicalJson` yields
  * sorted-key output — Ace keeps its key-order-independent canonicalization while consuming
@@ -14,6 +33,8 @@ import { canonicalJson, type Tagged } from "../../src/Core.TypeScript/dynamic-va
  * canonical content has no Float fields, so a non-integer is a bug and throws rather than
  * silently hashing a float. `undefined` object properties are omitted (matching JSON /
  * the prior `canonicalize`). bigint / symbol / function are unsupported and throw.
+ * String values AND object keys are checked for lone surrogates (see `assertWellFormed`) —
+ * keys bypass the `case "string"` path but still reach `encodeString` → `canonicalBytes`.
  */
 export function toTagged(value: unknown): Tagged {
   if (value === null) return { t: "null" };
@@ -27,10 +48,13 @@ export function toTagged(value: unknown): Tagged {
       // are tiny; an out-of-range or non-integer number is a bug — fail loud here with
       // a clear message rather than a cryptic downstream BigInt SyntaxError.
       if (!Number.isSafeInteger(value)) {
-        throw new Error(`toTagged: ${value} is not a safe integer — Ace canonical content has no Float fields and integers must be within the safe-integer range`);
+        throw new Error(
+          `toTagged: ${value} is not a safe integer — Ace canonical content has no Float fields and integers must be within the safe-integer range`,
+        );
       }
       return { t: "int", v: String(value) };
     case "string":
+      assertWellFormed(value, "string value");
       return { t: "str", v: value };
     case "object": {
       if (Array.isArray(value)) {
@@ -43,6 +67,7 @@ export function toTagged(value: unknown): Tagged {
       for (const k of Object.keys(obj).sort()) {
         const v = obj[k];
         if (v === undefined) continue; // omit undefined props (JSON.stringify parity)
+        assertWellFormed(k, "object key"); // keys bypass the string-value case but still reach encodeString → canonicalBytes
         entries.push([k, toTagged(v)]);
       }
       return { t: "obj", v: entries };

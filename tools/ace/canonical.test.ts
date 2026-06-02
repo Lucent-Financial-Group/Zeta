@@ -40,7 +40,11 @@ describe("toTagged", () => {
   test("array preserves order, recurses", () => {
     expect(toTagged([1, "a", true])).toEqual({
       t: "arr",
-      v: [{ t: "int", v: "1" }, { t: "str", v: "a" }, { t: "bool", v: true }],
+      v: [
+        { t: "int", v: "1" },
+        { t: "str", v: "a" },
+        { t: "bool", v: true },
+      ],
     });
   });
 
@@ -102,5 +106,44 @@ describe("canonicalBytes", () => {
     const a = canonicalBytes({ one: 1, two: 2, three: 3 });
     const b = canonicalBytes({ three: 3, one: 1, two: 2 });
     expect(Buffer.from(a)).toEqual(Buffer.from(b));
+  });
+});
+
+describe("lone surrogates rejected (hash/signature replay-resistance)", () => {
+  // A lone surrogate survives canonicalJson (string chars > U+001F are emitted raw) but
+  // TextEncoder in canonicalBytes maps every lone surrogate to U+FFFD — so "\uD800",
+  // "\uD801" and the real "�" would otherwise collide to identical signing bytes.
+  // toTagged must reject lone surrogates before they reach that seam.
+  test("lone high surrogate string value throws", () => {
+    expect(() => toTagged("\uD800")).toThrow(/lone surrogate/);
+    expect(() => canonicalBytes("\uD800")).toThrow(/lone surrogate/);
+  });
+
+  test("lone low surrogate string value throws", () => {
+    expect(() => toTagged("\uDC00")).toThrow(/lone surrogate/);
+  });
+
+  test("lone surrogate buried in a longer string / nested value throws", () => {
+    expect(() => toTagged("ace\uD83Dpkg")).toThrow(/lone surrogate/); // high surrogate, no low follower
+    expect(() => canonicalBytes({ name: "ok", bad: ["\uDFFF"] })).toThrow(/lone surrogate/);
+  });
+
+  test("lone surrogate in an OBJECT KEY throws (keys bypass the string-value case)", () => {
+    expect(() => toTagged({ "\uD800": 1 })).toThrow(/lone surrogate/);
+    expect(() => canonicalBytes({ ["k\uDC00"]: 1 })).toThrow(/lone surrogate/);
+  });
+
+  test("the would-be collision is now distinguishable: each side throws instead of colliding", () => {
+    // Pre-fix, all three encoded to the same EF BF BD bytes. Post-fix the two lone
+    // surrogates throw, and only the genuine replacement character canonicalizes.
+    expect(() => canonicalBytes("\uD800")).toThrow();
+    expect(() => canonicalBytes("\uD801")).toThrow();
+    expect(bytesToStr(canonicalBytes("�"))).toBe('"�"'); // real U+FFFD is well-formed → allowed
+  });
+
+  test("valid surrogate PAIRS (astral chars) are NOT rejected — no false positive", () => {
+    expect(() => toTagged("😀")).not.toThrow(); // U+1F600, a well-formed pair
+    expect(bytesToStr(canonicalBytes("😀"))).toBe('"😀"');
+    expect(() => toTagged({ "🔑": "🗝️" })).not.toThrow();
   });
 });
