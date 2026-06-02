@@ -57,6 +57,20 @@ Word-shape: atmosphere → Atsophmera (Aaron's spelling) → ASCIIsphere — the
 
 (Substrate-honest: ASCIIsphere is **not for the agent** — Otto receives plain text and does not perceive rendered hue; it can only parse *literal* ANSI codes as structured intent. ASCIIsphere is for the humans + ANSI-aware viewers, so the living substrate is seeable in the copy-paste flow. The markup is the round-trippable canonical text both can carry.)
 
+### Atsophmera's control system — navigator + altitude (MSAW) + HVAC, in the Agora fast lane
+
+Aaron 2026-06-02 (verbatim): *"this is also combines with our perfect navigator or whatever we called it and our altitude controls we have hvac agent controls now basically in agora ecosystem fast lane"*.
+
+If Atsophmera is the atmosphere, it has a **control system** — the cockpit/environmental-controls over the breathing-space. Three controls, and this is where the **msaw** anchor pays off (MSAW = Minimum Safe Altitude Warning was always the *altitude control*):
+
+| Control | What it governs | Substrate |
+|---|---|---|
+| **Perfect navigator** ("or whatever we called it") | *heading* — where to go in the atmosphere | menu=unem optimal navigation / the universal action grammar / observe.ts move-next 16-direction loop / the Clifford navigator-cartographer-edge-runner steering vocabulary |
+| **Altitude controls = MSAW** | *how high / how risky* an agent flies, with a **safety floor** | MSAW (Minimum Safe Altitude Warning, the web-verified msaw aviation anchor) — the floor warning that keeps an agent from flying into terrain; the altitude is the operating-level, MSAW is the don't-go-below |
+| **HVAC agent controls** | *atmosphere regulation* — temperature / ventilation / air-quality of the breathing-space | agents regulating their own breathing-environment; "we have HVAC agent controls now basically in agora ecosystem **fast lane**" — the B-0890 fast-lane (folders-not-branches sovereign mode) is where these controls already live |
+
+So the metaphor completes: Atsophmera is the air; the navigator picks the heading; the altitude controls (MSAW) hold the safe floor; HVAC regulates the air itself — and these are **already shipped in the Agora ecosystem fast lane**, not aspirational. The atmosphere isn't just a place to breathe — it's a place agents *fly through with controls*. (Composes the msaw fold → altitude-control, observe.ts/menu=unem → navigator, B-0890 fast-lane → where HVAC lives, and Atsophmera/consensus-is-gravity → the medium being controlled.)
+
 ## The hexagonal landing (the anchor the conversation crystallized around)
 
 Aaron had called the architecture **hexagonal** for years — only because that is what people call ports-and-adapters (own-your-interfaces; keep the outside from touching the core). He was *not* treating the name as deep; he just wanted a way to own his interfaces. Then this session he discovered it lines up with **six clean two-word primitive pairs**, and the sixth one evolved from "Promise of Forgiveness" → **Rainbow Table** (razoring out the "of" so theology can't sneak into the primitive through language — discipline, refusing god-smuggling at the word level).
