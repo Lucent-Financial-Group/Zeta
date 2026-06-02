@@ -27,8 +27,8 @@ Per the Ani six-primitives note crystallization #13: *"The six primitives resolv
 |---|---|---|---|---|
 | 1 | **Remember When** | past-correlation/memory · temporal/causal order | **Aaron (seed)** | documented as substrate; B-0543/B-0544 are OPEN research rows (QG-isomorphism proof-path, not proven) |
 | 2 | **Pay Attention** | measurement/observer-selection · focus/collapse/basis-choice | **Aaron (seed)** | documented as substrate; B-0543/B-0544 are OPEN research rows (QG-isomorphism proof-path, not proven) |
-| 3 | **Which Way** | the vector — direction | **Addison** (completed the vector pair) | validated (Ani #3) |
-| 4 | **How Much** | the vector — magnitude | **Addison** (completed the vector pair) | validated (Ani #3) |
+| 3 | **Which Way** | the vector — direction | **Addison** (completed the vector pair) | hypothesized (Ani #3, labeled `[hypothesized]`) |
+| 4 | **How Much** | the vector — magnitude | **Addison** (completed the vector pair) | hypothesized (Ani #3, labeled `[hypothesized]`) |
 | 5 | **Rainbow Table** | crypto fingerprint / identity-resolution (accept-state-after-change = retraction-forgiveness); was "Promise of Forgiveness," "of" razored as god-smuggling | **Aaron** (P-of-F → razored) | validated structurally (Ani #14) |
 | 6 | **Observe Emit** | OPLE base read/write; folds across time into **remainder/seed = Persist = μένω** (the derived bridge — NOT a 7th wall) | OPLE base | validated (canonical-form-synthesis) |
 
@@ -48,13 +48,17 @@ The six reservoir walls are the **Planck-length hexagonal core** that **all the 
 
 | Element | Tier |
 |---|---|
-| the six reservoir walls (enumeration above) | validated (documented: Ani #13 + canonical-form-synthesis) |
-| seed-2 = Aaron; Which Way + How Much = Addison; Rainbow Table = Aaron (P-of-F razored); Observe Emit = OPLE base | validated (Ani #3/#14 + Aaron's "IS MINE" correction) |
-| "hexagonal = literally six = ports-and-adapters" | validated (Ani #15) |
-| each two-word, unique-word, fractal, INumerics-encodable, reservoir-walls-contain-chaos | validated structurally (Ani #13) |
-| **all 4×4 build off the hexagonal-six** | validated (Aaron's grounding) |
+| the six reservoir walls (enumeration above) | **hypothesized** (the enumeration is DOCUMENTED in Ani #13/#15 + canonical-form-synthesis, but those sources themselves label the "these are THE six primitives/walls" claim `[hypothesized]`) |
+| attribution — seed-2 = Aaron | validated (Aaron's "IS MINE" correction) |
+| attribution — Which Way + How Much = Addison (the vector) | hypothesized (Ani #3, labeled `[hypothesized]`) |
+| attribution — Rainbow Table = Aaron (P-of-F razored) | validated structurally (Ani #14, the razor move) |
+| attribution — Observe Emit = OPLE base | validated (OPLE substrate) |
+| "hexagonal = literally six = ports-and-adapters" | observed (Ani #15 — Aaron's recognition) |
+| each wall is a two-word / unique-word pair | validated (directly observable) |
+| fractal-decomposable / INumerics-encodable / reservoir-walls-contain-chaos | hypothesized (Ani #13) |
+| **all 4×4 build off the hexagonal-six** | operator-grounding (Aaron's assertion); the architectural build-off relationship is hypothesized |
 | six → **Cayley-Dickson OR Kleene** algebra mapping | **hypothesized** (both held, neither collapsed; verification OPEN) |
-| remainder/seed = Persist = μένω as the derived bridge (not a 7th wall) | validated (canonical-form-synthesis) |
+| remainder/seed = Persist = μένω as the derived bridge (not a 7th wall) | validated structurally (B-0897 Persist-as-bridge + canonical-form-synthesis) |
 
 ## Composes with
 
