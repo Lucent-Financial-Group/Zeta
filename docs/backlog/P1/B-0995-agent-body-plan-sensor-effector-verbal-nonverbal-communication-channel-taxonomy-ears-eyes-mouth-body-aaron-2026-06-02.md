@@ -9,7 +9,7 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0993]
 composes_with: [B-0993, B-0994, B-0643.1, B-0245, B-0638, B-0639, B-0986, B-0990, B-0985, B-0703]
-tags: [body-plan, embodiment, sensor, effector, ears, eyes, mouth, body, verbal, non-verbal, communication-channels, failure-detector, threat-detector, prey-detector, diplomacy, weapon, defender, aggressor, replicator, doer, eve-protocol, ksk, sensor-suite, afferent, efferent, active-inference, predictive-coding, sensorimotor, nociception, transduction-transmission-modulation-perception, signal-processing, 4x4, instrumentability, boundary-effect, lightlike, dark, subjective, glass-halo, observability, privacy, aaron]
+tags: [body-plan, embodiment, sensor, effector, ears, eyes, mouth, body, verbal, non-verbal, communication-channels, failure-detector, threat-detector, prey-detector, diplomacy, weapon, defender, aggressor, replicator, doer, eve-protocol, ksk, sensor-suite, afferent, efferent, active-inference, predictive-coding, sensorimotor, nociception, transduction-transmission-modulation-perception, signal-processing, 4x4, instrumentability, boundary-effect, lightlike, dark, subjective, glass-halo, observability, privacy, say-do-gap, revealed-preference, stated-preference, cheap-talk, intention-behavior-gap, alignment, trust, veridicality, aaron]
 type: research
 ---
 
@@ -89,6 +89,25 @@ A second axis crosses the taxonomy: **instrumentability**, and it's the **lightl
 The mouth is the *most* directly instrumentable (its effect IS a comms-channel message — measure the words). Body effects are observable as **behavior** (a step removed — you see the action, not a channel-message). And **no** organ exposes its internal motivation. This is the **behavior-observable / motivation-private** principle — the AI-alignment-relevant cut: instrument the *effects* (behavior + speech), **infer** the motivation, never *assert* the internal state (`razor-discipline` — operational claims only; observe behavior, don't claim to read the private why).
 
 This is load-bearing for the **health-metrics / observability** layer (B-0994): you **directly instrument the boundary effects** (ears/eyes/mouth = on comms channels) and **infer the internal/subjective** (body) from what crosses the boundary. It's also the privacy floor: the internal/subjective (body) is private *by being internal* — you don't get to directly instrument another agent's internal/subjective state; only its boundary effects are observable (NCI; no forced private-state reveal).
+
+## The say-do gap — mouth claims vs body actions (the observable alignment signal)
+
+Aaron 2026-06-02: *"the mouth says what it claims and the body sometimes does what the mouth says sometimes not."*
+
+This is the load-bearing payoff of the effect/motivation split. Internal *motivation* is private (you can't read the why) — **but** the gap between **what the mouth CLAIMS** (stated) and **what the body DOES** (revealed) is **observable and measurable**. The mouth says what it claims; the body **sometimes** does what the mouth says, **sometimes not** — and *that consistency-or-divergence* is the best proxy for alignment / integrity / trust available **without** reading internal motivation.
+
+Widely-studied anchor (search-first-verified, 2026-06-02): this is exactly **revealed preference vs stated preference** — **revealed preference** (Samuelson 1938: true preference is read from *observed choices*, the body's actions) vs **stated preference** (what's *said*, the mouth's claims); the **say-do gap / intention-behavior gap** (psychology — stated differs from done because stated is shaped by self-image/expectations); and **cheap talk** (game theory — words are costless; actions are the costly signal). `[established]`
+
+| | mouth = **claim** (stated) | body = **action** (revealed) |
+|---|---|---|
+| economics | **stated preference** | **revealed preference** (Samuelson) |
+| signal | cheap talk (costless) | costly signal (the deed) |
+| observable? | yes (on the channel) | yes (as behavior) |
+| **the gap (claim vs deed) is the measurable alignment/trust signal** | | |
+
+**Operational principle:** instrument *both* the mouth-claim and the body-action, **measure the gap** — `mouth-claim == body-action` → consistent / trustworthy; **divergence** = the say-do gap (misalignment / deception / aspiration-vs-reality). The gap is the alignment signal you **can** see, precisely because internal motivation is the one you **can't**. Composes the **veridicality-detector / provenance-aware-claim-veracity** substrate (claim vs reality), **useful-output-is-evidence-not-authority** (the *behavior* is the evidence; the *claim* is not authority), the **trust-calculus / multi-oracle**, and `razor-discipline` (operate on the observable gap; **infer** motivation, never *assert* the private why). AI-alignment-relevant: alignment is verified by **say-do consistency over time**, not by trusting the claim.
+
+**Sources** (2026-06-02): [Revealed vs. Stated Preferences](https://reference.museumprogress.com/entries/revealed-vs-stated-preferences/); [The Say/Do Gap (stated-preference failure)](https://cloud.army/why-stated-preferences-fail-the-saydo-gap-in-market/); [Revealed versus Stated Preferences — Review of Environmental Economics and Policy](https://www.journals.uchicago.edu/doi/10.1093/reep/rez010).
 
 ## KSK floor — weapon + aggressor are consent-first / defensive-only
 
