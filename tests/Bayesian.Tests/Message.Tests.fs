@@ -144,3 +144,36 @@ let ``Message.cavity divides the outgoing message out of the marginal`` () =
     let cav = Message.cavity marginal m2   // remove m2 → should recover m1
     Gaussian.mean cav |> should (equalWithin 1e-9) (Gaussian.mean m1)
     Gaussian.variance cav |> should (equalWithin 1e-9) (Gaussian.variance m1)
+
+// ─── Domain contract: constructors fail-fast; operators tolerate improper ───
+
+[<Fact>]
+let ``Gaussian.ofMeanVariance rejects non-positive or non-finite variance`` () =
+    (fun () -> Gaussian.ofMeanVariance 0.0 0.0 |> ignore) |> should throw typeof<System.ArgumentException>
+    (fun () -> Gaussian.ofMeanVariance 0.0 -1.0 |> ignore) |> should throw typeof<System.ArgumentException>
+    (fun () -> Gaussian.ofMeanVariance nan 1.0 |> ignore) |> should throw typeof<System.ArgumentException>
+
+[<Fact>]
+let ``Beta.create rejects non-positive shape parameters`` () =
+    (fun () -> Beta.create 0.0 1.0 |> ignore) |> should throw typeof<System.ArgumentException>
+    (fun () -> Beta.create 1.0 -2.0 |> ignore) |> should throw typeof<System.ArgumentException>
+
+[<Fact>]
+let ``Beta.likelihood rejects negative counts`` () =
+    (fun () -> Beta.likelihood -1.0 0.0 |> ignore) |> should throw typeof<System.ArgumentException>
+    (fun () -> Beta.likelihood 0.0 infinity |> ignore) |> should throw typeof<System.ArgumentException>
+
+[<Fact>]
+let ``Bernoulli.create rejects p outside the open interval (0,1)`` () =
+    (fun () -> Bernoulli.create 0.0 |> ignore) |> should throw typeof<System.ArgumentException>
+    (fun () -> Bernoulli.create 1.0 |> ignore) |> should throw typeof<System.ArgumentException>
+    (fun () -> Bernoulli.create 1.5 |> ignore) |> should throw typeof<System.ArgumentException>
+
+[<Fact>]
+let ``divide may yield an improper message and isProper detects it (EP cavity)`` () =
+    // narrow ÷ wide → negative precision: improper, but NOT an error (Minka 2001)
+    let narrow = Gaussian.ofMeanVariance 0.0 1.0    // τ = 1
+    let wide = Gaussian.ofMeanVariance 0.0 2.0       // τ = 0.5
+    let cav = Gaussian.divide wide narrow            // τ = 0.5 - 1 = -0.5 < 0
+    Gaussian.isProper cav |> should equal false
+    cav.Precision |> should (equalWithin 1e-9) -0.5  // well-defined, just improper

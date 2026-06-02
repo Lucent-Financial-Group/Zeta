@@ -31,6 +31,16 @@ namespace Zeta.Bayesian
 /// uniformly (the ⊗ at message scope; marginalization, the ⊕ /
 /// moment-match projection, arrives with EP in a later slice).
 ///
+/// **Domain contract.** The *constructors* (`ofMeanVariance`, `create`,
+/// `likelihood`) fail-fast (`invalidArg`) on out-of-domain input
+/// (non-finite, non-positive variance/shape, `p ∉ (0,1)`) — a proper
+/// message in, always. The *operators* (`( * )`, `( / )`) are pure and
+/// deliberately **tolerate improper messages**: the EP cavity (`divide`)
+/// routinely yields improper results (negative precision, shape ≤ 0) —
+/// that is Minka 2001, not an error. Check `isProper` to *detect*
+/// improperness; never forbid it in the operators (that would break EP).
+/// In-domain inputs keep the operators finite (no NaN / divide-by-zero).
+///
 /// Spec source = published papers with formal proofs (clean-room):
 /// KFL 2001 (sum-product), Minka 2001 (EP), Bishop PRML ch.2/10
 /// (exponential families + conjugacy). The conjugate closed-forms here
@@ -81,8 +91,15 @@ module Gaussian =
     /// The flat (uniform) Gaussian message — `Gaussian.One`.
     let uniform : Gaussian = Gaussian.One
 
-    /// A Gaussian from its mean and variance.
+    /// A Gaussian from its mean and variance. Fail-fast: `variance` must
+    /// be finite and strictly positive (a proper moment-form Gaussian);
+    /// `mean` must be finite. (Improper Gaussians — `τ ≤ 0` — arise only
+    /// from the EP cavity `divide`, never from this constructor.)
     let ofMeanVariance (mean: float) (variance: float) : Gaussian =
+        if not (System.Double.IsFinite mean) then
+            invalidArg (nameof mean) "mean must be finite"
+        if not (System.Double.IsFinite variance) || variance <= 0.0 then
+            invalidArg (nameof variance) "variance must be finite and > 0"
         let tau = 1.0 / variance
         { PrecisionMean = mean * tau; Precision = tau }
 
@@ -141,8 +158,15 @@ module Beta =
     /// The flat (uniform) Beta message `Beta(1,1)` — `Beta.One`.
     let uniform : Beta = Beta.One
 
-    /// A Beta from explicit shape parameters.
-    let create (alpha: float) (beta: float) : Beta = { Alpha = alpha; Beta = beta }
+    /// A Beta from explicit shape parameters. Fail-fast: both must be
+    /// finite and strictly positive (a proper Beta). (Improper Betas —
+    /// shape ≤ 0 — arise only from the EP cavity `divide`, never here.)
+    let create (alpha: float) (beta: float) : Beta =
+        if not (System.Double.IsFinite alpha) || alpha <= 0.0 then
+            invalidArg (nameof alpha) "alpha must be finite and > 0"
+        if not (System.Double.IsFinite beta) || beta <= 0.0 then
+            invalidArg (nameof beta) "beta must be finite and > 0"
+        { Alpha = alpha; Beta = beta }
 
     /// Posterior mean α/(α+β).
     let mean (d: Beta) : float = d.Alpha / (d.Alpha + d.Beta)
@@ -160,6 +184,10 @@ module Beta =
     /// is the conjugate posterior `Beta(α+s, β+f)` — i.e. exactly
     /// `BayesianAggregate.BetaBernoulli(α,β).Observe(s,f)`.
     let likelihood (successes: float) (failures: float) : Beta =
+        if not (System.Double.IsFinite successes) || successes < 0.0 then
+            invalidArg (nameof successes) "successes must be finite and >= 0 (fractional soft-counts allowed)"
+        if not (System.Double.IsFinite failures) || failures < 0.0 then
+            invalidArg (nameof failures) "failures must be finite and >= 0 (fractional soft-counts allowed)"
         { Alpha = 1.0 + successes; Beta = 1.0 + failures }
 
     /// Combine two Beta messages (= `a * b`).
@@ -206,8 +234,18 @@ module Bernoulli =
     /// The flat (uniform) Bernoulli message P(true) = 0.5 — `Bernoulli.One`.
     let uniform : Bernoulli = Bernoulli.One
 
-    /// A Bernoulli from P(true).
-    let create (probTrue: float) : Bernoulli = { ProbTrue = probTrue }
+    /// A Bernoulli from P(true). Fail-fast: `probTrue` must be finite and
+    /// strictly between 0 and 1 — a proper exponential-family Bernoulli
+    /// message has *finite* log-odds, so `p ∈ {0, 1}` (a hard certainty)
+    /// is not a message (it's a factor). In-`(0,1)` inputs keep `product`
+    /// and `divide` finite (the normalizer is always positive).
+    let create (probTrue: float) : Bernoulli =
+        if not (System.Double.IsFinite probTrue) || probTrue <= 0.0 || probTrue >= 1.0 then
+            invalidArg (nameof probTrue) "probTrue must be finite and strictly between 0 and 1"
+        { ProbTrue = probTrue }
+
+    /// Proper iff P(true) is strictly inside (0, 1) — finite log-odds.
+    let isProper (b: Bernoulli) : bool = b.ProbTrue > 0.0 && b.ProbTrue < 1.0
 
     /// Combine two Bernoulli messages (= `a * b`).
     let product (a: Bernoulli) (b: Bernoulli) : Bernoulli = a * b
