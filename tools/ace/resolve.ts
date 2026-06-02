@@ -1,10 +1,14 @@
 import { createHash } from "node:crypto";
+import { canonicalBytes } from "./canonical.ts";
 import type { RevocationMap } from "./signing.ts";
 import { contentHash, type AcePackage, type LoadedTrustEntry, type Registry } from "./store.ts";
 import { verifySignature } from "./signing.ts";
 import { parseRange, satisfies } from "./semver.ts";
 
-/** Deterministic JSON: object keys recursively sorted; arrays preserve order. */
+/** Deterministic JSON for LOCKFILE serialization only (lockfile.ts `serializeLockfile`):
+ *  object keys recursively sorted; arrays preserve order. This is a readable-file-format
+ *  concern, NOT a trust-core hashing site — the trust core (packageHash below, signing.ts)
+ *  uses the shared `canonicalBytes` (canonical.ts). Kept local + exported for lockfile.ts. */
 export function canonicalJson(value: unknown): string {
   if (value === null || typeof value !== "object") return JSON.stringify(value);
   if (Array.isArray(value)) return "[" + value.map(canonicalJson).join(",") + "]";
@@ -13,10 +17,11 @@ export function canonicalJson(value: unknown): string {
   return "{" + keys.map((k) => JSON.stringify(k) + ":" + canonicalJson(obj[k])).join(",") + "}";
 }
 
-/** sha256 of the canonical whole package ({manifest incl. signature, files}). The parent's
- *  pin / identity for a dependency. Two edges sharing a packageHash are byte-identical. */
+/** sha256 of the canonical whole package ({manifest incl. signature, files}) via the shared
+ *  canonical byte form (§8.1). The parent's pin / identity for a dependency. Two edges sharing
+ *  a packageHash are byte-identical. */
 export function packageHash(pkg: AcePackage): string {
-  return "sha256:" + createHash("sha256").update(canonicalJson({ manifest: pkg.manifest, files: pkg.files })).digest("hex");
+  return "sha256:" + createHash("sha256").update(canonicalBytes({ manifest: pkg.manifest, files: pkg.files })).digest("hex");
 }
 
 export type FetchPackage = (urlOrPath: string) => Promise<string>;
