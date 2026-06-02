@@ -125,14 +125,19 @@ jobs:
           body="${body}${AI_FOOTER}"
 
           if [ -n "$existing" ]; then
-            echo "Updating existing formal-coverage tracking issue #$existing"
+            echo "Refreshing existing formal-coverage tracking issue #$existing"
+            # IMPORTANT: do NOT overwrite the body on recurring runs — the body
+            # is the LIVING checklist; agents tick C2-C14 in the issue itself as
+            # proofs land. Re-rendering the template would reset that progress
+            # (the template only SEEDS the issue at creation, below). Refresh
+            # only the TITLE (the date) + post a heartbeat comment; the checkbox
+            # state is preserved. (Codex P1 / Copilot, #6617.)
             gh issue edit "$existing" \
               --repo "$REPO" \
-              --title "$title" \
-              --body "$body"
+              --title "$title"
             gh issue comment "$existing" \
               --repo "$REPO" \
-              --body "Cadence fired again on $today (run $RUN_ID). The C1-C14 checklist above is the standing one; tick items as their proofs land, close this issue once the backlog is exhausted.${AI_FOOTER}"
+              --body "Cadence fired again on $today (run $RUN_ID). The C1-C14 checklist in the issue body is the standing one — tick items as their proofs land (this workflow does NOT overwrite it); close this issue once the backlog is exhausted.${AI_FOOTER}"
           else
             echo "Opening new formal-coverage tracking issue"
             label_err="$(mktemp)"

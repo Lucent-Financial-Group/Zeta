@@ -25,7 +25,7 @@ We are far behind on the math — this cadence closes the gap, one proof at a ti
 - [ ] **C11/C10** — Batch product = scalar element-wise; round-trip `ofMessages∘toMessages=id` — **FsCheck + prose fix** (`MessageBatch.fs` "bit-exact, proven in tests" is FALSE as written — example-tested; Bernoulli lossy at p→0/1)
 - [ ] **C6** — NaN-safe `moved`/`distance`: divergent never reports converged — **Z3 ∧ FsCheck**
 
-## P1 — 1 primary tool (C12/C13/C14 unblock B-1006 registry promotion)
+## P1 — primarily one tool (C13 cross-checks Z3 ∧ FsCheck; C12/C13/C14 unblock B-1006 registry promotion)
 
 - [ ] **C5** — BP `runToFixpoint` exact-on-trees + termination — **TLA+/TLC** (3-var tree × bounded rounds — the one genuine fixpoint property; NOT hammer-bias)
 - [ ] **C7** — EP probit moment-match accuracy — **FsCheck** (lift `Ep.Tests.fs` quadrature cross-check from 4 fixed points to generated cavities; keep quadrature as oracle)
@@ -47,6 +47,6 @@ We are far behind on the math — this cadence closes the gap, one proof at a ti
 4. **Canonical needs the second half** — track proof-closure here (acc. 1–3); the hex/4×4 lineage edge (acc. 4) is a paired sub-task routed to the algebra owner. Soraya flags when a proven item is lineage-edge-ready.
 5. **Re-tier B-1006 on close** (acc. 5) — registry entries stay *validated / proof-owed* until their law closes AND connects to lineage.
 6. **Wrong-tool guards** — do NOT TLA+ pointwise group laws (Z3); do NOT Lean 3-line identities (Z3, seconds vs human-weeks; Lean reserved for the C5 theorem only if paper-grade ever wanted); do NOT LiquidF# the refinements (TECH-RADAR Hold → FsCheck+Z3).
-7. **z3-in-CI gap** — z3 is in `stryker-mutation.yml` but NOT `gate.yml`, so Z3 proofs **self-skip in CI** (green-by-skip; assert-don't-skip hole). Until z3 is added to the build-and-test job, verify Z3 locally where z3 is on PATH. Adding z3 to CI is a paired infra follow-up.
+7. **z3-in-CI gap** (B-1009) — the `z3` CLI is **not installed in any workflow** (`Z3.Laws.Tests.fs` shells to the `z3` CLI; `Microsoft.Z3` NuGet 4.12.2 is pinned but the harness uses the CLI). So in `gate.yml` the Z3 proofs **self-skip** (green-by-skip; assert-don't-skip hole). Until z3 is added to the build-and-test job, **verify Z3 locally** where z3 is on PATH. Adding z3 to CI is the B-1009 follow-up.
 
 Close this issue only when C1–C14 are all checked **and** their canonical lineage edges are authored.
