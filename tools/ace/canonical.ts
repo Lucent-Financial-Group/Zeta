@@ -21,8 +21,13 @@ export function toTagged(value: unknown): Tagged {
     case "boolean":
       return { t: "bool", v: value };
     case "number":
-      if (!Number.isInteger(value)) {
-        throw new Error(`toTagged: non-integer number ${value} — Ace canonical content has no Float fields`);
+      // Number.isSafeInteger rejects floats, NaN, Infinity, AND integers outside
+      // ±(2^53-1) whose String() would be exponential (e.g. 1e21 → "1e+21", which
+      // BigInt() rejects inside canonicalJson). Ace's ints (format_version, sequence)
+      // are tiny; an out-of-range or non-integer number is a bug — fail loud here with
+      // a clear message rather than a cryptic downstream BigInt SyntaxError.
+      if (!Number.isSafeInteger(value)) {
+        throw new Error(`toTagged: ${value} is not a safe integer — Ace canonical content has no Float fields and integers must be within the safe-integer range`);
       }
       return { t: "int", v: String(value) };
     case "string":
@@ -33,6 +38,8 @@ export function toTagged(value: unknown): Tagged {
       }
       const obj = value as Record<string, unknown>;
       const entries: [string, Tagged][] = [];
+      // Code-unit (≈ ASCII) sort: intentional + deterministic. Do NOT switch to
+      // localeCompare — it would change the byte output for non-ASCII keys.
       for (const k of Object.keys(obj).sort()) {
         const v = obj[k];
         if (v === undefined) continue; // omit undefined props (JSON.stringify parity)

@@ -19,10 +19,22 @@ describe("toTagged", () => {
     expect(toTagged(-7)).toEqual({ t: "int", v: "-7" });
   });
 
-  test("non-integer number throws (Ace has no Float fields)", () => {
+  test("non-safe-integer numbers throw (float, NaN, Infinity, out-of-range)", () => {
     expect(() => toTagged(3.14)).toThrow();
     expect(() => toTagged(Number.NaN)).toThrow();
     expect(() => toTagged(Number.POSITIVE_INFINITY)).toThrow();
+    expect(() => toTagged(1e21)).toThrow(); // String(1e21) === "1e+21" → would crash canonicalJson's BigInt
+    expect(() => toTagged(Number.MAX_SAFE_INTEGER + 1)).toThrow();
+  });
+
+  test("safe-integer bounds map directly", () => {
+    expect(toTagged(Number.MAX_SAFE_INTEGER)).toEqual({ t: "int", v: "9007199254740991" });
+    expect(toTagged(Number.MIN_SAFE_INTEGER)).toEqual({ t: "int", v: "-9007199254740991" });
+  });
+
+  test("empty object and empty array", () => {
+    expect(toTagged({})).toEqual({ t: "obj", v: [] });
+    expect(toTagged([])).toEqual({ t: "arr", v: [] });
   });
 
   test("array preserves order, recurses", () => {
@@ -71,6 +83,11 @@ describe("canonicalBytes", () => {
 
   test("produces sorted-key minified canonical JSON", () => {
     expect(bytesToStr(canonicalBytes({ b: 2, a: 1 }))).toBe('{"a":1,"b":2}');
+  });
+
+  test("empty object / array canonical bytes", () => {
+    expect(bytesToStr(canonicalBytes({}))).toBe("{}");
+    expect(bytesToStr(canonicalBytes([]))).toBe("[]");
   });
 
   test("round-trips through the shared fromCanonicalJson", () => {
