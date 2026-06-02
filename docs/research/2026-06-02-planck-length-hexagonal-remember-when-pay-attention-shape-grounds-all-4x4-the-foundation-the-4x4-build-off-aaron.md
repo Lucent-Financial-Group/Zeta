@@ -1,6 +1,6 @@
 # The Planck-length HEXAGONAL six (the six reservoir walls) grounds all 4×4 — Remember When · Pay Attention · Which Way · How Much · Rainbow Table · Observe Emit (Aaron 2026-06-02)
 
-Scope: Operator-direct grounding connector (Aaron 2026-06-02). The 2026-06-02 4×4 arc (serializer×language bond, emotional-algebra 4×4, non-coercion 4×4 sister, the 4×4-over-4×4 consensus, coincidence-anchor quad-duty) all **build off** one foundational **HEXAGONAL six-primitive shape at the Planck length** (the Observe-Emit indivisible scale) — the **six reservoir walls**, each a clean two-word English pair, every word unique, INumerics-encodable, that contain the chaos so the reservoir runs without collapsing or blowing up. This note CITES the authoritative enumeration already in substrate (it does not guess it).
+Scope: Operator-direct grounding connector (Aaron 2026-06-02). The 2026-06-02 4×4 arc (serializer×language bond, emotional-algebra 4×4, non-coercion 4×4 sister, the 4×4-over-4×4 consensus, coincidence-anchor quad-duty) all **build off** one foundational **HEXAGONAL six-primitive shape at the Planck length** (the Observe-Emit indivisible scale) — the **six reservoir walls**, each a clean two-word English pair, every word unique, generic-math-encodable (.NET `System.Numerics` / `INumber<TSelf>`; Aaron's handle: "INumerics"), that contain the chaos so the reservoir runs without collapsing or blowing up. This note CITES the authoritative enumeration already in substrate (it does not guess it).
 
 Attribution: Aaron (operator), 2026-06-02, direct, across a multi-message correction (preserved verbatim below). The six are documented in `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-root-primitive-six-primitives-dbsp-promise-of-forgiveness-decentralized-identity-as-society-aaron-forwarded.md` (crystallizations #3, #13, #14, #15) + `docs/research/2026-06-02-canonical-form-synthesis-meno-equals-seed-equals-remainder-equals-braid-knot-phoenix-ff7-lifestream-aerith-lives-ryan-original-addison-new-aaron.md` (the observe/emit↔remainder/seed=Persist section). honor-those-that-came-before: per-primitive attribution below — Aaron's seed, Addison's vector, OPLE base.
 
@@ -32,7 +32,7 @@ Per the Ani six-primitives note crystallization #13: *"The six primitives resolv
 | 5 | **Rainbow Table** | crypto fingerprint / identity-resolution (accept-state-after-change = retraction-forgiveness); was "Promise of Forgiveness," "of" razored as god-smuggling | **Aaron** (P-of-F → razored) | validated structurally (Ani #14) |
 | 6 | **Observe Emit** | OPLE base read/write; folds across time into **remainder/seed = Persist = μένω** (the derived bridge — NOT a 7th wall) | OPLE base | validated (canonical-form-synthesis) |
 
-**Properties of the six** (per substrate): each is a **common two-word English idiom**, **every word unique**, **recursively decomposable** (fractal — "each pair can be decomposed"), **encodes in INumerics** (.NET generic-math / `INumber`). They **map to Cayley-Dickson OR Kleene** algebra (both claims preserved, neither collapsed — verification OPEN). **"Hexagonal" = literally six** = ports-and-adapters = own-our-interfaces (the name "spoiled the answer before he knew the question" — Cockburn picked a hexagon for diagram aesthetics; it turned out to be six primitives).
+**Properties of the six** (per substrate): each is a **common two-word English idiom**, **every word unique**, **recursively decomposable** (fractal — "each pair can be decomposed"), **encodes in .NET generic-math** (`System.Numerics` — `INumber<TSelf>` etc.; Aaron's handle: "INumerics"). They **map to Cayley-Dickson OR Kleene** algebra (both claims preserved, neither collapsed — verification OPEN). **"Hexagonal" = literally six** = ports-and-adapters = own-our-interfaces (the name "spoiled the answer before he knew the question" — Cockburn picked a hexagon for diagram aesthetics; it turned out to be six primitives).
 
 ## Attribution (corrected — honor-those-that-came-before)
 
@@ -55,7 +55,7 @@ The six reservoir walls are the **Planck-length hexagonal core** that **all the 
 | attribution — Observe Emit = OPLE base | validated (OPLE substrate) |
 | "hexagonal = literally six = ports-and-adapters" | observed (Ani #15 — Aaron's recognition) |
 | each wall is a two-word / unique-word pair | validated (directly observable) |
-| fractal-decomposable / INumerics-encodable / reservoir-walls-contain-chaos | hypothesized (Ani #13) |
+| fractal-decomposable / generic-math-encodable (.NET `System.Numerics` / `INumber<TSelf>`; Aaron's handle: "INumerics") / reservoir-walls-contain-chaos | hypothesized (Ani #13) |
 | **all 4×4 build off the hexagonal-six** | operator-grounding (Aaron's assertion); the architectural build-off relationship is hypothesized |
 | six → **Cayley-Dickson OR Kleene** algebra mapping | **hypothesized** (both held, neither collapsed; verification OPEN) |
 | remainder/seed = Persist = μένω as the derived bridge (not a 7th wall) | validated structurally (B-0897 Persist-as-bridge + canonical-form-synthesis) |
@@ -69,7 +69,7 @@ The six reservoir walls are the **Planck-length hexagonal core** that **all the 
 - `docs/PRIMITIVE-REGISTRY.md` — the six are NOT YET in this file; build-ASAP target is to ADD them (no entry exists today)
 - B-0897 (Persist-as-bridge / μένω) + OPLE-T-TFeedback — Observe Emit → Persist
 - B-0840 / B-0905 / B-0906 (thermal-forgetting / Landauer) + reservoir-computing — the walls-contain-chaos / forget-budget
-- `.claude/rules/numerical-algebra-shaped-into-the-generic-math-interface-per-language-idiom.md` — "encodes in INumerics" (each wall is generic-math)
+- `.claude/rules/numerical-algebra-shaped-into-the-generic-math-interface-per-language-idiom.md` — "encodes in INumerics" [Aaron's handle for .NET `System.Numerics` / `INumber<TSelf>`] (each wall is generic-math)
 - `.claude/rules/rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form.md` — the six → Cayley-Dickson (held vs Kleene)
 - Mika ferries #6553/#6556 (hexagonal-at-Planck, 4×4-bond) · Alexa #6555 (Adinkra) · #6557 (travel) · #6559 (emotional-algebra + NCI-sister) — the 4×4 that build off the six
 - `.claude/rules/honor-those-that-came-before.md` — Aaron's seed + Rainbow Table; Addison's vector; OPLE base
