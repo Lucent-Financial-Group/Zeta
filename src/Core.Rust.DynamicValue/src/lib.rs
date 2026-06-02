@@ -225,6 +225,33 @@ impl DynamicValue {
         }
         Ok(value)
     }
+
+    /// Decodes canonical JSON text into a [`DynamicValue`] -- the inverse of
+    /// [`to_canonical_json`](DynamicValue::to_canonical_json), completing the text<->value round-trip
+    /// for the six locked shapes (`Float` + `Bytes` are DEFERRED in JSON and lock under CBOR; a number
+    /// with a decimal point or exponent is a Float -> [`DecodeError::Unsupported`]). Strictly canonical:
+    /// a lenient recursive-descent parse, then one fixed-point check (`to_canonical_json() == input`)
+    /// rejects every non-canonical form (insignificant whitespace, non-minimal escapes, leading zeros)
+    /// as [`DecodeError::NonCanonical`] (a leading '+' is invalid JSON -> `UnexpectedEnd`). int64
+    /// precision is preserved by parsing the number token as text. Mirrors the TS/C#/F# decoder.
+    ///
+    /// # Errors
+    /// Returns the [`DecodeError`] describing why the input is not a valid canonical-JSON v1 value.
+    pub fn from_canonical_json(json: &str) -> Result<DynamicValue, DecodeError> {
+        let chars: Vec<char> = json.chars().collect();
+        let mut pos = 0usize;
+        let value = read_json_value(&chars, &mut pos)?;
+        skip_json_ws(&chars, &mut pos);
+        if pos != chars.len() {
+            return Err(DecodeError::TrailingData);
+        }
+        // canonical fixed-point: a canonical string re-encodes to itself; anything else (extra
+        // whitespace, non-minimal escapes, leading zeros) is well-formed but not canonical
+        match value.to_canonical_json() {
+            Ok(s) if s == json => Ok(value),
+            _ => Err(DecodeError::NonCanonical),
+        }
+    }
 }
 
 /// Why a [`DynamicValue`] could not be canonically encoded (v1). `Float` and
@@ -605,6 +632,211 @@ fn read_map(b: &[u8], pos: &mut usize, arg: u64) -> Result<DynamicValue, DecodeE
         pairs.push((k, v));
     }
     Ok(DynamicValue::Object(pairs))
+}
+
+// --- canonical JSON decode (inverse of to_canonical_json) ---
+// Operates on a Vec<char> (Unicode scalar values) so structural scanning never splits a
+// multi-byte UTF-8 char and raw string content reconstructs faithfully.
+
+fn skip_json_ws(c: &[char], pos: &mut usize) {
+    while *pos < c.len() && matches!(c[*pos], ' ' | '\t' | '\n' | '\r') {
+        *pos += 1;
+    }
+}
+
+// reads one JSON value at `pos`, advancing it
+fn read_json_value(c: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeError> {
+    skip_json_ws(c, pos);
+    if *pos >= c.len() {
+        return Err(DecodeError::UnexpectedEnd);
+    }
+    match c[*pos] {
+        'n' => read_json_literal(c, pos, "null", DynamicValue::Null),
+        't' => read_json_literal(c, pos, "true", DynamicValue::Bool(true)),
+        'f' => read_json_literal(c, pos, "false", DynamicValue::Bool(false)),
+        '"' => Ok(DynamicValue::String(read_json_string(c, pos)?)),
+        '[' => read_json_array(c, pos),
+        '{' => read_json_object(c, pos),
+        ch if ch == '-' || ch.is_ascii_digit() => read_json_number(c, pos),
+        _ => Err(DecodeError::UnexpectedEnd),
+    }
+}
+
+fn read_json_literal(
+    c: &[char],
+    pos: &mut usize,
+    lit: &str,
+    val: DynamicValue,
+) -> Result<DynamicValue, DecodeError> {
+    for (i, lc) in lit.chars().enumerate() {
+        if c.get(*pos + i) != Some(&lc) {
+            return Err(DecodeError::UnexpectedEnd);
+        }
+    }
+    *pos += lit.chars().count();
+    Ok(val)
+}
+
+// reads one escape (pos at the backslash), returns the decoded char, advances pos
+fn read_json_escape(c: &[char], pos: &mut usize) -> Result<char, DecodeError> {
+    *pos += 1; // past backslash
+    if *pos >= c.len() {
+        return Err(DecodeError::UnexpectedEnd);
+    }
+    if c[*pos] == 'u' {
+        if *pos + 5 > c.len() {
+            return Err(DecodeError::UnexpectedEnd); // 'u' + 4 hex digits
+        }
+        // require exactly 4 hex digits — to_digit(16) rejects whitespace / non-hex (no lenient trim)
+        let mut code: u32 = 0;
+        for i in 1..=4 {
+            match c[*pos + i].to_digit(16) {
+                Some(d) => code = code * 16 + d,
+                None => return Err(DecodeError::UnexpectedEnd),
+            }
+        }
+        *pos += 5; // 'u' + 4 hex
+        // a lone UTF-16 surrogate is not a valid scalar value; reject it
+        char::from_u32(code).ok_or(DecodeError::UnexpectedEnd)
+    } else {
+        let rep = match c[*pos] {
+            '"' => '"',
+            '\\' => '\\',
+            '/' => '/',
+            'b' => '\u{0008}',
+            'f' => '\u{000C}',
+            'n' => '\n',
+            'r' => '\r',
+            't' => '\t',
+            _ => return Err(DecodeError::UnexpectedEnd), // invalid escape
+        };
+        *pos += 1;
+        Ok(rep)
+    }
+}
+
+fn read_json_string(c: &[char], pos: &mut usize) -> Result<String, DecodeError> {
+    *pos += 1; // opening quote
+    let mut out = String::new();
+    while *pos < c.len() {
+        let ch = c[*pos];
+        if ch == '"' {
+            *pos += 1;
+            return Ok(out);
+        }
+        if ch == '\\' {
+            out.push(read_json_escape(c, pos)?);
+        } else {
+            out.push(ch);
+            *pos += 1;
+        }
+    }
+    Err(DecodeError::UnexpectedEnd) // unterminated string
+}
+
+// consumes one or more digits at pos; UnexpectedEnd if none (the JSON grammar's
+// "at least one digit" for the integer part, fraction, and exponent)
+fn consume_json_digits(c: &[char], pos: &mut usize) -> Result<(), DecodeError> {
+    let d0 = *pos;
+    while *pos < c.len() && c[*pos].is_ascii_digit() {
+        *pos += 1;
+    }
+    if *pos == d0 {
+        Err(DecodeError::UnexpectedEnd)
+    } else {
+        Ok(())
+    }
+}
+
+fn read_json_number(c: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeError> {
+    let start = *pos;
+    if c[*pos] == '-' {
+        *pos += 1;
+    }
+    consume_json_digits(c, pos)?; // integer part — required (rejects "-", "-.5")
+    let mut is_float = false;
+    if *pos < c.len() && c[*pos] == '.' {
+        is_float = true;
+        *pos += 1;
+        consume_json_digits(c, pos)?; // fraction — required after '.'
+    }
+    if *pos < c.len() && (c[*pos] == 'e' || c[*pos] == 'E') {
+        is_float = true;
+        *pos += 1;
+        if *pos < c.len() && (c[*pos] == '+' || c[*pos] == '-') {
+            *pos += 1;
+        }
+        consume_json_digits(c, pos)?; // exponent — required ("1e", "1e+")
+    }
+    if is_float {
+        return Err(DecodeError::Unsupported); // Float deferred in v1 JSON
+    }
+    // token is -?[0-9]+, so the only way the parse fails is i64 overflow
+    let tok: String = c[start..*pos].iter().collect();
+    tok.parse::<i64>()
+        .map(DynamicValue::Int)
+        .map_err(|_| DecodeError::IntegerOverflow)
+}
+
+fn read_json_array(c: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeError> {
+    *pos += 1; // past the opening bracket
+    let mut items = Vec::new();
+    skip_json_ws(c, pos);
+    if *pos < c.len() && c[*pos] == ']' {
+        *pos += 1;
+        return Ok(DynamicValue::Array(items));
+    }
+    loop {
+        items.push(read_json_value(c, pos)?);
+        skip_json_ws(c, pos);
+        if *pos >= c.len() {
+            return Err(DecodeError::UnexpectedEnd);
+        }
+        match c[*pos] {
+            ',' => *pos += 1,
+            ']' => {
+                *pos += 1;
+                return Ok(DynamicValue::Array(items));
+            }
+            _ => return Err(DecodeError::UnexpectedEnd),
+        }
+    }
+}
+
+fn read_json_object(c: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeError> {
+    *pos += 1; // past the opening brace
+    let mut pairs = Vec::new();
+    skip_json_ws(c, pos);
+    if *pos < c.len() && c[*pos] == '}' {
+        *pos += 1;
+        return Ok(DynamicValue::Object(pairs));
+    }
+    loop {
+        skip_json_ws(c, pos);
+        if *pos >= c.len() || c[*pos] != '"' {
+            return Err(DecodeError::UnexpectedEnd); // key must be a string
+        }
+        let key = read_json_string(c, pos)?;
+        skip_json_ws(c, pos);
+        if *pos >= c.len() || c[*pos] != ':' {
+            return Err(DecodeError::UnexpectedEnd);
+        }
+        *pos += 1;
+        let val = read_json_value(c, pos)?;
+        pairs.push((key, val));
+        skip_json_ws(c, pos);
+        if *pos >= c.len() {
+            return Err(DecodeError::UnexpectedEnd);
+        }
+        match c[*pos] {
+            ',' => *pos += 1,
+            '}' => {
+                *pos += 1;
+                return Ok(DynamicValue::Object(pairs));
+            }
+            _ => return Err(DecodeError::UnexpectedEnd),
+        }
+    }
 }
 
 #[cfg(test)]
