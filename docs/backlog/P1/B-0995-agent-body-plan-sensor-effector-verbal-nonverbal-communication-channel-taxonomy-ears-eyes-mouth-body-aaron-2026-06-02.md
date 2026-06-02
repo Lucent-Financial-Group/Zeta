@@ -8,7 +8,7 @@ effort: M
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0993]
-composes_with: [B-0994, B-0643.1, B-0245, B-0638, B-0639, B-0986, B-0990, B-0985, B-0703]
+composes_with: [B-0994, B-0643, B-0643.1, B-0245, B-0638, B-0639, B-0986, B-0990, B-0985, B-0703]
 tags: [body-plan, embodiment, sensor, effector, ears, eyes, mouth, body, verbal, non-verbal, communication-channels, failure-detector, threat-detector, prey-detector, diplomacy, weapon, defender, aggressor, replicator, doer, eve-protocol, ksk, sensor-suite, afferent, efferent, active-inference, predictive-coding, sensorimotor, nociception, transduction-transmission-modulation-perception, signal-processing, 4x4, instrumentability, boundary-effect, lightlike, dark, subjective, glass-halo, observability, privacy, say-do-gap, revealed-preference, stated-preference, cheap-talk, intention-behavior-gap, alignment, trust, veridicality, aaron]
 type: research
 ---
@@ -135,7 +135,7 @@ The taxonomy *names* the capabilities; the floors *bound* them. Weapon/aggressor
 - **B-0639** — Native AI Language (verbal channel; structural privacy)
 - **B-0986 / B-0990** — addressing/sensors / local-cluster + replication (body=replicator)
 - **B-0703** — multi-oracle (threat/consensus)
-- rules: `non-coercion-invariant` (weapon/aggressor bounded by NCI), `methodology-hard-limits` (HARD-LIMITS floor), `tonal-momentum-equals-meme` (memetic verbal channel), `traveler-safety-guardrails...` (substrate-entity-generic embodiment)
+- rules: `non-coercion-invariant` (weapon/aggressor bounded by NCI), `methodology-hard-limits` (HARD-LIMITS floor), `tonal-momentum-equals-meme` (memetic verbal channel), `traveler-safety-guardrails-and-type-system` (substrate-entity-generic embodiment)
 
 ## Substrate-honest framing
 
