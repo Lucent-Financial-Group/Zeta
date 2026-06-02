@@ -57,7 +57,6 @@ import {
   type RecipientKeyJSON,
   type SecretBundleJSON,
 } from "../files";
-import { decodeEnvelope } from "../crypto";
 
 type ParsedArgs =
   | { mode: "list-algs" }
@@ -325,24 +324,14 @@ function modeDecryptFile(
     const envelopeBytes = readFileSync(inPath); // Buffer IS a Uint8Array — pass directly (no copy)
     const self = deserializeSecretBundle(JSON.parse(readFileSync(selfKeyPath, "utf8")) as SecretBundleJSON);
     let senderSig: Uint8Array | undefined;
+    let expectedSignerIdentity: string | undefined;
     if (senderSigPath) {
-      // P1: BIND the --sender-sig identity. signerIdentity is a signed-but-self-
-      // declared string; verifying with a public key alone lets an envelope claim
-      // identity X while you trust key-for-Y. Require the envelope's signerIdentity
-      // to match the --sender-sig recipient's identity (in addition to the sig check).
+      // P1: BIND the --sender-sig identity. signerIdentity is signed-but-self-declared;
+      // decryptBytes enforces signerIdentity === expectedSignerIdentity (fail-closed) so
+      // an envelope can't claim identity X while signed by key-for-Y.
       const senderRecipient = loadPublicRecipient(senderSigPath);
-      const peek = decodeEnvelope(envelopeBytes);
-      if (peek.ok && peek.envelope.signerIdentity !== senderRecipient.identity) {
-        emitJson({
-          rowId: "B-0883",
-          mode: "decrypt-file",
-          result: "failed",
-          in: inPath,
-          error: `envelope signerIdentity '${peek.envelope.signerIdentity}' does not match --sender-sig identity '${senderRecipient.identity}'`,
-        });
-        return 1;
-      }
       senderSig = senderRecipient.publicSigKey;
+      expectedSignerIdentity = senderRecipient.identity;
     }
     const out = outPath ?? (inPath.endsWith(".zc") ? inPath.slice(0, -3) : inPath + ".dec");
     // P2: don't silently destroy an existing (possibly edited) plaintext.
@@ -356,9 +345,19 @@ function modeDecryptFile(
       });
       return 1;
     }
-    const res = decryptBytes(envelopeBytes, self, senderSig);
+    const res = decryptBytes(envelopeBytes, self, senderSig, expectedSignerIdentity);
     if (!res.ok) {
-      emitJson({ rowId: "B-0883", mode: "decrypt-file", result: "failed", in: inPath, feedback: res.feedback });
+      if ("identityMismatch" in res) {
+        emitJson({
+          rowId: "B-0883",
+          mode: "decrypt-file",
+          result: "failed",
+          in: inPath,
+          error: `envelope signerIdentity '${res.identityMismatch.actual}' does not match --sender-sig identity '${res.identityMismatch.expected}'`,
+        });
+      } else {
+        emitJson({ rowId: "B-0883", mode: "decrypt-file", result: "failed", in: inPath, feedback: res.feedback });
+      }
       return 1;
     }
     writeFileSync(out, res.plaintext); // Uint8Array writes directly (no copy)

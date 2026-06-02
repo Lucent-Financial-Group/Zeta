@@ -183,3 +183,41 @@ describe("better-git-crypt files.ts — looksLikeSecretBundle (P1 footgun guard)
     expect(looksLikeSecretBundle(42)).toBe(false);
   });
 });
+
+describe("better-git-crypt files.ts — decryptBytes identity binding", () => {
+  test("expectedSignerIdentity mismatch fails on the identityMismatch channel (fail-closed)", () => {
+    const sender = selfFrom("alice@zeta");
+    const recipient = selfFrom("bob@zeta");
+    const enc = encryptBytes(utf8("for bob, signed by alice"), sender, [recipient.pub]);
+    expect(enc.ok).toBe(true);
+    if (!enc.ok) return;
+    // bob verifies alice's key but BINDS the wrong identity (carol) → identityMismatch
+    const bad = decryptBytes(enc.envelopeBytes, recipient, sender.pub.publicSigKey, "carol@zeta");
+    expect(bad.ok).toBe(false);
+    if (bad.ok) return;
+    expect("identityMismatch" in bad).toBe(true);
+    if (!("identityMismatch" in bad)) return;
+    expect(bad.identityMismatch).toEqual({ expected: "carol@zeta", actual: "alice@zeta" });
+  });
+
+  test("the matching expectedSignerIdentity decrypts cleanly", () => {
+    const sender = selfFrom("alice@zeta");
+    const recipient = selfFrom("bob@zeta");
+    const enc = encryptBytes(utf8("bound"), sender, [recipient.pub]);
+    expect(enc.ok).toBe(true);
+    if (!enc.ok) return;
+    const ok = decryptBytes(enc.envelopeBytes, recipient, sender.pub.publicSigKey, "alice@zeta");
+    expect(ok.ok).toBe(true);
+    if (!ok.ok) return;
+    expect(fromUtf8(ok.plaintext)).toBe("bound");
+  });
+
+  test("omitting expectedSignerIdentity keeps the prior (unbound) behavior", () => {
+    const self = selfFrom("solo@zeta");
+    const enc = encryptBytes(utf8("self"), self);
+    expect(enc.ok).toBe(true);
+    if (!enc.ok) return;
+    const dec = decryptBytes(enc.envelopeBytes, self); // no identity arg
+    expect(dec.ok).toBe(true);
+  });
+});

@@ -174,7 +174,8 @@ export type EncryptBytesResult =
 
 export type DecryptBytesResult =
   | { ok: true; plaintext: Uint8Array }
-  | { ok: false; feedback: DecryptionFeedback };
+  | { ok: false; feedback: DecryptionFeedback }
+  | { ok: false; identityMismatch: { expected: string; actual: string } };
 
 /**
  * Encrypt `plaintext` with `self` as sender (signs) AND self-recipient, plus any
@@ -206,13 +207,24 @@ export function encryptBytes(
  * defaults to `self`'s public sig key (the self-encrypted case — sender = self);
  * pass another party's public sig key for files they signed. Decode is fail-
  * closed (canonical-bytes check) and verify is signature-first, both in crypto.ts.
+ *
+ * `expectedSignerIdentity` (RECOMMENDED whenever verifying a foreign sender) BINDS
+ * the claimed identity: `signerIdentity` is signed but self-declared, so verifying
+ * with a key alone lets an envelope claim identity X while signed by key-for-Y.
+ * When given, the envelope's `signerIdentity` must equal it — else `identityMismatch`
+ * (fail-closed, before the signature is trusted). Pass it together with the matching
+ * `senderPublicSigKey` (e.g. both from the sender's public `RecipientKey`).
  */
 export function decryptBytes(
   envelopeBytes: Uint8Array,
   self: SelfKeys,
   senderPublicSigKey?: Uint8Array,
+  expectedSignerIdentity?: string,
 ): DecryptBytesResult {
   const dec = decodeEnvelope(envelopeBytes);
   if (!dec.ok) return { ok: false, feedback: dec.feedback };
+  if (expectedSignerIdentity !== undefined && dec.envelope.signerIdentity !== expectedSignerIdentity) {
+    return { ok: false, identityMismatch: { expected: expectedSignerIdentity, actual: dec.envelope.signerIdentity } };
+  }
   return decrypt(dec.envelope, self.sec, senderPublicSigKey ?? self.pub.publicSigKey);
 }

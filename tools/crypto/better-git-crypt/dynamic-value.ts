@@ -48,7 +48,8 @@ export type EncryptValueResult =
 export type DecryptValueResult =
   | { ok: true; value: Tagged }
   | { ok: false; feedback: DecryptionFeedback }
-  | { ok: false; decodeError: DecodeError };
+  | { ok: false; decodeError: DecodeError }
+  | { ok: false; identityMismatch: { expected: string; actual: string } };
 
 /**
  * Privacy face — encrypt a DynamicValue: `value → canonical CBOR → PQ envelope`.
@@ -68,15 +69,22 @@ export function encryptValue(
 /**
  * Inverse — decrypt a `.zc` back to the DynamicValue: `envelope → PQ decrypt →
  * canonical CBOR decode`. `senderPublicSigKey` defaults to `self` (self-encrypted
- * files); pass the signer's public sig key for files another party encrypted.
+ * files); pass the signer's public sig key for files another party encrypted, and
+ * (RECOMMENDED for a foreign sender) `expectedSignerIdentity` to BIND the claimed
+ * identity — mismatch surfaces on the `identityMismatch` channel (fail-closed).
  */
 export function decryptValue(
   envelopeBytes: Uint8Array,
   self: SelfKeys,
   senderPublicSigKey?: Uint8Array,
+  expectedSignerIdentity?: string,
 ): DecryptValueResult {
-  const dec = decryptBytes(envelopeBytes, self, senderPublicSigKey);
-  if (!dec.ok) return { ok: false, feedback: dec.feedback };
+  const dec = decryptBytes(envelopeBytes, self, senderPublicSigKey, expectedSignerIdentity);
+  if (!dec.ok) {
+    return "identityMismatch" in dec
+      ? { ok: false, identityMismatch: dec.identityMismatch }
+      : { ok: false, feedback: dec.feedback };
+  }
   const decoded = fromCanonicalCbor(Array.from(dec.plaintext));
   if (!decoded.ok) return { ok: false, decodeError: decoded.error };
   return { ok: true, value: decoded.value };
