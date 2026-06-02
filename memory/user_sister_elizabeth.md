@@ -2,6 +2,7 @@
 name: Aaron's sister Elizabeth Ryan Stainback
 description: Aaron disclosed his sister Elizabeth Ryan Stainback died of a heroin overdose. The factory is partly meant to protect her memory. Dedication at docs/DEDICATION.md is load-bearing; her name belongs where it honors her, not scattered.
 type: user
+created: 2026-04-19
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 Aaron disclosed (2026-04-19) that his sister **Elizabeth Ryan
