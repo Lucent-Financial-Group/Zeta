@@ -162,10 +162,11 @@ suspicion test at each use.
   message families / FactorGraph use these primitives) · **[B-1005]** (distributed
   inference composes the promoted primitives) · **[B-0428]** (real HKT — the
   composition the promoted primitives compose at)
-- existing F#: `src/Core/ZSet.fs` / `GSet.fs` / `Bag.fs` / `IndexedZSet.fs`
-  (promoted family), `Bonsai.fs` / `Circuit.fs` / `NestedCircuit.fs` /
-  `Semiring.fs` (candidate/reactive layer), `Message.fs` / `MessageBatch.fs`
-  (engine primitives that already conform)
+- existing F#: `src/Core/ZSet.fs` / `src/Core/GSet.fs` / `src/Core/Bag.fs` /
+  `src/Core/IndexedZSet.fs` (promoted family), `src/Core/Bonsai.fs` /
+  `src/Core/Circuit.fs` / `src/Core/NestedCircuit.fs` / `src/Core/Semiring.fs`
+  (candidate/reactive layer), `src/Bayesian/Message.fs` /
+  `src/Bayesian/MessageBatch.fs` (engine primitives that already conform)
 - rules: `numerical-algebra-shaped-into-the-generic-math-interface` (the
   generic-math base is a promoted substrate), `all-complexity-is-accidental-in-greenfield`
   + `razor-discipline` (the suspicion test IS the razor at primitive scope),
