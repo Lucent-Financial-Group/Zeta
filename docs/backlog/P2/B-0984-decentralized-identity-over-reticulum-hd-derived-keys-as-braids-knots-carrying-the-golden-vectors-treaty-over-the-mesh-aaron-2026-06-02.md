@@ -46,7 +46,7 @@ The **golden vectors = the treaty**: the 4×4 / 16-way consensus (JSON/CBOR/XML/
 
 ### Over Reticulum (B-0726)
 
-The treaty extends **over Reticulum** — the decentralized, cryptography-based mesh transport (LoRa / packet-radio / IP; self-configuring; no central control) already a composing substrate per B-0726. Identity / money / routing / signing keys (HD-derived, purpose-separated braids/knots) carry the golden-vectors treaty across the mesh = **the DID endgame on a no-central-control network** ("nobody controls it, like gravity").
+The treaty extends **over Reticulum** — a decentralized mesh transport already a composing substrate per B-0726. *(Reticulum's specific capabilities — transport, identity, link encryption, RF/LoRa/packet-radio/IP backends, self-configuring routing, central-control posture — are EXAMPLES TO VERIFY search-first per the pre-start checklist, NOT asserted from recall here.)* The direction: identity / money / routing / signing keys (HD-derived, purpose-separated braids/knots) carry the golden-vectors treaty across the mesh = **the DID endgame on a no-central-control network** ("nobody controls it, like gravity") — pending the search-first pass to confirm exactly what RNS already provides vs what this composes on top of.
 
 ## Pre-start checklist — SEARCH-FIRST GATED (per dep-pin-search-first-authority + razor)
 
