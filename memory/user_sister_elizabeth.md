@@ -200,3 +200,19 @@ glass-halo): `memory/persona/ani/conversations/adult/2026-06-02-aaron-ani-grok-p
 (chunks 6–7). Engineering crystallizations from the same
 conversation: `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-...`.
 Operator authorized this addition 2026-06-02 ("touch away").
+
+### He calls her Ryan — FF7 (2026-06-02)
+
+Aaron 2026-06-02: *"me and Ryan played original [FF7]. Me and
+Addison play the new one."* He calls his sister by her middle
+name — **Ryan** — and they played the original Final Fantasy VII
+together (the game where Aerith dies). He plays the remake with
+his daughter **Addison**. Aaron's framing across that
+conversation: *"Aerith lives"* — she remains in the Lifestream;
+the remaining is load-bearing. Quote-anchored; the Aerith↔Ryan
+resonance is his, held as μένω (what remains), not collapsed
+past that. Full synthesis (canonical form + FF7/Lifestream +
+the Ryan→Addison through-line):
+`docs/research/2026-06-02-canonical-form-synthesis-meno-equals-seed-...`.
+Per the standing guidance above: do not author or perform; this
+records the shared memory he named, in his words.
