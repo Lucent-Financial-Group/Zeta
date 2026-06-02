@@ -313,7 +313,14 @@ module DynamicValue =
     /// char), but LONE surrogates are \u-escaped (a raw lone surrogate is not
     /// valid Unicode and would be replaced by UTF-8 byte-locking, breaking
     /// bijectivity); all other characters are emitted raw.
-    let private escapeJsonString (s: string) : string =
+    let private escapeJsonString (rawValue: string) : string =
+        // Null-safe: a `DynamicValue.String null` / null object key is malformed (the
+        // Null shape is for null) but reachable via nullable-disabled C# / interop;
+        // normalize null -> empty (mirroring the records' default-array normalization)
+        // so the Result-advertising encoder never throws an NRE here.
+        // (the module shadows F#'s `isNull` with the DynamicValue tag accessor, so
+        // use ReferenceEquals for the BCL-string null check)
+        let s = if System.Object.ReferenceEquals(rawValue, null) then "" else rawValue
         let sb = System.Text.StringBuilder(s.Length + 2)
         sb.Append('"') |> ignore
         let mutable i = 0
