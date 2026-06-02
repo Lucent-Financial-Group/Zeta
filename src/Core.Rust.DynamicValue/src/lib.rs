@@ -677,6 +677,22 @@ fn read_json_literal(
     Ok(val)
 }
 
+// reads exactly 4 hex digits starting at index `at`, as a u32; UnexpectedEnd on out-of-range or
+// any non-hex char (to_digit(16) rejects whitespace + non-hex — no lenient trim)
+fn read_u4_hex(c: &[char], at: usize) -> Result<u32, DecodeError> {
+    if at + 4 > c.len() {
+        return Err(DecodeError::UnexpectedEnd);
+    }
+    let mut code: u32 = 0;
+    for ch in &c[at..at + 4] {
+        match ch.to_digit(16) {
+            Some(d) => code = code * 16 + d,
+            None => return Err(DecodeError::UnexpectedEnd),
+        }
+    }
+    Ok(code)
+}
+
 // reads one escape (pos at the backslash), returns the decoded char, advances pos
 fn read_json_escape(c: &[char], pos: &mut usize) -> Result<char, DecodeError> {
     *pos += 1; // past backslash
@@ -684,20 +700,25 @@ fn read_json_escape(c: &[char], pos: &mut usize) -> Result<char, DecodeError> {
         return Err(DecodeError::UnexpectedEnd);
     }
     if c[*pos] == 'u' {
-        if *pos + 5 > c.len() {
-            return Err(DecodeError::UnexpectedEnd); // 'u' + 4 hex digits
-        }
-        // require exactly 4 hex digits — to_digit(16) rejects whitespace / non-hex (no lenient trim)
-        let mut code: u32 = 0;
-        for i in 1..=4 {
-            match c[*pos + i].to_digit(16) {
-                Some(d) => code = code * 16 + d,
-                None => return Err(DecodeError::UnexpectedEnd),
-            }
-        }
+        let hi = read_u4_hex(c, *pos + 1)?; // 4 hex after 'u'
         *pos += 5; // 'u' + 4 hex
-        // a lone UTF-16 surrogate is not a valid scalar value; reject it
-        char::from_u32(code).ok_or(DecodeError::UnexpectedEnd)
+        // A UTF-16 high surrogate must be followed by a \uXXXX low surrogate; combine into the
+        // astral scalar. This matches the TS/C#/F# oracles (whose UTF-16 strings decode the pair
+        // and then report NonCanonical via the fixed-point check, since canonical emits raw UTF-8).
+        if (0xD800..=0xDBFF).contains(&hi) {
+            if *pos + 6 > c.len() || c[*pos] != '\\' || c[*pos + 1] != 'u' {
+                return Err(DecodeError::UnexpectedEnd); // high surrogate not followed by \uXXXX
+            }
+            let lo = read_u4_hex(c, *pos + 2)?;
+            if !(0xDC00..=0xDFFF).contains(&lo) {
+                return Err(DecodeError::UnexpectedEnd); // not a valid low surrogate
+            }
+            *pos += 6; // '\' 'u' + 4 hex
+            let astral = 0x10000 + ((hi - 0xD800) << 10) + (lo - 0xDC00);
+            return char::from_u32(astral).ok_or(DecodeError::UnexpectedEnd);
+        }
+        // a lone low surrogate (or any non-scalar code unit) is not representable as a char; reject
+        char::from_u32(hi).ok_or(DecodeError::UnexpectedEnd)
     } else {
         let rep = match c[*pos] {
             '"' => '"',

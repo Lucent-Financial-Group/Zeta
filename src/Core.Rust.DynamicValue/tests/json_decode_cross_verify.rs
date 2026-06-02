@@ -133,4 +133,16 @@ fn json_decode_rejects_non_canonical() {
     assert_eq!(err("01"), DecodeError::NonCanonical); // leading zero (parses to 1 -> "1")
     assert_eq!(err("\"\\u0041\""), DecodeError::NonCanonical); // A; canonical emits raw "A"
     assert_eq!(err("{ \"a\":1}"), DecodeError::NonCanonical); // whitespace inside object
+    // a valid 😀 surrogate PAIR decodes to U+1F600 (😀); canonical emits raw UTF-8, so the
+    // escaped form is non-canonical — must match the TS/C#/F# oracles (not UnexpectedEnd)
+    assert_eq!(err("\"\\uD83D\\uDE00\""), DecodeError::NonCanonical);
+}
+
+#[test]
+fn json_decode_rejects_lone_surrogate() {
+    // a high surrogate with no following \uXXXX low surrogate can't form a scalar (Rust char) — and,
+    // unlike the UTF-16-string oracles, can't even be held; rejected at decode time
+    assert_eq!(err("\"\\uD83D\""), DecodeError::UnexpectedEnd); // lone high surrogate
+    assert_eq!(err("\"\\uDE00\""), DecodeError::UnexpectedEnd); // lone low surrogate
+    assert_eq!(err("\"\\uD83Dx\""), DecodeError::UnexpectedEnd); // high surrogate not followed by \u
 }
