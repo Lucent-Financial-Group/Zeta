@@ -141,8 +141,16 @@ export async function resolve(
       if (filesHash !== dep.manifest.content_hash) {
         return { ok: false, reason: "bad-content-hash", detail: `${edge.name}: files hash ${filesHash} != manifest ${dep.manifest.content_hash}`, path: here };
       }
-      // pin check (whole-package identity)
-      const got = packageHash(dep);
+      // pin check (whole-package identity). packageHash canonicalizes via the shared
+      // canonicalBytes, which throws on a non-safe-integer (e.g. a float in an untrusted
+      // manifest field); map that to a clean invalid-package refusal rather than letting it
+      // escape resolve() as an unhandled exception (slice 8.1).
+      let got: string;
+      try {
+        got = packageHash(dep);
+      } catch (e) {
+        return { ok: false, reason: "invalid-package", detail: `${edge.name}: ${(e as Error).message}`, path: here };
+      }
       if (got !== package_hash) {
         return { ok: false, reason: "pin-mismatch", detail: `${edge.name}: expected package_hash ${package_hash} but fetched ${got}`, path: here };
       }
