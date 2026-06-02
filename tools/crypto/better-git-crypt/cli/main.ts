@@ -67,19 +67,33 @@ type ParsedArgs =
   | { mode: "encrypt-file"; inPath: string; selfKeyPath: string; recipientPaths: string[]; outPath: string; force: boolean }
   | { mode: "decrypt-file"; inPath: string; selfKeyPath: string; senderSigPath: string | null; outPath: string | null; force: boolean };
 
-/** Value after `name`, or undefined if absent / followed by another flag. */
-function flagValue(args: readonly string[], name: string): string | undefined {
+/**
+ * Resolve a value-taking flag into three states so a flag that is PRESENT but
+ * missing its value becomes a USAGE ERROR rather than a silent fallback (which
+ * could e.g. write a secret bundle to the repo root, or encrypt to fewer
+ * recipients than intended). A value starting with `--` counts as missing.
+ */
+type FlagState = { kind: "absent" } | { kind: "missing" } | { kind: "value"; value: string };
+function valueFlag(args: readonly string[], name: string): FlagState {
   const i = args.indexOf(name);
-  if (i < 0 || i + 1 >= args.length) return undefined;
-  const v = args[i + 1]!;
-  return v.startsWith("--") ? undefined : v;
+  if (i < 0) return { kind: "absent" };
+  const v = args[i + 1];
+  if (v === undefined || v.startsWith("--")) return { kind: "missing" };
+  return { kind: "value", value: v };
 }
 
-/** All values for a repeatable flag (e.g. multiple --recipient). */
-function flagValues(args: readonly string[], name: string): string[] {
+/**
+ * All values for the repeatable `--recipient` flag, or `null` if ANY occurrence is
+ * missing its value (a usage error — silently dropping it would encrypt to fewer
+ * recipients than the user intended).
+ */
+function recipientValues(args: readonly string[]): string[] | null {
   const out: string[] = [];
-  for (let i = 0; i < args.length - 1; i++) {
-    if (args[i] === name && !args[i + 1]!.startsWith("--")) out.push(args[i + 1]!);
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] !== "--recipient") continue;
+    const v = args[i + 1];
+    if (v === undefined || v.startsWith("--")) return null;
+    out.push(v);
   }
   return out;
 }
@@ -99,35 +113,48 @@ function parseArgs(argv: readonly string[]): ParsedArgs | { error: string } {
   if (args.includes("--validate")) return { mode: "validate" };
   if (args.includes("--dry-run-envelope")) return { mode: "dry-run-envelope" };
 
-  const gen = flagValue(args, "--gen-recipient");
-  if (gen !== undefined) {
-    return { mode: "gen-recipient", identity: gen, outDir: flagValue(args, "--out-dir") ?? ".", force: args.includes("--force") };
+  const gen = valueFlag(args, "--gen-recipient");
+  if (gen.kind !== "absent") {
+    if (gen.kind === "missing") return { error: "--gen-recipient requires an <identity> value" };
+    const outDir = valueFlag(args, "--out-dir");
+    if (outDir.kind === "missing") return { error: "--out-dir requires a <dir> value" };
+    return { mode: "gen-recipient", identity: gen.value, outDir: outDir.kind === "value" ? outDir.value : ".", force: args.includes("--force") };
   }
 
-  const enc = flagValue(args, "--encrypt-file");
-  if (enc !== undefined) {
-    const selfKey = flagValue(args, "--self-key");
-    if (selfKey === undefined) return { error: "--encrypt-file requires --self-key <secret.json>" };
+  const enc = valueFlag(args, "--encrypt-file");
+  if (enc.kind !== "absent") {
+    if (enc.kind === "missing") return { error: "--encrypt-file requires a <path> value" };
+    const selfKey = valueFlag(args, "--self-key");
+    if (selfKey.kind !== "value") return { error: "--encrypt-file requires --self-key <secret.json>" };
+    const recips = recipientValues(args);
+    if (recips === null) return { error: "--recipient requires a <recipient.json> value" };
+    const out = valueFlag(args, "--out");
+    if (out.kind === "missing") return { error: "--out requires a <path> value" };
     return {
       mode: "encrypt-file",
-      inPath: enc,
-      selfKeyPath: selfKey,
-      recipientPaths: flagValues(args, "--recipient"),
-      outPath: flagValue(args, "--out") ?? enc + ".zc",
+      inPath: enc.value,
+      selfKeyPath: selfKey.value,
+      recipientPaths: recips,
+      outPath: out.kind === "value" ? out.value : enc.value + ".zc",
       force: args.includes("--force"),
     };
   }
 
-  const dec = flagValue(args, "--decrypt-file");
-  if (dec !== undefined) {
-    const key = flagValue(args, "--key");
-    if (key === undefined) return { error: "--decrypt-file requires --key <secret.json>" };
+  const dec = valueFlag(args, "--decrypt-file");
+  if (dec.kind !== "absent") {
+    if (dec.kind === "missing") return { error: "--decrypt-file requires a <path.zc> value" };
+    const key = valueFlag(args, "--key");
+    if (key.kind !== "value") return { error: "--decrypt-file requires --key <secret.json>" };
+    const senderSig = valueFlag(args, "--sender-sig");
+    if (senderSig.kind === "missing") return { error: "--sender-sig requires a <recipient.json> value" };
+    const out = valueFlag(args, "--out");
+    if (out.kind === "missing") return { error: "--out requires a <path> value" };
     return {
       mode: "decrypt-file",
-      inPath: dec,
-      selfKeyPath: key,
-      senderSigPath: flagValue(args, "--sender-sig") ?? null,
-      outPath: flagValue(args, "--out") ?? null,
+      inPath: dec.value,
+      selfKeyPath: key.value,
+      senderSigPath: senderSig.kind === "value" ? senderSig.value : null,
+      outPath: out.kind === "value" ? out.value : null,
       force: args.includes("--force"),
     };
   }
