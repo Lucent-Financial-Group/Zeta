@@ -167,9 +167,8 @@ interface — Clifford six bivectors = Lorentz generators; physics/biology/mimet
 cosmology/mythology adapters refereed against established math"). The string-theory
 fused/non-fused + membranes-as-jelly mapping is a **physics-domain entry under
 [B-0999]**, refereed against string/M-theory math — it composes there, it is not a
-new row and not engine-load-bearing here. Per `grep-substrate-anchors-before-razor`
-
-+ `god-tier-claims-don't-collapse` it stays **don't-collapse**; landing it as a
+new row and not engine-load-bearing here. Per `grep-substrate-anchors-before-razor` +
+`god-tier-claims-don't-collapse` it stays **don't-collapse**; landing it as a
 B-0999 physics adapter entry is offered on Aaron's word.
 
 (Correction: an earlier draft of this row claimed no landed `B-0999` existed — that
