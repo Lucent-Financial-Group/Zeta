@@ -4,8 +4,9 @@
 > start this repo as formal proof first."* And the sharp caveat: *"our 4-oracle
 > [cross-AI] consensus actually means nothing without the math — it might all be
 > built on shaky ground and good feeling."* **Cross-AI agreement is NOT
-> validation. The math is.** Four oracles (Otto/Amara/Prism/Alexa/Lior) converging
-> on a claim is a *prompt to go prove it*, not a proof. This note is the spec-source
+> validation. The math is.** Four cross-AI oracles (Amara/Prism/Alexa/Lior)
+> converging with Otto on a claim is a *prompt to go prove it*, not a proof. This
+> note is the spec-source
 > list so the B-1000 engine is built on proofs, not consensus.
 
 ## Canonical ⟺ homeostat proven-from-seed (Aaron 2026-06-02)
@@ -38,8 +39,9 @@ is exactly that asserted-in-prose → proven-from-seed gap. Canonicity propagate
 
 These are **cleanroom-spec sources**: read the math/proofs, implement clean.
 Infer.NET's own source stays **concept-not-code** — it is the *referee/adapter*
-later (B-1000), never copied. Per `location-pointer-index` the full URLs are
-preserved verbatim.
+later (B-1000), never copied. Per `location-pointer-index` URLs are preserved
+verbatim where the source provides one; the Tier-1 classics (KFL 2001, Minka
+2001, R&W) are cited by author/venue/year (no stable canonical URL given).
 
 ## Tier 1 — foundations (already cited in the shipped code)
 
@@ -104,10 +106,10 @@ the four oracles' consensus is *checking* the proof, not *substituting* for it.
 
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — the compiler is the
   asymmetric critic; this note adds the *paper-level* proofs above the type level.
-- `.claude/rules/razor-discipline.md` + `premise-flagged-unverified-stays-unverified-downstream.md`
+- `.claude/rules/razor-discipline.md` + `.claude/rules/premise-flagged-unverified-stays-unverified-downstream.md`
   — consensus is a flagged-unverified premise until the math closes it.
-- `.claude/rules/honor-those-that-came-before.md` + `location-pointer-index-...` —
-  full citations + URLs preserved.
+- `.claude/rules/honor-those-that-came-before.md` + `.claude/rules/location-pointer-index-aaron-cognitive-architecture-source-attribution-load-bearing.md`
+  — full citations + URLs preserved.
 - B-1000 (the engine these spec), B-1004/B-1006 (the registry algebra claims the
   Tier-2/3 math must back), the `formal-verification-expert` (Soraya) portfolio
   + `alignment-auditor` measurability work.
