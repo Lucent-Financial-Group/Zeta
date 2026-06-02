@@ -749,11 +749,12 @@ module DynamicValue =
                 if pos + 5 > len then
                     Error DecodeError.UnexpectedEnd // 'u' + 4 hex digits
                 else
-                    // require exactly 4 hex digits — a partial parse would silently accept malformed \uXXXX
+                    // require exactly 4 hex digits — AllowHexSpecifier (NOT HexNumber, which also
+                    // permits leading/trailing whitespace) so a "\u 001"-style escape is rejected
                     match
                         System.UInt16.TryParse(
                             json.Substring(pos + 1, 4),
-                            System.Globalization.NumberStyles.HexNumber,
+                            System.Globalization.NumberStyles.AllowHexSpecifier,
                             System.Globalization.CultureInfo.InvariantCulture
                         )
                     with

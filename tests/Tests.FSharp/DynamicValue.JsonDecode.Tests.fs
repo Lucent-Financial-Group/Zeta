@@ -81,6 +81,8 @@ let ``F# JSON decode rejects malformed, deferred, oversized, and non-canonical``
     Assert.Equal(DecodeError.UnexpectedEnd, err "{\"a\"") // object missing colon+value
     Assert.Equal(DecodeError.UnexpectedEnd, err "\"unterminated") // unterminated string
     Assert.Equal(DecodeError.UnexpectedEnd, err "\"\\u00gg\"") // \uXXXX with non-hex digits
+    Assert.Equal(DecodeError.UnexpectedEnd, err "\"\\u 001\"") // \uXXXX leading whitespace (HexNumber would trim)
+    Assert.Equal(DecodeError.UnexpectedEnd, err "\"\\u001 \"") // \uXXXX trailing whitespace
     Assert.Equal(DecodeError.UnexpectedEnd, err "\"\\q\"") // invalid escape
     Assert.Equal(DecodeError.UnexpectedEnd, err "1.") // no digit after '.'
     Assert.Equal(DecodeError.UnexpectedEnd, err "1e") // no exponent digits
