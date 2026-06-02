@@ -22,6 +22,17 @@
     "key_id-test2": "ed25519:deb2ded39dc26fce",
     "key_id-test3": "ed25519:8d39ba50abe50f77"
   },
-  "envelope": {},
-  "invalid": {}
+  "envelope": {
+    "ace-manifest-1": {
+      "key_id": "ed25519:20d865ce18b9aee5",
+      "sig": "luHkOQ1gUuiaac029DsOjJ4vYjGMY3k81ow5Ej9gk2KN7WZbO04imR+JWo/iqcRMbNPzcDvNNkbQO+ETyXyuCg==",
+      "verify_ok": true
+    }
+  },
+  "invalid": {
+    "no-signature": "no-signature",
+    "unsupported-algo": "unsupported-algo",
+    "untrusted-key": "untrusted-key",
+    "bad-signature": "bad-signature"
+  }
 }

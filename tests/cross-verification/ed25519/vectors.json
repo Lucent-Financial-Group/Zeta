@@ -11,6 +11,83 @@
     { "id": "key_id-test2", "public_hex": "3d4017c3e843895a92b70aa74d1b7ebc9c982ccf2ec4968cc0cd55f12af4660c", "expected_key_id": "ed25519:deb2ded39dc26fce" },
     { "id": "key_id-test3", "public_hex": "fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025", "expected_key_id": "ed25519:8d39ba50abe50f77" }
   ],
-  "envelope": [],
-  "invalid": []
+  "envelope": [
+    {
+      "id": "ace-manifest-1",
+      "private_pem": "-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIGZ8ya6nqqEM9a0gFdmqJyVlxdJ85dsnNOljlTaa/ISl\n-----END PRIVATE KEY-----\n",
+      "manifest": {
+        "format_version": 1,
+        "name": "demo",
+        "version": "1.0.0",
+        "content_hash": "sha256:deadbeef"
+      },
+      "expected_key_id": "ed25519:20d865ce18b9aee5",
+      "expected_sig": "luHkOQ1gUuiaac029DsOjJ4vYjGMY3k81ow5Ej9gk2KN7WZbO04imR+JWo/iqcRMbNPzcDvNNkbQO+ETyXyuCg=="
+    }
+  ],
+  "invalid": [
+    {
+      "id": "no-signature",
+      "manifest": {
+        "format_version": 1,
+        "name": "demo",
+        "version": "1.0.0",
+        "content_hash": "sha256:deadbeef"
+      },
+      "trust": {},
+      "expected_reason": "no-signature"
+    },
+    {
+      "id": "unsupported-algo",
+      "manifest": {
+        "format_version": 1,
+        "name": "demo",
+        "version": "1.0.0",
+        "content_hash": "sha256:deadbeef",
+        "signature": {
+          "algo": "rsa",
+          "key_id": "ed25519:0000000000000000",
+          "sig": "AAAA"
+        }
+      },
+      "trust": {},
+      "expected_reason": "unsupported-algo"
+    },
+    {
+      "id": "untrusted-key",
+      "manifest": {
+        "format_version": 1,
+        "name": "demo",
+        "version": "1.0.0",
+        "content_hash": "sha256:deadbeef",
+        "signature": {
+          "algo": "ed25519",
+          "key_id": "ed25519:ffffffffffffffff",
+          "sig": "AAAA"
+        }
+      },
+      "trust": {},
+      "expected_reason": "untrusted-key"
+    },
+    {
+      "id": "bad-signature",
+      "manifest": {
+        "format_version": 1,
+        "name": "TAMPERED",
+        "version": "1.0.0",
+        "content_hash": "sha256:deadbeef",
+        "signature": {
+          "algo": "ed25519",
+          "key_id": "ed25519:20d865ce18b9aee5",
+          "sig": "luHkOQ1gUuiaac029DsOjJ4vYjGMY3k81ow5Ej9gk2KN7WZbO04imR+JWo/iqcRMbNPzcDvNNkbQO+ETyXyuCg=="
+        }
+      },
+      "trust": {
+        "ed25519:20d865ce18b9aee5": {
+          "public_key": "MCowBQYDK2VwAyEAksYNmV2u2lcf/Sov0t2WZMBE7oImBVpWT3/wXjxO5/w="
+        }
+      },
+      "expected_reason": "bad-signature"
+    }
+  ]
 }
