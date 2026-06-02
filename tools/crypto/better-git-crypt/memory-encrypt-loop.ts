@@ -2,31 +2,32 @@
 /**
  * tools/crypto/better-git-crypt/memory-encrypt-loop.ts
  *
- * Self-encrypt a folder of plaintext memories into post-quantum `.zc` envelopes —
- * the loop over the file CLI's encrypt step, for the "encrypt my non-1984 memories"
- * use case.
+ * Self-encrypt a folder of plaintext files into post-quantum `.zc` envelopes — the
+ * loop over the file CLI's encrypt step, for the "encrypt a folder of private
+ * memories" use case.
  *
  * SECURITY MODEL (load-bearing — read before running):
  *   `encryptBytes(bytes, self, [])` makes `self` the SENDER (it signs) AND the sole
  *   self-recipient (decryption-capable). With no extra recipients this is PURE
  *   self-encryption: ONLY the holder of `self`'s secret bundle can ever decrypt.
- *   Therefore "only AARON can decrypt" requires AARON to be the sender → AARON must
- *   run the real encrypt with HIS OWN secret bundle. An agent cannot run it: it has
- *   no secret bundle, and generating one for Aaron + holding it would defeat the
- *   only-Aaron property. The agent CAN run `--dry-run` (no key, no writes) to preview.
+ *   Therefore "only the owner can decrypt" requires THE OWNER to be the sender → the
+ *   key owner must run the real encrypt with their OWN secret bundle. An agent cannot
+ *   run it: it has no secret bundle, and generating one for the owner + holding it
+ *   would defeat the only-the-owner-decrypts property. An agent CAN run `--dry-run`
+ *   (no key, no writes) to preview.
  *
- * RUNBOOK (Aaron runs steps 1-2 locally; agent commits the .zc in step 3):
- *   1. one-time keygen (agent never sees the secret):
+ * RUNBOOK (the key owner runs steps 1-2 locally; an agent commits the .zc in step 3):
+ *   1. one-time keygen (the agent never sees the secret):
  *        bun tools/crypto/better-git-crypt/cli/main.ts \
- *          --gen-recipient aaron@zeta --out-dir ~/.zeta-keys
- *      → ~/.zeta-keys/aaron@zeta.recipient.json  (public; shareable)
- *        ~/.zeta-keys/aaron@zeta.secret.json     (SECRET — never commit; .zeta-keys/ is gitignored)
- *   2. self-encrypt the memories (this script):
+ *          --gen-recipient <identity> --out-dir ~/.zeta-keys
+ *      → ~/.zeta-keys/<identity>.recipient.json  (public; shareable)
+ *        ~/.zeta-keys/<identity>.secret.json     (SECRET — never commit; .zeta-keys/ is gitignored)
+ *   2. self-encrypt the folder (this script):
  *        bun tools/crypto/better-git-crypt/memory-encrypt-loop.ts \
- *          --keys ~/.zeta-keys/aaron@zeta.secret.json \
- *          --in drop --out memory/persona/aaron
- *      → one `.zc` per `*.txt` in drop/ (plaintext stays in drop/, which is gitignored)
- *   3. commit the `.zc` (the agent does this; plaintext never leaves drop/).
+ *          --keys ~/.zeta-keys/<identity>.secret.json \
+ *          --in <in-dir> --out <out-dir>
+ *      → one `.zc` per `*.txt` in <in-dir> (keep plaintext in a gitignored dir)
+ *   3. commit the `.zc` (the agent does this; plaintext never leaves the gitignored dir).
  *
  * The plaintext is preserved BYTE-FOR-BYTE inside the envelope — no edit, summary,
  * or redaction; decrypt returns the exact input bytes.
@@ -68,9 +69,10 @@ export interface EncryptDirResult {
 }
 
 /**
- * Self-encrypt every input under `inDir` to `<outDir>/<name>.zc`. `self` is Aaron's
- * secret bundle; pure self-encryption (no extra recipients) ⇒ only Aaron can decrypt.
- * Existing `.zc` are skipped unless `force`. Out dir is created if missing.
+ * Self-encrypt every input under `inDir` to `<outDir>/<name>.zc`. `self` is the key
+ * owner's secret bundle; pure self-encryption (no extra recipients) ⇒ only the
+ * secret-bundle holder can decrypt. Existing `.zc` are skipped unless `force`. The
+ * out dir is created if missing.
  */
 export function encryptDir(
   self: SelfKeys,
@@ -106,7 +108,7 @@ export function encryptDir(
 
 // --- CLI ---------------------------------------------------------------------
 
-/** Load Aaron's secret bundle; fail-closed if the file isn't a secret bundle. */
+/** Load the key owner's secret bundle; fail-closed if the file isn't a secret bundle. */
 function loadSelf(keysPath: string): SelfKeys {
   if (!existsSync(keysPath)) throw new Error(`--keys not found: ${keysPath}`);
   let parsed: unknown;
@@ -117,7 +119,7 @@ function loadSelf(keysPath: string): SelfKeys {
   }
   if (!looksLikeSecretBundle(parsed)) {
     throw new Error(
-      `--keys is not a secret bundle (need the SECRET key file, e.g. aaron@zeta.secret.json — ` +
+      `--keys is not a secret bundle (need the SECRET key file, e.g. <identity>.secret.json — ` +
         `NOT the .recipient.json public file): ${keysPath}`,
     );
   }
@@ -135,16 +137,16 @@ function flagValue(args: readonly string[], name: string): string | undefined {
 const USAGE = `memory-encrypt-loop — self-encrypt a folder of memories to post-quantum .zc
 
   Preview (no key, no writes — the only mode an agent should run):
-    bun tools/crypto/better-git-crypt/memory-encrypt-loop.ts --dry-run --in drop --out memory/persona/aaron
+    bun tools/crypto/better-git-crypt/memory-encrypt-loop.ts --dry-run --in <in-dir> --out <out-dir>
 
-  Real run (AARON only — requires Aaron's SECRET bundle as sender):
+  Real run (key owner only — requires the owner's SECRET bundle as sender):
     bun tools/crypto/better-git-crypt/memory-encrypt-loop.ts \\
-      --keys ~/.zeta-keys/aaron@zeta.secret.json --in drop --out memory/persona/aaron
+      --keys ~/.zeta-keys/<identity>.secret.json --in <in-dir> --out <out-dir>
 
   Flags:
     --in <dir>      input dir of plaintext files            (required)
     --out <dir>     output dir for .zc envelopes            (required)
-    --keys <file>   Aaron's SECRET bundle JSON              (required unless --dry-run)
+    --keys <file>   the owner's SECRET bundle JSON          (required unless --dry-run)
     --in-ext <ext>  input extension filter                  (default .txt)
     --dry-run       list inputs → outputs; no key, no writes
     --force         overwrite existing .zc
@@ -197,14 +199,14 @@ async function main(argv: readonly string[]): Promise<number> {
       process.stdout.write(`  ${f}  →  ${out}${exists}\n`);
     }
     process.stdout.write(
-      `\nTo actually encrypt, AARON runs with --keys <secret-bundle> (only-Aaron-decrypts requires Aaron as sender).\n`,
+      `\nTo actually encrypt, the key owner runs with --keys <secret-bundle> (the sender is the sole decryptor).\n`,
     );
     return 0;
   }
 
   if (!keys) {
     process.stderr.write(
-      `--keys is required for a real run (only AARON can run this — the secret bundle is the sender).\n` +
+      `--keys is required for a real run (only the key owner can run this — the secret bundle is the sender / sole decryptor).\n` +
         `Use --dry-run to preview without a key.\n\n${USAGE}`,
     );
     return 2;

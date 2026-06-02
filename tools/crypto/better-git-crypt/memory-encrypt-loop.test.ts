@@ -2,14 +2,15 @@
  * tools/crypto/better-git-crypt/memory-encrypt-loop.test.ts
  *
  * The load-bearing property: a folder of plaintext self-encrypts to `.zc` and each
- * `.zc` decrypts back to the EXACT input bytes with the SAME secret bundle (only
- * Aaron, as sender/self-recipient, can decrypt). Plus listing/naming/skip behavior.
+ * `.zc` decrypts back to the EXACT input bytes with the SAME secret bundle (only the
+ * secret-bundle holder, as sender/self-recipient, can decrypt). Plus listing/naming/
+ * skip behavior.
  */
 
 import { describe, expect, test, beforeEach, afterEach } from "bun:test";
-import { mkdtempSync, rmSync, writeFileSync, readFileSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, basename } from "node:path";
 import {
   generateKeyPairJSON,
   deserializeSecretBundle,
@@ -27,8 +28,8 @@ beforeEach(() => {
   root = mkdtempSync(join(tmpdir(), "mem-enc-loop-"));
   inDir = join(root, "in");
   outDir = join(root, "out");
-  Bun.spawnSync(["mkdir", "-p", inDir]);
-  self = deserializeSecretBundle(generateKeyPairJSON("aaron@test").secret);
+  mkdirSync(inDir, { recursive: true });
+  self = deserializeSecretBundle(generateKeyPairJSON("owner@test").secret);
 });
 
 afterEach(() => {
@@ -40,10 +41,11 @@ describe("listInputs / outPathFor", () => {
     writeFileSync(join(inDir, "b.txt"), "b");
     writeFileSync(join(inDir, "a.txt"), "a");
     writeFileSync(join(inDir, "note.md"), "x");
-    expect(listInputs(inDir).map((p) => p.split("/").pop())).toEqual(["a.txt", "b.txt"]);
+    expect(listInputs(inDir).map((p) => basename(p))).toEqual(["a.txt", "b.txt"]);
   });
   test("outPathFor strips inExt and appends .zc, preserving the name", () => {
-    expect(outPathFor("/x/drop/memory-foo.txt", "/x/out").endsWith("/out/memory-foo.zc")).toBe(true);
+    const out = outPathFor(join("x", "drop", "memory-foo.txt"), join("x", "out"));
+    expect(basename(out)).toBe("memory-foo.zc");
   });
   test("missing input dir → empty list (no throw)", () => {
     expect(listInputs(join(root, "nope"))).toEqual([]);
@@ -68,7 +70,7 @@ describe("encryptDir — self-encrypt round-trip", () => {
       const dec = decryptBytes(readFileSync(e.out), self); // sender = self (self-encrypted)
       expect(dec.ok).toBe(true);
       if (dec.ok) {
-        const original = samples[e.in.split("/").pop()!]!;
+        const original = samples[basename(e.in)]!;
         expect(Array.from(dec.plaintext)).toEqual(Array.from(original));
       }
     }
@@ -78,7 +80,7 @@ describe("encryptDir — self-encrypt round-trip", () => {
     writeFileSync(join(inDir, "secret.txt"), "private");
     const res = encryptDir(self, inDir, outDir, {});
     expect(res.encrypted).toHaveLength(1);
-    const other = deserializeSecretBundle(generateKeyPairJSON("not-aaron@test").secret);
+    const other = deserializeSecretBundle(generateKeyPairJSON("other@test").secret);
     const dec = decryptBytes(readFileSync(res.encrypted[0]!.out), other);
     expect(dec.ok).toBe(false);
   });
@@ -98,7 +100,7 @@ describe("encryptDir — self-encrypt round-trip", () => {
 
   test("creates the out dir if missing", () => {
     writeFileSync(join(inDir, "m.txt"), "v");
-    const deepOut = join(outDir, "persona", "aaron");
+    const deepOut = join(outDir, "persona", "owner");
     expect(existsSync(deepOut)).toBe(false);
     const res = encryptDir(self, inDir, deepOut, {});
     expect(res.encrypted).toHaveLength(1);
