@@ -60,3 +60,17 @@ let ``message distance is zero for equal messages and abs-difference otherwise``
     |> should (equalWithin 1e-12) 0.0
     Beta.distance (Beta.create 2.0 3.0) (Beta.create 2.5 3.0) |> should (equalWithin 1e-9) 0.5
     Bernoulli.distance (Bernoulli.create 0.3) (Bernoulli.create 0.5) |> should (equalWithin 1e-9) 0.2
+
+[<Fact>]
+let ``non-finite messages count as moved (no false convergence on overflow)`` () =
+    // an infinite-precision message (via record literal, bypassing the
+    // validated constructor) must NOT be silently reported as converged:
+    // distance returns infinity, and `moved` treats NaN/∞ residual as moved.
+    Gaussian.distance { PrecisionMean = 0.0; Precision = infinity } { PrecisionMean = 0.0; Precision = infinity }
+    |> System.Double.IsFinite |> should equal false
+    let g0 =
+        FactorGraph.empty Gaussian.algebra
+        |> FactorGraph.addFactor 0 (Factor.prior 0 { PrecisionMean = 0.0; Precision = infinity })
+        |> FactorGraph.addFactor 1 (Factor.prior 0 { PrecisionMean = 0.0; Precision = infinity })
+    let _g, _rounds, converged = FactorGraph.runToFixpoint Gaussian.distance 1e-9 5 g0
+    converged |> should equal false

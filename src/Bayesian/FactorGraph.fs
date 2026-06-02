@@ -152,7 +152,11 @@ module FactorGraph =
                 |> Map.exists (fun v m ->
                     match Map.tryFind v msgs' with
                     | None -> true
-                    | Some m' -> distance m m' > tol))
+                    // `not (d <= tol)` (not `d > tol`) so a NaN residual
+                    // counts as MOVED: `NaN > tol` is false in F#, which
+                    // would otherwise let a divergent/overflowed run
+                    // falsely report convergence.
+                    | Some m' -> not (distance m m' <= tol)))
 
     /// **Sum-product belief propagation to a fixed point.** Iterate
     /// `passOnce` until no factor→var message moves more than `tol` (by
