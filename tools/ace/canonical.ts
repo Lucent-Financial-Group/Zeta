@@ -1,7 +1,7 @@
 // canonical.ts -- Ace slice 8.1: the seam between Ace's trust core and the project's
 // shared, 4-language byte-locked canonical-JSON (src/Core.TypeScript/dynamic-value/json.ts).
 // Own-the-interface: the rest of Ace depends on canonicalBytes() here, not directly on the
-// dynamic-value port. The trust core's package_hash / key_id / index+manifest signing all
+// dynamic-value port. The trust core's package_hash + index/manifest signing all
 // rest on canonicalBytes, so they inherit the audited cross-language canonicalization (and a
 // future Rust/F#/C# Ace consumer computes byte-identical hashes for free from the byte-lock).
 import { canonicalJson, type Tagged } from "../../src/Core.TypeScript/dynamic-value/json.ts";
