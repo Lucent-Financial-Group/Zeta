@@ -9,7 +9,7 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-1000]
 composes_with: [B-1001, B-1002, B-1003, B-1004, B-0428]
-tags: [distributed-tensor-inference, sharded-factor-graph, group-is-the-tensor, bayesian-marginalization, fused-vs-non-fused, expression-tree-fusion, tension-preserving-prior, marginal-is-canonical, membranes-as-jelly, message-passing-consensus, arrow-columnar, eve-transport, dbsp, indexed-zset, infer-net, research, aaron, prism]
+tags: [distributed-tensor-inference, sharded-factor-graph, group-is-the-tensor, bayesian-marginalization, fused-vs-non-fused, expression-tree-fusion, tension-preserving-prior, marginal-is-canonical, membranes-as-jelly, jelly-to-spine-phase-transition, schema-in-stream, message-passing-consensus, arrow-columnar, eve-transport, dbsp, indexed-zset, infer-net, research, aaron, prism]
 type: research
 ---
 
@@ -95,6 +95,41 @@ dynamics bringing shards into agreement; the stable-but-still-vibrating
 configuration the group settles to is the marginal (the μένω residual). This is a
 dynamics intuition, not a claim — it earns its keep only as the operational
 "distributed fixpoint = consensus over a fluid belief surface" picture.
+
+## Jelly → spine — the convergence phase transition
+
+Aaron + Prism 2026-06-02: *"the relationally linked column stores can stiffen
+into spines."* The jelly has two phases, and the transition between them is the
+load-bearing operational content (it's a real property of the engine, not just
+the metaphor):
+
+| Phase | Engine state | What the columnar store is |
+|---|---|---|
+| **Jelly** (pliable) | `runToFixpoint` / distributed consensus still iterating — natural parameters fluctuating, cross-shard boundary edges still being negotiated (`moved` residual above tol) | the **relationally-linked** `MessageBatch` columns: relationships present but still pliable |
+| **Spine** (stiff) | fixed point reached — `converged = true`, residual ≤ tol, natural parameters stop changing, the cross-shard/factor-graph edges are now immutable | the **same** columnar store, now a fixed skeletal frame downstream inference/queries can hang on |
+
+Two things this names precisely:
+
+1. **The stiffening is convergence, not a format change.** The Arrow
+   `RecordBatch` is byte-identical in shape across both phases; "stiffening" is
+   the `moved`-residual hitting zero (the engine's existing NaN-safe convergence
+   test), at which point the relational links (factor edges / cross-shard
+   boundary edges) freeze. The engine already *has* this transition — `converged`
+   is the spine-formation signal. The distributed form (slice-B-1005) just lifts
+   it to the group: the spine forms when the all-reduce residual across shards
+   hits zero.
+2. **A spine is reusable substrate.** Once a sub-graph has stiffened, downstream
+   inference can treat its marginal as a fixed sub-circuit — a cached fixed-point
+   that doesn't re-iterate unless a Z-set delta touches it (DBSP / [B-1004]
+   slice-4b). The spine is the "schema-in-stream" canonical form: the marginal
+   frozen into a skeleton the rest of the computation references. This is the
+   same move as the "marginal IS the canonical form" core above — the spine *is*
+   the canonical marginal, made structural.
+
+So the hex-core walls (and any sharded tensor) are **jelly** when viewed as the
+prior (a distribution over latent fusion pathways, still negotiating) and
+**spine** when viewed as the converged posterior (the stiffened marginal). Same
+data structure; the phase is set by whether the fixpoint has been reached.
 
 ## Acceptance (research → build)
 
