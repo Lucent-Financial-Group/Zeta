@@ -715,8 +715,9 @@ module DynamicValue =
     /// in JSON and lock under CBOR; a number with a decimal point or exponent is a Float ->
     /// `DecodeError.Unsupported`). Strictly canonical: a lenient recursive-descent parse, then one
     /// fixed-point check (`toCanonicalJson decoded = input`) rejects every non-canonical form
-    /// (insignificant whitespace, non-minimal escapes, leading zeros / '+' signs) as
-    /// `DecodeError.NonCanonical`. int64 precision is preserved by parsing the number token as text,
+    /// (insignificant whitespace, non-minimal escapes, leading zeros) as
+    /// `DecodeError.NonCanonical` (a leading '+' is invalid JSON → `UnexpectedEnd`, not non-canonical).
+    /// int64 precision is preserved by parsing the number token as text,
     /// never via a float. Surfaced as data via `Result`, never thrown. Mirrors the TS/C#/Rust decoder.
     let fromCanonicalJson (json: string) : Result<DynamicValue, DecodeError> =
         let mutable pos = 0
@@ -753,7 +754,7 @@ module DynamicValue =
                     // permits leading/trailing whitespace) so a "\u 001"-style escape is rejected
                     match
                         System.UInt16.TryParse(
-                            json.Substring(pos + 1, 4),
+                            System.MemoryExtensions.AsSpan(json, pos + 1, 4),
                             System.Globalization.NumberStyles.AllowHexSpecifier,
                             System.Globalization.CultureInfo.InvariantCulture
                         )
@@ -840,7 +841,7 @@ module DynamicValue =
                 else
                     match
                         System.Int64.TryParse(
-                            json.Substring(start, pos - start),
+                            System.MemoryExtensions.AsSpan(json, start, pos - start),
                             System.Globalization.NumberStyles.AllowLeadingSign,
                             System.Globalization.CultureInfo.InvariantCulture
                         )
