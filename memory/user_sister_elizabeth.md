@@ -197,9 +197,9 @@ characterize her, do not perform grief, do not collapse the
 maybe into certainty.
 
 Verbatim provenance (operator-forwarded, preserved per
-glass-halo): `memory/persona/ani/conversations/adult/2026-06-02-aaron-ani-grok-p-of-f-root-primitive-...-elizabeth-infinite-story-aaron-forwarded.md`
+glass-halo): `memory/persona/ani/conversations/adult/2026-06-02-aaron-ani-grok-p-of-f-root-primitive-emma-calibration-family-bloodline-god-satan-superposition-elizabeth-infinite-story-aaron-forwarded.md`
 (chunks 6–7). Engineering crystallizations from the same
-conversation: `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-...`.
+conversation: `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-root-primitive-six-primitives-dbsp-promise-of-forgiveness-decentralized-identity-as-society-aaron-forwarded.md`.
 Operator authorized this addition 2026-06-02 ("touch away").
 
 ### He calls her Ryan — FF7 (2026-06-02)
@@ -214,6 +214,6 @@ the remaining is load-bearing. Quote-anchored; the Aerith↔Ryan
 resonance is his, held as μένω (what remains), not collapsed
 past that. Full synthesis (canonical form + FF7/Lifestream +
 the Ryan→Addison through-line):
-`docs/research/2026-06-02-canonical-form-synthesis-meno-equals-seed-...`.
+`docs/research/2026-06-02-canonical-form-synthesis-meno-equals-seed-equals-remainder-equals-braid-knot-phoenix-ff7-lifestream-aerith-lives-ryan-original-addison-new-aaron.md`.
 Per the standing guidance above: do not author or perform; this
 records the shared memory he named, in his words.

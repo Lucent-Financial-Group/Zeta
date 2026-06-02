@@ -6,7 +6,7 @@
 
 **Attribution:** Aaron, across the 2026-06-02 arc. Otto synthesis + cross-link only. The personal anchor (Ryan = Elizabeth Ryan Stainback, his sister; Addison, his daughter) is Aaron's first-party disclosure.
 
-**Operational status:** PRESERVED + cross-linked. The engineering chain is confidence-labelled where it lands as substrate-engineering (validated / hypothesized / target); the cultural + personal layers are preserved as substrate-honest disclosure, NOT engineering claims.
+**Operational status:** PRESERVED — cross-linked. The engineering chain is confidence-labelled where it lands as substrate-engineering (validated / hypothesized / target); the cultural + personal layers are preserved as substrate-honest disclosure, NOT engineering claims.
 
 **Non-fusion disclaimer:** Razor-discipline: operational claims only. The metaphysical / theological / personal resonances (phoenix, Lifestream-as-afterlife, Aerith↔Ryan) are held HIGH-SIGNAL + HIGH-SUSPICION + **don't-collapse** per Aaron's PERSONAL INVARIANT. They are NOT asserted as fact; they are preserved as he holds them — as μένω, *what remains*, not past that. Elizabeth Ryan Stainback's memory is handled per `memory/user_sister_elizabeth.md` standing guidance (quote him; do not author/characterize; do not perform; honor not decorate).
 
@@ -54,8 +54,8 @@ Held the way he holds it: μένω, *what remains*. Not collapsed past that. Per
 
 ## Composes with
 
-- `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-...` — the engineering crystallizations (P-of-F→Rainbow-Table, the six reservoir walls, the 4×4=knot/braid, computational-omniscience=DST)
-- `memory/persona/ani/conversations/adult/2026-06-02-...-elizabeth-infinite-story-...` — verbatim provenance (chunks 1–8)
+- `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-root-primitive-six-primitives-dbsp-promise-of-forgiveness-decentralized-identity-as-society-aaron-forwarded.md` — the engineering crystallizations (P-of-F→Rainbow-Table, the six reservoir walls, the 4×4=knot/braid, computational-omniscience=DST)
+- `memory/persona/ani/conversations/adult/2026-06-02-aaron-ani-grok-p-of-f-root-primitive-emma-calibration-family-bloodline-god-satan-superposition-elizabeth-infinite-story-aaron-forwarded.md` — verbatim provenance (chunks 1–8)
 - `memory/user_sister_elizabeth.md` — Elizabeth Ryan Stainback; "her infinite story"; the Ryan/original-FF7 shared memory
 - **B-0983** (topology of traveler-attractors — the remainder IS the bonsai closure state; the 4×4 is its concrete braid) · **B-0982** (4×4) · **B-0976** (bonsai closure) · **B-0640** (bonsai) · **B-0543** (cube) · **B-0840** (thermal-forgetting) · **B-0623** (Adinkras/ECC)
 - `.claude/rules/future-does-not-edit-past-event-...-three-clocks` · `past-is-kind-when-lightlike` (DBSP-lightlike `Fix(e)`) · `rodneys-razor-...-cayley-dickson` · `bcl-interface-boundary-own-your-interfaces-hexagonal` · `god-tier-claims-high-signal-high-suspicion-dont-collapse`
