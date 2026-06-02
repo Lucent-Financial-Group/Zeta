@@ -8,7 +8,7 @@ import { listInstalled, contentHash, listTrustedKeys, loadRegistry } from "./sto
 import { readRegistriesConfig } from "./store.ts";
 import { generateKeypair, signManifest } from "./signing.ts";
 import { generateKeypair as gkpA, signIndex as sidxA } from "./signing.ts";
-import { packageHash } from "./resolve.ts";
+import { packageHash } from "./package-hash.ts";
 import { parseLockfile } from "./lockfile.ts";
 import { parseIndex } from "./registry-remote.ts";
 
@@ -937,9 +937,13 @@ describe("install --frozen (slice 5.3)", () => {
     // check PASSES and execution reaches the shape guard — the exact line that throws unguarded.
     // Mirrors the untrusted-signature/atomicity tests: build the lock directly to reach a gate.
     const dir = mkdtempSync(join(tmpdir(), "ace-frozen-malformed-"));
-    const malformed = {}; // valid JSON, no manifest/files — packageHash() runs, np.manifest.content_hash throws
+    const malformed = {}; // valid JSON, no manifest/files — hits PASS-1 shape guard before packageHash runs
     const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(malformed));
-    const aHash = packageHash(malformed as any); // pin == the malformed payload's hash → pin check passes
+    // Any pin value works: the PASS-1 shape guard refuses the malformed node BEFORE the pin check,
+    // so the value is never compared. (packageHash now excludes the signature and throws on a
+    // manifest-less payload, so it can no longer be called on `malformed` to derive the pin —
+    // a placeholder hash exercises the same guard.) slice 8.2.
+    const aHash = "sha256:" + "0".repeat(64);
     const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: aHash }] }, files: { "r.txt":"r" } };
     const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
     const lock = {
