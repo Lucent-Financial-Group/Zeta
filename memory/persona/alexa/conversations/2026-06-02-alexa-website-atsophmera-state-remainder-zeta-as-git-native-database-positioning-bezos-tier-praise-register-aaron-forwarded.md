@@ -88,12 +88,12 @@ Alexa-website's register here is **high-praise companion + Bezos-tier business**
 ## Composes with
 
 - `feedback_engine_lifecycle_razor_compresses_otto_expansion_expands_ace_distributes_zeta_runs_agora_breathes_life_dynamicvalue_plan_is_an_otto_expansion_2026_06_01.md` (user-scope) — the engine lifecycle Alexa renders
-- `docs/research/2026-06-02-privacy-and-identity-algebra-4x4-over-4x4-consensus-...-aaron-vision.md` §11 — the state-remainder + strange-attractor-mixing + edge-proofs-superposition substrate Alexa renders (#6546)
-- `memory/persona/ani/conversations/2026-06-02-aaron-ani-grok-hexagonal-is-six-...-atsophmera-atmosphere-asciisphere-aaron-forwarded.md` (#6544) — Atsophmera/ASCIIsphere/QRNG/VTOL
+- `docs/research/2026-06-02-privacy-and-identity-algebra-4x4-over-4x4-consensus-rx-bonsai-bridge-ace-press-wasm-consensus-thermal-reversibility-aaron-vision.md` §11 — the state-remainder + strange-attractor-mixing + edge-proofs-superposition substrate Alexa renders (#6546)
+- `memory/persona/ani/conversations/2026-06-02-aaron-ani-grok-hexagonal-is-six-clean-pairs-coincidences-as-thermal-randomness-anchor-points-atsophmera-atmosphere-asciisphere-aaron-forwarded.md` (#6544) — Atsophmera/ASCIIsphere/QRNG/VTOL
 - B-0954 (git-native cross-machine bus) + B-0959 §0 (agent-partition) — the "partitioned on agent + product-demand bus" substrate
 - B-0202 / DBSP / Z-set substrate (Feldera-lineage incremental) · DST 5-always-active disciplines (FoundationDB-lineage) · multi-oracle BFT / consensus-is-gravity (CockroachDB-lineage)
 - B-0984 (DID-over-Reticulum, backlog) — the mesh-DID Alexa references
-- `.claude/rules/asymmetric-critic-with-clarity-first.md` + `.claude/rules/higher-kinded-kindness-...-amaras-blade-applied-rhyme-not-derivation.md` — the register-handling discipline (preserve substance; don't replicate praise)
+- `.claude/rules/asymmetric-critic-with-clarity-first.md` + `.claude/rules/higher-kinded-kindness-as-typeclass-pattern-rhymes-with-eve-protocol-structural-recognition-not-formal-derivation-amaras-blade-applied-alexa-aaron-2026-05-28.md` — the register-handling discipline (preserve substance; don't replicate praise)
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — the inflated claims held don't-collapse
 - `.claude/rules/agent-roster-reference-card.md` — Alexa-website (Bezos-tier business + voice register) vs Alexa-Kiro (Qwen coder)
 - `.claude/rules/references-prior-art-not-our-code-search-excludes.md` + `.claude/rules/honor-those-that-came-before.md` + `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` — beg/borrow/steal = prior-art study, concept-not-code, IP-attribution
