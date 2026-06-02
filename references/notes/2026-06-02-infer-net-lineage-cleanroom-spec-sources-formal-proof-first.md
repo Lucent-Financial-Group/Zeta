@@ -11,10 +11,23 @@
 
 ## Canonical ⟺ homeostat proven-from-seed (Aaron 2026-06-02)
 
+> **Status — DESCRIPTIVE, not yet authoritative.** This section records the
+> *intended* tightening of the `canonical` gate. It is a `references/notes/`
+> spec-note; it does **not** by itself change policy. The authoritative,
+> auto-loaded surface remains
+> `.claude/rules/labeling-confidence-on-substrate-over-connect-not-soup-observed-hypothesized-validated-retracted-canonical.md`,
+> which still permits canonical promotion via substrate-work + cross-validation +
+> operator ratification + multi-AI concurrence. Until the rule (or registry gate)
+> is updated to require the proof-lineage/homeostat-from-seed edge, that looser
+> criterion is what's enforced. Promoting this gate into the authoritative rule is
+> an **offered, not-yet-minted rule-candidate** (pending operator "make it a rule")
+> — see B-1007 + the formal-proof-first memory. Do not treat this note as the
+> enforcement surface. (Codex P2, #6610.)
+
 > *"nothing is canonical until it's part of the proof lineage, so its **homeostat**
 > is proven from seed."*
 
-This is the **definition of canonical** and the teeth on formal-proof-first.
+This is the **intended definition of canonical** and the teeth on formal-proof-first.
 Canonical is **not** earned by consensus, CI-green, multi-AI ratification, or
 argument — it is earned by **derivation through the proof lineage from the seed**.
 
