@@ -8,8 +8,8 @@ effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
-composes_with: [B-0924, B-0925, B-0989, B-0988, B-0986, B-0954, B-0703]
-tags: [dev-experience, local-cluster, multi-node-redundant, simulation, dst, billing, ui, one-laptop, itron, concept-not-code, full-ai-cluster, emulator-as-dst, aaron]
+composes_with: [B-0924, B-0925, B-0989, B-0988, B-0986, B-0954, B-0703, B-0726, B-0984, B-0772, B-0643.1, B-0883]
+tags: [dev-experience, local-cluster, multi-node-redundant, simulation, dst, billing, ui, one-laptop, itron, mesh-performance-manager, sql-server-dev-edition, appliance, distributed-load, active-redundancy, smart-meter-mesh, wireless-mesh, low-bandwidth, 128-bit-id, nation-state-resistant, reticulum, concept-not-code, full-ai-cluster, emulator-as-dst, aaron]
 type: research
 ---
 
@@ -17,7 +17,25 @@ type: research
 
 ## Why
 
-Aaron 2026-06-02 (verbatim): *"At Itron we could see our billing of simulated meters on a real live database cluster with UI and multi node redundant on one dev laptop without breaking a sweat."*
+Aaron 2026-06-02 (verbatim): *"At Itron we could see our billing of simulated meters on a real live database cluster with UI and multi node redundant on one dev laptop without breaking a sweat."* + *"that was Mesh Performance Manager at Itron — we used SQL Server Dev Edition for dev machines, and they built huge appliances for distributed load locally and cloud for active redundancy."*
+
+The proof-point: **Mesh Performance Manager (MPM)** at Itron. Two halves of the pattern:
+
+- **Dev: SQL Server Developer Edition on dev machines.** SQL Server Dev Edition is **free + full-featured** (the full product, not a toy/express tier) — that's *what made the real-live-DB-on-one-laptop possible*: a dev runs the genuine clustered DB engine locally, so "see simulated meters billed on a real live cluster" works on a laptop without a mock. The Zeta analog: a free, full-featured clustered DB engine (Postgres/etc.) run locally via `full-ai-cluster/`, not a mock.
+- **Prod: purpose-built appliances for distributed load + active redundancy, local AND cloud.** The production substrate was huge appliances handling distributed load, deployed both on-prem (local) and cloud, for *active* redundancy. The Zeta analog: the distributed-load + active-redundancy substrate (multi-node `full-ai-cluster/` + the relativistic bus B-0954), local + cloud.
+
+The DX win is the *symmetry*: the dev runs the **same shape** (real full-featured clustered DB) locally that prod runs at scale (appliances, local+cloud, active-redundant) — so "without breaking a sweat" on one laptop is real, not a downgraded mock.
+
+### What the simulated meters ran on — the mesh (concept-not-code grounding)
+
+Aaron 2026-06-02: *"for the nation's smart-meter wireless low-bandwidth 128-bit ID mesh that was nation-state resistant."* MPM managed a **nation-scale smart-meter mesh** with these properties — each grounds existing Zeta substrate:
+
+- **Nation-scale, billions-of-endpoints** — the addressable-identity space at national scale (the "billions of meters" → billions-of-agents analog).
+- **Wireless, low-bandwidth mesh** — RF mesh, bandwidth-constrained. This is **Reticulum's exact domain** (B-0726/B-0984/B-0772 — low-bandwidth mesh routing/discovery) + the canonical bandwidth-constraint the framework's compression substrate addresses (`bandwidth-served-falsifier`). Concept-not-code prior-art for Reticulum-style transport.
+- **128-bit ID** — each node a 128-bit identifier. This is concrete nation/billions-scale prior-art for the **Rainbow-Table identity-return** (B-0986) — the transponder/identity-resolution at a 128-bit address space.
+- **Nation-state-resistant** — designed to withstand nation-state-level attackers. Grounds the **threat-level rings / KSK defensive architecture** (B-0643.1 — shields-not-cages, threat-level rings, anti-monopoly/cartel) + **PQ privacy** (B-0883 better-git-crypt) + multi-oracle BFT (B-0703) at the highest threat tier (per the information-suppression-spectrum).
+
+So the B-0990 simulation domain (simulated meters on a live cluster) sat on a **nation-scale, low-bandwidth, 128-bit-ID, nation-state-resistant wireless mesh** — which maps onto Reticulum (transport) + Rainbow-Table 128-bit identity (B-0986) + nation-state-resistant security (B-0643.1 / B-0883 / B-0703). All concept-not-code (Itron MPM proprietary never reproduced; the *capability shape* is the target).
 
 The dev-experience target, proven achievable at Itron: a developer can, **on one laptop, without breaking a sweat**, run a **real live multi-node-redundant database cluster** + a **UI** + a **simulation of entities** (Itron: meters) + the **real domain logic over them** (Itron: billing) — and *watch it work*. This is the local-cluster DX Zeta should match: full production-shaped cluster + observable UI + deterministic simulation, lightweight enough for a single dev laptop.
 
