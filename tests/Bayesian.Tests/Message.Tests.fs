@@ -111,3 +111,36 @@ let ``IMessage algebra dictionaries agree with the direct ops`` () =
     Gaussian.mean p |> should (equalWithin 1e-9) 1.0
     let bt = Beta.algebra
     (bt.Product(Beta.create 2.0 3.0, Beta.likelihood 5.0 1.0)).Alpha |> should (equalWithin 1e-9) 7.0
+
+// ─── Generic-math surface: One / ( * ) / ( / ) and family-agnostic BP ───
+
+[<Fact>]
+let ``generic-math operators equal the named ops`` () =
+    // ( * ) = product, ( / ) = divide, One = uniform — across families
+    Gaussian.mean (Gaussian.ofMeanVariance 0.0 1.0 * Gaussian.ofMeanVariance 2.0 1.0)
+    |> should (equalWithin 1e-9) 1.0
+    (Beta.create 2.0 3.0 * Beta.likelihood 5.0 1.0).Alpha |> should (equalWithin 1e-9) 7.0
+    Gaussian.One |> should equal Gaussian.uniform
+    Beta.One |> should equal Beta.uniform
+
+[<Fact>]
+let ``Message.marginal is family-agnostic (SRTP over generic-math One/( * ))`` () =
+    // the SAME generic function combines Gaussian messages …
+    let g = Message.marginal [ Gaussian.ofMeanVariance 0.0 1.0; Gaussian.ofMeanVariance 2.0 1.0 ]
+    Gaussian.mean g |> should (equalWithin 1e-9) 1.0
+    Gaussian.variance g |> should (equalWithin 1e-9) 0.5
+    // … and Beta messages — prior · likelihood = conjugate posterior Beta(7,4)
+    let b = Message.marginal [ Beta.create 2.0 3.0; Beta.likelihood 5.0 1.0 ]
+    b.Alpha |> should (equalWithin 1e-9) 7.0
+    b.Beta |> should (equalWithin 1e-9) 4.0
+    // empty product = the identity (One)
+    (Message.marginal (List.empty<Beta>)) |> should equal Beta.One
+
+[<Fact>]
+let ``Message.cavity divides the outgoing message out of the marginal`` () =
+    let m1 = Gaussian.ofMeanVariance 1.0 2.0
+    let m2 = Gaussian.ofMeanVariance -0.5 3.0
+    let marginal = Message.marginal [ m1; m2 ]
+    let cav = Message.cavity marginal m2   // remove m2 → should recover m1
+    Gaussian.mean cav |> should (equalWithin 1e-9) (Gaussian.mean m1)
+    Gaussian.variance cav |> should (equalWithin 1e-9) (Gaussian.variance m1)
