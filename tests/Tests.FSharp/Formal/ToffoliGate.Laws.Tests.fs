@@ -25,6 +25,24 @@ let private genWires : Arbitrary<ToffoliWires> =
 type ToffoliArb() =
     static member Wires() = genWires
 
+type WeightPair = {
+    Left : Weight
+    Right : Weight
+}
+
+let private genSmallWeight : Gen<Weight> =
+    Gen.choose (-15, 15) |> Gen.map int64
+
+let private genWeightPair : Arbitrary<WeightPair> =
+    Gen.map2
+        (fun left right -> { Left = left; Right = right })
+        genSmallWeight
+        genSmallWeight
+    |> Arb.fromGen
+
+type WeightPairArb() =
+    static member WeightPair() = genWeightPair
+
 
 // ── Toffoli gate laws ────────────────────────────────────────────────────
 //
@@ -153,6 +171,22 @@ let private allGateWires (step: ToffoliGateStep) =
     [ step.ControlA; step.ControlB; step.Target ]
 
 
+let private applyStep (wires: WireMap) (step: ToffoliGateStep) =
+    let target =
+        if wires.[step.ControlA] = One && wires.[step.ControlB] = One then
+            match wires.[step.Target] with
+            | Zero -> One
+            | One -> Zero
+        else
+            wires.[step.Target]
+
+    wires |> Map.add step.Target target
+
+
+let private applySteps steps wires =
+    steps |> List.fold applyStep wires
+
+
 [<Fact>]
 let ``Weight multiplication fragment encodes signed magnitude inputs`` () =
     let fragment = ToffoliGate.modelWeightMul -3L 5L
@@ -260,3 +294,19 @@ let ``Weight multiplication fragment propagates colliding partial-product carrie
             && step.ControlB = fragment.ConstantOneWire
             && step.Target = columnThree))
     |> should equal true
+
+
+// ── Reversibility laws over the retained join-weight fragment (B-0366.2.3) ──
+
+[<FsCheck.Xunit.Property(Arbitrary = [| typeof<WeightPairArb> |], MaxTest = 128)>]
+let ``Weight multiplication fragment forward then reverse restores retained wires`` (pair: WeightPair) =
+    let fragment = ToffoliGate.modelWeightMul pair.Left pair.Right
+    let initial = fragment.Circuit.Wires
+
+    let afterForward =
+        applySteps fragment.Circuit.Gates initial
+
+    let afterReverse =
+        applySteps (List.rev fragment.Circuit.Gates) afterForward
+
+    afterReverse = initial
