@@ -102,7 +102,7 @@ comparison proof consume both forks:
 bun tools/zflash/test-harness/run.ts --scenario reformat-from-scratch <iso-path>
 ```
 
-By default the migrate-existing-credentials fork records a missing runtime
+By default the migrate-existing-creds fork records a missing runtime
 requirement because it needs a zflash-prepared boot image containing
 `/zeta-creds.enc`. Provide that raw USB-shaped artifact with
 `ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE`:

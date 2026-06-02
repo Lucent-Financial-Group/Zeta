@@ -16,6 +16,7 @@ import {
   INITIAL_INSTALL_SERIAL_MARKERS,
   RETENTION_ABSENT_TERMINAL_MARKERS,
   RETENTION_FAILURE_SERIAL_MARKERS,
+  buildQemuSystemBootArgs,
   type QemuCommand,
   type QemuSerialStopCondition,
 } from "./qemu-state";
@@ -152,57 +153,6 @@ interface NormalizedPathForkRuntimeInput {
   readonly kvmAvailable: boolean;
 }
 
-function buildQemuBootArgs(
-  input: NormalizedPathForkRuntimeInput,
-  serialLogPath: string,
-  bootMedia: { readonly kind: "iso"; readonly path: string } | { readonly kind: "usb-image"; readonly path: string },
-): readonly string[] {
-  const args: string[] = [
-    "-machine",
-    "q35",
-    "-m",
-    String(input.memoryMB),
-    "-smp",
-    String(input.cpuCount),
-    "-drive",
-    `file=${input.startingDiskPath},if=virtio,format=qcow2`,
-    "-serial",
-    `file:${serialLogPath}`,
-    "-display",
-    "none",
-    "-netdev",
-    "user,id=net0",
-    "-device",
-    "virtio-net-pci,netdev=net0",
-  ];
-
-  if (bootMedia.kind === "usb-image") {
-    args.push(
-      "-drive",
-      `file=${bootMedia.path},if=none,format=raw,readonly=on,id=zflashboot`,
-      "-device",
-      "qemu-xhci,id=xhci",
-      "-device",
-      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
-    );
-  } else {
-    args.push(
-      "-cdrom",
-      bootMedia.path,
-      "-boot",
-      "d",
-    );
-  }
-
-  if (input.kvmAvailable) {
-    args.push("-enable-kvm", "-cpu", "host");
-  } else {
-    args.push("-cpu", "qemu64");
-  }
-
-  return args;
-}
-
 function requiredMarkers(forkId: PathForkId): readonly string[] {
   return [
     ...INITIAL_INSTALL_SERIAL_MARKERS,
@@ -236,13 +186,27 @@ function bootCommandForFork(
     }
     return {
       bin: "qemu-system-x86_64",
-      args: buildQemuBootArgs(input, serialLogPath, { kind: "usb-image", path: bootImagePath }),
+      args: buildQemuSystemBootArgs({
+        diskPath: input.startingDiskPath,
+        serialLogPath,
+        memoryMB: input.memoryMB,
+        cpuCount: input.cpuCount,
+        kvmAvailable: input.kvmAvailable,
+        bootMedia: { kind: "usb-image", path: bootImagePath },
+      }),
     };
   }
 
   return {
     bin: "qemu-system-x86_64",
-    args: buildQemuBootArgs(input, serialLogPath, { kind: "iso", path: input.isoPath }),
+    args: buildQemuSystemBootArgs({
+      diskPath: input.startingDiskPath,
+      serialLogPath,
+      memoryMB: input.memoryMB,
+      cpuCount: input.cpuCount,
+      kvmAvailable: input.kvmAvailable,
+      bootMedia: { kind: "iso", path: input.isoPath },
+    }),
   };
 }
 
