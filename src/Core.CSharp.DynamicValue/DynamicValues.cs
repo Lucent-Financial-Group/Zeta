@@ -310,8 +310,11 @@ public static class DynamicValues
     // is NOT escaped; valid surrogate PAIRS emit the astral char raw, but LONE surrogates are
     // \u-escaped (a raw lone surrogate is invalid Unicode + non-bijective under UTF-8 byte-lock);
     // all other characters emitted raw.
-    private static void AppendEscaped(StringBuilder sb, string s)
+    private static void AppendEscaped(StringBuilder sb, string? rawValue)
     {
+        // Null-safe: normalize a malformed null String payload / object key (reachable via
+        // nullable-disabled / interop callers) to empty, so the encoder never throws here.
+        string s = rawValue ?? string.Empty;
         sb.Append('"');
         for (int i = 0; i < s.Length; i++)
         {
