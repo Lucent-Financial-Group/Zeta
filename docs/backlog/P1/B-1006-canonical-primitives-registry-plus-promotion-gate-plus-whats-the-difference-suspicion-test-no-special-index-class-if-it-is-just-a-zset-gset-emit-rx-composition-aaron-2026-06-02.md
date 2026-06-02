@@ -36,8 +36,14 @@ mapping/adapter onto the core.** The core is:
 
 - the **two foundational dimensions** (the core base everything composes from —
   exact naming is Aaron's to pin; the hex-core / 2D Cayley-Dickson base)
-- the **Z-set family**: `ZSet` (±1, retraction-native), `GSet`, `Bag`,
-  `IndexedZSet`, and **event-index** (a time/event-keyed IndexedZSet — the DBSP log)
+- the **Z-set family (promoted)**: `ZSet` (±1, retraction-native), `GSet`, `Bag`,
+  `IndexedZSet`
+
+(**event-index** — a time/event-keyed IndexedZSet, the DBSP log — is a *candidate*,
+NOT part of the promoted core; it's still under the suspicion test in the registry
+below. The gate must map candidates onto the *promoted* set only, never onto another
+unpromoted candidate — otherwise a new structure could justify itself against
+event-index while event-index is itself under review.)
 
 The test, applied to any candidate special class:
 
