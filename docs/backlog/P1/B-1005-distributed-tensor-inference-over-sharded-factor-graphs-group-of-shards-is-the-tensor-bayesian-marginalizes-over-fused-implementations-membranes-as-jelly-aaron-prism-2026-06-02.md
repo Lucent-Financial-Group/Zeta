@@ -55,7 +55,7 @@ correspondence** Aaron named:
 
 The inversion (Aaron's): the **unfused/non-fused view is canonical**; fusion is a
 *verified-safe rewrite the model integrates over*, not a commitment. This is why
-[`monad-propagation-pattern`] + DBSP-IVM + the [B-1004] minimal-vocabulary
+`monad-propagation-pattern` + DBSP-IVM + the [B-1004] minimal-vocabulary
 conformance all compose — the algebra is the same whether fused or not, so the
 marginal is invariant to which fusion a shard locally chose.
 
@@ -70,7 +70,7 @@ Concretely, layered on the existing engine:
 
 | Layer | Existing substrate | Distributed role |
 |---|---|---|
-| **Local shard state** | `MessageBatch` / Arrow columnar ([B-1001]) | each shard holds its partial natural parameters as a columnar batch |
+| **Local shard state** | `NaturalBatch` (in `MessageBatch.fs`) / Arrow columnar ([B-1001]) | each shard holds its partial natural parameters as a columnar batch |
 | **Sharded factor graph** | `FactorGraph` ([B-1000] slices 3–4) | factors + variables partitioned across the group; edges that cross shard boundaries are the consensus channels |
 | **Message-passing = consensus** | `runToFixpoint` (BP) / `Ep` (EP) | a shard's variable→factor message is its partial belief; cross-shard edges all-reduce/gossip the natural-parameter ADD (product = natural-param sum) to the joint marginal |
 | **Shard-to-shard transport** | Eve multi-traveler ([B-1002]/[B-1003]) | zero-trust `codec<codec<t>>` over multiplexed WS/TCP carries the cross-shard messages; party = identity-noun = a shard |
@@ -106,7 +106,7 @@ the metaphor):
 
 | Phase | Engine state | What the columnar store is |
 |---|---|---|
-| **Jelly** (pliable) | `runToFixpoint` / distributed consensus still iterating — natural parameters fluctuating, cross-shard boundary edges still being negotiated (`moved` residual above tol) | the **relationally-linked** `MessageBatch` columns: relationships present but still pliable |
+| **Jelly** (pliable) | `runToFixpoint` / distributed consensus still iterating — natural parameters fluctuating, cross-shard boundary edges still being negotiated (`moved` residual above tol) | the **relationally-linked** `NaturalBatch` columns: relationships present but still pliable |
 | **Spine** (stiff) | fixed point reached — `converged = true`, residual ≤ tol, natural parameters stop changing, the cross-shard/factor-graph edges are now immutable | the **same** columnar store, now a fixed skeletal frame downstream inference/queries can hang on |
 
 Two things this names precisely:
@@ -142,7 +142,7 @@ data structure; the phase is set by whether the fixpoint has been reached.
    convergence = local fixpoint AND boundary-message residual below tol (reuse the
    NaN-safe `moved` residual test). Prove (test) the distributed marginal equals
    the single-graph marginal on a graph split two ways (partition-invariance).
-3. **transport binding**: cross-shard messages serialize via `MessageBatch` Arrow
+3. **transport binding**: cross-shard messages serialize via `NaturalBatch` Arrow
    IPC ([B-1001]) over the Eve `codec<codec<t>>` channel ([B-1002]); two shards
    that share only the wire converge (the [B-1002] zero-trust property).
 4. **incrementality**: a delta on one shard's evidence triggers a Z-set delta that
@@ -178,11 +178,11 @@ was a stale-working-tree post-fetch read; B-0999 is on `origin/main` and indexed
 ## Composes with substrate
 
 - **[B-1000]** (Infer.NET engine — the thing being distributed) · **[B-1001]**
-  (Arrow columnar `MessageBatch` — the shard wire format) · **[B-1002]/[B-1003]**
+  (Arrow columnar `NaturalBatch` — the shard wire format) · **[B-1002]/[B-1003]**
   (Eve multi-traveler `codec<codec<t>>` transport — the cross-shard channel;
   party=identity-noun=shard) · **[B-1004]** (minimal HKT vocabulary + IndexedZSet +
   DBSP IVM — the incremental marginal) · **[B-0428]** (real HKT — the composition
-  that lets a shard's `MessageBatch` and the consensus reduction share one algebra)
+  that lets a shard's `NaturalBatch` and the consensus reduction share one algebra)
 - existing F#: `FactorGraph.fs` (the graph to shard), `Message.fs` (natural-param
   group = the additive all-reduce), `MessageBatch.fs` (columnar shard state),
   `Ep.fs` (non-conjugate factors distribute the same way), `IndexedZSet.fs` /
