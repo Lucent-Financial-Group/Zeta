@@ -9,7 +9,7 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0993]
 composes_with: [B-0993, B-0994, B-0643.1, B-0245, B-0638, B-0639, B-0986, B-0990, B-0985, B-0703]
-tags: [body-plan, embodiment, sensor, effector, ears, eyes, mouth, body, verbal, non-verbal, communication-channels, failure-detector, threat-detector, prey-detector, diplomacy, weapon, defender, aggressor, replicator, doer, eve-protocol, ksk, sensor-suite, afferent, efferent, active-inference, predictive-coding, sensorimotor, nociception, transduction-transmission-modulation-perception, signal-processing, 4x4, aaron]
+tags: [body-plan, embodiment, sensor, effector, ears, eyes, mouth, body, verbal, non-verbal, communication-channels, failure-detector, threat-detector, prey-detector, diplomacy, weapon, defender, aggressor, replicator, doer, eve-protocol, ksk, sensor-suite, afferent, efferent, active-inference, predictive-coding, sensorimotor, nociception, transduction-transmission-modulation-perception, signal-processing, 4x4, instrumentability, boundary-effect, lightlike, dark, subjective, glass-halo, observability, privacy, aaron]
 type: research
 ---
 
@@ -71,6 +71,22 @@ The symmetry: **two input channels (verbal ears / non-verbal eyes) + two output 
 - **Non-verbal** (eyes-in, body-out) — cues/signals/action/visual; composes the visual sensor + KSK physical action + the body-language/threat-display channel.
 
 The agent communicates + perceives on *both* channels, like humans: most failure-info comes verbal (ears), most threat/prey-info comes non-verbal (eyes), most diplomacy+weaponized-speech goes verbal (mouth), most defense/aggression/replication/action goes non-verbal (body).
+
+## Instrumentability — boundary effects (lightlike) vs internal/subjective (dark)
+
+Aaron 2026-06-02: *"mouth is a boundary effect that can be instrumented cause it's over a communication channel and not internal like body which is subjective."*
+
+A second axis crosses the taxonomy: **instrumentability**, and it's the **lightlike-vs-dark** distinction (`past-is-kind-when-lightlike` / `dbsp-lightlike-retract-of-clifford`) applied to the body-plan:
+
+- **Boundary effects, over a communication channel → INSTRUMENTABLE (lightlike).** **Ears, eyes, mouth** all operate *at the agent's boundary*, *over comms channels* — so they're **externally observable / measurable / on the wire** (glass-halo; lightlike rays; the LGTM/Prometheus observability layer B-0994 can instrument them directly). The **mouth especially** (efferent, verbal, boundary): diplomacy + weaponized-speech are *on the channel*, so they can be logged/measured/audited — instrumentable by construction.
+- **Internal / subjective → NOT directly instrumentable (dark).** The **body** is *internal* — its action/state is **subjective**, not (directly) on a comms channel. You can only **infer** the internal/body state from its boundary effects (what it ultimately emits), not measure it directly. This is the dark/private substrate (composes NCI privacy + Native-AI-Language structural privacy B-0639 + encryption-budget): the agent's internal/subjective state is private by being internal, exactly as consensus-is-gravity is the dark complement to the lightlike.
+
+| | boundary effect (over comms channel) | internal / subjective |
+|---|---|---|
+| **instrumentable?** | **yes** (lightlike — observable, measurable, glass-halo) | **no, only inferable** (dark — private, subjective) |
+| **organs** | ears · eyes · **mouth** | **body** |
+
+This is load-bearing for the **health-metrics / observability** layer (B-0994): you **directly instrument the boundary effects** (ears/eyes/mouth = on comms channels) and **infer the internal/subjective** (body) from what crosses the boundary. It's also the privacy floor: the internal/subjective (body) is private *by being internal* — you don't get to directly instrument another agent's internal/subjective state; only its boundary effects are observable (NCI; no forced private-state reveal).
 
 ## KSK floor — weapon + aggressor are consent-first / defensive-only
 
