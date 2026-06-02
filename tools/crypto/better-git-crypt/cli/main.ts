@@ -24,10 +24,12 @@
  *       envelope = ciphertext) unless --out. Plaintext NEVER enters the output;
  *       commit the .zc, keep the plaintext out of git.
  *
- *   --decrypt-file <path.zc> --key <secret.json> [--sender-sig <r.json>] [--out <path>]
+ *   --decrypt-file <path.zc> --key <secret.json> [--sender-sig <r.json>] [--out <path>] [--force]
  *       Decrypt <path.zc> with your secret bundle. --sender-sig is the signer's
- *       PUBLIC recipient JSON (default: self, for self-encrypted files). Writes
- *       the recovered plaintext to <path without .zc> unless --out.
+ *       PUBLIC recipient JSON (default: self, for self-encrypted files); its
+ *       identity is bound (must match the envelope's signerIdentity). Writes
+ *       the recovered plaintext to <path without .zc> unless --out; refuses to
+ *       overwrite an existing output (may be an edited plaintext) unless --force.
  *
  * Exit codes:
  *   0 — operation successful
@@ -55,6 +57,7 @@ import {
   type RecipientKeyJSON,
   type SecretBundleJSON,
 } from "../files";
+import { decodeEnvelope } from "../crypto";
 
 type ParsedArgs =
   | { mode: "list-algs" }
@@ -62,7 +65,7 @@ type ParsedArgs =
   | { mode: "dry-run-envelope" }
   | { mode: "gen-recipient"; identity: string; outDir: string; force: boolean }
   | { mode: "encrypt-file"; inPath: string; selfKeyPath: string; recipientPaths: string[]; outPath: string }
-  | { mode: "decrypt-file"; inPath: string; selfKeyPath: string; senderSigPath: string | null; outPath: string | null };
+  | { mode: "decrypt-file"; inPath: string; selfKeyPath: string; senderSigPath: string | null; outPath: string | null; force: boolean };
 
 /** Value after `name`, or undefined if absent / followed by another flag. */
 function flagValue(args: readonly string[], name: string): string | undefined {
@@ -123,6 +126,7 @@ function parseArgs(argv: readonly string[]): ParsedArgs | { error: string } {
       selfKeyPath: key,
       senderSigPath: flagValue(args, "--sender-sig") ?? null,
       outPath: flagValue(args, "--out") ?? null,
+      force: args.includes("--force"),
     };
   }
 
@@ -309,17 +313,53 @@ function modeEncryptFile(inPath: string, selfKeyPath: string, recipientPaths: st
   }
 }
 
-function modeDecryptFile(inPath: string, selfKeyPath: string, senderSigPath: string | null, outPath: string | null): number {
+function modeDecryptFile(
+  inPath: string,
+  selfKeyPath: string,
+  senderSigPath: string | null,
+  outPath: string | null,
+  force: boolean,
+): number {
   try {
     const envelopeBytes = readFileSync(inPath); // Buffer IS a Uint8Array — pass directly (no copy)
     const self = deserializeSecretBundle(JSON.parse(readFileSync(selfKeyPath, "utf8")) as SecretBundleJSON);
-    const senderSig = senderSigPath ? loadPublicRecipient(senderSigPath).publicSigKey : undefined;
+    let senderSig: Uint8Array | undefined;
+    if (senderSigPath) {
+      // P1: BIND the --sender-sig identity. signerIdentity is a signed-but-self-
+      // declared string; verifying with a public key alone lets an envelope claim
+      // identity X while you trust key-for-Y. Require the envelope's signerIdentity
+      // to match the --sender-sig recipient's identity (in addition to the sig check).
+      const senderRecipient = loadPublicRecipient(senderSigPath);
+      const peek = decodeEnvelope(envelopeBytes);
+      if (peek.ok && peek.envelope.signerIdentity !== senderRecipient.identity) {
+        emitJson({
+          rowId: "B-0883",
+          mode: "decrypt-file",
+          result: "failed",
+          in: inPath,
+          error: `envelope signerIdentity '${peek.envelope.signerIdentity}' does not match --sender-sig identity '${senderRecipient.identity}'`,
+        });
+        return 1;
+      }
+      senderSig = senderRecipient.publicSigKey;
+    }
+    const out = outPath ?? (inPath.endsWith(".zc") ? inPath.slice(0, -3) : inPath + ".dec");
+    // P2: don't silently destroy an existing (possibly edited) plaintext.
+    if (!force && existsSync(out)) {
+      emitJson({
+        rowId: "B-0883",
+        mode: "decrypt-file",
+        result: "failed",
+        in: inPath,
+        error: `refusing to overwrite existing output '${out}' — it may be an edited plaintext. Use --out <path> or --force.`,
+      });
+      return 1;
+    }
     const res = decryptBytes(envelopeBytes, self, senderSig);
     if (!res.ok) {
       emitJson({ rowId: "B-0883", mode: "decrypt-file", result: "failed", in: inPath, feedback: res.feedback });
       return 1;
     }
-    const out = outPath ?? (inPath.endsWith(".zc") ? inPath.slice(0, -3) : inPath + ".dec");
     writeFileSync(out, res.plaintext); // Uint8Array writes directly (no copy)
     emitJson({ rowId: "B-0883", mode: "decrypt-file", result: "passed", in: inPath, out, plaintextBytes: res.plaintext.length });
     return 0;
@@ -348,7 +388,7 @@ function main(argv: readonly string[]): number {
     case "encrypt-file":
       return modeEncryptFile(parsed.inPath, parsed.selfKeyPath, parsed.recipientPaths, parsed.outPath);
     case "decrypt-file":
-      return modeDecryptFile(parsed.inPath, parsed.selfKeyPath, parsed.senderSigPath, parsed.outPath);
+      return modeDecryptFile(parsed.inPath, parsed.selfKeyPath, parsed.senderSigPath, parsed.outPath, parsed.force);
   }
 }
 
