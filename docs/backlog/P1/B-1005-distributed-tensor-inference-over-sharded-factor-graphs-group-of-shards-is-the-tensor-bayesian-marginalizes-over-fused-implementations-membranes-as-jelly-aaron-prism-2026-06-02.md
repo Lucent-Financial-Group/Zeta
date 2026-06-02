@@ -7,8 +7,8 @@ tier: research
 effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-1000]
-composes_with: [B-0999, B-1001, B-1002, B-1003, B-1004, B-0428]
+depends_on: [B-1000, B-1001, B-1002, B-1004]
+composes_with: [B-0999, B-1003, B-0428]
 tags: [distributed-tensor-inference, sharded-factor-graph, group-is-the-tensor, bayesian-marginalization, fused-vs-non-fused, expression-tree-fusion, tension-preserving-prior, marginal-is-canonical, membranes-as-jelly, jelly-to-spine-phase-transition, schema-in-stream, message-passing-consensus, arrow-columnar, eve-transport, dbsp, indexed-zset, infer-net, research, aaron, prism]
 type: research
 ---
@@ -198,15 +198,7 @@ was a stale-working-tree post-fetch read; B-0999 is on `origin/main` and indexed
 
 ## Substrate-honest framing
 
-`[labeling-confidence: established (the engine's exp-family messages compose by
-natural-parameter addition → an associative/commutative all-reduce is the textbook
-distributed-BP reduction; BP marginalizes over latent realizations by
-construction); hypothesized (the full sharded-consensus drive + partition-
-invariance at scale is the named refactor to build + measure — does the
-distributed marginal equal the single-graph marginal, and does incremental
-re-infer scale with the delta?); metaphor/don't-collapse (the string-theory
-membranes-as-jelly mapping — offered as a separate domain adapter, not asserted as
-engine substrate)]`. The load-bearing claim is the engineering one: **the group of
+`[labeling-confidence: established (the engine's exp-family messages compose by natural-parameter addition → an associative/commutative all-reduce is the textbook distributed-BP reduction; BP marginalizes over latent realizations by construction); hypothesized (the full sharded-consensus drive + partition-invariance at scale is the named refactor to build + measure — does the distributed marginal equal the single-graph marginal, and does incremental re-infer scale with the delta?); metaphor/don't-collapse (the string-theory membranes-as-jelly mapping — offered as a separate domain adapter, not asserted as engine substrate)]`. The load-bearing claim is the engineering one: **the group of
 shards is the tensor because exp-family messages all-reduce additively, and the
 marginal is invariant to how you partition or fuse.** The physics framing is the
 vivid origin, held don't-collapse.
