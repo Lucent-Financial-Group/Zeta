@@ -160,8 +160,8 @@ sufficient.
 ## Phase 2 operator decisions (2026-05-29)
 
 Operator-authorized Phase 2, with four decisions settled + a sequencing directive
-(_"do what's easy first and expand; all those other opens should be backlogged and
-picked up based on our audience"_). Process gate alongside: **KATs against Noble's
+(*"do what's easy first and expand; all those other opens should be backlogged and
+picked up based on our audience"*). Process gate alongside: **KATs against Noble's
 vectors, plus formal-verification and security-ops review of the
 envelope and key-handling, BEFORE it holds anything real** (crypto-don't-rush).
 
