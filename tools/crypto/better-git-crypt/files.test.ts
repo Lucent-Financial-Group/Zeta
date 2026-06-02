@@ -18,6 +18,7 @@ import {
   encryptBytes,
   decryptBytes,
   type SelfKeys,
+  type RecipientKeyJSON,
 } from "./files";
 import { generateRecipientKeyPair } from "./crypto";
 
@@ -55,6 +56,17 @@ describe("better-git-crypt files.ts — key serialization", () => {
     // secret material is base64 strings, not raw byte arrays leaking through JSON
     expect(typeof secret.secretKemKey).toBe("string");
     expect(typeof secret.secretSigKey).toBe("string");
+  });
+
+  test("deserializeRecipient rejects a SECRET bundle (fail-closed: secret material can't masquerade as a public recipient)", () => {
+    // A *.secret.json is structurally a superset of a public recipient (it also
+    // carries the public halves), so without the guard it would deserialize
+    // silently — making it trivial to share/commit secret keys. JSON.parse hands
+    // back `any`, so the type system gives no protection; the runtime guard must.
+    const { secret } = generateKeyPairJSON("dave@zeta");
+    // simulate the real CLI path: JSON.parse(secret.json) cast to RecipientKeyJSON
+    const masquerading = JSON.parse(JSON.stringify(secret)) as unknown as RecipientKeyJSON;
+    expect(() => deserializeRecipient(masquerading)).toThrow(/secret key material|secretKemKey|secretSigKey/);
   });
 });
 

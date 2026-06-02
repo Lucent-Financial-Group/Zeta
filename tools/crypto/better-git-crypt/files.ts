@@ -17,8 +17,12 @@
  * bundle (`SecretBundleJSON`) MUST NOT be committed; the owner holds it. The
  * public recipient (`RecipientKeyJSON`) is shareable/committable.
  *
- * Per asymmetric-authorship + monad-propagation: every op is Result<_, feedback>
- * — the crypto layer AUTHORS its feedback channel; this layer propagates it.
+ * Per asymmetric-authorship + monad-propagation: the file encrypt/decrypt ops
+ * (`encryptBytes` / `decryptBytes`) are Result<_, feedback> — the crypto layer
+ * AUTHORS its feedback channel; this layer propagates it. The (de)serialization
+ * helpers (`serialize*` / `deserialize*`) are NOT Result-shaped: they return
+ * plain values and THROW on malformed input (bad base64, missing fields) or when
+ * SECRET material is passed where a public recipient is required (fail-closed).
  */
 
 import {
@@ -83,7 +87,27 @@ export function serializeRecipient(pub: RecipientKey): RecipientKeyJSON {
   };
 }
 
+/**
+ * Fail closed if a parsed object carries SECRET key material. `deserializeRecipient`
+ * is for PUBLIC recipient JSON only, but a `*.secret.json` bundle is structurally a
+ * superset (it also has the public halves), so without this guard it would be
+ * silently accepted as a "recipient" — making it trivial to share/commit secret
+ * keys. The static type can't catch this: `JSON.parse` yields `any` at the trust
+ * boundary, so the secret fields ride along invisibly. Inspect the runtime object.
+ */
+function rejectIfSecretBundle(j: RecipientKeyJSON): void {
+  const o = j as unknown as Record<string, unknown>;
+  if ("secretKemKey" in o || "secretSigKey" in o) {
+    throw new Error(
+      "refusing to treat a SECRET bundle as a recipient: input contains secret key " +
+        "material (secretKemKey/secretSigKey). Pass the PUBLIC *.recipient.json, " +
+        "never the *.secret.json.",
+    );
+  }
+}
+
 export function deserializeRecipient(j: RecipientKeyJSON): RecipientKey {
+  rejectIfSecretBundle(j);
   return {
     identity: j.identity,
     kemAlgId: j.kemAlgId,

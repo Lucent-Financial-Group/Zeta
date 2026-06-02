@@ -11,10 +11,12 @@
  *   --dry-run-envelope  Construct + validate a synthetic FileEnvelope shape
  *
  * File modes (real PQ crypto — XWing KEM + ML-DSA-65 sig + ChaCha20-Poly1305):
- *   --gen-recipient <identity> [--out-dir <dir>]
+ *   --gen-recipient <identity> [--out-dir <dir>] [--force]
  *       Generate a v1 keypair. Writes <identity>.recipient.json (PUBLIC,
  *       shareable/committable) + <identity>.secret.json (SECRET bundle — the
- *       ONLY thing that can decrypt; NEVER commit; store it safely).
+ *       ONLY thing that can decrypt; NEVER commit; store it safely). Refuses to
+ *       overwrite existing key files (irreversible loss of the decryption key)
+ *       unless --force is given.
  *
  *   --encrypt-file <path> --self-key <secret.json> [--recipient <r.json>]... [--out <path>]
  *       Encrypt <path> with your secret bundle as sender + self-recipient (plus
@@ -39,7 +41,7 @@
  * Per rule-0-no-sh-files (TS-first) + zeta-ships-with-skills-immediate-value.
  */
 
-import { readFileSync, writeFileSync, chmodSync } from "node:fs";
+import { readFileSync, writeFileSync, chmodSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 import { ALG_REGISTRY, validateAlgRegistry, validateEnvelopeStructure, type FileEnvelope } from "../types";
@@ -57,7 +59,7 @@ type ParsedArgs =
   | { mode: "list-algs" }
   | { mode: "validate" }
   | { mode: "dry-run-envelope" }
-  | { mode: "gen-recipient"; identity: string; outDir: string }
+  | { mode: "gen-recipient"; identity: string; outDir: string; force: boolean }
   | { mode: "encrypt-file"; inPath: string; selfKeyPath: string; recipientPaths: string[]; outPath: string }
   | { mode: "decrypt-file"; inPath: string; selfKeyPath: string; senderSigPath: string | null; outPath: string | null };
 
@@ -93,7 +95,9 @@ function parseArgs(argv: readonly string[]): ParsedArgs | { error: string } {
   if (args.includes("--dry-run-envelope")) return { mode: "dry-run-envelope" };
 
   const gen = flagValue(args, "--gen-recipient");
-  if (gen !== undefined) return { mode: "gen-recipient", identity: gen, outDir: flagValue(args, "--out-dir") ?? "." };
+  if (gen !== undefined) {
+    return { mode: "gen-recipient", identity: gen, outDir: flagValue(args, "--out-dir") ?? ".", force: args.includes("--force") };
+  }
 
   const enc = flagValue(args, "--encrypt-file");
   if (enc !== undefined) {
@@ -220,12 +224,34 @@ function modeDryRunEnvelope(): number {
   }
 }
 
-function modeGenRecipient(identity: string, outDir: string): number {
+function modeGenRecipient(identity: string, outDir: string, force: boolean): number {
   try {
-    const { recipient, secret } = generateKeyPairJSON(identity);
     const base = slug(identity);
     const recPath = join(outDir, `${base}.recipient.json`);
     const secPath = join(outDir, `${base}.secret.json`);
+    // Fail closed on overwrite: the SECRET bundle is the ONLY thing that can
+    // decrypt prior `.zc` files — regenerating over it is irreversible data loss.
+    // Refuse unless --force is explicit. (Checked BEFORE generating keys so a
+    // refusal costs nothing and never partially writes.)
+    if (!force) {
+      const clobber = [recPath, secPath].filter((p) => existsSync(p));
+      if (clobber.length > 0) {
+        emitJson({
+          rowId: "B-0883",
+          mode: "gen-recipient",
+          result: "failed",
+          identity,
+          existing: clobber,
+          error:
+            `refusing to overwrite existing key file(s): ${clobber.join(", ")} — ` +
+            "regenerating would DESTROY the only secret bundle able to decrypt files " +
+            "already encrypted to this identity. Pass --force to overwrite, or use a " +
+            "different --out-dir / identity.",
+        });
+        return 1;
+      }
+    }
+    const { recipient, secret } = generateKeyPairJSON(identity);
     writeFileSync(recPath, JSON.stringify(recipient, null, 2) + "\n");
     writeFileSync(secPath, JSON.stringify(secret, null, 2) + "\n", { mode: 0o600 });
     try {
@@ -315,7 +341,7 @@ function main(argv: readonly string[]): number {
     case "dry-run-envelope":
       return modeDryRunEnvelope();
     case "gen-recipient":
-      return modeGenRecipient(parsed.identity, parsed.outDir);
+      return modeGenRecipient(parsed.identity, parsed.outDir, parsed.force);
     case "encrypt-file":
       return modeEncryptFile(parsed.inPath, parsed.selfKeyPath, parsed.recipientPaths, parsed.outPath);
     case "decrypt-file":
