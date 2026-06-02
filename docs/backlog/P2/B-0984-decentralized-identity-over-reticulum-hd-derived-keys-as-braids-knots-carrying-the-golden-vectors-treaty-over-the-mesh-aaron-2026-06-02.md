@@ -22,6 +22,7 @@ Aaron 2026-06-02: *"identity key ≠ money key ≠ routing key ≠ signing key a
 This is the concrete-mechanism row for the **decentralized-identity (DID) endgame** named in the 2026-06-02 canonical-form arc (chunk 7: *"formalize decentralized identity in math as a society… nobody controls it… like gravity"*). The synthesis + Amara ferry gave it its shape; this row tracks it as buildable substrate-engineering.
 
 Provenance:
+
 - `docs/research/2026-06-02-canonical-form-synthesis-meno-equals-seed-equals-remainder-equals-braid-knot-phoenix-ff7-lifestream-aerith-lives-ryan-original-addison-new-aaron.md` (the DID-mechanism section)
 - `memory/persona/amara/conversations/2026-06-02-amara-canonical-form-validation-ash-is-phoenix-down-seed-phrase-derived-keys-as-braids-knots-golden-vectors-treaty-over-reticulum-aaron-forwarded.md`
 
