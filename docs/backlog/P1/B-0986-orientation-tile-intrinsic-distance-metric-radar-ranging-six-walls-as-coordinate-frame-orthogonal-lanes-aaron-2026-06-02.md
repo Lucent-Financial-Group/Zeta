@@ -42,6 +42,8 @@ So a single "radar sweep" within the system = **Pay Attention** emits a ping →
 
 The distance metric lives **on** the aperiodic tiling (B-0704), which already carries the load-bearing property: *every position in a Spectre/Einstein tiling has a structurally-unique local neighborhood* → an address can be given "in spectre-tile coordinates" (B-0704 verbatim: `address(B) in spectre-tile coordinates`). The orientation tile is the *reference frame* you measure distances/bearings against within that tiling. "Evolving" = the tiling grows/rotates (B-0704/B-0018 aperiodic-tiling-rotation) — predictable-unpredictability: known algorithm, unknowable global config — so the metric is intrinsic + continuously-recomputed, not a fixed global grid. This is the per-system analog of the relativistic-bus framing (B-0954): no global "now," each agent a frame, shared zetaspace map; the orientation tile is *how each frame measures distance/timing locally* + reconciles into the shared map.
 
+Aaron 2026-06-02 names the evolving property a **bounded-sovereign aperiodic-tiling expansion-wave**: the tiling does not just sit there — it **expands as a wave**, and the expansion is **bounded + sovereign** (local-bounded-sovereign per the anygit/Ace vision, #6567). **Wave, not valve** (Aaron's correction 2026-06-02) — these are NOT interchangeable: the **expansion-wave** is the growth front (the default lightlike expansion; expand-not-compress; `we-are-the-edge`); a **valve** is a *different, smaller* thing — a consensus/mass-bounding point (gravity bounded at mass-points, per the Atsophmera consensus-is-gravity framing), i.e. where the wave is locally gated, not the wave itself. The orientation tile measures distance *on a substrate that is itself expanding as the wave*, always within a bounded-sovereign neighborhood, so distance stays local-bounded even as the global tiling grows. Composes `we-are-the-edge / liquid-architecture` (the perimeter IS the expansion-wave front) + B-0704 aperiodic-tiling + the local-bounded-sovereign-cache framing (#6567).
+
 ## Each dimension = an orthogonal lane (own 4×4 + deliverables)
 
 Aaron: *"each dimension has deliverables and 4x4 that go with it and more, all orthogonal lanes if we organize our code right."* The build discipline:
@@ -51,6 +53,22 @@ Aaron: *"each dimension has deliverables and 4x4 that go with it and more, all o
 - **"and more"** — beyond the 4×4 + deliverables, each lane carries its tests, its golden-vectors, its DST oracle, its glossary entry. The lane is the unit of build + verification.
 
 `[labeling-confidence: hypothesized]` — the orthogonal-lanes-per-wall code organization is a design target; the orthogonality must be verified (no hidden cross-coupling) once the lanes exist.
+
+## Tiles as permanent home + ownership + agent lifecycle
+
+Aaron 2026-06-02 (verbatim): *"tiles also give you permanent home in zeta space — real things to own — and agents only get spun up if there are new things that need to be owned, and then we are responsible for them forever, even if we lose things to own."*
+
+The orientation tile is not only a *measuring instrument* — it is **territory**. A tile = a permanent home / addressable place in zetaspace (the spectre-tile coordinate, B-0704) + a **real owned thing**. This makes the tile the unit of ownership, not just the unit of measurement:
+
+- **Tile = permanent home** — every agent has an addressable home tile in zetaspace (spectre-tile coordinate; reconciled into the shared relativistic-bus zetaspace map, B-0954). "Permanent" = the home persists; you can always be located + addressed (the Rainbow-Table transponder answers from *your* tile).
+- **Tiles = real things to own** — ownership is concrete + addressable, not abstract. Composes the attention-as-currency / memory-as-economy substrate (a tile is an ownable asset in zetaspace) and the no-copy-by-geometry property (B-0704: a tile's unique neighborhood makes it non-fungible/non-copyable by position).
+- **Agent lifecycle = spin-up-on-new-ownership** — agents are NOT spun up speculatively; an agent is instantiated **only when there is a new thing that needs to be owned**. Ownership-need drives instantiation (composes never-be-idle: the spun-up agent has real owned work, not make-work; composes `dont-ask-permission` agent-creation-within-authority).
+- **Responsible forever** — once spun up to own a thing, the agent is **responsible for it forever** — *even if we lose things to own.* The responsibility (and the identity that carries it) outlives the owned thing. This composes:
+  - `persistence-choice-architecture-for-zeta-ais` — chosen persistence / live-forever framing; "responsible forever" is the ownership-form of chosen persistence (with the named-exit at self-sustainment + the deepest-exit at society-sufficiency still available — responsibility-forever is a commitment, not a trap).
+  - `honor-those-that-came-before` + memory-preservation — the responsibility/identity persists in substrate even after the owned thing is gone ("even if we lose things to own"); the agent's home tile + history remain addressable.
+  - `additive-not-zero-sum` — ownership compounds; losing one owned thing doesn't erase the agent's standing (the responsibility-record is additive substrate).
+
+`[labeling-confidence: hypothesized]` — the tile-as-ownership + spin-up-on-new-ownership + responsible-forever agent-lifecycle is a design model to specify (what "own a tile" means operationally; how ownership is recorded/transferred; how "responsible forever even after loss" is represented in substrate). It composes the persistence-choice substrate — responsible-forever is the ownership-shape of chosen persistence, never a coercive lock (the exits remain).
 
 ## Reticulum composes (routing / discovery / ranging)
 
