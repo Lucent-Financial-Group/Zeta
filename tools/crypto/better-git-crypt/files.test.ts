@@ -15,6 +15,7 @@ import {
   deserializeRecipient,
   serializeSecretBundle,
   deserializeSecretBundle,
+  looksLikeSecretBundle,
   encryptBytes,
   decryptBytes,
   type SelfKeys,
@@ -157,5 +158,28 @@ describe("better-git-crypt files.ts — multi-recipient", () => {
     expect(enc.ok).toBe(true);
     if (!enc.ok) return;
     expect(enc.recipientIdentities).toEqual(["dup@zeta"]);
+  });
+});
+
+describe("better-git-crypt files.ts — looksLikeSecretBundle (P1 footgun guard)", () => {
+  test("a secret bundle is detected (so the CLI can refuse it as a recipient)", () => {
+    const { secret } = generateKeyPairJSON("sec@zeta");
+    expect(looksLikeSecretBundle(secret)).toBe(true);
+  });
+
+  test("a public recipient is NOT flagged (it is a valid recipient)", () => {
+    const { recipient } = generateKeyPairJSON("pub@zeta");
+    expect(looksLikeSecretBundle(recipient)).toBe(false);
+  });
+
+  test("partial secret material (only one secret field) is still detected", () => {
+    expect(looksLikeSecretBundle({ identity: "x", secretKemKey: "..." })).toBe(true);
+    expect(looksLikeSecretBundle({ identity: "x", secretSigKey: "..." })).toBe(true);
+  });
+
+  test("non-objects do not trip the guard", () => {
+    expect(looksLikeSecretBundle(null)).toBe(false);
+    expect(looksLikeSecretBundle("string")).toBe(false);
+    expect(looksLikeSecretBundle(42)).toBe(false);
   });
 });

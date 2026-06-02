@@ -17,8 +17,12 @@
  * bundle (`SecretBundleJSON`) MUST NOT be committed; the owner holds it. The
  * public recipient (`RecipientKeyJSON`) is shareable/committable.
  *
- * Per asymmetric-authorship + monad-propagation: every op is Result<_, feedback>
- * — the crypto layer AUTHORS its feedback channel; this layer propagates it.
+ * Per asymmetric-authorship + monad-propagation: the file-level crypto ops
+ * (`encryptBytes` / `decryptBytes`) are Result<_, feedback> — the crypto layer
+ * AUTHORS its feedback channel; this layer propagates it. The (de)serialization
+ * helpers (`serialize*` / `deserialize*`) are plain functions that THROW on
+ * malformed JSON (e.g. missing/invalid base64 fields); they are NOT Result-
+ * shaped. Callers (the CLI) wrap them in try/catch and surface a usage error.
  */
 
 import {
@@ -93,6 +97,21 @@ export function deserializeRecipient(j: RecipientKeyJSON): RecipientKey {
     seedSource: j.seedSource,
     composesWith: j.composesWith,
   };
+}
+
+/**
+ * True if `obj` carries SECRET key material (a `SecretBundleJSON`, or any object
+ * with `secretKemKey` / `secretSigKey`). The CLI uses this to REFUSE a secret
+ * bundle where a PUBLIC recipient is expected (`--recipient` / `--sender-sig`):
+ * a `.secret.json` there would silently treat private key material as a public
+ * recipient and invites accidental sharing/committing of the secret keys.
+ */
+export function looksLikeSecretBundle(obj: unknown): boolean {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    ("secretKemKey" in obj || "secretSigKey" in obj)
+  );
 }
 
 export function serializeSecretBundle(kp: GeneratedKeyPair): SecretBundleJSON {
