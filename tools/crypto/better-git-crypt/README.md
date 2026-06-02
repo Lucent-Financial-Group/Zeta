@@ -100,7 +100,21 @@ bun tools/crypto/better-git-crypt/cli/main.ts \
 secret key and the sender is a self-recipient — so self-encryption means ONLY
 the holder of the secret bundle can read the output. The `.secret.json` is
 yours: never commit it (gitignore it or keep it outside the repo). The
-`.recipient.json` (public) is shareable/committable.
+`.recipient.json` (public) is shareable/committable. `--gen-recipient` refuses
+to overwrite an existing keypair (would destroy the only key for prior `.zc`)
+unless `--force`; `--recipient` / `--sender-sig` refuse a `.secret.json` bundle
+(you must pass the PUBLIC `.recipient.json`).
+
+### Privacy face of the DynamicValue 4×4 (`dynamic-value.ts` — B-0883 × B-0982)
+
+`encryptValue` / `decryptValue` are the **privacy fence** over the DynamicValue
+4×4 (a *memory-fence*-like barrier the plaintext↔ciphertext boundary crosses).
+Privacy is a TRANSFORM, not a fifth byte-locked golden-vector codec: encryption
+is nonce-non-deterministic, so `value → canonical CBOR` (the deterministic inner
+the golden vectors pin) `→ PQ envelope → .zc`. Guarantee:
+`decryptValue(encryptValue(v)) ≡ v` (VALUE identity) even though the `.zc` bytes
+differ every call. Dependency direction: this tooling depends on the
+`dynamic-value/cbor` library, never the reverse (the library stays crypto-free).
 
 Exit codes:
 
