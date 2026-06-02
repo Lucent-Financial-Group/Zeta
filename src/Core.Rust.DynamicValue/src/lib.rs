@@ -196,9 +196,11 @@ impl DynamicValue {
         }
     }
 
-    /// Decode canonical CBOR (RFC 8949) bytes back into a [`DynamicValue`] -- the inverse
-    /// of [`to_canonical_cbor`](DynamicValue::to_canonical_cbor), completing the byte<->value
-    /// bijection for all eight shapes. Decode is partial (truncation, reserved/indefinite
+    /// Decode this crate's canonical CBOR bytes -- exactly the bytes emitted by
+    /// [`to_canonical_cbor`](DynamicValue::to_canonical_cbor) (RFC 8949 CBOR, with its one
+    /// deliberate §4.2.1 map-key-order deviation documented there) -- back into a
+    /// [`DynamicValue`], the inverse direction that completes the byte<->value bijection
+    /// for all eight shapes. Decode is partial (truncation, reserved/indefinite
     /// forms, CBOR tags, oversized integers, non-text map keys, non-canonical encodings), so
     /// it returns `Result<DynamicValue, DecodeError>` -- never panics on malformed input.
     /// Mirrors the C#/F# decoder.
@@ -633,6 +635,26 @@ mod tests {
     fn encode_error_display_is_human_readable() {
         assert!(EncodeError::FloatDeferred.to_string().contains("Float"));
         assert!(EncodeError::BytesDeferred.to_string().contains("Bytes"));
+    }
+
+    // `DecodeError` is public API; Display must be stable + human-readable too
+    // (mirrors `encode_error_display_is_human_readable`, locking the full surface).
+    #[test]
+    fn decode_error_display_is_human_readable() {
+        assert!(DecodeError::UnexpectedEnd.to_string().contains("truncated"));
+        assert!(
+            DecodeError::TrailingData
+                .to_string()
+                .contains("extra bytes")
+        );
+        assert!(DecodeError::Unsupported.to_string().contains("unsupported"));
+        assert!(DecodeError::IntegerOverflow.to_string().contains("i64"));
+        assert!(DecodeError::NonTextKey.to_string().contains("key"));
+        assert!(
+            DecodeError::NonCanonical
+                .to_string()
+                .contains("non-canonical")
+        );
     }
 
     fn float_hex(v: f64) -> String {
