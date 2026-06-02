@@ -20,9 +20,12 @@
  * Per asymmetric-authorship + monad-propagation: the file-level crypto ops
  * (`encryptBytes` / `decryptBytes`) are Result<_, feedback> — the crypto layer
  * AUTHORS its feedback channel; this layer propagates it. The (de)serialization
- * helpers (`serialize*` / `deserialize*`) are plain functions that THROW on
- * malformed JSON (e.g. missing/invalid base64 fields); they are NOT Result-
- * shaped. Callers (the CLI) wrap them in try/catch and surface a usage error.
+ * helpers (`serialize*` / `deserialize*`) are plain functions that THROW on a
+ * STRUCTURALLY-malformed bundle (e.g. a missing field → `undefined` → `Buffer.from`
+ * throws); they are NOT Result-shaped and NOT strict validators — note that
+ * malformed base64 *content* decodes leniently to garbage bytes rather than
+ * throwing (a wrong-key/garbage decrypt then fails fail-closed downstream).
+ * Callers (the CLI) wrap them in try/catch and surface a usage error.
  */
 
 import {

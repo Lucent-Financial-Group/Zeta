@@ -282,7 +282,7 @@ function loadPublicRecipient(path: string) {
 
 function modeEncryptFile(inPath: string, selfKeyPath: string, recipientPaths: string[], outPath: string): number {
   try {
-    const plaintext = new Uint8Array(readFileSync(inPath));
+    const plaintext = readFileSync(inPath); // Buffer IS a Uint8Array — pass directly (no copy)
     const self = deserializeSecretBundle(JSON.parse(readFileSync(selfKeyPath, "utf8")) as SecretBundleJSON);
     const extras = recipientPaths.map((p) => loadPublicRecipient(p));
     const res = encryptBytes(plaintext, self, extras);
@@ -290,7 +290,7 @@ function modeEncryptFile(inPath: string, selfKeyPath: string, recipientPaths: st
       emitJson({ rowId: "B-0883", mode: "encrypt-file", result: "failed", in: inPath, feedback: res.feedback });
       return 1;
     }
-    writeFileSync(outPath, Buffer.from(res.envelopeBytes));
+    writeFileSync(outPath, res.envelopeBytes); // Uint8Array writes directly (no copy)
     emitJson({
       rowId: "B-0883",
       mode: "encrypt-file",
@@ -311,7 +311,7 @@ function modeEncryptFile(inPath: string, selfKeyPath: string, recipientPaths: st
 
 function modeDecryptFile(inPath: string, selfKeyPath: string, senderSigPath: string | null, outPath: string | null): number {
   try {
-    const envelopeBytes = new Uint8Array(readFileSync(inPath));
+    const envelopeBytes = readFileSync(inPath); // Buffer IS a Uint8Array — pass directly (no copy)
     const self = deserializeSecretBundle(JSON.parse(readFileSync(selfKeyPath, "utf8")) as SecretBundleJSON);
     const senderSig = senderSigPath ? loadPublicRecipient(senderSigPath).publicSigKey : undefined;
     const res = decryptBytes(envelopeBytes, self, senderSig);
@@ -320,7 +320,7 @@ function modeDecryptFile(inPath: string, selfKeyPath: string, senderSigPath: str
       return 1;
     }
     const out = outPath ?? (inPath.endsWith(".zc") ? inPath.slice(0, -3) : inPath + ".dec");
-    writeFileSync(out, Buffer.from(res.plaintext));
+    writeFileSync(out, res.plaintext); // Uint8Array writes directly (no copy)
     emitJson({ rowId: "B-0883", mode: "decrypt-file", result: "passed", in: inPath, out, plaintextBytes: res.plaintext.length });
     return 0;
   } catch (e) {
