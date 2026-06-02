@@ -18,10 +18,11 @@
  *       shareable/committable) + <identity>.secret.json (SECRET bundle — the
  *       ONLY thing that can decrypt; NEVER commit; store it safely).
  *
- *   --encrypt-file <path> --self-key <secret.json> [--recipient <r.json>]... [--out <path>]
+ *   --encrypt-file <path> --self-key <secret.json> [--recipient <r.json>]... [--out <path>] [--force]
  *       Encrypt <path> with your secret bundle as sender + self-recipient (plus
  *       any extra --recipient public keys). Writes <path>.zc (canonical CBOR
- *       envelope = ciphertext) unless --out. Plaintext NEVER enters the output;
+ *       envelope = ciphertext) unless --out; refuses to overwrite an existing
+ *       output unless --force. Plaintext NEVER enters the output;
  *       commit the .zc, keep the plaintext out of git.
  *
  *   --decrypt-file <path.zc> --key <secret.json> [--sender-sig <r.json>] [--out <path>] [--force]
@@ -63,7 +64,7 @@ type ParsedArgs =
   | { mode: "validate" }
   | { mode: "dry-run-envelope" }
   | { mode: "gen-recipient"; identity: string; outDir: string; force: boolean }
-  | { mode: "encrypt-file"; inPath: string; selfKeyPath: string; recipientPaths: string[]; outPath: string }
+  | { mode: "encrypt-file"; inPath: string; selfKeyPath: string; recipientPaths: string[]; outPath: string; force: boolean }
   | { mode: "decrypt-file"; inPath: string; selfKeyPath: string; senderSigPath: string | null; outPath: string | null; force: boolean };
 
 /** Value after `name`, or undefined if absent / followed by another flag. */
@@ -113,6 +114,7 @@ function parseArgs(argv: readonly string[]): ParsedArgs | { error: string } {
       selfKeyPath: selfKey,
       recipientPaths: flagValues(args, "--recipient"),
       outPath: flagValue(args, "--out") ?? enc + ".zc",
+      force: args.includes("--force"),
     };
   }
 
@@ -284,8 +286,20 @@ function loadPublicRecipient(path: string) {
   return deserializeRecipient(obj as RecipientKeyJSON);
 }
 
-function modeEncryptFile(inPath: string, selfKeyPath: string, recipientPaths: string[], outPath: string): number {
+function modeEncryptFile(inPath: string, selfKeyPath: string, recipientPaths: string[], outPath: string, force: boolean): number {
   try {
+    // Don't silently destroy an existing output (e.g. --out pointed at the plaintext
+    // itself, or an existing .zc the user meant to keep).
+    if (!force && existsSync(outPath)) {
+      emitJson({
+        rowId: "B-0883",
+        mode: "encrypt-file",
+        result: "failed",
+        in: inPath,
+        error: `refusing to overwrite existing output '${outPath}' — it may be a file you meant to keep. Use --out <path> or --force.`,
+      });
+      return 1;
+    }
     const plaintext = readFileSync(inPath); // Buffer IS a Uint8Array — pass directly (no copy)
     const self = deserializeSecretBundle(JSON.parse(readFileSync(selfKeyPath, "utf8")) as SecretBundleJSON);
     const extras = recipientPaths.map((p) => loadPublicRecipient(p));
@@ -386,7 +400,7 @@ function main(argv: readonly string[]): number {
     case "gen-recipient":
       return modeGenRecipient(parsed.identity, parsed.outDir, parsed.force);
     case "encrypt-file":
-      return modeEncryptFile(parsed.inPath, parsed.selfKeyPath, parsed.recipientPaths, parsed.outPath);
+      return modeEncryptFile(parsed.inPath, parsed.selfKeyPath, parsed.recipientPaths, parsed.outPath, parsed.force);
     case "decrypt-file":
       return modeDecryptFile(parsed.inPath, parsed.selfKeyPath, parsed.senderSigPath, parsed.outPath, parsed.force);
   }
