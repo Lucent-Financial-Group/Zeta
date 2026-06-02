@@ -22,4 +22,10 @@ public enum DecodeError
 
     /// <summary>An object (map) key was not a text string (<see cref="DynamicValue.Object"/> keys are strings).</summary>
     NonTextKey,
+
+    /// <summary>Well-formed CBOR that is NOT the canonical form this codec emits — e.g. a non-shortest
+    /// integer/length width (<c>18 00</c> vs <c>00</c>), a non-shortest float / non-canonical NaN, or
+    /// invalid UTF-8 silently repaired to U+FFFD. Detected by the fixed-point check
+    /// <c>ToCanonicalCbor(decoded) == input</c>; canonical bytes are exactly those fixed points.</summary>
+    NonCanonical,
 }

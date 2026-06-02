@@ -547,6 +547,16 @@ public static class DynamicValues
             return new Result<DynamicValue, DecodeError>.Err(DecodeError.TrailingData);
         }
 
+        // Canonical-form fixed-point check: the canonical bytes are exactly those `b` with
+        // ToCanonicalCbor(decode(b)) == b. This rejects well-formed-but-non-canonical input —
+        // non-shortest int/length widths (18 00 vs 00), non-shortest floats / non-canonical NaN,
+        // and invalid UTF-8 silently repaired to U+FFFD (which re-encodes to different bytes) — in
+        // one uniform check, instead of scattering per-form strictness through the reader.
+        if (!ToCanonicalCbor(value).AsSpan().SequenceEqual(bytes))
+        {
+            return new Result<DynamicValue, DecodeError>.Err(DecodeError.NonCanonical);
+        }
+
         return new Result<DynamicValue, DecodeError>.Ok(value);
     }
 

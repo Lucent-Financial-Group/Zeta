@@ -127,6 +127,10 @@ public class DynamicValueCborDecodeTests
     [InlineData(new byte[] { 0xc0, 0x00 }, DecodeError.Unsupported)] // tag (major 6)
     [InlineData(new byte[] { 0xf7 }, DecodeError.Unsupported)] // undefined (major 7, ai 23)
     [InlineData(new byte[] { 0x9f }, DecodeError.Unsupported)] // indefinite-length array (ai 31)
+    [InlineData(new byte[] { 0x18, 0x00 }, DecodeError.NonCanonical)] // non-shortest int (0 as uint8)
+    [InlineData(new byte[] { 0x61, 0xff }, DecodeError.NonCanonical)] // text string with invalid UTF-8 (silent U+FFFD repair)
+    [InlineData(new byte[] { 0xfb, 0x3f, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, DecodeError.NonCanonical)] // 1.0 as float64 (non-shortest float)
+    [InlineData(new byte[] { 0x81, 0x18, 0x00 }, DecodeError.NonCanonical)] // non-canonical nested in an array
     public void DecodeRejectsMalformed(byte[] bytes, DecodeError expected)
     {
         var result = DynamicValues.FromCanonicalCbor(bytes);
