@@ -140,23 +140,27 @@ module FactorGraph =
             current <- passOnce current
         current
 
-    /// True if any factor→var message in `b` differs from `a` by more
+    /// True if any factor→var message differs between `a` and `b` by more
     /// than `tol` under the per-family `distance` (the residual test).
+    /// Compared **symmetrically** over the union of keys: a factor id or
+    /// edge present on only one side counts as moved (a structural change
+    /// is never silently treated as convergence).
     let private moved (distance: 'M -> 'M -> float) (tol: float) (a: FactorGraph<'M>) (b: FactorGraph<'M>) : bool =
-        a.FactorToVar
-        |> Map.exists (fun fid msgs ->
-            match Map.tryFind fid b.FactorToVar with
-            | None -> true
-            | Some msgs' ->
-                msgs
-                |> Map.exists (fun v m ->
-                    match Map.tryFind v msgs' with
-                    | None -> true
+        let keys (m: Map<int, _>) = m |> Map.toList |> List.map fst |> Set.ofList
+        Set.union (keys a.FactorToVar) (keys b.FactorToVar)
+        |> Set.exists (fun fid ->
+            match Map.tryFind fid a.FactorToVar, Map.tryFind fid b.FactorToVar with
+            | Some ma, Some mb ->
+                Set.union (keys ma) (keys mb)
+                |> Set.exists (fun v ->
+                    match Map.tryFind v ma, Map.tryFind v mb with
                     // `not (d <= tol)` (not `d > tol`) so a NaN residual
                     // counts as MOVED: `NaN > tol` is false in F#, which
                     // would otherwise let a divergent/overflowed run
                     // falsely report convergence.
-                    | Some m' -> not (distance m m' <= tol)))
+                    | Some x, Some y -> not (distance x y <= tol)
+                    | _ -> true) // edge on only one side = moved
+            | _ -> true) // factor on only one side = moved
 
     /// **Sum-product belief propagation to a fixed point.** Iterate
     /// `passOnce` until no factor→var message moves more than `tol` (by
