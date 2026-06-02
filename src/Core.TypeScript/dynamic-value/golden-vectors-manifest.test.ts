@@ -3,7 +3,7 @@ import manifest from "./golden-vectors-values.json";
 import jsonSeed from "./golden-vectors.json";
 import cborSeed from "./golden-vectors-cbor.json";
 import { type Tagged as JsonTagged, fromCanonicalJson } from "./json";
-import { type Tagged as CborTagged, fromCanonicalCbor } from "./cbor";
+import { type Tagged as CborTagged, fromCanonicalCbor, fromHex } from "./cbor";
 
 // B-0982 (slice 1) — the unified value manifest (golden-vectors-values.json) is the single source
 // for WHICH canonical DynamicValues exist; the per-format seeds are PROJECTIONS of it. This proves
@@ -32,12 +32,6 @@ interface CborVec {
 
 const key = (v: AnyTagged): string => JSON.stringify(v);
 
-const hexToBytes = (hex: string): number[] => {
-  const out: number[] = [];
-  for (let i = 0; i < hex.length; i += 2) out.push(parseInt(hex.slice(i, i + 2), 16));
-  return out;
-};
-
 const entries = (manifest as unknown as { values: ManifestEntry[] }).values;
 const jsonVectors = (jsonSeed as unknown as { vectors: JsonVec[] }).vectors;
 const cborVectors = (cborSeed as unknown as { vectors: CborVec[] }).vectors;
@@ -64,7 +58,7 @@ test("CBOR seed is a faithful projection of the manifest", () => {
     const fmts = manifestByValue.get(key(v.value));
     expect(fmts).toBeDefined();
     expect(fmts).toContain("cbor");
-    const r = fromCanonicalCbor(hexToBytes(v.cbor));
+    const r = fromCanonicalCbor(fromHex(v.cbor));
     expect(r.ok).toBe(true);
     if (r.ok) expect(key(r.value)).toBe(key(v.value));
   }
@@ -92,7 +86,7 @@ test("CBOR and JSON agree on every value both express (nothing is single source 
     if (!jv || !cv) continue;
     shared += 1;
     const fj = fromCanonicalJson(jv.json);
-    const fc = fromCanonicalCbor(hexToBytes(cv.cbor));
+    const fc = fromCanonicalCbor(fromHex(cv.cbor));
     expect(fj.ok && fc.ok).toBe(true);
     if (fj.ok && fc.ok) expect(key(fj.value)).toBe(key(fc.value));
   }
