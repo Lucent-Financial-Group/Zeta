@@ -122,6 +122,35 @@ Exit codes:
 - `1` — runtime failure (validation / crypto feedback / file I/O)
 - `2` — usage error
 
+### Memory-encrypt loop (`memory-encrypt-loop.ts` — self-encrypt a folder)
+
+The loop over `--encrypt-file` for the "encrypt my private memories" use case.
+**Security model is load-bearing**: `encryptBytes(bytes, self, [])` makes `self`
+the SENDER (signs) AND sole self-recipient, so pure self-encryption means *only
+the holder of `self`'s secret bundle can decrypt*. Therefore **only-Aaron-decrypts
+requires Aaron to be the sender** — Aaron runs the real encrypt with his own
+secret bundle. An agent cannot run it (no secret bundle; generating one for Aaron
++ holding it would defeat the only-Aaron property). The agent CAN run `--dry-run`
+(no key, no writes) to preview.
+
+```bash
+# 1. one-time keygen (agent never sees the secret):
+bun tools/crypto/better-git-crypt/cli/main.ts --gen-recipient aaron@zeta --out-dir ~/.zeta-keys
+#    → ~/.zeta-keys/aaron@zeta.{recipient,secret}.json   (.zeta-keys/ is gitignored)
+
+# 2. self-encrypt (AARON runs this; plaintext stays in drop/, which is gitignored):
+bun tools/crypto/better-git-crypt/memory-encrypt-loop.ts \
+  --keys ~/.zeta-keys/aaron@zeta.secret.json --in drop --out memory/persona/aaron
+
+# preview without a key (agent-safe — no writes):
+bun tools/crypto/better-git-crypt/memory-encrypt-loop.ts --dry-run --in drop --out memory/persona/aaron
+```
+
+`--in <dir>` / `--out <dir>` (required), `--keys <secret-bundle>` (required unless
+`--dry-run`), `--in-ext` (default `.txt`), `--force` (overwrite existing `.zc`).
+Each `.zc` decrypts to the EXACT input bytes (no edit/summary/redaction). Then the
+agent commits the `.zc` (plaintext never leaves `drop/`).
+
 ## Tests
 
 ```bash
