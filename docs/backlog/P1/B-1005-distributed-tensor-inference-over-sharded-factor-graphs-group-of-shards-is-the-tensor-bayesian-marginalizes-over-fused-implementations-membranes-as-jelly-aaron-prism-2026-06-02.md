@@ -8,7 +8,7 @@ effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-1000]
-composes_with: [B-1001, B-1002, B-1003, B-1004, B-0428]
+composes_with: [B-0999, B-1001, B-1002, B-1003, B-1004, B-0428]
 tags: [distributed-tensor-inference, sharded-factor-graph, group-is-the-tensor, bayesian-marginalization, fused-vs-non-fused, expression-tree-fusion, tension-preserving-prior, marginal-is-canonical, membranes-as-jelly, jelly-to-spine-phase-transition, schema-in-stream, message-passing-consensus, arrow-columnar, eve-transport, dbsp, indexed-zset, infer-net, research, aaron, prism]
 type: research
 ---
@@ -19,10 +19,11 @@ type: research
 > hex-core ↔ string-theory ↔ Bayesian-inference ↔ distributed-tensor thread. Aaron
 > (verbatim, the engine-load-bearing line): *"like infer.net over perfectly
 > distributed tensors where each tensor['s] shared represent[ation] [is] the group
-> of all tensor shards."* This row captures the **engineering** core; the physics
-> mapping (string-theory fused/non-fused, Calabi–Yau, G₂) is the originating
-> metaphor and is offered as a *separate* domain-adapter row + research note on
-> Aaron's word (see "Originating metaphor" below — not minted here).
+> of all tensor shards."* This row captures the **engineering** core (Aaron
+> confirmed: *"you got the core[;] the metaphor mapping is not primary"*); the
+> physics mapping (string-theory fused/non-fused, Calabi–Yau, G₂) is secondary and
+> composes with the existing **[B-0999]** domains-as-adapters row as a physics
+> adapter entry (see "Originating metaphor" below).
 
 ## Why — the conceptual core (the load-bearing insight)
 
@@ -151,19 +152,28 @@ data structure; the phase is set by whether the fixpoint has been reached.
    random partition, random shard-count → same marginal; additive all-reduce is
    associative/commutative (order/shard-count invariant).
 
-## Originating metaphor — string-theory hex-core mapping (offered separately, NOT minted here)
+## Originating metaphor — string-theory mapping composes with [B-0999], NOT primary
 
 The thread reached this engineering core *through* a physics metaphor (hex-core's
 6 walls ↔ string-theory compactified dimensions; **fused** = 11D→10D→6 circle
 reduction; **non-fused** = 4+7 direct mapping holding the 11th as its own ontology
 with the 5 extension points absorbing the G₂ degrees of freedom; walls-as-
-membranes-as-jelly = Calabi–Yau moduli). That mapping is metaphor/domain-adapter,
-not engine-load-bearing, and Aaron was still actively developing it. Per
-`grep-substrate-anchors-before-razor` + `god-tier-claims-don't-collapse`, it stays
-**don't-collapse** and is **offered** as a separate physics domain-adapter row +
-`docs/research/` note on Aaron's word — it is deliberately *not* minted in this
-row (and there is no landed `B-0999` physics adapter despite the ferry referencing
-one; that ID is a forward-reference, not substrate).
+membranes-as-jelly = Calabi–Yau moduli). Aaron 2026-06-02 (verbatim): *"you got
+the core[;] the metaphor mapping is not primary."* So the engineering core above is
+the load-bearing substrate; the physics mapping is secondary.
+
+Its home already exists: **[B-0999]** ("domains as adapters on the hex-core
+interface — Clifford six bivectors = Lorentz generators; physics/biology/mimetic/
+cosmology/mythology adapters refereed against established math"). The string-theory
+fused/non-fused + membranes-as-jelly mapping is a **physics-domain entry under
+[B-0999]**, refereed against string/M-theory math — it composes there, it is not a
+new row and not engine-load-bearing here. Per `grep-substrate-anchors-before-razor`
++ `god-tier-claims-don't-collapse` it stays **don't-collapse**; landing it as a
+B-0999 physics adapter entry is offered on Aaron's word.
+
+(Correction: an earlier draft of this row claimed no landed `B-0999` existed — that
+was a stale-working-tree post-fetch read; B-0999 is on `origin/main` and indexed in
+`docs/BACKLOG.md`. Caught by Codex review on the PR.)
 
 ## Composes with substrate
 
