@@ -130,6 +130,7 @@ the SENDER (signs) AND sole self-recipient, so pure self-encryption means *only
 the holder of `self`'s secret bundle can decrypt*. Therefore **only-Aaron-decrypts
 requires Aaron to be the sender** — Aaron runs the real encrypt with his own
 secret bundle. An agent cannot run it (no secret bundle; generating one for Aaron
+
 + holding it would defeat the only-Aaron property). The agent CAN run `--dry-run`
 (no key, no writes) to preview.
 
