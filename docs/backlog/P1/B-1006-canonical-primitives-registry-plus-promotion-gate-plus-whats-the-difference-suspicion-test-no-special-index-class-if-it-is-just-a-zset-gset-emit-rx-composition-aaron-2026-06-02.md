@@ -9,7 +9,7 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
 composes_with: [B-1000, B-1004, B-1005, B-0428]
-tags: [canonical-primitives, primitives-registry, promotion-gate, whats-the-difference-test, earn-its-keep, minimal-vocabulary, suspicion-by-default, zset, gset, bag, indexed-zset, event-index, rx, bonsai, tick-source, aesthetics-gate, correctness-gate, infer-net, research, aaron]
+tags: [canonical-primitives, primitives-registry, promotion-gate, whats-the-difference-test, decomposition-direction-triage, earn-its-keep, minimal-vocabulary, suspicion-by-default, zset, gset, bag, indexed-zset, event-index, rx, bonsai, tick-source, aesthetics-gate, correctness-gate, infer-net, research, aaron]
 type: research
 ---
 
@@ -44,11 +44,37 @@ The test, applied to any candidate special class:
 > **Could this just be `zset/gset + emit + rx + zset/gset` (or another composition
 > of canonical primitives)? What's the difference?**
 
-- **If there is no real difference** → it is *not* a primitive. Express it as the
-  composition; do **not** mint a special index/class. (This is `earn-its-keep`
-  / B-1004 minimal-vocabulary at primitive granularity, and the razor
-  `all-complexity-is-accidental-in-greenfield`.)
-- **If there is a real, nameable difference** → state it precisely. A candidate
+### The 4-question triage (Aaron 2026-06-02 — the precise form)
+
+The "what's the difference?" question resolves into four ordered questions; the
+crux is the **decomposition direction**:
+
+1. **Is this something I already have?** → identity. If yes → it's a **duplicate**;
+   fold (use the existing primitive).
+2. **Is this a different *view* of something I already have?** → isomorphism /
+   re-presentation. If yes → it's a **view/projection** (a lens over an existing
+   primitive — e.g. a "sorted index" is a view over an `IndexedZSet`), not a new
+   primitive; express it as a view, don't mint a class.
+3. **Do the things I already have decompose *down into* the new thing?** → the
+   candidate is **more fundamental**; the existing primitives are compositions *of
+   it*. If yes → **promote the candidate** and refactor the existing ones as
+   compositions of it. (The rare "found a deeper atom" case — the registry is *not*
+   append-only; a deeper primitive can demote existing entries to compositions of
+   itself.)
+4. **…or vice versa — does the new thing decompose into things I already have?** →
+   the candidate is a **composition**; fold (do **not** mint a special class).
+
+The direction of reduction (3 vs 4) is what decides primitive-vs-composition:
+**everything reduces *to* a primitive; a composition reduces *into* primitives.**
+Questions 1–2 catch duplicates and views; 3–4 catch the two reduction directions.
+
+### What counts as a real difference (the discriminator inside Q3/Q4)
+
+- **If there is no real difference** (Q1/Q2/Q4) → it is *not* a primitive. Express
+  it as the composition/view/duplicate; do **not** mint a special index/class.
+  (This is earn-its-keep / B-1004 minimal-vocabulary at primitive granularity, and
+  the razor `all-complexity-is-accidental-in-greenfield`.)
+- **If there is a real, nameable difference** (Q3) → state it precisely. A candidate
   earns primitive status only by doing something a composition of canonical
   primitives *provably cannot* — a distinct **algebra** (different laws), a
   distinct **complexity** (the composition is asymptotically worse), or a distinct
