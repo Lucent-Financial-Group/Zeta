@@ -21,10 +21,17 @@ Post-quantum (Noble + XWing + ML-DSA-65 + CBOR envelope) replacement for legacy 
 - ✅ `generateRecipientKeyPair` / `encrypt` / `decrypt` / `encodeEnvelope` / `decodeEnvelope` — full round-trip, signature-first fail-closed verification, FIPS-203 implicit-rejection handling
 - API shapes empirically verified against installed packages (`crypto.test.ts` — 23 tests: keygen, multi-recipient round-trip, tamper-detection, wrong-recipient, on-disk CBOR codec)
 
-**Still deferred (post-Phase-2)**:
+**File CLI (IMPLEMENTED — `files.ts` + `cli/main.ts` file modes)**:
 
-- `git textconv` filter integration for diff-readable ciphertext
-- Recipient management (`.zeta-crypt/recipients.json` + rotation per B-0883.3)
+- ✅ `--gen-recipient` — keypair → PUBLIC `.recipient.json` + SECRET `.secret.json` bundle (written `0600`)
+- ✅ `--encrypt-file` / `--decrypt-file` — self-encrypt + multi-recipient; canonical CBOR `.zc` envelope; plaintext never enters git
+- ✅ base64 key (de)serialization + Result-shaped feedback propagation (asymmetric-authorship)
+- `files.test.ts` — serialization round-trip, self-encrypt round-trip, binary/empty payloads, tamper + wrong-key + garbage fail-closed, multi-recipient + dedup
+
+**Still deferred (post-file-CLI)**:
+
+- `git textconv` / clean-smudge filter integration (transparent encrypt-on-commit; diff-readable ciphertext)
+- Multi-party recipient registry (`.zeta-crypt/recipients.json` + rotation per B-0883.3) — v1 file CLI passes recipients by path
 - Multi-cipher hedge implementations (Saber / NTRU-Prime / FrodoKEM per B-0883.2) — until TS-native impls mature
 - Metadata encryption (filenames / commit messages per B-0883.5) — v1 content-only
 
@@ -64,10 +71,41 @@ bun tools/crypto/better-git-crypt/cli/main.ts --validate
 bun tools/crypto/better-git-crypt/cli/main.ts --dry-run-envelope
 ```
 
+### File encryption (real PQ crypto — `files.ts` wiring `crypto.ts`)
+
+The manual-but-complete encrypt/decrypt path: the committed artifact is the
+canonical CBOR envelope (the `.zc` ciphertext); plaintext never enters git. A
+transparent git clean/smudge (or `textconv`) filter is the separate, still-
+deferred integration.
+
+```bash
+# 1. Generate a keypair (you run this; you hold the secret bundle).
+#    Writes <id>.recipient.json (PUBLIC, shareable) + <id>.secret.json (SECRET, 0600).
+bun tools/crypto/better-git-crypt/cli/main.ts --gen-recipient you@zeta --out-dir ~/.zeta-keys
+
+# 2. Self-encrypt a file (sender = sole recipient = you → only you can decrypt).
+bun tools/crypto/better-git-crypt/cli/main.ts \
+  --encrypt-file notes.txt --self-key ~/.zeta-keys/you@zeta.secret.json
+#    → notes.txt.zc (commit this; keep notes.txt out of git)
+
+# 3. Decrypt (round-trips byte-for-byte).
+bun tools/crypto/better-git-crypt/cli/main.ts \
+  --decrypt-file notes.txt.zc --key ~/.zeta-keys/you@zeta.secret.json --out notes.txt
+
+# Multi-recipient: add --recipient <other.recipient.json> (repeatable) on encrypt;
+# on decrypt, the non-sender recipient passes --sender-sig <sender.recipient.json>.
+```
+
+**Key-ownership (load-bearing security):** `encrypt` SIGNS with the sender's
+secret key and the sender is a self-recipient — so self-encryption means ONLY
+the holder of the secret bundle can read the output. The `.secret.json` is
+yours: never commit it (gitignore it or keep it outside the repo). The
+`.recipient.json` (public) is shareable/committable.
+
 Exit codes:
 
 - `0` — operation successful
-- `1` — runtime validation FAILED (registry invariant OR envelope structure)
+- `1` — runtime failure (validation / crypto feedback / file I/O)
 - `2` — usage error
 
 ## Tests
