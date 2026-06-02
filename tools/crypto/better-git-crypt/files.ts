@@ -25,7 +25,7 @@
  * throws); they are NOT Result-shaped and NOT strict validators — note that
  * malformed base64 *content* decodes leniently to garbage bytes rather than
  * throwing (a wrong-key/garbage decrypt then fails fail-closed downstream).
- * Callers (the CLI) wrap them in try/catch and surface a usage error.
+ * Callers (the CLI) wrap them in try/catch and report the failure.
  */
 
 import {

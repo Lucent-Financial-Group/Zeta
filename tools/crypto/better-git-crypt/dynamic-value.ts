@@ -3,7 +3,7 @@
  *
  * B-0883 × B-0982 — the PRIVACY FACE of the DynamicValue 4×4.
  *
- * Encryption is the **privacy fence** (Aaron 2026-06-02: like a *memory fence*
+ * Encryption is the **privacy fence** (operator 2026-06-02: like a *memory fence*
  * in concurrency — a barrier the plaintext↔ciphertext boundary crosses; each
  * fence a hemostat in the chain built from the remainder). It is NOT a fifth
  * byte-locked golden-vector codec sitting next to json/cbor/xml/yaml: encryption
@@ -47,7 +47,7 @@ export type EncryptValueResult =
  */
 export type DecryptValueResult =
   | { ok: true; value: Tagged }
-  | { ok: false; feedback: EncryptionFeedback | DecryptionFeedback }
+  | { ok: false; feedback: DecryptionFeedback }
   | { ok: false; decodeError: DecodeError };
 
 /**

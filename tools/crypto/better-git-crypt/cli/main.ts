@@ -84,9 +84,10 @@ function flagValues(args: readonly string[], name: string): string[] {
   return out;
 }
 
-/** Filename-safe slug for an identity (keeps the common @-._- chars). */
+/** Filename-safe slug for an identity (keeps the common @ . _ + - chars; `+` is
+ *  common in email identities like `user+tag@…`, and path separators are stripped). */
 function slug(identity: string): string {
-  return identity.replace(/[^A-Za-z0-9._@-]/g, "_");
+  return identity.replace(/[^A-Za-z0-9._@+-]/g, "_");
 }
 
 function parseArgs(argv: readonly string[]): ParsedArgs | { error: string } {
