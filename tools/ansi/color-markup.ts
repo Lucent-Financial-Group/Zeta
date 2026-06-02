@@ -182,6 +182,20 @@ export function parseFromAnsi(input: string): string {
       if (code === 0) {
         closeOpen();
         p += 1;
+      } else if (code === 39) {
+        // default foreground — selective reset of just the fg span
+        if (fgOpen) {
+          out += "{/c}";
+          fgOpen = false;
+        }
+        p += 1;
+      } else if (code === 49) {
+        // default background — selective reset of just the bg span
+        if (bgOpen) {
+          out += "{/bg}";
+          bgOpen = false;
+        }
+        p += 1;
       } else if (code === 38 || code === 48) {
         const isFg = code === 38;
         const mode = Number(params[p + 1]);

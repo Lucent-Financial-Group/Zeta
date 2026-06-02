@@ -53,6 +53,16 @@ describe("color-markup — parse ANSI → markup", () => {
   test("non-color SGR (bold) is dropped", () => {
     expect(parseFromAnsi(`${ESC}[1m${ESC}[32mok${ESC}[0m`)).toBe("{c:green}ok{/c}");
   });
+  test("selective fg reset (39) closes just the fg span", () => {
+    expect(parseFromAnsi(`${ESC}[31mhi${ESC}[39mthere${ESC}[0m`)).toBe("{c:red}hi{/c}there");
+  });
+  test("selective bg reset (49) closes just the bg span", () => {
+    expect(parseFromAnsi(`${ESC}[41mhi${ESC}[49mthere${ESC}[0m`)).toBe("{bg:red}hi{/bg}there");
+  });
+  test("39 leaves bg open; 49 leaves fg open (independent resets)", () => {
+    // fg+bg open, then 39 closes only fg → bg stays open until final reset
+    expect(parseFromAnsi(`${ESC}[31m${ESC}[44mx${ESC}[39my${ESC}[0m`)).toBe("{c:red}{bg:blue}x{/c}y{/bg}");
+  });
 });
 
 describe("color-markup — exact round-trip (markup → ANSI → markup = identity)", () => {
