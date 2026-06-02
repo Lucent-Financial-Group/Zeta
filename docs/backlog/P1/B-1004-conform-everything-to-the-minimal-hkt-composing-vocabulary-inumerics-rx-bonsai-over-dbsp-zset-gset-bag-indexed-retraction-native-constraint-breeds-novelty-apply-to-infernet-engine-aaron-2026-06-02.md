@@ -9,7 +9,7 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-1000]
 composes_with: [B-1000, B-1001, B-1002, B-1003, B-0428, B-0976]
-tags: [hkt-composition, minimal-vocabulary, inumerics, generic-math, rx, bonsai, reaqtor, dbsp, zset, gset, bag, indexed-zset, retraction-native, constraint-breeds-novelty, generative-constraint, interfaces-are-the-asset, infer-net, factor-graph, research, aaron]
+tags: [hkt-composition, minimal-vocabulary, inumerics, generic-math, rx, bonsai, reaqtor, dbsp, zset, gset, bag, indexed-zset, retraction-native, constraint-breeds-novelty, generative-constraint, earn-your-keep, structural-sparsity, interfaces-are-the-asset, infer-net, factor-graph, research, aaron]
 type: research
 ---
 
@@ -20,6 +20,12 @@ type: research
 Aaron: *"I'm basically trying to not let myself use anything other than INumerics and Rx Bonsai over DBSP +1/-1 zsets and gset and bags and indexed ones of those — and only leave INumerics if it really really makes sense. I want to conform everything into that and surrounding interfaces for maximum HKT composition."* + *"constraining yourself is what makes novel things pop out of your brain."*
 
 The second line is the **why**: the minimal vocabulary is not restriction-for-its-own-sake — it is a **generative constraint**. Forcing every problem into the same small set of algebras makes novel compositions *pop out* (the Oulipo / poetic-form / design-constraint principle: a tight constraint surfaces solutions an open palette never would). And because everything lands in the *same* algebras, it all composes at the **HKT** level — maximum higher-kinded composition. Constraint → novelty → composition.
+
+## Every noun/node and edge must earn its keep — and the vocabulary *enforces* it
+
+Aaron 2026-06-02: *"every noun/node and edge must earn it's keep."* The structural twin of the vocabulary-minimalism: not just a minimal set of *algebras* but a minimal *structure* — no gratuitous nodes (nouns / variables / identities) or edges (relations / factors); each must be load-bearing (razor at noun/node/edge granularity; `all-complexity-is-accidental-in-greenfield` + `bandwidth-served-falsifier` — if it serves no bandwidth, cut it).
+
+The elegant part: **the Z-set vocabulary enforces this by construction.** A `±1 Z-set` drops any entry whose weight nets to zero (`Bag.ofEntries`: "b nets to 0 → dropped"); `IndexedZSet` keeps only non-zero groups. So once the factor-graph state is conformed to `IndexedZSet` (the engine conformance below), **a node/edge that earns no keep — zero net contribution — is *automatically pruned* by the algebra.** "Earn your keep" isn't a discipline you police; it's a *property of conforming to the vocabulary*. The generative constraint (above) and earn-your-keep (here) are the same move: the algebra makes the non-earning elements vanish, leaving only the structure that pays for itself — which is exactly where the novel composition lives.
 
 ## The vocabulary (the only primitives; conform everything into these)
 
