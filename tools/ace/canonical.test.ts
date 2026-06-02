@@ -72,6 +72,18 @@ describe("toTagged", () => {
     expect(() => toTagged(Symbol("x"))).toThrow();
     expect(() => toTagged(() => 0)).toThrow();
   });
+
+  test("lone surrogates throw (well-formedness — trust-core byte-collision guard)", () => {
+    expect(() => toTagged("\uD800")).toThrow();          // lone high surrogate
+    expect(() => toTagged("\uDC00")).toThrow();          // lone low surrogate
+    expect(() => toTagged("a\uD83Db")).toThrow();        // high not followed by low
+    expect(() => toTagged({ "\uD800": 1 })).toThrow();   // lone surrogate in an object key
+  });
+
+  test("valid surrogate pairs are accepted (astral code points)", () => {
+    expect(toTagged("😀")).toEqual({ t: "str", v: "😀" });
+    expect(toTagged("a😀b")).toEqual({ t: "str", v: "a😀b" });
+  });
 });
 
 describe("canonicalBytes", () => {
@@ -88,6 +100,12 @@ describe("canonicalBytes", () => {
   test("empty object / array canonical bytes", () => {
     expect(bytesToStr(canonicalBytes({}))).toBe("{}");
     expect(bytesToStr(canonicalBytes([]))).toBe("[]");
+  });
+
+  test("lone surrogate cannot collide with U+FFFD (rejected before encoding)", () => {
+    // Without the guard, "\uD800" and "�" both UTF-8-encode to EF BF BD → collision.
+    expect(() => canonicalBytes({ k: "\uD800" })).toThrow();
+    expect(bytesToStr(canonicalBytes({ k: "�" }))).toBe('{"k":"�"}');
   });
 
   test("round-trips through the shared fromCanonicalJson", () => {

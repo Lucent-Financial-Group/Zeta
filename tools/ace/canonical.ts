@@ -6,14 +6,29 @@
 // future Rust/F#/C# Ace consumer computes byte-identical hashes for free from the byte-lock).
 import { canonicalJson, type Tagged } from "../../src/Core.TypeScript/dynamic-value/json.ts";
 
+// A lone (unpaired) UTF-16 surrogate is not well-formed text: the shared canonicalJson passes
+// it through raw, then TextEncoder collapses it to U+FFFD, so "\uD800", "\uD801", and the real
+// U+FFFD would all encode to identical trust-core bytes — a package_hash / signature collision
+// across byte-distinct metadata. The old JSON.stringify path escaped lone surrogates (well-formed
+// stringify); the shared canonicalJson does not, so Ace's seam rejects them here. Reject (not
+// escape) keeps the seam free of the byte-locked primitive; fail-loud composes with resolve's
+// try/catch that maps a toTagged throw to a clean invalid-package refusal.
+const LONE_SURROGATE = /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/;
+function assertWellFormed(s: string, role: string): void {
+  if (LONE_SURROGATE.test(s)) {
+    throw new Error(`toTagged: ${role} contains a lone surrogate (not well-formed UTF-16) — rejected to avoid trust-core byte collisions (lone surrogates collapse to U+FFFD under UTF-8 encoding)`);
+  }
+}
+
 /**
  * Convert a plain JS value into the shared `Tagged` form. Object entries are emitted in
  * lexicographically-SORTED key order, so the order-preserving `canonicalJson` yields
  * sorted-key output — Ace keeps its key-order-independent canonicalization while consuming
  * the shared primitive. A JS `number` must be an integer (`Number.isInteger`): Ace's
  * canonical content has no Float fields, so a non-integer is a bug and throws rather than
- * silently hashing a float. `undefined` object properties are omitted (matching JSON /
- * the prior `canonicalize`). bigint / symbol / function are unsupported and throw.
+ * silently hashing a float. Strings + object keys must be well-formed UTF-16 (no lone
+ * surrogates — see assertWellFormed). `undefined` object properties are omitted (matching
+ * JSON / the prior `canonicalize`). bigint / symbol / function are unsupported and throw.
  */
 export function toTagged(value: unknown): Tagged {
   if (value === null) return { t: "null" };
@@ -31,6 +46,7 @@ export function toTagged(value: unknown): Tagged {
       }
       return { t: "int", v: String(value) };
     case "string":
+      assertWellFormed(value, "string");
       return { t: "str", v: value };
     case "object": {
       if (Array.isArray(value)) {
@@ -43,6 +59,7 @@ export function toTagged(value: unknown): Tagged {
       for (const k of Object.keys(obj).sort()) {
         const v = obj[k];
         if (v === undefined) continue; // omit undefined props (JSON.stringify parity)
+        assertWellFormed(k, "object key");
         entries.push([k, toTagged(v)]);
       }
       return { t: "obj", v: entries };
