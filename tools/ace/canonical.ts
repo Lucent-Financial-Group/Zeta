@@ -24,9 +24,10 @@ function assertWellFormed(s: string, role: string): void {
  * Convert a plain JS value into the shared `Tagged` form. Object entries are emitted in
  * lexicographically-SORTED key order, so the order-preserving `canonicalJson` yields
  * sorted-key output — Ace keeps its key-order-independent canonicalization while consuming
- * the shared primitive. A JS `number` must be an integer (`Number.isInteger`): Ace's
- * canonical content has no Float fields, so a non-integer is a bug and throws rather than
- * silently hashing a float. Strings + object keys must be well-formed UTF-16 (no lone
+ * the shared primitive. A JS `number` must be a safe integer (`Number.isSafeInteger`):
+ * Ace's canonical content has no Float fields, so a non-integer, NaN, Infinity, or
+ * out-of-safe-range value is a bug and throws rather than silently hashing it. Strings +
+ * object keys must be well-formed UTF-16 (no lone
  * surrogates — see assertWellFormed). `undefined` object properties are omitted (matching
  * JSON / the prior `canonicalize`). bigint / symbol / function are unsupported and throw.
  */

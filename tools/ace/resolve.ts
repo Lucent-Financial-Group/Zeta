@@ -149,7 +149,7 @@ export async function resolve(
       try {
         got = packageHash(dep);
       } catch (e) {
-        return { ok: false, reason: "invalid-package", detail: `${edge.name}: ${(e as Error).message}`, path: here };
+        return { ok: false, reason: "invalid-package", detail: `${edge.name}: ${e instanceof Error ? e.message : String(e)}`, path: here };
       }
       if (got !== package_hash) {
         return { ok: false, reason: "pin-mismatch", detail: `${edge.name}: expected package_hash ${package_hash} but fetched ${got}`, path: here };
