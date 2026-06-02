@@ -45,6 +45,12 @@ test("json decode rejects malformed input", () => {
   expect(decodeErr("[1,")).toBe("UnexpectedEnd"); // unterminated array
   expect(decodeErr('{"a"')).toBe("UnexpectedEnd"); // object missing colon+value
   expect(decodeErr('"unterminated')).toBe("UnexpectedEnd"); // unterminated string
+  expect(decodeErr('"\\u00gg"')).toBe("UnexpectedEnd"); // \uXXXX with non-hex digits
+  expect(decodeErr('"\\q"')).toBe("UnexpectedEnd"); // invalid escape
+  expect(decodeErr("1.")).toBe("UnexpectedEnd"); // no digit after '.'
+  expect(decodeErr("1e")).toBe("UnexpectedEnd"); // no exponent digits
+  expect(decodeErr("1e+")).toBe("UnexpectedEnd"); // exponent sign without digits
+  expect(decodeErr("-")).toBe("UnexpectedEnd"); // sign without digits
   expect(decodeErr("null x")).toBe("TrailingData"); // value + trailing token
   expect(decodeErr("nullnull")).toBe("TrailingData"); // two values
 });

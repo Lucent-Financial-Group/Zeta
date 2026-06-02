@@ -154,11 +154,11 @@ export function fromCanonicalJson(json: string): DecodeResult {
     const e = json.charAt(pos);
     if (e === "u") {
       const hex = json.slice(pos + 1, pos + 5);
-      if (hex.length < 4) fail("UnexpectedEnd");
-      const code = parseInt(hex, 16);
-      if (Number.isNaN(code)) fail("UnexpectedEnd");
+      // require exactly 4 hex digits — parseInt would PARTIALLY parse (e.g. "00gg" → 0),
+      // silently accepting malformed \uXXXX; reject as UnexpectedEnd instead.
+      if (!/^[0-9a-fA-F]{4}$/.test(hex)) fail("UnexpectedEnd");
       pos += 5; // 'u' + 4 hex digits
-      return String.fromCharCode(code);
+      return String.fromCharCode(parseInt(hex, 16));
     }
     const rep = JSON_ESCAPES[e];
     if (rep === undefined) fail("UnexpectedEnd"); // invalid escape / EOF after backslash
@@ -185,15 +185,23 @@ export function fromCanonicalJson(json: string): DecodeResult {
     return fail("UnexpectedEnd"); // unterminated string
   };
 
+  // consumes one or more digits at pos; fails UnexpectedEnd if none (enforces the JSON
+  // grammar's "at least one digit" for the integer part, fraction, and exponent).
+  const consumeDigits = (): void => {
+    const d0 = pos;
+    while (isDigit(json.charAt(pos))) pos += 1;
+    if (pos === d0) fail("UnexpectedEnd");
+  };
+
   const parseNumber = (): Tagged => {
     const start = pos;
     if (json.charAt(pos) === "-") pos += 1;
-    while (isDigit(json.charAt(pos))) pos += 1;
+    consumeDigits(); // integer part — required (rejects "-", "-.5")
     let isFloat = false;
     if (json.charAt(pos) === ".") {
       isFloat = true;
       pos += 1;
-      while (isDigit(json.charAt(pos))) pos += 1;
+      consumeDigits(); // fraction — required after '.' (rejects "1.")
     }
     const ec = json.charAt(pos);
     if (ec === "e" || ec === "E") {
@@ -201,12 +209,10 @@ export function fromCanonicalJson(json: string): DecodeResult {
       pos += 1;
       const sign = json.charAt(pos);
       if (sign === "+" || sign === "-") pos += 1;
-      while (isDigit(json.charAt(pos))) pos += 1;
+      consumeDigits(); // exponent — required (rejects "1e", "1e+")
     }
-    const tok = json.slice(start, pos);
-    if (tok === "" || tok === "-") return fail("UnexpectedEnd");
     if (isFloat) return fail("Unsupported"); // Float deferred in v1 JSON
-    const big = BigInt(tok);
+    const big = BigInt(json.slice(start, pos));
     if (big > I64_MAX || big < I64_MIN) return fail("IntegerOverflow");
     return { t: "int", v: big.toString() };
   };
