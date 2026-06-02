@@ -66,7 +66,7 @@ The fork was: (A) seed CE over conjugate-prior `BayesianAggregate`; (B) fresh fi
 
 ## Build-most-inevitable-first decomposition (slices)
 
-- **slice 1** (landed, [#6587]): `Vector` + `Wall` nouns (B-0998).
+- **slice 1** (landed, [#6587](https://github.com/Lucent-Financial-Group/Zeta/pull/6587)): `Vector` + `Wall` nouns (B-0998).
 - **slice 2** (recommended next): the **message/distribution algebra** — exponential-family distributions as semirings + `product`/`divide`/`momentMatch`/`normalize`; compose `BayesianAggregate` conjugate math; exact + deterministic + testable; the non-contentious kernel.
 - **slice 3**: the **factor** + **factor-graph** data structure.
 - **slice 4**: **sum-product BP** as a DBSP nested circuit (iterate-to-fixpoint).
