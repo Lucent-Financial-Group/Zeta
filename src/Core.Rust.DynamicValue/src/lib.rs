@@ -85,35 +85,32 @@ impl DynamicValue {
     /// `\u00XX` lowercase; all else raw UTF-8). v1 locks
     /// null/bool/int/string/array/object.
     ///
-    /// # Panics
-    /// Panics on `Float` or `Bytes` -- both are DEFERRED (no canonical JSON form
-    /// yet; they lock under CBOR or a tagged-JSON convention).
-    #[must_use]
-    pub fn to_canonical_json(&self) -> String {
+    /// # Errors
+    /// Returns [`EncodeError`] for `Float` or `Bytes` -- both are DEFERRED (no
+    /// canonical JSON form yet; they lock under CBOR or a tagged-JSON
+    /// convention), surfaced as data per the Result-over-exception rule (AGENTS.md),
+    /// never panicked. Mirrors the F#/C# `Result<string, EncodeError>` oracles.
+    pub fn to_canonical_json(&self) -> Result<String, EncodeError> {
         let mut out = String::new();
-        self.write_canonical(&mut out);
-        out
+        self.write_canonical(&mut out)?;
+        Ok(out)
     }
 
-    fn write_canonical(&self, out: &mut String) {
+    fn write_canonical(&self, out: &mut String) -> Result<(), EncodeError> {
         match self {
             DynamicValue::Null => out.push_str("null"),
             DynamicValue::Bool(b) => out.push_str(if *b { "true" } else { "false" }),
             DynamicValue::Int(i) => out.push_str(&i.to_string()),
-            DynamicValue::Float(_) => panic!(
-                "DynamicValue::Float canonical JSON is DEFERRED (no canonical shortest-float in plain JSON); locks under CBOR or a tagged-JSON convention"
-            ),
+            DynamicValue::Float(_) => return Err(EncodeError::FloatDeferred),
             DynamicValue::String(s) => escape_json_string(s, out),
-            DynamicValue::Bytes(_) => panic!(
-                "DynamicValue::Bytes canonical JSON is DEFERRED (no native JSON byte type); locks under CBOR or a tagged-JSON convention"
-            ),
+            DynamicValue::Bytes(_) => return Err(EncodeError::BytesDeferred),
             DynamicValue::Array(items) => {
                 out.push('[');
                 for (k, item) in items.iter().enumerate() {
                     if k > 0 {
                         out.push(',');
                     }
-                    item.write_canonical(out);
+                    item.write_canonical(out)?;
                 }
                 out.push(']');
             }
@@ -125,12 +122,26 @@ impl DynamicValue {
                     }
                     escape_json_string(key, out);
                     out.push(':');
-                    val.write_canonical(out);
+                    val.write_canonical(out)?;
                 }
                 out.push('}');
             }
         }
+
+        Ok(())
     }
+}
+
+/// Why a [`DynamicValue`] could not be canonically encoded (v1). `Float` and
+/// `Bytes` have no canonical JSON form yet (they lock under CBOR or a tagged-JSON
+/// convention); surfaced as `Err` data per the Result-over-exception rule
+/// (AGENTS.md), never panicked. Mirrors the F#/C# `EncodeError`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum EncodeError {
+    /// `DynamicValue::Float` has no canonical shortest-float form in plain JSON.
+    FloatDeferred,
+    /// `DynamicValue::Bytes` has no native JSON byte type.
+    BytesDeferred,
 }
 
 // Append `s` as a JSON string literal (including the surrounding quotes), RFC 8259
