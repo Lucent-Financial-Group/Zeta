@@ -1,0 +1,89 @@
+import { describe, expect, test } from "bun:test";
+import { toTagged, canonicalBytes } from "./canonical.ts";
+import { canonicalJson, fromCanonicalJson, type Tagged } from "../../src/Core.TypeScript/dynamic-value/json.ts";
+
+const dec = new TextDecoder();
+const bytesToStr = (b: Uint8Array): string => dec.decode(b);
+
+describe("toTagged", () => {
+  test("null / bool / string map directly", () => {
+    expect(toTagged(null)).toEqual({ t: "null" });
+    expect(toTagged(true)).toEqual({ t: "bool", v: true });
+    expect(toTagged(false)).toEqual({ t: "bool", v: false });
+    expect(toTagged("hi")).toEqual({ t: "str", v: "hi" });
+  });
+
+  test("integer number → int with decimal-string value", () => {
+    expect(toTagged(0)).toEqual({ t: "int", v: "0" });
+    expect(toTagged(42)).toEqual({ t: "int", v: "42" });
+    expect(toTagged(-7)).toEqual({ t: "int", v: "-7" });
+  });
+
+  test("non-integer number throws (Ace has no Float fields)", () => {
+    expect(() => toTagged(3.14)).toThrow();
+    expect(() => toTagged(Number.NaN)).toThrow();
+    expect(() => toTagged(Number.POSITIVE_INFINITY)).toThrow();
+  });
+
+  test("array preserves order, recurses", () => {
+    expect(toTagged([1, "a", true])).toEqual({
+      t: "arr",
+      v: [{ t: "int", v: "1" }, { t: "str", v: "a" }, { t: "bool", v: true }],
+    });
+  });
+
+  test("object emits entries in SORTED key order", () => {
+    const out = toTagged({ b: 2, a: 1, c: 3 }) as Extract<Tagged, { t: "obj" }>;
+    expect(out.t).toBe("obj");
+    expect(out.v.map(([k]) => k)).toEqual(["a", "b", "c"]);
+    expect(out.v).toEqual([
+      ["a", { t: "int", v: "1" }],
+      ["b", { t: "int", v: "2" }],
+      ["c", { t: "int", v: "3" }],
+    ]);
+  });
+
+  test("nested object sorts at every level", () => {
+    const out = toTagged({ z: { y: 1, x: 2 }, a: 3 }) as Extract<Tagged, { t: "obj" }>;
+    expect(out.v.map(([k]) => k)).toEqual(["a", "z"]);
+    const z = out.v[1]![1] as Extract<Tagged, { t: "obj" }>;
+    expect(z.v.map(([k]) => k)).toEqual(["x", "y"]);
+  });
+
+  test("undefined object properties are omitted (JSON parity)", () => {
+    const out = toTagged({ a: 1, b: undefined, c: 3 }) as Extract<Tagged, { t: "obj" }>;
+    expect(out.v.map(([k]) => k)).toEqual(["a", "c"]);
+  });
+
+  test("unsupported value types throw (bigint, symbol, function)", () => {
+    expect(() => toTagged(1n)).toThrow();
+    expect(() => toTagged(Symbol("x"))).toThrow();
+    expect(() => toTagged(() => 0)).toThrow();
+  });
+});
+
+describe("canonicalBytes", () => {
+  test("= encode(canonicalJson(toTagged(x)))", () => {
+    const x = { b: 2, a: "hi", c: [1, 2] };
+    const expected = canonicalJson(toTagged(x));
+    expect(bytesToStr(canonicalBytes(x))).toBe(expected);
+  });
+
+  test("produces sorted-key minified canonical JSON", () => {
+    expect(bytesToStr(canonicalBytes({ b: 2, a: 1 }))).toBe('{"a":1,"b":2}');
+  });
+
+  test("round-trips through the shared fromCanonicalJson", () => {
+    const x = { name: "z", count: 3, nested: { k: "v" } };
+    const json = bytesToStr(canonicalBytes(x));
+    const back = fromCanonicalJson(json);
+    expect(back.ok).toBe(true);
+    if (back.ok) expect(canonicalJson(back.value)).toBe(json);
+  });
+
+  test("determinism: key insertion order does not change the bytes", () => {
+    const a = canonicalBytes({ one: 1, two: 2, three: 3 });
+    const b = canonicalBytes({ three: 3, one: 1, two: 2 });
+    expect(Buffer.from(a)).toEqual(Buffer.from(b));
+  });
+});
