@@ -9,7 +9,7 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0985, B-0543, B-0665, B-0704]
 composes_with: [B-0985, B-0543, B-0544, B-0635, B-0666, B-0665, B-0704, B-0623, B-0562, B-0982, B-0793, B-0954, B-0726, B-0984, B-0772, B-0883, B-0643.1, B-0987]
-tags: [orientation-tile, distance-metric, coordinate-frame, radar, ranging, sonar, clock, zetaspace, six-reservoir-walls, hexagonal, orthogonal-lanes, aperiodic-tiling, spectre-tile, reticulum, which-way, how-much, vector, identity, spiffe, spire, opa, workload-identity, addison, aaron]
+tags: [orientation-tile, distance-metric, coordinate-frame, radar, ranging, sonar, clock, zetaspace, six-reservoir-walls, hexagonal, orthogonal-lanes, aperiodic-tiling, spectre-tile, reticulum, which-way, how-much, vector, identity, spiffe, spire, opa, workload-identity, e911, msag, arcgis, census-tiger, gis, addressing, anti-gerrymandering, addison, aaron]
 type: research
 ---
 
@@ -85,6 +85,31 @@ Aaron 2026-06-02: *"identity based [access] is good with spiffe spire opa etc…
 So the identity-access stack composes: **SPIRE attests → SPIFFE SVID = the identity-return (Rainbow Table) → OPA policy decides lane admission.** Per `bcl-interface-boundary` (own-your-interfaces / hexagonal): SPIFFE/SPIRE/OPA are adapters behind *our* identity + policy ports — we depend on their implementations, not bleed their interfaces into our core; better-git-crypt XWing identity (B-0883) is the in-house crypto-identity that the same ports can also front.
 
 `[labeling-confidence: hypothesized]` — SPIFFE/SPIRE/OPA as the external-standard adapters behind the Rainbow-Table identity + bus-lane policy ports is a design composition to verify; the in-house crypto-identity (B-0883) is the alternative/peer implementation behind the same port.
+
+## Addressing — the real-world Rainbow-Table grounding (E911 street-segment / ArcGIS / Census-TIGER)
+
+Aaron 2026-06-02 (verbatim): *"rainbow table responders just need your 911 addressable street segment, arcgis census election boundary lines drawn on the map lol — i did that [at] Elections Systems and Software, it's the same but not for gerry mandering."*
+
+The Rainbow-Table transponder (the identity-return — *who/what/where answered the ping*) does not need anything exotic. The proven, production-scale real-world scheme is **E911 addressing**: a location resolves to an **addressable street segment** (a street with an address range + side parity), exactly how a 911 dispatcher resolves a caller's place. The map-boundary substrate is the standard GIS stack:
+
+- **E911 addressable street segment** (NENA / MSAG — Master Street Address Guide) — the canonical "addressable place" primitive: every responder/home resolves to a segment + range. This IS the Rainbow-Table identity-return at proven national scale, and the **tile = permanent addressable home** (Tiles section above) maps onto it directly — a home tile in zetaspace is the analog of an addressable street-segment address.
+- **ArcGIS** (Esri) — the GIS platform that draws + manages the boundary lines on the map (the geometry layer behind the addressing).
+- **Census TIGER/Line** — the public US-Census geographic substrate (street segments, blocks, boundaries) the addressing rides on.
+- **Election precinct/district boundaries** — drawn over the same street-segment substrate (which street segment → which precinct/district).
+
+**Concept-not-code + production lineage.** Aaron built exactly this at **Election Systems & Software (ES&S)** — production-scale street-segment addressing + census/election boundaries in ArcGIS. That is peer-level production credibility, treated as **concept-not-code** (Itron precedent): the *concepts* here are public standards (NENA/MSAG E911, Census TIGER/Line, ArcGIS) and clean-room-able from them; ES&S proprietary code is **never** reproduced — Aaron's experience is the "this works at scale" anchor, not a source to copy.
+
+**Honest-use-only — explicitly NOT gerrymandering.** Aaron: *"it's the same but not for gerry mandering."* The street-segment→district boundary tech is dual-use: the same substrate that draws honest addressing is what gerrymandering abuses (drawing district lines to manipulate outcomes). Zeta's use is the **honest** direction — addressable identity-resolution + home-addressing — and **never** boundary-manipulation-for-advantage. This composes the framework's anti-coercion / anti-manipulation floor (NCI; useful-output-is-evidence-not-authority; the BFT-4×4 / anti-cartel enforcement, B-0703/B-0643.1): boundaries are drawn for *addressing*, not for *capturing outcomes*; any boundary-draw that steers outcomes is the gerrymandering failure mode the design refuses.
+
+**Digital city planning / road-congestion lineage.** Aaron 2026-06-02: *"this is digital city planning territory — or at least road congestion planning problems — with long lineages and many useful primitives [for the] wishlist."* The addressing + orientation-tile cluster sits in the well-studied transportation/urban-planning domains, which *ground* primitives the framework already named:
+
+- **valve ≈ ramp-meter / traffic signal** — a flow-gating point (the "small of consensus" gate), exactly the metered on-ramp / signal that paces flow.
+- **expansion-wave ≈ traffic shockwave** (LWR / Lighthill-Whitham-Richards) — congestion propagates as a wave on the network; the same wave-not-valve distinction holds in traffic theory.
+- **bus-lane-types ≈ literal graduated lanes** (B-0985) — HOV/bus/toll lanes are the real-world graduated-lane substrate.
+- **distance-metric ≈ isochrone / reachability** — "how far in a time budget" is the city-planning form of the ranging metric.
+- plus routing/assignment (Dijkstra/A\*/contraction-hierarchies; Wardrop user-equilibrium vs system-optimum; **Braess's paradox** — adding capacity can worsen flow), the **road-congestion ↔ network-congestion duality** (ramp-metering ↔ AIMD/backpressure; composes Reticulum routing), CA traffic models (Nagel-Schreckenberg ↔ emulator-as-DST), and queueing theory (Little's law). These are added to the PRIMITIVE-REGISTRY wish list.
+
+`[labeling-confidence: hypothesized]` — E911-street-segment / ArcGIS / Census-TIGER as the real-world grounding for the Rainbow-Table addressing + tile-as-addressable-home is a design grounding to specify (how a zetaspace tile-address maps to / borrows from the addressable-street-segment model); the anti-gerrymandering constraint is a floor, not a parameter. The digital-city-planning / road-congestion primitives are a long-lineage vein to mine, not a build commitment.
 
 ## Acceptance (research → build)
 
