@@ -8,7 +8,7 @@ effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-1000]
-composes_with: [B-1000, B-1001, B-1002, B-1003, B-0428, B-0976]
+composes_with: [B-1001, B-1002, B-1003, B-0428, B-0976]
 tags: [hkt-composition, minimal-vocabulary, inumerics, generic-math, rx, bonsai, reaqtor, dbsp, zset, gset, bag, indexed-zset, retraction-native, constraint-breeds-novelty, generative-constraint, earn-your-keep, structural-sparsity, interfaces-are-the-asset, infer-net, factor-graph, research, aaron]
 type: research
 ---
@@ -31,7 +31,7 @@ The elegant part: **the Z-set vocabulary enforces this by construction.** A `±1
 
 | Primitive | What | Generic-math? |
 |---|---|---|
-| **INumerics / generic-math** | `IAdditiveIdentity` / `IAdditionOperators` / `IMultiplyOperators` / `INumber<T>` (F# native `Zero`/`One`/`(+)`/`( * )` per `numerical-algebra-into-generic-math`) | the base |
+| **INumerics / generic-math** | `IAdditiveIdentity` / `IAdditionOperators` / `IMultiplyOperators` / `INumber<T>` (F# native `Zero`/`One`/`(+)`/`(*)` per `numerical-algebra-into-generic-math`) | the base |
 | **±1 Z-set** | retraction-native weighted set (`ZSet`, weight ring ℤ; `+1` add, `−1` retract) | `Zero`/`(+)`/`(-)` |
 | **G-set** | grow-only set (`GSet`) | `Zero`/`(+)` (idempotent) |
 | **Bag** | multiset (`Bag`) | `Zero`/`(+)` (non-idempotent) |
@@ -39,12 +39,12 @@ The elegant part: **the Z-set vocabulary enforces this by construction.** A `±1
 | **DBSP** | the incremental dataflow over those (`Circuit`/`NestedCircuit` fixpoint) | — |
 | **Rx + Bonsai** | reactive (`IObservable`, Meijer-dual of `IEnumerable`, merge-monoid + monad) serialized as compact expression-trees (Nuqleon/Reaqtor **Bonsai**, `Bonsai.fs`) over DBSP | — |
 
-**`INumerics` sparingly** — reach for the full generic-math number tower *only if it really makes sense* (the message-group's `( * )`/`( / )` genuinely is multiplicative-group → warranted; don't force `INumber` where the Z-set/DBSP vocabulary already fits).
+**`INumerics` sparingly** — reach for the full generic-math number tower *only if it really makes sense* (the message-group's `(*)`/`(/)` genuinely is multiplicative-group → warranted; don't force `INumber` where the Z-set/DBSP vocabulary already fits).
 
 ## Apply to the Infer.NET engine (B-1000) — the conformance audit
 
-- **Message families (slice 2)** — ✅ already conforming: `Gaussian`/`Beta`/`Bernoulli` are generic-math (`One`/`( * )`/`( / )`), a commutative **group** (product/divide). (Caveat: a *group*, not a clean `ISemiring` — there is no clean ⊕/mixture at message scope; conform via generic-math group, don't force a ring.)
-- **FactorGraph state (slices 3–4)** — ❌ currently ad-hoc `Map<int, Map<int, 'M>>`. **Conform to `IndexedZSet`** keyed by edge `(factorId, varId)`; the per-round message changes become **Z-set deltas**; `passOnce` becomes a **DBSP operator**; `runToFixpoint` becomes the **`NestedCircuit.Fixedpoint`** drive (the slice-4b incremental form — re-infer on a delta). This is the conformance that buys incremental inference.
+- **Message families (slice 2)** — ✅ already conforming: `Gaussian`/`Beta`/`Bernoulli` are generic-math (`One`/`(*)`/`(/)`), a commutative **group** (product/divide). (Caveat: a *group*, not a clean `ISemiring` — there is no clean ⊕/mixture at message scope; conform via generic-math group, don't force a ring.)
+- **FactorGraph state (slices 3–4)** — ❌ currently ad-hoc `Map<int, Map<int, 'M>>`. **Conform to `IndexedZSet`** keyed by edge `(factorId, varId)`; the per-round message changes become **Z-set deltas**; `passOnce` becomes a **DBSP operator**; `runToFixpoint` becomes the **`NestedCircuit.Iterate()`** fixed-point drive (loops to the LFP cap, polling each op's `Fixedpoint scope` residual test — the actual `src/Core/NestedCircuit.fs` API; `.Fixedpoint` is the per-`CircuitOp` contract, not a member of `NestedCircuit`) — the slice-4b incremental form (re-infer on a delta). This is the conformance that buys incremental inference.
 - **Serialization / transport (B-1001/B-1002)** — the codec tower + Eve transport conform too (the value-codec rung over the Z-set/columnar state; Rx/Bonsai expression-trees as the serialized reactive composition).
 
 ## Acceptance (research → build)
