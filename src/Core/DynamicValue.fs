@@ -417,6 +417,17 @@ module DynamicValue =
     /// `Object` is order-significant — the §4.2.1 key-sort would be lossy /
     /// non-bijective (the same call v1 made for canonical JSON). Integers and
     /// string/array/map lengths use preferred (shortest) serialization per §4.2.1.
+    ///
+    /// Domain: "total" is over the eight SHAPES (each has a canonical CBOR form,
+    /// unlike JSON which defers Float/Bytes), for valid-Unicode values. A `String`
+    /// (or object key) holding a LONE UTF-16 surrogate is malformed content,
+    /// reachable only via C#/F# interop: it is not a valid Unicode scalar sequence,
+    /// so it is unrepresentable in a CBOR text string (RFC 8949 §3.1 = UTF-8) AND
+    /// unrepresentable in the Rust oracle (Rust `String` is guaranteed valid UTF-8)
+    /// AND in the seed — i.e. outside the cross-language byte-lock domain. .NET's
+    /// `Encoding.UTF8.GetBytes` emits U+FFFD for it (encoder-defined). Unlike the
+    /// JSON encoder, CBOR text cannot `\u`-escape it back to bijectivity; that
+    /// asymmetry is inherent to CBOR's UTF-8 text requirement, not an encoder choice.
     let toCanonicalCbor (value: DynamicValue) : byte[] =
         let buf = System.Collections.Generic.List<byte>()
 
