@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Core\Core.fsproj" />
     <ProjectReference Include="..\..\src\Core.CSharp\Core.CSharp.csproj" />
   </ItemGroup>
 </Project>
