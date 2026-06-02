@@ -8,8 +8,8 @@ effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0989, B-0988]
-composes_with: [B-0989, B-0988, B-0986, B-0991, B-0993, B-0990, B-0428, B-0982, B-0635, B-0905, B-0906, B-0703, B-0954]
-tags: [digital-twin, earth-twin, world-model, lightlike, consensus-gravity, atsophmera, weather, temperature, units, uom, fsharp-uom, multi-culture, generic-math, hkt, f-bounded, crtp, inumber, cross-language, lgtm, grafana, prometheus, loki, tempo, mimir, observability, aaron]
+composes_with: [B-0989, B-0988, B-0986, B-0991, B-0993, B-0990, B-0428, B-0982, B-0635, B-0905, B-0906, B-0703, B-0954, B-0623]
+tags: [digital-twin, earth-twin, world-model, lightlike, consensus-gravity, atsophmera, weather, temperature, units, uom, fsharp-uom, multi-culture, generic-math, hkt, f-bounded, crtp, inumber, cross-language, lgtm, grafana, prometheus, loki, tempo, mimir, observability, rainbow-table, storm-recovery, post-disruption-reconciliation, aaron]
 type: research
 ---
 
@@ -42,6 +42,10 @@ Aaron 2026-06-02: *"this is light LGTM Prometheus like part."* The world-model r
 | **Loki** (logs) + **Tempo** (traces) | ray-emission / event-history over the lightlike substrate (OTel-as-ray-emission per the rule) |
 
 So the earth-twin world-model is *observed/rendered* via an **LGTM + Prometheus-style lightlike-observability stack**: Prometheus reads the curvature, Grafana/Atsophmera shows it, weather/temperature are the metric series. "light" = lightlike (the substrate being observed) AND lightweight (the LGTM stack runs locally per B-0990 one-laptop). Composes `past-is-kind-when-lightlike` (the lightlike-observability mapping is already a landed rule) + B-0991 (geospatial-UX = the Grafana/dashboard surface).
+
+### Rainbow Table metrics — for after the storms
+
+Aaron 2026-06-02: *"and we have rainbow table metrics for after the storms."* A specific metric class in the stack: **post-storm identity-reconciliation metrics**. A "storm" = a weather/perturbation event on the world-model (a disruption — outage, conflict, churn, a tonal-momentum storm). **After** it passes, you re-resolve identities + measure the recovered state via the **Rainbow Table** (B-0986 — the transponder/identity-resolution wall; **accept-state-after-change = retraction-forgiveness**). The Rainbow-Table property is *literally* "after the storm, accept the new state": retraction-forgiveness applied to post-disruption reconciliation — who's still here, who changed, what re-resolved, what the recovered jurisdiction/ownership state is. So **Rainbow-Table metrics = the post-storm reconciliation/recovery metrics** (a Prometheus metric series + Grafana panel for after-the-storm identity-resolution). Composes B-0986 (Rainbow-Table accept-state-after-change) + the weather/storm layer above + retraction-native (DBSP: the storm's deltas net out, the recovered state is the surviving Z-set).
 
 ## Digital twin / earth twin
 
