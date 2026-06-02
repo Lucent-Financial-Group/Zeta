@@ -188,17 +188,6 @@ public static class DynamicValues
     /// lossy / non-bijective; <see cref="DynamicValue.Int"/> = bare exact decimal (invariant);
     /// strings per RFC 8259 minimal escaping. v1 locks null/bool/int/string/array/object;
     /// <see cref="DynamicValue.Float"/> and <see cref="DynamicValue.Bytes"/> are DEFERRED (no
-    /// canonical JSON form yet — they lock under CBOR or a tagged-JSON convention) and throw
-    /// <see cref="InvalidOperationException"/>.</summary>
-    /// <param name="value">the value to encode.</param>
-    /// <returns>the canonical JSON text.</returns>
-    /// <summary>Canonical JSON encoding — the byte-lock target (the shared seed is
-    /// <c>src/Core.TypeScript/dynamic-value/golden-vectors.json</c>). Minified; <see
-    /// cref="DynamicValue.Object"/> keys in INSERTION order — NOT sorted, because Object is
-    /// order-significant, so a key-sorting canonical form (JCS / RFC 8785 / CBOR §4.2) would be
-    /// lossy / non-bijective; <see cref="DynamicValue.Int"/> = bare exact decimal (invariant);
-    /// strings per RFC 8259 minimal escaping. v1 locks null/bool/int/string/array/object;
-    /// <see cref="DynamicValue.Float"/> and <see cref="DynamicValue.Bytes"/> are DEFERRED (no
     /// canonical JSON form yet) and surfaced as <see cref="Result{T, TError}.Err"/> data per the
     /// Result-over-exception hard rule (AGENTS.md), never thrown.</summary>
     /// <param name="value">the value to encode.</param>
