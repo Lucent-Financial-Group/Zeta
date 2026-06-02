@@ -62,6 +62,7 @@ fn build_value(v: &Value) -> DynamicValue {
                 .iter()
                 .map(|pair| {
                     let p = pair.as_array().expect("pair array");
+                    assert_eq!(p.len(), 2, "obj pair must be [key, value]");
                     (
                         p[0].as_str().expect("key string").to_string(),
                         build_value(&p[1]),

@@ -196,9 +196,13 @@ impl DynamicValue {
         }
     }
 
-    /// Decode canonical CBOR (RFC 8949) bytes back into a [`DynamicValue`] -- the inverse
-    /// of [`to_canonical_cbor`](DynamicValue::to_canonical_cbor), completing the byte<->value
-    /// bijection for all eight shapes. Decode is partial (truncation, reserved/indefinite
+    /// Decode the canonical CBOR bytes emitted by
+    /// [`to_canonical_cbor`](DynamicValue::to_canonical_cbor) back into a [`DynamicValue`] --
+    /// the inverse, completing the byte<->value bijection for all eight shapes. These are
+    /// RFC 8949-shaped but deliberately keep object keys in INSERTION order (NOT RFC 8949
+    /// §4.2.1 bytewise key sorting), since `Object` is order-significant; "canonical" here
+    /// means "as emitted by `to_canonical_cbor`", not full RFC-deterministic CBOR. Decode is
+    /// partial (truncation, reserved/indefinite
     /// forms, CBOR tags, oversized integers, non-text map keys, non-canonical encodings), so
     /// it returns `Result<DynamicValue, DecodeError>` -- never panics on malformed input.
     /// Mirrors the C#/F# decoder.
@@ -700,5 +704,21 @@ mod tests {
             err(&[0xfb, 0x3f, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
             DecodeError::NonCanonical
         ); // 1.0 as float64
+    }
+
+    // `DecodeError` is public API (implements `Display` + `Error`); the messages must
+    // stay stable + human-readable (mirrors `encode_error_display_is_human_readable`).
+    #[test]
+    fn decode_error_display_is_human_readable() {
+        assert!(DecodeError::UnexpectedEnd.to_string().contains("truncated"));
+        assert!(
+            DecodeError::TrailingData
+                .to_string()
+                .contains("extra bytes")
+        );
+        assert!(DecodeError::Unsupported.to_string().contains("unsupported"));
+        assert!(DecodeError::IntegerOverflow.to_string().contains("i64"));
+        assert!(DecodeError::NonTextKey.to_string().contains("text string"));
+        assert!(DecodeError::NonCanonical.to_string().contains("canonical"));
     }
 }
