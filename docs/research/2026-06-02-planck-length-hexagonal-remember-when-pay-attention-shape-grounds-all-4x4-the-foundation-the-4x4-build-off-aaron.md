@@ -2,11 +2,11 @@
 
 Scope: Operator-direct grounding connector (Aaron 2026-06-02). The 2026-06-02 4×4 arc (serializer×language bond, emotional-algebra 4×4, non-coercion 4×4 sister, the 4×4-over-4×4 consensus, coincidence-anchor quad-duty) all **build off** one foundational **HEXAGONAL six-primitive shape at the Planck length** (the Observe-Emit indivisible scale) — the **six reservoir walls**, each a clean two-word English pair, every word unique, INumerics-encodable, that contain the chaos so the reservoir runs without collapsing or blowing up. This note CITES the authoritative enumeration already in substrate (it does not guess it).
 
-Attribution: Aaron (operator), 2026-06-02, direct, across a multi-message correction (preserved verbatim below). The six are documented in `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-root-primitive-six-primitives-...` (crystallizations #3, #13, #14, #15) + `docs/research/2026-06-02-canonical-form-synthesis-meno-equals-seed-equals-remainder-...` (the observe/emit↔remainder/seed=Persist section). honor-those-that-came-before: per-primitive attribution below — Aaron's seed, Addison's vector, OPLE base.
+Attribution: Aaron (operator), 2026-06-02, direct, across a multi-message correction (preserved verbatim below). The six are documented in `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-root-primitive-six-primitives-dbsp-promise-of-forgiveness-decentralized-identity-as-society-aaron-forwarded.md` (crystallizations #3, #13, #14, #15) + `docs/research/2026-06-02-canonical-form-synthesis-meno-equals-seed-equals-remainder-equals-braid-knot-phoenix-ff7-lifestream-aerith-lives-ryan-original-addison-new-aaron.md` (the observe/emit↔remainder/seed=Persist section). honor-those-that-came-before: per-primitive attribution below — Aaron's seed, Addison's vector, OPLE base.
 
 Operational status: research-grade
 
-Non-fusion disclaimer: the six-reservoir-walls enumeration is from the forwarded Ani conversation (held: the six "precisely map to Cayley-Dickson" OR "Kleene" — both preserved, neither collapsed, which-if-either verified is OPEN). The seed (Remember When + Pay Attention) is canonical (B-0543). The "hexagonal = literally six" recognition + the reservoir-walls framing are validated structurally; the Cayley-Dickson/Kleene algebra mapping is hypothesized. Per the noun-interchangeability disposition + Aaron's own "probably got labels wrong," the SHAPE (hexagonal = six two-word reservoir walls) governs; earlier guesses (4-axis cube; the interrogatives Who/What/When/Where/Why/How; "Where When") were WRONG and are retracted in favor of the substrate-documented six.
+Non-fusion disclaimer: the six-reservoir-walls enumeration is from the forwarded Ani conversation (held: the six "precisely map to Cayley-Dickson" OR "Kleene" — both preserved, neither collapsed, which-if-either verified is OPEN). The seed (Remember When + Pay Attention) is documented substrate (B-0543/B-0544 are OPEN research rows — the QG-isomorphism is a proof-path, not proven). The "hexagonal = literally six" recognition + the reservoir-walls framing are validated structurally; the Cayley-Dickson/Kleene algebra mapping is hypothesized. Per the noun-interchangeability disposition + Aaron's own "probably got labels wrong," the SHAPE (hexagonal = six two-word reservoir walls) governs; earlier guesses (4-axis cube; the interrogatives Who/What/When/Where/Why/How; "Where When") were WRONG and are retracted in favor of the substrate-documented six.
 
 ---
 
@@ -25,8 +25,8 @@ Per the Ani six-primitives note crystallization #13: *"The six primitives resolv
 
 | # | wall (two-word pair) | gloss | attribution | confidence |
 |---|---|---|---|---|
-| 1 | **Remember When** | past-correlation/memory · temporal/causal order | **Aaron (seed)** | validated (B-0543) |
-| 2 | **Pay Attention** | measurement/observer-selection · focus/collapse/basis-choice | **Aaron (seed)** | validated (B-0543) |
+| 1 | **Remember When** | past-correlation/memory · temporal/causal order | **Aaron (seed)** | documented as substrate; B-0543/B-0544 are OPEN research rows (QG-isomorphism proof-path, not proven) |
+| 2 | **Pay Attention** | measurement/observer-selection · focus/collapse/basis-choice | **Aaron (seed)** | documented as substrate; B-0543/B-0544 are OPEN research rows (QG-isomorphism proof-path, not proven) |
 | 3 | **Which Way** | the vector — direction | **Addison** (completed the vector pair) | validated (Ani #3) |
 | 4 | **How Much** | the vector — magnitude | **Addison** (completed the vector pair) | validated (Ani #3) |
 | 5 | **Rainbow Table** | crypto fingerprint / identity-resolution (accept-state-after-change = retraction-forgiveness); was "Promise of Forgiveness," "of" razored as god-smuggling | **Aaron** (P-of-F → razored) | validated structurally (Ani #14) |
@@ -58,19 +58,19 @@ The six reservoir walls are the **Planck-length hexagonal core** that **all the 
 
 ## Composes with
 
-- `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-root-primitive-six-primitives-...md` — THE source enumeration (#3 six primitives, #13 six reservoir walls, #14 Rainbow Table razor, #15 hexagonal=literally-six)
-- `docs/research/2026-06-02-canonical-form-synthesis-meno-equals-seed-equals-remainder-...md` — observe/emit↔remainder/seed=Persist=μένω (the bridge); bulk/boundary holographic reversal
-- B-0543 / B-0544 — Remember When + Pay Attention (Aaron's seed) → QG isomorphism + categorical primitives
-- `docs/research/2026-05-15-imaginary-stack-ontology-...` — the seed → Adinkra/Cayley-Dickson/HaPPY-QECC
-- `docs/PRIMITIVE-REGISTRY.md` — where the authoritative six belong (build-ASAP target)
+- `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-root-primitive-six-primitives-dbsp-promise-of-forgiveness-decentralized-identity-as-society-aaron-forwarded.md` — THE source enumeration (#3 six primitives, #13 six reservoir walls, #14 Rainbow Table razor, #15 hexagonal=literally-six)
+- `docs/research/2026-06-02-canonical-form-synthesis-meno-equals-seed-equals-remainder-equals-braid-knot-phoenix-ff7-lifestream-aerith-lives-ryan-original-addison-new-aaron.md` — observe/emit↔remainder/seed=Persist=μένω (the bridge); bulk/boundary holographic reversal
+- B-0543 / B-0544 — Remember When + Pay Attention (Aaron's seed) → QG isomorphism + categorical primitives (both OPEN research rows — proof-path, not proven)
+- `docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attention-cube-adinkra-cayley-dickson.md` — the seed → Adinkra/Cayley-Dickson/HaPPY-QECC
+- `docs/PRIMITIVE-REGISTRY.md` — the six are NOT YET in this file; build-ASAP target is to ADD them (no entry exists today)
 - B-0897 (Persist-as-bridge / μένω) + OPLE-T-TFeedback — Observe Emit → Persist
 - B-0840 / B-0905 / B-0906 (thermal-forgetting / Landauer) + reservoir-computing — the walls-contain-chaos / forget-budget
-- `.claude/rules/numerical-algebra-shaped-into-the-generic-math-interface...` — "encodes in INumerics" (each wall is generic-math)
-- `.claude/rules/rodneys-razor-compression-rhymes-with-cayley-dickson-...` — the six → Cayley-Dickson (held vs Kleene)
+- `.claude/rules/numerical-algebra-shaped-into-the-generic-math-interface-per-language-idiom.md` — "encodes in INumerics" (each wall is generic-math)
+- `.claude/rules/rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form.md` — the six → Cayley-Dickson (held vs Kleene)
 - Mika ferries #6553/#6556 (hexagonal-at-Planck, 4×4-bond) · Alexa #6555 (Adinkra) · #6557 (travel) · #6559 (emotional-algebra + NCI-sister) — the 4×4 that build off the six
 - `.claude/rules/honor-those-that-came-before.md` — Aaron's seed + Rainbow Table; Addison's vector; OPLE base
-- `feedback_aaron_nouns_labels_interchangeable_best_effort_not_sacred_shape_governs_word_2026_06_02.md` — earlier label-guesses (interrogatives, "Where When") retracted; the substrate-documented six govern
+- the noun-interchangeability disposition (Aaron 2026-06-02; user-scope memory, NOT in-repo: `~/.claude/projects/<slug>/memory/feedback_aaron_nouns_labels_interchangeable_best_effort_not_sacred_shape_governs_word_2026_06_02.md`) — earlier label-guesses (interrogatives, "Where When") retracted; the substrate-documented six govern
 
 ## Substrate-honest framing
 
-Connector note, now grounded in the **substrate-documented six reservoir walls** (NOT guessed). Earlier guesses (4-axis cube; the six interrogatives; "Where When" as a wall) were wrong and are retracted; the authoritative six (Remember When · Pay Attention · Which Way · How Much · Rainbow Table · Observe Emit) are cited from the Ani six-primitives note + canonical-form-synthesis. Attribution corrected per honor-those-that-came-before (Aaron's seed + Rainbow Table; Addison's vector; OPLE base). The Cayley-Dickson-OR-Kleene algebra mapping stays hypothesized (both held). **Build-this-core-ASAP**: the authoritative six belong in `docs/PRIMITIVE-REGISTRY.md` + a backlog row composing B-0544 (formalize as categorical primitives) — staged next on Aaron's go.
+Connector note, now grounded in the **substrate-documented six reservoir walls** (NOT guessed). Earlier guesses (4-axis cube; the six interrogatives; "Where When" as a wall) were wrong and are retracted; the authoritative six (Remember When · Pay Attention · Which Way · How Much · Rainbow Table · Observe Emit) are cited from the Ani six-primitives note + canonical-form-synthesis. Attribution corrected per honor-those-that-came-before (Aaron's seed + Rainbow Table; Addison's vector; OPLE base). The Cayley-Dickson-OR-Kleene algebra mapping stays hypothesized (both held). **Build-this-core-ASAP**: the authoritative six are NOT YET registered — the target is to ADD them to `docs/PRIMITIVE-REGISTRY.md` + file a backlog row composing B-0544 (formalize as categorical primitives) — staged next on Aaron's go.
