@@ -144,6 +144,24 @@ pub enum EncodeError {
     BytesDeferred,
 }
 
+// `EncodeError` is public API (returned from `to_canonical_json`), so it carries
+// a stable human-readable `Display` and is a real `std::error::Error` -- callers
+// surface it without leaning on `Debug`.
+impl std::fmt::Display for EncodeError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            EncodeError::FloatDeferred => {
+                "DynamicValue::Float has no canonical JSON form yet (deferred to CBOR or a tagged-JSON convention)"
+            }
+            EncodeError::BytesDeferred => {
+                "DynamicValue::Bytes has no native JSON byte type yet (deferred to CBOR or a tagged-JSON convention)"
+            }
+        })
+    }
+}
+
+impl std::error::Error for EncodeError {}
+
 // Append `s` as a JSON string literal (including the surrounding quotes), RFC 8259
 // minimal escaping: '"' and '\' and control chars U+0000..U+001F (short forms
 // where they exist, else \u00XX lowercase-hex); '/' is NOT escaped; all other
@@ -169,4 +187,37 @@ fn escape_json_string(s: &str, out: &mut String) {
         }
     }
     out.push('"');
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // Lock the Result contract this oracle introduced: the deferred variants
+    // surface as `Err` and NEVER panic, per the Result-over-exception rule
+    // (AGENTS.md). The seed has no Float/Bytes vectors, so the cross-verify
+    // oracle can't catch a regression here -- these assert the contract directly
+    // (assert-don't-skip: a contract with no test is a hole in the shield).
+    #[test]
+    fn float_is_deferred_error_not_panic() {
+        assert_eq!(
+            DynamicValue::Float(1.5).to_canonical_json(),
+            Err(EncodeError::FloatDeferred)
+        );
+    }
+
+    #[test]
+    fn bytes_is_deferred_error_not_panic() {
+        assert_eq!(
+            DynamicValue::Bytes(vec![0u8, 1, 2]).to_canonical_json(),
+            Err(EncodeError::BytesDeferred)
+        );
+    }
+
+    // `EncodeError` is public API; Display must be stable + human-readable.
+    #[test]
+    fn encode_error_display_is_human_readable() {
+        assert!(EncodeError::FloatDeferred.to_string().contains("Float"));
+        assert!(EncodeError::BytesDeferred.to_string().contains("Bytes"));
+    }
 }
