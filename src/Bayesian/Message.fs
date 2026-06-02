@@ -119,6 +119,11 @@ module Gaussian =
     /// The EP cavity (= `a / b`).
     let divide (a: Gaussian) (b: Gaussian) : Gaussian = a / b
 
+    /// Distance between two Gaussian messages — max abs difference of the
+    /// natural parameters (ν, τ). Used for BP convergence detection.
+    let distance (a: Gaussian) (b: Gaussian) : float =
+        max (abs (a.PrecisionMean - b.PrecisionMean)) (abs (a.Precision - b.Precision))
+
     /// The runtime-polymorphic message algebra dictionary.
     let algebra : IMessage<Gaussian> =
         { new IMessage<Gaussian> with
@@ -196,6 +201,11 @@ module Beta =
     /// The EP cavity (= `a / b`).
     let divide (a: Beta) (b: Beta) : Beta = a / b
 
+    /// Distance between two Beta messages — max abs difference of the
+    /// shape parameters (α, β). Used for BP convergence detection.
+    let distance (a: Beta) (b: Beta) : float =
+        max (abs (a.Alpha - b.Alpha)) (abs (a.Beta - b.Beta))
+
     /// The runtime-polymorphic message algebra dictionary.
     let algebra : IMessage<Beta> =
         { new IMessage<Beta> with
@@ -252,6 +262,11 @@ module Bernoulli =
 
     /// The EP cavity (= `a / b`).
     let divide (a: Bernoulli) (b: Bernoulli) : Bernoulli = a / b
+
+    /// Distance between two Bernoulli messages — abs difference of
+    /// P(true). Used for BP convergence detection.
+    let distance (a: Bernoulli) (b: Bernoulli) : float =
+        abs (a.ProbTrue - b.ProbTrue)
 
     /// The runtime-polymorphic message algebra dictionary.
     let algebra : IMessage<Bernoulli> =

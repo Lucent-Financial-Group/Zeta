@@ -132,10 +132,52 @@ module FactorGraph =
                 factor.ComputeMessages incoming)
         { g with FactorToVar = updated }
 
-    /// Run `passOnce` `rounds` times (a fixed schedule; the
-    /// convergence-detecting fixed-point schedule is slice 4).
+    /// Run `passOnce` `rounds` times (a fixed schedule). For the
+    /// convergence-detecting schedule prefer `runToFixpoint`.
     let passRounds (rounds: int) (g: FactorGraph<'M>) : FactorGraph<'M> =
         let mutable current = g
         for _ in 1..rounds do
             current <- passOnce current
         current
+
+    /// True if any factor→var message in `b` differs from `a` by more
+    /// than `tol` under the per-family `distance` (the residual test).
+    let private moved (distance: 'M -> 'M -> float) (tol: float) (a: FactorGraph<'M>) (b: FactorGraph<'M>) : bool =
+        a.FactorToVar
+        |> Map.exists (fun fid msgs ->
+            match Map.tryFind fid b.FactorToVar with
+            | None -> true
+            | Some msgs' ->
+                msgs
+                |> Map.exists (fun v m ->
+                    match Map.tryFind v msgs' with
+                    | None -> true
+                    | Some m' -> distance m m' > tol))
+
+    /// **Sum-product belief propagation to a fixed point.** Iterate
+    /// `passOnce` until no factor→var message moves more than `tol` (by
+    /// the per-family `distance`), or `maxRounds` is reached. Returns
+    /// `(converged graph, rounds run, converged-before-the-cap?)`.
+    ///
+    /// On a tree this reaches the exact marginals; with loops it is loopy
+    /// BP (may not converge — hence the cap, like `NestedCircuit`'s
+    /// 64-iteration LFP cap). Structurally this *is* the DBSP
+    /// `NestedCircuit.Fixedpoint` (drive the inner clock to the least
+    /// fixed point, capped) at the factor-graph level; wiring the factor
+    /// graph as literal DBSP operators — for **incremental re-inference
+    /// on a data delta** — is the next integration (slice 4b).
+    let runToFixpoint
+        (distance: 'M -> 'M -> float)
+        (tol: float)
+        (maxRounds: int)
+        (g: FactorGraph<'M>)
+        : FactorGraph<'M> * int * bool =
+        let mutable current = g
+        let mutable rounds = 0
+        let mutable converged = false
+        while rounds < maxRounds && not converged do
+            let next = passOnce current
+            rounds <- rounds + 1
+            converged <- not (moved distance tol current next)
+            current <- next
+        current, rounds, converged
