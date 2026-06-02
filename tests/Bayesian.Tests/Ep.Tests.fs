@@ -53,6 +53,24 @@ let ``probit projection matches numerical quadrature of cavity times Phi`` () =
         Gaussian.mean proj |> should (equalWithin 2e-3) qMean
         Gaussian.variance proj |> should (equalWithin 2e-3) qVar
 
+// ─── Extreme negative cavity: Φ(z) underflows → asymptotic inverse Mills ───
+
+[<Fact>]
+let ``probit projection stays finite and proper for an extreme negative cavity`` () =
+    // cavity strongly contradicts "x > 0": Φ(z) underflows to 0, so the naive
+    // λ = φ/Φ would be ∞/NaN and throw via ofMeanVariance. The stabilized
+    // inverse Mills (asymptotic tail) must keep the projection finite, proper,
+    // and variance-reduced (the factor still adds information).
+    for m, v in [ (-15.0, 1.0); (-40.0, 0.25); (-8.0, 4.0) ] do
+        let proj = Ep.probitProject (Gaussian.ofMeanVariance m v)
+        Gaussian.isProper proj |> should equal true
+        Double.IsFinite(Gaussian.mean proj) |> should equal true
+        Double.IsFinite(Gaussian.variance proj) |> should equal true
+        // probit observation adds information → posterior variance ≤ cavity
+        Gaussian.variance proj |> should be (lessThanOrEqualTo v)
+        // and it pushes the (very negative) mean upward toward the constraint
+        Gaussian.mean proj |> should be (greaterThan m)
+
 // ─── EP as a factor in the existing BP loop ───
 
 [<Fact>]
