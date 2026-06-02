@@ -82,7 +82,11 @@ module Ep =
         let z = m / s
         let lambda = inverseMills z
         let mHat = m + v * lambda / s
-        let vHat = v - v * v * lambda * (z + lambda) / (1.0 + v)
+        // v̂ = v − v²λ(z+λ)/(1+v) factored as v·(1 − (v/(1+v))·λ(z+λ)): the
+        // v/(1+v) factor stays ≤ 1, so a very broad but valid cavity (e.g.
+        // v = 1e308, accepted by the public constructor) doesn't overflow the
+        // v² intermediate to ∞ before the divide. Algebraically identical.
+        let vHat = v * (1.0 - (v / (1.0 + v)) * lambda * (z + lambda))
         Gaussian.ofMeanVariance mHat vHat
 
     /// A **probit EP factor** on a single Gaussian variable — the soft

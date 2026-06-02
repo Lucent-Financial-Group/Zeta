@@ -71,6 +71,18 @@ let ``probit projection stays finite and proper for an extreme negative cavity``
         // and it pushes the (very negative) mean upward toward the constraint
         Gaussian.mean proj |> should be (greaterThan m)
 
+[<Fact>]
+let ``probit projection stays finite for an extremely broad cavity (no v-squared overflow)`` () =
+    // v = 1e308 is finite + positive → accepted by the public constructor, so
+    // probitProject must handle it. The naive v² intermediate would overflow to
+    // ∞; the factored v·(1 − (v/(1+v))·λ(z+λ)) update stays in range.
+    for m, v in [ (0.0, 1e308); (1e150, 1e300); (-1e150, 1e300) ] do
+        let proj = Ep.probitProject (Gaussian.ofMeanVariance m v)
+        Gaussian.isProper proj |> should equal true
+        Double.IsFinite(Gaussian.mean proj) |> should equal true
+        Double.IsFinite(Gaussian.variance proj) |> should equal true
+        Gaussian.variance proj |> should be (lessThanOrEqualTo v)
+
 // ─── EP as a factor in the existing BP loop ───
 
 [<Fact>]
