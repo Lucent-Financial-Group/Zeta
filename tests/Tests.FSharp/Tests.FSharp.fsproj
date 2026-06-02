@@ -115,6 +115,7 @@
     <Compile Include="Infra/Environment.Tests.fs" />
     <Compile Include="Infra/Rx.Tests.fs" />
     <Compile Include="Infra/FeatureFlags.Tests.fs" />
+    <Compile Include="Limit/Limit.Tests.fs" />
 
     <!-- Crdt/ -->
     <Compile Include="Crdt/GCounter.Tests.fs" />

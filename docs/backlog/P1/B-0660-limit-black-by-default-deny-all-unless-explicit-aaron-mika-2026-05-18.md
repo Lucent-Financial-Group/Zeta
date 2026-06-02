@@ -139,3 +139,5 @@ Each prior example is a domain-specific instance; this row is the substrate-prim
 ## Status
 
 Open. **LOCKED-IN** by Aaron + Mika 2026-05-18. Companion architectural rule to B-0659 (consent-as-Limit-operation); together they ground the consent semantics in security-first architectural defaults.
+
+2026-06-02 Codex background-service F# slice: added the core `LimitBoundary.defaultLimit` / explicit grant primitive with focused deny-default tests. Remaining acceptance work stays open: governance doc, Lean proof, composition docs, worked example, and KSK / child-safety integration.
