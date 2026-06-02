@@ -228,25 +228,10 @@ public static class DynamicValues
             case DynamicValue.Bytes:
                 return EncodeError.BytesDeferred;
             case DynamicValue.Array a:
-                foreach (var item in a.Items)
-                {
-                    if (FirstDeferred(item) is EncodeError e)
-                    {
-                        return e;
-                    }
-                }
-
-                return null;
+                // first deferred among the items (Select is lazy; FirstOrDefault short-circuits)
+                return a.Items.Select(FirstDeferred).FirstOrDefault(e => e is not null);
             case DynamicValue.Object o:
-                foreach (var pair in o.Pairs)
-                {
-                    if (FirstDeferred(pair.Value) is EncodeError e)
-                    {
-                        return e;
-                    }
-                }
-
-                return null;
+                return o.Pairs.Select(pair => FirstDeferred(pair.Value)).FirstOrDefault(e => e is not null);
             default:
                 return null;
         }
