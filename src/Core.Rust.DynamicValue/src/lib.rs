@@ -308,16 +308,16 @@ pub enum DecodeError {
 
 impl std::fmt::Display for DecodeError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // format-neutral: `DecodeError` is shared by the CBOR and JSON decoders, so the messages
+        // must not name one codec (a JSON caller logging `Unsupported` shouldn't see "CBOR ... tag").
         f.write_str(match self {
-            DecodeError::UnexpectedEnd => "input ended mid-item (truncated CBOR)",
-            DecodeError::TrailingData => "extra bytes after a complete top-level value",
-            DecodeError::Unsupported => {
-                "unsupported CBOR (reserved/indefinite additional-info, tag, or simple value)"
-            }
-            DecodeError::IntegerOverflow => "CBOR integer does not fit i64",
+            DecodeError::UnexpectedEnd => "input ended mid-item (truncated input)",
+            DecodeError::TrailingData => "extra input after a complete top-level value",
+            DecodeError::Unsupported => "unsupported or reserved form for this codec",
+            DecodeError::IntegerOverflow => "integer does not fit i64",
             DecodeError::NonTextKey => "object (map) key was not a text string",
             DecodeError::NonCanonical => {
-                "well-formed but non-canonical CBOR (not the shortest/canonical form this codec emits)"
+                "well-formed but non-canonical input (not the canonical form this codec emits)"
             }
         })
     }
@@ -967,11 +967,21 @@ mod tests {
         assert!(
             DecodeError::TrailingData
                 .to_string()
-                .contains("extra bytes")
+                .contains("extra input")
         );
         assert!(DecodeError::Unsupported.to_string().contains("unsupported"));
         assert!(DecodeError::IntegerOverflow.to_string().contains("i64"));
         assert!(DecodeError::NonTextKey.to_string().contains("text string"));
         assert!(DecodeError::NonCanonical.to_string().contains("canonical"));
+        // format-neutral: the shared DecodeError Display must not name a single codec
+        for e in [
+            DecodeError::UnexpectedEnd,
+            DecodeError::TrailingData,
+            DecodeError::Unsupported,
+            DecodeError::IntegerOverflow,
+            DecodeError::NonCanonical,
+        ] {
+            assert!(!e.to_string().contains("CBOR"), "{e:?} Display names CBOR");
+        }
     }
 }
