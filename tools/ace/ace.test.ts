@@ -717,6 +717,14 @@ describe("registry commands", () => {
     writeFileSync(p, JSON.stringify(D));
     expect(await main(["registry", "add", "WRONGNAME", "1.0.0", p])).toBe(65);
   });
+  test("registry add refuses a malformed field value (float) with exit 65 (not ace: fatal:)", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const p = join(dir, "mal.json");
+    // Well-formed SHAPE + matching identity, but a float manifest field makes packageHash throw;
+    // safePackageHash must turn that into a clean exit 65, not the generic ace: fatal: catch-all.
+    writeFileSync(p, JSON.stringify({ manifest: { format_version: 1, name: "M", version: "1.0.0", content_hash: "sha256:deadbeef", bogus: 1.5 }, files: { "a.txt": "x" } }));
+    expect(await main(["registry", "add", "M", "1.0.0", p])).toBe(65);
+  });
   test("e2e: install a root with a registry dep resolves via the registry", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
