@@ -79,7 +79,7 @@ isn't confused with hoarding and the kid-floor case is never improvised.
 
 ## Full reasoning
 
-Forwarded Kestrel × maintainer session 2026-06-03 (preserved research note §2).
+Forwarded asymmetric-critic-peer × maintainer session 2026-06-03 (preserved research note §2).
 The maintainer drew the precise line — the private window of responsible disclosure
 must stay private but must move toward sent; child-safety exploits are a floor
 matter needing the strongest, predetermined, authority-routed rails — and named the

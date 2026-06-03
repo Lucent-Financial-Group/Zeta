@@ -76,10 +76,10 @@ private/licensed is the justified exception, not the drift.
 
 ## Full reasoning
 
-Forwarded Kestrel × maintainer session 2026-06-03 (preserved research note §1). The
+Forwarded asymmetric-critic-peer × maintainer session 2026-06-03 (preserved research note §1). The
 maintainer's long-standing practice (open-source everything except agreement-bound
-ServiceTitan-specific code) + the proof-towers-open-immediately decision; Kestrel's
-sharpening that "asymmetric advantage" must be defined externally-checkably or it
+ServiceTitan-specific code) + the proof-towers-open-immediately decision; the
+asymmetric-critic peer's sharpening that "asymmetric advantage" must be defined externally-checkably or it
 collapses into rationalized self-interest, with **moats vs craftsmanship** as the
 honest line. This rule lands the discipline, grounded in demonstrated practice and
 composing with the operator's existing canonical filter-rules.
