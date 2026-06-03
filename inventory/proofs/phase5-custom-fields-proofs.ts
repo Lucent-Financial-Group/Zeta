@@ -110,6 +110,16 @@ function ok2xx(s: number): boolean {
   return s >= 200 && s < 300;
 }
 
+// jsonb is UNORDERED — Postgres normalizes key order on storage, so compare the
+// custom_fields object key-by-key (NOT JSON.stringify, which is order-sensitive).
+function sameCf(stored: unknown, sent: Record<string, unknown>): boolean {
+  if (!stored || typeof stored !== "object") return false;
+  const so = stored as Record<string, unknown>;
+  const sk = Object.keys(so), tk = Object.keys(sent);
+  if (sk.length !== tk.length) return false;
+  return tk.every((k) => JSON.stringify(so[k]) === JSON.stringify(sent[k]));
+}
+
 async function main() {
   line("=== Phase 5 custom-field proofs (admin+editor sessions, publishable key, NO service_role) ===");
   line(`URL=${URL}`);
@@ -196,7 +206,7 @@ async function main() {
   const setValid = await rest("PATCH", `items?id=eq.${id}`, editorToken, { body: { custom_fields: validCf }, prefer: "return=representation" });
   const afterValid = arr(setValid.body)[0] as Record<string, unknown> | undefined;
   line(`set valid custom_fields -> http ${setValid.status}; stored=${JSON.stringify(afterValid?.["custom_fields"])}`);
-  const p2b = ok2xx(setValid.status) && JSON.stringify(afterValid?.["custom_fields"]) === JSON.stringify(validCf);
+  const p2b = ok2xx(setValid.status) && sameCf(afterValid?.["custom_fields"], validCf);
   line(`(2b) ASSERTION all five valid typed values accepted + stored: ${p2b ? "PASS" : "FAIL"}`);
   line("");
 
@@ -222,7 +232,7 @@ async function main() {
   }
   // confirm the valid value is unchanged after the rejected writes
   const stillValid = arr((await rest("GET", `items?id=eq.${id}&select=custom_fields`, editorToken)).body)[0] as Record<string, unknown> | undefined;
-  const intact = JSON.stringify(stillValid?.["custom_fields"]) === JSON.stringify(validCf);
+  const intact = sameCf(stillValid?.["custom_fields"], validCf);
   line(`  value intact after all rejects: ${JSON.stringify(stillValid?.["custom_fields"])} -> ${intact ? "OK" : "MISMATCH"}`);
   line(`(3) ASSERTION every malformed value + unknown key DB-rejected, valid value intact: ${p3 && intact ? "PASS" : "FAIL"}`);
   line("");
