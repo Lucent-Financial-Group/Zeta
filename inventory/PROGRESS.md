@@ -117,9 +117,10 @@ a custom field returns correct items; "number" rejects text.
   sql/proofs/phase5_proofs.sql. PROVEN NOW, NO CREDS (raw output in the "Phase 5 evidence" appendix):
   (a) 20/20 bun unit tests incl. broken-vs-fixed numeric sort (sabotaged comparator -> 2 fail);
   (b) REAL-BROWSER (Playwright, real renderHead()/applyView()): numeric sort [9,10,100] asc &
-      [100,10,9] desc (NOT lexicographic 10,100,9); a <img onerror>+<script> payload rendered INERT
-      as BOTH a custom VALUE and a field LABEL (window.__xss stayed undefined; innerHTML escaped to
-      &lt;img...); custom-field VALUE searchable (search "100" -> only the rating=100 row). The lib
+      [100,10,9] desc (NOT lexicographic 10,100,9); an `<img onerror>`+`<script>` payload rendered
+      INERT as BOTH a custom VALUE and a field LABEL (window.__xss stayed undefined; innerHTML
+      escaped to `&lt;img...`); custom-field VALUE searchable (search "100" -> only the rating=100
+      row). The lib
       loaded from CSP 'self'. (CDN-blocked-by-proxy note: the container proxy MITMs jsdelivr's cert,
       so the proof ran against a gitignored _proof_tmp/boot.html = index.html with ONLY the CDN tag
       swapped for a supabase stub — no source divergence; the real merged site has no such block.)
