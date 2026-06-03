@@ -67,7 +67,7 @@ jobs:
             fi
           fi
           # Strip accidental trailing CR/LF (classic GitHub-secret paste footgun).
-          EMAIL="$(printf '%s' "$EMAIL" | tr -d '\r\n')"
+          EMAIL="$(printf '%s' "$EMAIL" | tr -d '\r\n' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
           PW="$(printf '%s' "$PW" | tr -d '\r\n')"
           HAS_AT=no; case "$EMAIL" in *@*) HAS_AT=yes;; esac
           echo "admin email length=${#EMAIL} has_at=$HAS_AT ; password length=${#PW}"  # shape only, no values
