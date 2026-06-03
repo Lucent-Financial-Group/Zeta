@@ -1,19 +1,21 @@
-# Inventory — Phase 5 live REST proof (consumes the `inventory_admin_login` repo secret)
+# Inventory — Phase 5 live REST proof (consumes admin creds from repo secrets)
 # ---------------------------------------------------------------------------------------
 # WHY THIS EXISTS: GitHub repository secrets are write-only via the API — they can ONLY
 # be read inside an Actions run. The Phase-5 client-path proofs (add typed fields,
 # per-type DB rejection, deactivate-preserves) need an ADMIN session, delivered by the
-# owner as the secret `inventory_admin_login`. This workflow runs
-# inventory/proofs/phase5-custom-fields-proofs.ts using that secret.
+# owner as repo secrets. This workflow runs inventory/proofs/phase5-custom-fields-proofs.ts.
+#
+# ADMIN CREDS (pick ONE; the two-secret form is recommended — zero parsing ambiguity):
+#   * RECOMMENDED: two secrets  INVENTORY_ADMIN_EMAIL  +  INVENTORY_ADMIN_PASSWORD
+#   * OR: a single secret  inventory_admin_login  as JSON {"email":"...","password":"..."}
 #
 # SAFETY (repo is PUBLIC):
-#   * The ONLY credential used is the masked secret. SUPABASE_URL + the publishable
-#     (anon) key are already public (they live in inventory/index.html).
-#   * Runs everything as ADMIN (admin has editor rights on items; the validate_custom_fields
-#     trigger is SECURITY DEFINER so it fires for ALL writers — the per-type rejection proof
-#     holds regardless of role). No editor password is ever placed in this public repo.
-#   * The secret's split-out email/password are written to $GITHUB_ENV WITHOUT echoing;
-#     the proof harness never logs tokens or credentials.
+#   * The ONLY credentials are masked secrets. SUPABASE_URL + the publishable (anon) key
+#     are already public (they live in inventory/index.html).
+#   * Runs everything as ADMIN (admin has editor rights on items; validate_custom_fields()
+#     is SECURITY DEFINER so it fires for ALL writers — the per-type rejection proof holds
+#     regardless of role). No editor password is ever placed in this public repo.
+#   * Creds are written to $GITHUB_ENV WITHOUT echoing; the proof harness logs no tokens.
 #   * NO service_role. Read-only checkout (contents: read).
 #
 # PREREQUISITE: the owner must FIRST run inventory/sql/phase5.sql in the Supabase SQL
@@ -48,36 +50,37 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Parse admin login from secret (no echo)
+      - name: Resolve admin creds (no echo)
         env:
+          # Preferred: two dedicated secrets (no parsing ambiguity).
+          ADMIN_EMAIL_SECRET: ${{ secrets.INVENTORY_ADMIN_EMAIL }}
+          ADMIN_PASSWORD_SECRET: ${{ secrets.INVENTORY_ADMIN_PASSWORD }}
+          # Fallback: single secret as JSON {"email":"...","password":"..."}.
           LOGIN: ${{ secrets.inventory_admin_login }}
         run: |
-          if [ -z "$LOGIN" ]; then echo "::error::secret inventory_admin_login is empty/unset"; exit 2; fi
-          # Accept JSON {"email":..,"password":..}, "email:password", or "email <ws> password".
-          EMAIL="$(printf '%s' "$LOGIN" | jq -r 'try .email catch empty' 2>/dev/null || true)"
-          PW="$(printf '%s' "$LOGIN" | jq -r 'try .password catch empty' 2>/dev/null || true)"
-          if [ -z "$EMAIL" ] || [ "$EMAIL" = "null" ]; then
-            # normalize ANY common delimiter (: , ; | = tab CR LF) to a single space,
-            # then take the first two whitespace tokens as email + password.
-            NORM="$(printf '%s' "$LOGIN" | tr ':,;|=\t\r\n' ' ')"
-            echo "login token count = $(printf '%s' "$NORM" | wc -w)"   # diagnostic only (no values)
-            EMAIL="$(printf '%s' "$NORM" | awk '{print $1}')"
-            PW="$(printf '%s' "$NORM" | awk '{print $2}')"
-          fi
+          EMAIL="$ADMIN_EMAIL_SECRET"
+          PW="$ADMIN_PASSWORD_SECRET"
           if [ -z "$EMAIL" ] || [ -z "$PW" ]; then
-            echo "::error::could not parse email+password from inventory_admin_login (expected JSON, email:password, or 'email password')"; exit 2
+            if [ -n "$LOGIN" ]; then
+              EMAIL="$(printf '%s' "$LOGIN" | jq -r 'try .email catch empty' 2>/dev/null || true)"
+              PW="$(printf '%s' "$LOGIN" | jq -r 'try .password catch empty' 2>/dev/null || true)"
+            fi
           fi
-          # Mask the split-out parts too, then export WITHOUT printing them.
+          if [ -z "$EMAIL" ] || [ "$EMAIL" = "null" ] || [ -z "$PW" ] || [ "$PW" = "null" ]; then
+            echo "::error::Admin creds unresolved. EASIEST FIX: add repo secrets INVENTORY_ADMIN_EMAIL + INVENTORY_ADMIN_PASSWORD (recommended). OR overwrite inventory_admin_login with JSON: {\"email\":\"<admin email>\",\"password\":\"<admin password>\"}. (The current inventory_admin_login value is not parseable as either.)"
+            exit 2
+          fi
+          # Mask the resolved values, then export WITHOUT printing them.
           echo "::add-mask::$EMAIL"
           echo "::add-mask::$PW"
           {
             echo "ADMIN_EMAIL=$EMAIL"
             echo "ADMIN_PASSWORD=$PW"
-            # run the editor-slot proofs as admin too (trigger validates all roles)
+            # run the editor-slot proofs as admin too (the trigger validates all roles)
             echo "EDITOR_EMAIL=$EMAIL"
             echo "EDITOR_PASSWORD=$PW"
           } >> "$GITHUB_ENV"
-          echo "parsed admin login OK (values masked)"
+          echo "admin creds resolved (values masked)"
 
       - name: Run Phase 5 custom-field proofs (admin session, publishable key, NO service_role)
         env:
