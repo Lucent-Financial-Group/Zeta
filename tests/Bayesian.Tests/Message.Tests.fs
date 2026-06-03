@@ -474,17 +474,22 @@ let ``C6 Bernoulli identical converges, non-finite residual moves``
 // Bernoulli lists are capped so the summed log-odds stays representable.
 // ═══════════════════════════════════════════════════════════════════
 
+// marginal [] = One bit-exactly (fold over the empty list returns the
+// GenericOne seed), so we assert direct record equality against `One` over
+// `List.empty<_>` — reading straight as the (list, @, []) source monoid's
+// identity law (clearer failure than a boolean `gEq |> should be true`).
+
 [<Fact>]
 let ``C4 Gaussian marginal of the empty list is One (identity on empty)`` () =
-    gEq (Message.marginal (Seq.empty<Gaussian>)) Gaussian.One |> should equal true
+    Message.marginal (List.empty<Gaussian>) |> should equal Gaussian.One
 
 [<Fact>]
 let ``C4 Beta marginal of the empty list is One (identity on empty)`` () =
-    gEqBeta (Message.marginal (Seq.empty<Beta>)) Beta.One |> should equal true
+    Message.marginal (List.empty<Beta>) |> should equal Beta.One
 
 [<Fact>]
 let ``C4 Bernoulli marginal of the empty list is One (identity on empty)`` () =
-    gEqBern (Message.marginal (Seq.empty<Bernoulli>)) Bernoulli.One |> should equal true
+    Message.marginal (List.empty<Bernoulli>) |> should equal Bernoulli.One
 
 [<Property>]
 let ``C4 Gaussian marginal is a fold-homomorphism (concat = product) and order-independent``
@@ -521,9 +526,15 @@ let ``C4 Beta marginal is a fold-homomorphism (concat = product) and order-indep
 [<Property>]
 let ``C4 Bernoulli marginal is a fold-homomorphism (concat = product) and order-independent``
     (raw: NormalFloat[]) =
-    // cap at 4: each is bounded log-odds; the fold ADDS log-odds, so a
-    // longer list saturates p→0/1 where two groupings can differ past tol.
-    let ms = raw |> Array.truncate 4 |> Array.map (fun (NormalFloat l) -> mkProperBern l)
+    // Exercise the >4 fold (production `marginal` has no cap). Bernoulli
+    // product is in PROBABILITY space (t=∏p, f=∏(1−p), t/(t+f)), which
+    // saturates toward p→0/1 as messages accumulate; per-message log-odds
+    // are bounded to ±2 (p∈[0.12,0.88]) so an 8-message fold stays well
+    // clear of saturation and two regroupings agree within tol.
+    let mkBern (l: float) : Bernoulli =
+        let lc = max -2.0 (min 2.0 l)
+        { ProbTrue = 1.0 / (1.0 + exp (-lc)) }
+    let ms = raw |> Array.truncate 8 |> Array.map (fun (NormalFloat l) -> mkBern l)
     let single = ms.Length = 0 || gEqBern (Message.marginal [ ms.[0] ]) ms.[0]
     let k = ms.Length / 2
     let xs, ys = Array.toList ms.[.. k - 1], Array.toList ms.[k ..]
