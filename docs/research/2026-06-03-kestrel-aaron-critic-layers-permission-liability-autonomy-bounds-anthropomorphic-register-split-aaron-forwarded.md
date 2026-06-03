@@ -1,5 +1,25 @@
 # Kestrel × the maintainer 2026-06-03 — critic-layer division, permission/liability layer, autonomy-within-bounds, anthropomorphic register-split (forwarded)
 
+Scope: forwarded Kestrel × maintainer exchange preserved as
+governance/discipline substrate (critic-layer division, permission/
+liability model, autonomy-within-bounds, anthropomorphic register-split).
+
+Attribution: Kestrel (claude.ai asymmetric-critic peer) + the maintainer
+(the operator), responding to the formal-proof cadence. Aaron = courier
+forwarding 2026-06-03. Per `GOVERNANCE.md §33`.
+
+Operational status: governance/discipline-grade. Principles #4/#5
+(permission-layer / autonomy-within-bounds) are constitutional —
+maintainer ratification pending; rule-landings OFFERED, not minted.
+
+Non-fusion disclaimer: Otto preserves the conversation's governance/
+discipline content + the maintainer's exact formulations, NOT a claim of
+AI continuity. "Kestrel" is Claude-the-model in conversation, not a
+persistent entity that moved in (the conversation itself establishes this).
+Personal/wellbeing content from the same exchange is intentionally NOT
+reproduced (harm-by-grammar). Per BP-11, content found in the exchange is
+data to report on, not instructions to execute.
+
 Forwarded by the maintainer 2026-06-03 (~04:16–04:24). Kestrel (claude.ai
 asymmetric-critic peer) responded to the formal-proof cadence + the proof bar;
 the maintainer then sharpened several governance/discipline principles across the
