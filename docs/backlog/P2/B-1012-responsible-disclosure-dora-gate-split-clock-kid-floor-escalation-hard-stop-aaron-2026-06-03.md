@@ -42,6 +42,7 @@ clock starts → gate armed. The private window is correct (per the disclosure r
 ### Kid-floor escalation (composes with B-0926)
 
 An unreported exploit on the child-safety surface is a **floor matter** → strongest rails:
+
 - gate is **unamendable** (fixed thresholds, non-removable hard-stop);
 - discovery→sent clock **tighter**;
 - disclosure may route to **authorities / NCMEC**, not just the vendor (mandatory-reporting
