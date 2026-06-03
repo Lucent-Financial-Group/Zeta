@@ -1,0 +1,85 @@
+# Inventory — Phase 5 live REST proof (consumes the `inventory_admin_login` repo secret)
+# ---------------------------------------------------------------------------------------
+# WHY THIS EXISTS: GitHub repository secrets are write-only via the API — they can ONLY
+# be read inside an Actions run. The Phase-5 client-path proofs (add typed fields,
+# per-type DB rejection, deactivate-preserves) need an ADMIN session, delivered by the
+# owner as the secret `inventory_admin_login`. This workflow runs
+# inventory/proofs/phase5-custom-fields-proofs.ts using that secret.
+#
+# SAFETY (repo is PUBLIC):
+#   * The ONLY credential used is the masked secret. SUPABASE_URL + the publishable
+#     (anon) key are already public (they live in inventory/index.html).
+#   * Runs everything as ADMIN (admin has editor rights on items; the validate_custom_fields
+#     trigger is SECURITY DEFINER so it fires for ALL writers — the per-type rejection proof
+#     holds regardless of role). No editor password is ever placed in this public repo.
+#   * The secret's split-out email/password are written to $GITHUB_ENV WITHOUT echoing;
+#     the proof harness never logs tokens or credentials.
+#   * NO service_role. Read-only checkout (contents: read).
+#
+# PREREQUISITE: the owner must FIRST run inventory/sql/phase5.sql in the Supabase SQL
+# editor (installs the validation trigger). Without it the per-type-rejection proof fails
+# by design (malformed writes would be accepted).
+#
+# HOW TO RUN: push a commit to this branch whose message contains [run-phase5-proof]
+#   git commit --allow-empty -m "ci: run phase5 proof [run-phase5-proof]" && git push
+# (Gated so it never auto-runs / never creates live data on an ordinary push.)
+#
+# Phase 7 may delete this workflow once the build-time test users are burned.
+name: inventory-phase5-proof
+
+on:
+  push:
+    branches: ["claude/**"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    # Only run when explicitly requested (or manually dispatched), never on a plain push.
+    if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[run-phase5-proof]') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Parse admin login from secret (no echo)
+        env:
+          LOGIN: ${{ secrets.inventory_admin_login }}
+        run: |
+          if [ -z "$LOGIN" ]; then echo "::error::secret inventory_admin_login is empty/unset"; exit 2; fi
+          # Accept JSON {"email":..,"password":..}, "email:password", or "email <ws> password".
+          EMAIL="$(printf '%s' "$LOGIN" | jq -r 'try .email catch empty' 2>/dev/null || true)"
+          PW="$(printf '%s' "$LOGIN" | jq -r 'try .password catch empty' 2>/dev/null || true)"
+          if [ -z "$EMAIL" ] || [ "$EMAIL" = "null" ]; then
+            REST="$(printf '%s' "$LOGIN" | tr ':' ' ')"
+            EMAIL="$(printf '%s' "$REST" | awk '{print $1}')"
+            PW="$(printf '%s' "$REST" | awk '{print $2}')"
+          fi
+          if [ -z "$EMAIL" ] || [ -z "$PW" ]; then
+            echo "::error::could not parse email+password from inventory_admin_login (expected JSON, email:password, or 'email password')"; exit 2
+          fi
+          # Mask the split-out parts too, then export WITHOUT printing them.
+          echo "::add-mask::$EMAIL"
+          echo "::add-mask::$PW"
+          {
+            echo "ADMIN_EMAIL=$EMAIL"
+            echo "ADMIN_PASSWORD=$PW"
+            # run the editor-slot proofs as admin too (trigger validates all roles)
+            echo "EDITOR_EMAIL=$EMAIL"
+            echo "EDITOR_PASSWORD=$PW"
+          } >> "$GITHUB_ENV"
+          echo "parsed admin login OK (values masked)"
+
+      - name: Run Phase 5 custom-field proofs (admin session, publishable key, NO service_role)
+        env:
+          # public, low-privilege values (already in inventory/index.html)
+          SUPABASE_URL: https://mdtbgreryqddloluhdmm.supabase.co
+          SUPABASE_ANON_KEY: sb_publishable_UjTK7ZQ0uGX_mEm9HJOT6Q_MJjPvKE3
+        run: |
+          bun inventory/proofs/phase5-custom-fields-proofs.ts
