@@ -30,7 +30,7 @@
     {
       "id": "with-marks",
       "content": {
-        "format_version": 1,
+        "format_version": 2,
         "sequence": 7,
         "issued_at": "2026-06-02T00:00:00Z",
         "packages": {
@@ -58,7 +58,7 @@
           }
         }
       },
-      "expected_canonical_json": "{\"format_version\":1,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}}},\"quarantined\":{\"tool\":{\"2.0.0\":{\"at\":\"2026-06-01T06:00:00Z\",\"reason\":\"review\"}}},\"revoked\":{\"leaf\":{\"1.0.0\":{\"at\":\"2026-06-01T00:00:00Z\",\"reason\":\"cve\"}}},\"sequence\":7}"
+      "expected_canonical_json": "{\"format_version\":2,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}}},\"quarantined\":{\"tool\":{\"2.0.0\":{\"at\":\"2026-06-01T06:00:00Z\",\"reason\":\"review\"}}},\"revoked\":{\"leaf\":{\"1.0.0\":{\"at\":\"2026-06-01T00:00:00Z\",\"reason\":\"cve\"}}},\"sequence\":7}"
     }
   ],
   "envelope": [
@@ -66,7 +66,7 @@
       "id": "with-marks",
       "private_pem": "-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIGJhLUCsf3seeKzdGpas+Ko6nMKm+nMG8j0uupu9mV/o\n-----END PRIVATE KEY-----\n",
       "content": {
-        "format_version": 1,
+        "format_version": 2,
         "sequence": 7,
         "issued_at": "2026-06-02T00:00:00Z",
         "packages": {
@@ -95,8 +95,8 @@
         }
       },
       "expected_key_id": "ed25519:0dbe5a2385bc2af4",
-      "expected_sig": "zgbkJurrbDifcsPgIBiFIumHVgeyqfu9uP2WmE9ykCVkNj4z5nQh4zD3dKMHZlOBbZhMMFxmPFOrODJIMIEbBw==",
-      "expected_canonical_json": "{\"format_version\":1,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}}},\"quarantined\":{\"tool\":{\"2.0.0\":{\"at\":\"2026-06-01T06:00:00Z\",\"reason\":\"review\"}}},\"revoked\":{\"leaf\":{\"1.0.0\":{\"at\":\"2026-06-01T00:00:00Z\",\"reason\":\"cve\"}}},\"sequence\":7}"
+      "expected_sig": "Vr7aY5hf0n8mDJyiovneyfEe0liEEFjOoSBNHLvKmkMQTH+ylsIG5Lp8+giY9rrdj5L/Cd0pw/TC2M6fqgUqCw==",
+      "expected_canonical_json": "{\"format_version\":2,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}}},\"quarantined\":{\"tool\":{\"2.0.0\":{\"at\":\"2026-06-01T06:00:00Z\",\"reason\":\"review\"}}},\"revoked\":{\"leaf\":{\"1.0.0\":{\"at\":\"2026-06-01T00:00:00Z\",\"reason\":\"cve\"}}},\"sequence\":7}"
     }
   ],
   "invalid": [
