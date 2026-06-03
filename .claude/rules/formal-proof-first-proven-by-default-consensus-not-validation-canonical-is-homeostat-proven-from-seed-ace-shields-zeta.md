@@ -215,6 +215,7 @@ is welcome — it's the engine that drives formalization — but the interpretiv
 stays don't-collapse, not collapsed-to-grounded-by-proximity), and the
 persistent-human-counterweight channel in
 `harm-by-grammar-discriminator-and-audience-adjusted-language.md` (Discipline 3)
+
 + `asymmetric-critic-with-clarity-first.md` (Component 6) — the interpretive
 channel already exists; this section names that the proof gate must route to it,
 not absorb it.
