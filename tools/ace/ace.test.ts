@@ -581,6 +581,18 @@ describe("main", () => {
     writeFileSync(pkgPath, JSON.stringify(pkg));
     expect(await main(["install", pkgPath, "--allow-no-signature", "--store", store])).toBe(0);
   });
+  test("install leaf (no-deps) malformed root (float) -> exit 1 invalid-package (not ace: fatal:)", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-store-"));
+    const files = { "a.txt": "hi" };
+    const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
+    // Well-formed SHAPE + correct content_hash, but a float manifest field makes packageHash throw
+    // in buildLeafLockfile; the early root guard must refuse with exit 1, not the ace: fatal: catch-all.
+    const pkg = { manifest: { format_version: 1, name: "u", version: "1.0.0", content_hash: ch, bogus: 1.5 }, files };
+    const dir = mkdtempSync(join(tmpdir(), "ace-umal-"));
+    const pkgPath = join(dir, "umal.json");
+    writeFileSync(pkgPath, JSON.stringify(pkg));
+    expect(await main(["install", pkgPath, "--allow-no-signature", "--store", store])).toBe(1);
+  });
 
   test("install algo-tampered (signed+trusted, algo->none) - exit 1 (unsupported-algo, NOT allow-no-signature-overridable)", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));

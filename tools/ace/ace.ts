@@ -871,6 +871,13 @@ export async function main(argv: readonly string[]): Promise<number> {
     // Root content_hash.
     const rootFilesHash = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
     if (rootFilesHash !== pkg.manifest.content_hash) { console.error(`ace: update refused: bad-content-hash in ${pkg.manifest.name} (root)`); return 1; }
+    // Root is untrusted: guard a packageHash-throw ONCE before any helper (resolve / buildLockfile /
+    // buildLeafLockfile) hashes it, so a malformed root refuses as invalid-package, not ace: fatal:.
+    const rootHashCheck = safePackageHash(pkg);
+    if (!rootHashCheck.ok) {
+      console.error(`ace: update refused: invalid-package — ${pkg.manifest.name} (root): ${rootHashCheck.reason}`);
+      return 1;
+    }
 
     if (Array.isArray(pkg.manifest.dependencies) && pkg.manifest.dependencies.length > 0) {
       const fetchPackage = async (u: string): Promise<string> =>
@@ -946,6 +953,16 @@ export async function main(argv: readonly string[]): Promise<number> {
       console.error("ace: WARNING: installing UNSIGNED package (--allow-no-signature).");
     }
 
+    // The root is untrusted: a malformed field (float / lone surrogate) makes packageHash throw.
+    // Guard it ONCE here — before ANY path (graph / leaf / frozen) calls a packageHash-using helper
+    // (resolve, verifyRootMatchesLock, buildLockfile, buildLeafLockfile, preflightGraph) — so a
+    // malformed root refuses as invalid-package instead of escaping to the ace: fatal: catch-all.
+    const rootHashCheck = safePackageHash(pkg);
+    if (!rootHashCheck.ok) {
+      console.error(`ace: install refused: invalid-package — ${pkg.manifest.name} (root): ${rootHashCheck.reason}`);
+      return 1;
+    }
+
     // SLICE 4: transitive graph. Leaf (no deps) falls through to the single-package path below (unchanged).
     if (Array.isArray(pkg.manifest.dependencies) && pkg.manifest.dependencies.length > 0) {
       // Verify root content_hash BEFORE resolving (no wasted graph fetch on a bad root).
@@ -978,9 +995,8 @@ export async function main(argv: readonly string[]): Promise<number> {
         const byStoreKey = new Map<string, string>(); // content_hash -> package_hash
         // Seed the collision set with the root (already content_hash+signature verified above), so a
         // locked node that shares the root's content_hash store key with a different package is caught.
-        const rootPhr = safePackageHash(pkg);
-        if (!rootPhr.ok) { console.error(`ace: install refused: invalid-package — ${pkg.manifest.name} (root): ${rootPhr.reason}`); return 1; }
-        byStoreKey.set(pkg.manifest.content_hash, rootPhr.hash);
+        // root already validated (hashable) at install-command entry; reuse that hash
+        byStoreKey.set(pkg.manifest.content_hash, rootHashCheck.hash);
         const verified: AcePackage[] = []; // locked nodes in lock order; root installed separately
         for (const node of lf.nodes) {
           let nodeRaw: string;
