@@ -175,7 +175,8 @@ if left unstated (asymmetric-critic peer 2026-06-03, maintainer-ratified): **the
 proof gate grounds *formalizable* (math / code) claims; it does NOT ground
 interpretive / metaphysical claims, and the rigor of the math half must not
 *halo* the interpretive half.** A proof says "valid-given-axioms" about a
-formalizable claim (per §2); it says *nothing* about a claim that isn't the kind
+formalizable claim (per claim 2, "Consensus is NOT validation"); it says *nothing*
+about a claim that isn't the kind
 of thing a proof can reach. "My proofs are rigorous, therefore my framework's
 interpretation is rigorous" is the halo failure — proof-adjacency is not grounding.
 
