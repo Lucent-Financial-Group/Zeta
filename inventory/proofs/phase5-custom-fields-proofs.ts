@@ -135,12 +135,15 @@ async function main() {
     dropdown: `${sfx}_dropdown`,
     boolean: `${sfx}_boolean`,
   };
+  // NOTE: PostgREST bulk insert (array) requires EVERY object to have the SAME key
+  // set (PGRST102 "All object keys must match") — so all five carry `options`
+  // (null for non-dropdowns). The DB CHECK allows NULL options for non-dropdowns.
   const defs = [
-    { key: F.text, label: "P5 Text", type: "text", required: false },
-    { key: F.number, label: "P5 Number", type: "number", required: false },
-    { key: F.date, label: "P5 Date", type: "date", required: false },
+    { key: F.text, label: "P5 Text", type: "text", options: null, required: false },
+    { key: F.number, label: "P5 Number", type: "number", options: null, required: false },
+    { key: F.date, label: "P5 Date", type: "date", options: null, required: false },
     { key: F.dropdown, label: "P5 Dropdown", type: "dropdown", options: ["red", "green", "blue"], required: false },
-    { key: F.boolean, label: "P5 Boolean", type: "boolean", required: false },
+    { key: F.boolean, label: "P5 Boolean", type: "boolean", options: null, required: false },
   ];
 
   // ---------------------------------------------------------------------------
