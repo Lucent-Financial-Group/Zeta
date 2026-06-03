@@ -57,9 +57,12 @@ jobs:
           EMAIL="$(printf '%s' "$LOGIN" | jq -r 'try .email catch empty' 2>/dev/null || true)"
           PW="$(printf '%s' "$LOGIN" | jq -r 'try .password catch empty' 2>/dev/null || true)"
           if [ -z "$EMAIL" ] || [ "$EMAIL" = "null" ]; then
-            REST="$(printf '%s' "$LOGIN" | tr ':' ' ')"
-            EMAIL="$(printf '%s' "$REST" | awk '{print $1}')"
-            PW="$(printf '%s' "$REST" | awk '{print $2}')"
+            # normalize ANY common delimiter (: , ; | = tab CR LF) to a single space,
+            # then take the first two whitespace tokens as email + password.
+            NORM="$(printf '%s' "$LOGIN" | tr ':,;|=\t\r\n' ' ')"
+            echo "login token count = $(printf '%s' "$NORM" | wc -w)"   # diagnostic only (no values)
+            EMAIL="$(printf '%s' "$NORM" | awk '{print $1}')"
+            PW="$(printf '%s' "$NORM" | awk '{print $2}')"
           fi
           if [ -z "$EMAIL" ] || [ -z "$PW" ]; then
             echo "::error::could not parse email+password from inventory_admin_login (expected JSON, email:password, or 'email password')"; exit 2
