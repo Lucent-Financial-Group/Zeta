@@ -88,9 +88,13 @@ async function signIn(email: string, password: string, label: string): Promise<s
     headers: { apikey: ANON, "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-  const j = (await res.json()) as { access_token?: string };
+  const text = await res.text();
+  let j: { access_token?: string } = {};
+  try { j = JSON.parse(text) as { access_token?: string }; } catch { /* non-JSON */ }
   if (!res.ok || !j.access_token) {
-    console.error(`SIGN-IN FAILED for ${label} (http ${res.status}). Check creds.`);
+    // The auth error body states the REASON (invalid_grant vs email_not_confirmed)
+    // and never echoes the submitted password — safe to print.
+    console.error(`SIGN-IN FAILED for ${label} (http ${res.status}): ${text}`);
     process.exit(2);
   }
   return j.access_token; // never printed

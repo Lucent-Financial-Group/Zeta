@@ -66,6 +66,11 @@ jobs:
               PW="$(printf '%s' "$LOGIN" | jq -r 'try .password catch empty' 2>/dev/null || true)"
             fi
           fi
+          # Strip accidental trailing CR/LF (classic GitHub-secret paste footgun).
+          EMAIL="$(printf '%s' "$EMAIL" | tr -d '\r\n')"
+          PW="$(printf '%s' "$PW" | tr -d '\r\n')"
+          HAS_AT=no; case "$EMAIL" in *@*) HAS_AT=yes;; esac
+          echo "admin email length=${#EMAIL} has_at=$HAS_AT ; password length=${#PW}"  # shape only, no values
           if [ -z "$EMAIL" ] || [ "$EMAIL" = "null" ] || [ -z "$PW" ] || [ "$PW" = "null" ]; then
             echo "::error::Admin creds unresolved. EASIEST FIX: add repo secrets INVENTORY_ADMIN_EMAIL + INVENTORY_ADMIN_PASSWORD (recommended). OR overwrite inventory_admin_login with JSON: {\"email\":\"<admin email>\",\"password\":\"<admin password>\"}. (The current inventory_admin_login value is not parseable as either.)"
             exit 2
