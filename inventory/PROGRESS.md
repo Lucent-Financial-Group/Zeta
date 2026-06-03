@@ -280,20 +280,20 @@ approval before Phase 0b.
 ### Item #7 — Plain Supabase web-dashboard setup steps (for Phase 0b; service_role NOT requested)
 
 1. Go to **app.supabase.com** → sign in → **New project**.
-2. Pick your org → **Name** (e.g., `zeta-inventory`) → **Database password**: click *Generate*, then
+2. Pick your org → **Name** (e.g., `zeta-inventory`) → **Database password**: click _Generate_, then
    store it in YOUR password manager (NOT in this repo, NOT pasted to me) → **Region**: pick a **US**
    region → **Plan: Free** → **Create new project**. (First provision takes a couple of minutes.)
 3. **RLS on new tables**: heads-up — Supabase enforces RLS **per table**, not via a single global
-   "Enable RLS on new tables" switch. In the Table Editor's *New table* dialog there is an **"Enable
+   "Enable RLS on new tables" switch. In the Table Editor's _New table_ dialog there is an **"Enable
    Row Level Security (RLS)"** checkbox that is **ON by default — leave it on.** Additionally, in
    Phase 1 I create every table via SQL with an explicit `ALTER TABLE … ENABLE ROW LEVEL SECURITY`, so
    RLS-on is guaranteed regardless of the dashboard default. (Flagging because the bundle's exact
    wording assumes a toggle that isn't labeled that way today — the protection is real either way.)
 4. **Find the values I'll need in Phase 0b** — go to **Project Settings → API Keys**:
-   - **Project URL**: copy it (looks like `https://<ref>.supabase.co`). (Also shown in the *Connect*
+   - **Project URL**: copy it (looks like `https://<ref>.supabase.co`). (Also shown in the _Connect_
      dialog / Settings → Data API.)
    - **Public key**: copy the **Publishable** key (`sb_publishable_…`) — OR, if you're on legacy keys,
-     the **anon** `public` key from the *Legacy API Keys* tab. Either is fine for client code.
+     the **anon** `public` key from the _Legacy API Keys_ tab. Either is fine for client code.
    - **Do NOT** copy or send the **secret** (`sb_secret_…`) / **service_role** key. I won't ask for it
      and won't use it.
 5. Provide me, when you're ready for Phase 0b: the **Project URL** + the **publishable/anon public**
