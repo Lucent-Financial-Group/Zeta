@@ -102,10 +102,11 @@ let ``C13 I = running sum (integrate snapshot = fold of all deltas so far)``
         acc <- ZSet.add acc d
         out.Current = acc)
 
-// NOTE — the "Tick (ℕ,+,0) monoid" property was DROPPED here (Aaron 2026-06-03
-// proof bar: only proofs that verify OUR code against OUR claims). `tick` is a
-// phantom [<Measure>] on .NET `int` (Window.fs); the monoid laws of `int<tick>`
-// addition ARE .NET integer arithmetic — code we did NOT write — so a runtime
+// NOTE — the "Tick (ℕ,+,0) monoid" property was DROPPED here (the maintainer
+// 2026-06-03 proof bar: only proofs that verify OUR code against OUR claims).
+// `tick` is a phantom [<Measure>] type (Window.fs:13-14); `int<tick>` is a plain
+// .NET `int` annotated with that unit, so the monoid laws of `int<tick>`
+// addition ARE .NET integer arithmetic — code we did NOT write — and a runtime
 // FsCheck of them verifies the BCL, not Zeta (the "bullshit math test" class).
 // The UoM's real and sole guarantee is COMPILE-TIME unit separation (`tick + ms`
 // does not compile) — enforced by the type system, needing no runtime proof.
