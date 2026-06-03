@@ -138,8 +138,9 @@ doesn't compound; "true-and-load-bearing-and-connected" does. Four payoffs
    bug arises, search the **less-rigorously-proven code first**; proven components
    are the **last place to look**, not the first. (Not an *absolute* exclusion: a
    proof verifies **code-matches-spec, not spec-matches-intent** — a wrong/incomplete
-   spec can still harbor a bug, the valid-given-axioms ≠ true point at debug scope —
-   so proven = search-*last*, not search-*never*.) This bounds the debug search and
+   spec can still harbor a bug (the "valid-given-axioms ≠ true" point, at debug
+   scope) — so proven = search-*last*, not search-*never*.) This bounds the debug
+   search and
    **reduces debugging uncertainty for both AIs and humans at a system level** —
    proven = search-last, so the proof investment pays out again every time something
    breaks. (Honest scope: this de-prioritizes only what is *actually* proven — per
