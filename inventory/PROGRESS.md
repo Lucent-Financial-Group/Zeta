@@ -102,11 +102,33 @@ un-archive.
   RLS unchanged (no new policy / USING(true) / GRANT). Full raw output in "Phase 4 — FIXED run"
   appendix. Phase-7 Auditor re-verifies on the live site (and may run the owner-side SQL companion
   `sql/proofs/phase4_proofs.sql`, incl. its pg_policies no-permissive-items-policy check).
-- [ ] Phase 5 — Typed dynamic fields (CENTERPIECE; use higher reasoning effort).
+- [~] Phase 5 — Typed dynamic fields (CENTERPIECE; use higher reasoning effort).
 GATE: dedicated test suite passes; add-field applies to ALL items; per-type validation;
 search/sort INCLUDE custom fields; XSS-safe.
 VERIFY: add one field of each type; enter a <script> payload as a value → rendered inert; search by
 a custom field returns correct items; "number" rejects text.
+  STATUS (2026-06-03, 5a checkpoint — NOT [x]; live DB proofs pending owner creds + SQL-editor run):
+  CODE COMPLETE — sql/phase5.sql (BEFORE INS/UPD validate_custom_fields() trigger: DB-side per-type
+  validation + unknown-key reject + GIN index; loosens no RLS); lib/custom-fields.js shared typed
+  comparator/coercion/validation (+ peer .d.ts so the test stays type-checked, not skipped);
+  index.html UI (custom columns in table+cards, typed search + typed multi-sort, typed form inputs,
+  admin Manage-fields add/deactivate; centralized ITEM_SELECT incl. custom_fields; cleaned a stray
+  0x01 byte in the search join); REST harness proofs/phase5-custom-fields-proofs.ts; SQL proof
+  sql/proofs/phase5_proofs.sql. PROVEN NOW, NO CREDS (raw output in the "Phase 5 evidence" appendix):
+  (a) 20/20 bun unit tests incl. broken-vs-fixed numeric sort (sabotaged comparator -> 2 fail);
+  (b) REAL-BROWSER (Playwright, real renderHead()/applyView()): numeric sort [9,10,100] asc &
+      [100,10,9] desc (NOT lexicographic 10,100,9); a <img onerror>+<script> payload rendered INERT
+      as BOTH a custom VALUE and a field LABEL (window.__xss stayed undefined; innerHTML escaped to
+      &lt;img...); custom-field VALUE searchable (search "100" -> only the rating=100 row). The lib
+      loaded from CSP 'self'. (CDN-blocked-by-proxy note: the container proxy MITMs jsdelivr's cert,
+      so the proof ran against a gitignored _proof_tmp/boot.html = index.html with ONLY the CDN tag
+      swapped for a supabase stub — no source divergence; the real merged site has no such block.)
+  PENDING (needs OWNER): (1) run sql/phase5.sql then sql/proofs/phase5_proofs.sql in the SQL editor
+  (expect all rows PASSED incl. typed-vs-lexicographic sort); (2) create a BURNABLE admin test user +
+  provide ADMIN_*/EDITOR_* creds via ENV so Claude runs phase5-custom-fields-proofs.ts (live: per-type
+  DB-rejection via direct REST as editor, add-field-appears-on-all, deactivate-preserves-values+history,
+  anon default-deny). required-at-DB intentionally DEFERRED (would break edits of the 210 existing
+  items); required stays an app-side UX nudge. NOT marked [x] until (1)+(2) show observed output.
 - [ ] Phase 6 — QR labels + export.
 GATE: scan resolves post-login; export round-trips incl. unicode/comma/quote.
 VERIFY: generate + scan a label → correct item after login; export then re-import → identical data.
@@ -782,3 +804,40 @@ Remove in the SQL editor like the Phase-1 proof item:
 `delete from public.items where id in (212,213,214);`
 `alter table public.change_log enable trigger change_log_immutable;`
 (The items id sequence is unaffected — next auto id continues after the current max.)
+
+## Phase 5 evidence (5a checkpoint, 2026-06-03 — Claude, NO creds yet)
+
+Recorded per the Evidence rule. Live DB proofs (owner creds + SQL editor) still pending — see the
+Phase 5 STATUS line. These are the credential-free proofs run THIS session.
+
+### Unit suite (bun) — 20/20, with broken-vs-fixed
+
+```
+$ bun test inventory/proofs/custom-fields.unit.test.ts
+ 20 pass / 0 fail / 52 expect() calls
+# deliberate break (toNumeric num path -> String(v)) => 2 fail incl. the numeric-order test;
+# revert => 20 pass. (CLAUDE.md 'key test FAILS on broken code, passes when fixed'.)
+```
+
+### Real-browser (Playwright + Chrome 149) against the REAL renderHead()/applyView()
+
+Injected state: number field `rating` {9,10,100}; XSS payload `<img src=x onerror="window.__xss=1"><script>window.__xss=1</script>` as BOTH a custom VALUE and a field LABEL; sort key `cf:rating`.
+
+```json
+{ "headers_count": 13, "rating_header": "Rating \u25b2",
+  "rating_column_order_ascending": ["9","10","100"],
+  "xss_value_cell_textContent_is_literal": true,
+  "xss_value_cell_has_live_img_or_script": false,
+  "xss_value_cell_innerHTML_escaped_head": "&lt;img src=x onerror=\"window.__xss=1\"&g",
+  "malicious_header_textContent_is_literal": true,
+  "malicious_header_has_live_img_or_script": false,
+  "custom_fields_lib_loaded": true }
+// follow-up: { "xss_global_after_render": "undefined",   // payload NEVER executed
+//             "rating_desc": ["100","10","9"],
+//             "search_100_rows": ["3:100"] }            // custom VALUE searchable
+```
+
+Interpretation: risk (ii) typed numeric search+sort and risk (iii) XSS-safe render (values AND field
+names, at header + cell) PROVEN in a real browser. Risk (i) DB-side validation is proven structurally
+by sql/phase5.sql + the SQL/REST proofs (pending owner run). The Phase-7 Auditor re-verifies on the
+live merged site.
