@@ -1,9 +1,7 @@
-module Zeta.Tests.CodecTests
+module Zeta.Tests.Core.CodecTests
 
 open Xunit
-open FsCheck
 open FsCheck.Xunit
-open Zeta.Core
 open Zeta.Core.Codec
 
 // ═══════════════════════════════════════════════════════════════════

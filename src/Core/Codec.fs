@@ -29,9 +29,13 @@ module Codec =
     // from component codecs and preserve round-trip by construction (proven
     // in tests/Tests.FSharp/Core/Codec.Tests.fs — B-1007 C12). Prior art:
     // scodec `xmap`/`~`/`|+|`, Haskell `codec`, profunctor-optics.
+    //
+    // NOTE on notation: B-1006 writes the abstract codec as `Codec<a>`; the
+    // concrete F# type here is `ICodec<a, 'Wire, 'Feedback>`. Below, B-1006's
+    // `Codec<a>` ≙ `ICodec<a, _, _>` (the wire/feedback params elided).
 
     /// The **identity** codec — wire = value, total (never declines): the
-    /// algebra's identity element (`Codec<unit>` is `identity<unit>`).
+    /// algebra's identity element (B-1006's `Codec<unit>` ≙ `identity<unit>()`).
     /// `Deserialize ∘ Serialize = id` holds trivially (`Ok` round-trips `Ok`).
     let identity<'T, 'Feedback> () : ICodec<'T, 'T, 'Feedback> =
         { new ICodec<'T, 'T, 'Feedback> with
@@ -57,16 +61,22 @@ module Codec =
         (cb: ICodec<'B, 'WB, 'Feedback>)
         : ICodec<'A * 'B, 'WA * 'WB, 'Feedback> =
         { new ICodec<'A * 'B, 'WA * 'WB, 'Feedback> with
+            // short-circuit: if the left declines, the right codec is never
+            // invoked (no wasted work / no side effects on a doomed encode).
             member _.Serialize((a, b)) =
-                match ca.Serialize a, cb.Serialize b with
-                | Ok wa, Ok wb -> Ok(wa, wb)
-                | Error e, _ -> Error e
-                | _, Error e -> Error e
+                match ca.Serialize a with
+                | Error e -> Error e
+                | Ok wa ->
+                    match cb.Serialize b with
+                    | Error e -> Error e
+                    | Ok wb -> Ok(wa, wb)
             member _.Deserialize((wa, wb)) =
-                match ca.Deserialize wa, cb.Deserialize wb with
-                | Ok a, Ok b -> Ok(a, b)
-                | Error e, _ -> Error e
-                | _, Error e -> Error e
+                match ca.Deserialize wa with
+                | Error e -> Error e
+                | Ok a ->
+                    match cb.Deserialize wb with
+                    | Error e -> Error e
+                    | Ok b -> Ok(a, b)
             member _.Name = "(" + ca.Name + " * " + cb.Name + ")" }
 
     /// **Sum** (tagged) — a codec for the tagged choice of `'A` or `'B`,
