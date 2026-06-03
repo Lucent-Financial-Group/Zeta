@@ -110,12 +110,15 @@ fn write_canonical(value: &DynamicValue, out: &mut String) -> Result<(), AceCano
             out.push(']');
         }
         DynamicValue::Object(pairs) => {
-            // Ace sorts object keys at every level. Rust `&str` `Ord` is UTF-8 byte order,
-            // which equals JS UTF-16 code-unit order for the BMP/ASCII keys Ace uses (the
-            // two orders only diverge for astral keys, which Ace content does not carry).
-            // Borrow references and sort those -- no key/value cloning.
+            // Ace sorts object keys at every level by JS String order = UTF-16 code-unit
+            // lexicographic order (`Object.keys(obj).sort()` in canonical.ts). Rust `&str`
+            // `Ord` is UTF-8 byte = code-POINT order, which diverges from JS for astral keys
+            // (an astral char's high surrogate 0xD800..=0xDBFF sorts BELOW a BMP char >= 0xE000
+            // in UTF-16, but ABOVE it by code point). Compare UTF-16 code-unit sequences so the
+            // Rust oracle matches the TS oracle for ALL keys, not just the BMP keys the vectors
+            // carry. Borrow references -- no key/value cloning.
             let mut sorted: Vec<&(String, DynamicValue)> = pairs.iter().collect();
-            sorted.sort_by(|a, b| a.0.cmp(&b.0));
+            sorted.sort_by(|a, b| a.0.encode_utf16().cmp(b.0.encode_utf16()));
             out.push('{');
             for (n, (key, val)) in sorted.iter().enumerate() {
                 if n > 0 {
@@ -213,5 +216,20 @@ mod tests {
             ace_canonical_json(&DynamicValue::Bytes(vec![1, 2, 3])),
             Err(AceCanonicalError::UnsupportedShape)
         );
+    }
+
+    // JS String sort is UTF-16 code-unit order: an astral key (high surrogate 0xD83D) sorts
+    // BEFORE a BMP key >= U+E000 (0xE000), even though 0x1F600 > 0xE000 by code point.
+    // Code-point/byte order (the old `&str` cmp) would put U+E000 first and diverge from TS.
+    #[test]
+    fn astral_key_sorts_by_utf16_like_js() {
+        let value = DynamicValue::Object(vec![
+            ("\u{E000}".to_string(), DynamicValue::Int(1)),
+            ("\u{1F600}".to_string(), DynamicValue::Int(2)),
+        ]);
+        let out = ace_canonical_json(&value).expect("encode");
+        let astral_at = out.find('\u{1F600}').expect("astral key present");
+        let bmp_at = out.find('\u{E000}').expect("bmp key present");
+        assert!(astral_at < bmp_at, "astral key must sort before U+E000 (UTF-16 order): {out}");
     }
 }
