@@ -17,9 +17,14 @@
  *               misconfiguration.
  *   --scenario  Run one scenario by id. For composes-with-existing
  *               scenarios, delegates to tools/ci/qemu-full-install-test.ts
- *               or tools/ci/qemu-boot-test.ts. For scaffolded scenarios,
- *               reports "not yet implemented" with the implementation
- *               substrate path documented.
+ *               or tools/ci/qemu-boot-test.ts. For scenario 3, emits the
+ *               QEMU snapshot/restart plan but still fails closed until
+ *               the real process runner is connected to the execution
+ *               contract. Scenario 4 emits the path-fork runtime plan
+ *               and fails closed until the executor + identity comparison
+ *               proof lands. Other scaffolded scenarios report "not yet
+ *               implemented" with the implementation substrate path
+ *               documented.
  *   --all       Run all 5 scenarios in orderIndex order; gate failures
  *               skip dependent scenarios.
  *
@@ -28,22 +33,36 @@
  *   Human-readable summary to stderr
  *
  * Exit codes:
- *   0  all requested scenarios passed (or all skipped due to scaffolded status)
+ *   0  all requested runnable scenarios passed; --list/--dry-run succeeded
  *   1  one or more requested scenarios FAILED
  *   2  usage error OR scenario-definition invariant violation
  *
  * Per .claude/rules/rule-0-no-sh-files.md (TS-first for cross-platform DST).
  * PoC scope: dispatcher contract + --list + --dry-run paths fully wired;
  * --scenario + --all paths shell out to existing QEMU harnesses for
- * composes-with-existing scenarios + return scaffolded status for the
- * remaining 3.
+ * composes-with-existing scenarios + return fail-closed implementation
+ * status for the remaining 3.
  */
 
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, mkdirSync, mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { basename, join, resolve } from "node:path";
 import { SCENARIOS, validateScenarios, findScenario, type Scenario, type ScenarioId } from "./scenarios";
 import { SCENARIO_IMPL_DESIGN, computeImplDesignProgress } from "./extensions";
+import {
+  createSpawnSyncQcow2RetentionExecutor,
+  executeQcow2SnapshotRetentionPlan,
+  planQcow2SnapshotRetention,
+  type Qcow2RetentionExecutionFeedback,
+  type Qcow2RetentionExecutionResult,
+  type Qcow2RetentionExecutor,
+  type Qcow2SnapshotRetentionPlan,
+} from "./qemu-state";
+import {
+  planPathForkRuntime,
+  type PathForkRuntimePlan,
+} from "./path-fork";
 
 type Mode = "list" | "dry-run" | "scenario" | "all";
 
@@ -53,12 +72,40 @@ interface ParsedArgs {
   readonly isoPath?: string;
 }
 
-interface ScenarioResult {
+export interface ScenarioResult {
   readonly id: ScenarioId;
   readonly status: "passed" | "failed" | "skipped" | "scaffolded";
   readonly durationMs?: number;
   readonly message?: string;
+  readonly qemuRetentionPlan?: Qcow2SnapshotRetentionPlan;
+  readonly qemuRetentionExecution?: Qcow2RetentionExecutionResult;
+  readonly pathForkPlan?: PathForkRuntimePlan;
 }
+
+export interface RetentionRuntimeOptions {
+  readonly execute?: boolean;
+  readonly executor?: Qcow2RetentionExecutor;
+  readonly cwd?: string;
+  readonly timeoutMs?: number;
+  readonly kvmAvailable?: boolean;
+  readonly bootImagePath?: string;
+  readonly runDirectory?: string;
+}
+
+export interface PathForkRuntimeOptions {
+  readonly bootImagePath?: string;
+  readonly runDirectory?: string;
+  readonly kvmAvailable?: boolean;
+}
+
+const REPO_ROOT = resolve(import.meta.dir, "../../..");
+const RETENTION_EXECUTION_ENV = "ZFLASH_QEMU_RETENTION_EXECUTE";
+const RETENTION_TIMEOUT_ENV = "ZFLASH_QEMU_RETENTION_TIMEOUT_MS";
+const RETENTION_BOOT_IMAGE_ENV = "ZFLASH_QEMU_RETENTION_BOOT_IMAGE";
+const RETENTION_RUN_DIRECTORY_ENV = "ZFLASH_QEMU_RETENTION_RUN_DIR";
+const PATH_FORK_BOOT_IMAGE_ENV = "ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE";
+const PATH_FORK_RUN_DIRECTORY_ENV = "ZFLASH_QEMU_PATH_FORK_RUN_DIR";
+const KVM_PATH = "/dev/kvm";
 
 function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: string } {
   const args = argv.slice(2);
@@ -152,10 +199,7 @@ function emitDryRun(scenarioId?: ScenarioId): number {
         targets: targets.map((s) => ({
           id: s.id,
           status: s.status,
-          plan:
-            s.status === "composes-with-existing"
-              ? `would delegate to existing tools/ci/ substrate: ${s.composesWith[0]}`
-              : `would report scaffolded — implementation pending; composes-with: ${s.composesWith.join(", ")}`,
+          plan: dryRunPlanMessage(s),
         })),
       },
       null,
@@ -165,12 +209,24 @@ function emitDryRun(scenarioId?: ScenarioId): number {
   return 0;
 }
 
+function dryRunPlanMessage(scenario: Scenario): string {
+  if (scenario.status === "composes-with-existing") {
+    return `would delegate to existing tools/ci/ substrate: ${scenario.composesWith[0]}`;
+  }
+  if (scenario.id === "reformat-with-retention") {
+    return "would generate QEMU snapshot/restart retention plan; implementation pending real execution opt-in";
+  }
+  if (scenario.id === "reformat-from-scratch") {
+    return "would generate QEMU path-fork plan for migrate-existing-creds + fresh-cluster; implementation pending executor + identity comparison proof";
+  }
+  return `would report scaffolded — implementation pending; composes-with: ${scenario.composesWith.join(", ")}`;
+}
+
 function runComposingScenario(scenario: Scenario, isoPath: string): ScenarioResult {
   const harnessPath = scenario.id === "initial-format"
     ? "tools/ci/qemu-boot-test.ts"
     : "tools/ci/qemu-full-install-test.ts";
-  const repoRoot = resolve(import.meta.dir, "../../..");
-  const absHarnessPath = resolve(repoRoot, harnessPath);
+  const absHarnessPath = resolve(REPO_ROOT, harnessPath);
   if (!existsSync(absHarnessPath)) {
     return {
       id: scenario.id,
@@ -179,8 +235,9 @@ function runComposingScenario(scenario: Scenario, isoPath: string): ScenarioResu
     };
   }
   const start = Date.now();
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- bun is intentionally resolved from the active PATH; args are structured and never shell-expanded.
   const result = spawnSync("bun", [absHarnessPath, isoPath], {
-    cwd: repoRoot,
+    cwd: REPO_ROOT,
     stdio: "inherit",
   });
   const durationMs = Date.now() - start;
@@ -203,6 +260,211 @@ function reportScaffolded(scenario: Scenario): ScenarioResult {
   };
 }
 
+function describeRetentionExecutionError(error: Qcow2RetentionExecutionFeedback): string {
+  switch (error.kind) {
+    case "command-failed":
+      return `QEMU retention command failed at ${error.step} with exit ${error.exitCode ?? "unknown"}: ${error.stderr || "no stderr"}`;
+    case "executor-threw":
+      return `QEMU retention executor threw at ${error.step}: ${error.reason}`;
+    case "serial-marker-failed":
+      return `QEMU retention commands completed, but serial output did not prove retention; missing markers: ${error.assertion.missingMarkers.join(", ")}`;
+  }
+}
+
+function retentionExecutionEnabledFromEnv(): boolean {
+  return process.env[RETENTION_EXECUTION_ENV] === "1";
+}
+
+function retentionTimeoutMsFromEnv(): number | undefined {
+  const raw = process.env[RETENTION_TIMEOUT_ENV];
+  if (raw === undefined || raw.trim().length === 0) {
+    return undefined;
+  }
+  const parsed = Number(raw);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : undefined;
+}
+
+function retentionBootImagePathFromEnv(): string | undefined {
+  const raw = process.env[RETENTION_BOOT_IMAGE_ENV];
+  if (raw === undefined || raw.trim().length === 0) {
+    return undefined;
+  }
+  return resolve(raw);
+}
+
+function pathForkBootImagePathFromEnv(): string | undefined {
+  const raw = process.env[PATH_FORK_BOOT_IMAGE_ENV];
+  if (raw === undefined || raw.trim().length === 0) {
+    return undefined;
+  }
+  return resolve(raw);
+}
+
+function prepareRetentionRunDirectory(option: string | undefined): { ok: string } | { error: string } {
+  const raw = option ?? process.env[RETENTION_RUN_DIRECTORY_ENV];
+  try {
+    if (raw !== undefined && raw.trim().length > 0) {
+      const runDirectory = resolve(raw);
+      mkdirSync(runDirectory, { recursive: true });
+      return { ok: runDirectory };
+    }
+    return { ok: mkdtempSync(join(tmpdir(), "zeta-zflash-retention-")) };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
+function preparePathForkRunDirectory(option: string | undefined): { ok: string } | { error: string } {
+  const raw = option ?? process.env[PATH_FORK_RUN_DIRECTORY_ENV];
+  try {
+    if (raw !== undefined && raw.trim().length > 0) {
+      const runDirectory = resolve(raw);
+      mkdirSync(runDirectory, { recursive: true });
+      return { ok: runDirectory };
+    }
+    return { ok: mkdtempSync(join(tmpdir(), "zeta-zflash-path-fork-")) };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
+function retentionArtifactPaths(absIsoPath: string, runDirectory: string): {
+  readonly diskPath: string;
+  readonly serialLogPath: string;
+} {
+  const artifactStem = basename(absIsoPath);
+  return {
+    diskPath: join(runDirectory, `${artifactStem}.scenario3.qcow2`),
+    serialLogPath: join(runDirectory, `${artifactStem}.scenario3.serial.log`),
+  };
+}
+
+function pathForkArtifactPaths(absIsoPath: string, runDirectory: string): {
+  readonly startingDiskPath: string;
+  readonly migrateSerialLogPath: string;
+  readonly freshSerialLogPath: string;
+} {
+  const artifactStem = basename(absIsoPath);
+  return {
+    startingDiskPath: join(runDirectory, `${artifactStem}.scenario4.qcow2`),
+    migrateSerialLogPath: join(runDirectory, `${artifactStem}.scenario4.migrate.serial.log`),
+    freshSerialLogPath: join(runDirectory, `${artifactStem}.scenario4.fresh.serial.log`),
+  };
+}
+
+export function runRetentionRuntime(
+  isoPath: string,
+  options: RetentionRuntimeOptions = {},
+): ScenarioResult {
+  const absIsoPath = resolve(isoPath);
+  const runDirectory = prepareRetentionRunDirectory(options.runDirectory);
+  if ("error" in runDirectory) {
+    return {
+      id: "reformat-with-retention",
+      status: "failed",
+      message: `could not prepare QEMU retention run directory: ${runDirectory.error}`,
+    };
+  }
+  const bootImagePath = options.bootImagePath === undefined
+    ? retentionBootImagePathFromEnv()
+    : resolve(options.bootImagePath);
+  const artifacts = retentionArtifactPaths(absIsoPath, runDirectory.ok);
+  const planned = planQcow2SnapshotRetention({
+    isoPath: absIsoPath,
+    ...(bootImagePath === undefined ? {} : { bootImagePath }),
+    diskPath: artifacts.diskPath,
+    serialLogPath: artifacts.serialLogPath,
+    snapshotName: "post-initial-format",
+    kvmAvailable: options.kvmAvailable ?? existsSync(KVM_PATH),
+  });
+  if ("error" in planned) {
+    return {
+      id: "reformat-with-retention",
+      status: "failed",
+      message: `could not plan QEMU retention runtime: ${planned.error.field} ${planned.error.reason}`,
+    };
+  }
+
+  if (options.execute !== true) {
+    return {
+      id: "reformat-with-retention",
+      status: "failed",
+      message: `QEMU snapshot/restart retention plan generated; set ${RETENTION_EXECUTION_ENV}=1 to run the real QEMU process executor. Without that explicit opt-in, the scenario fails closed.`,
+      qemuRetentionPlan: planned.ok,
+    };
+  }
+
+  const executorOptions = options.timeoutMs === undefined
+    ? { cwd: options.cwd ?? REPO_ROOT }
+    : { cwd: options.cwd ?? REPO_ROOT, timeoutMs: options.timeoutMs };
+  const executor = options.executor ?? createSpawnSyncQcow2RetentionExecutor(executorOptions);
+  const executed = executeQcow2SnapshotRetentionPlan(planned.ok, executor);
+
+  if ("error" in executed) {
+    return {
+      id: "reformat-with-retention",
+      status: "failed",
+      message: describeRetentionExecutionError(executed.error),
+      qemuRetentionPlan: planned.ok,
+      qemuRetentionExecution: executed,
+    };
+  }
+
+  return {
+    id: "reformat-with-retention",
+    status: "passed",
+    message: "QEMU snapshot/restart retention execution observed all required serial markers.",
+    qemuRetentionPlan: planned.ok,
+    qemuRetentionExecution: executed,
+  };
+}
+
+export function runPathForkRuntime(
+  isoPath: string,
+  options: PathForkRuntimeOptions = {},
+): ScenarioResult {
+  const absIsoPath = resolve(isoPath);
+  const runDirectory = preparePathForkRunDirectory(options.runDirectory);
+  if ("error" in runDirectory) {
+    return {
+      id: "reformat-from-scratch",
+      status: "failed",
+      message: `could not prepare QEMU path-fork run directory: ${runDirectory.error}`,
+    };
+  }
+  const bootImagePath = options.bootImagePath === undefined
+    ? pathForkBootImagePathFromEnv()
+    : resolve(options.bootImagePath);
+  const artifacts = pathForkArtifactPaths(absIsoPath, runDirectory.ok);
+  const planned = planPathForkRuntime({
+    isoPath: absIsoPath,
+    ...(bootImagePath === undefined ? {} : { bootImagePath }),
+    startingDiskPath: artifacts.startingDiskPath,
+    migrateSerialLogPath: artifacts.migrateSerialLogPath,
+    freshSerialLogPath: artifacts.freshSerialLogPath,
+    kvmAvailable: options.kvmAvailable ?? existsSync(KVM_PATH),
+  });
+  if ("error" in planned) {
+    return {
+      id: "reformat-from-scratch",
+      status: "failed",
+      message: `could not plan QEMU path-fork runtime: ${planned.error.field} ${planned.error.reason}`,
+    };
+  }
+
+  const missingRequirements = planned.ok.forks.flatMap((fork) => fork.missingRuntimeRequirements);
+  const requirementSuffix = missingRequirements.length === 0
+    ? ""
+    : ` Missing runtime requirement(s): ${[...new Set(missingRequirements)].join(", ")}.`;
+
+  return {
+    id: "reformat-from-scratch",
+    status: "failed",
+    message: `QEMU path-fork plan generated; scenario 4 still fails closed until a process executor and identity-comparison proof consume both forks.${requirementSuffix}`,
+    pathForkPlan: planned.ok,
+  };
+}
+
 function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
   const scenario = findScenario(scenarioId);
   if (!scenario) {
@@ -216,6 +478,16 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
     case "composes-with-existing":
       return runComposingScenario(scenario, isoPath);
     case "scaffolded":
+      if (scenario.id === "reformat-with-retention") {
+        const timeoutMs = retentionTimeoutMsFromEnv();
+        const options = timeoutMs === undefined
+          ? { execute: retentionExecutionEnabledFromEnv() }
+          : { execute: retentionExecutionEnabledFromEnv(), timeoutMs };
+        return runRetentionRuntime(isoPath, options);
+      }
+      if (scenario.id === "reformat-from-scratch") {
+        return runPathForkRuntime(isoPath);
+      }
       return reportScaffolded(scenario);
     case "operator-runtime":
       return {
@@ -274,7 +546,7 @@ function main(argv: ReadonlyArray<string>): number {
       }
       const result = runScenario(parsed.scenarioId, parsed.isoPath);
       emitResults([result]);
-      return result.status === "failed" ? 1 : 0;
+      return result.status === "failed" || result.status === "scaffolded" ? 1 : 0;
     }
     case "all": {
       if (!parsed.isoPath) {
@@ -296,7 +568,7 @@ function main(argv: ReadonlyArray<string>): number {
         }
         const result = runScenario(scenario.id, parsed.isoPath);
         results.push(result);
-        if (result.status === "failed") {
+        if (result.status === "failed" || result.status === "scaffolded") {
           failedIds.add(scenario.id);
         }
       }

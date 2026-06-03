@@ -1,6 +1,9 @@
 module Zeta.Tests.Algebra.ZSetTests
 #nowarn "0893"
 
+open System.IO
+open System.Reflection
+open System.Text.Json
 open FsUnit.Xunit
 open FsCheck
 open FsCheck.FSharp
@@ -281,3 +284,170 @@ let ``distinctIncremental plus distinct of old equals distinct of new`` (oldV: Z
     let newDistinct = ZSet.distinct (ZSet.add oldV delta)
     let h = ZSet.distinctIncremental oldV delta
     ZSet.add oldDistinct h = newDistinct
+
+
+// ───────────── Shared golden vector (cross-language parity lock) ───────────
+// Z-set is the TOP rung of the cross-language algebra ladder (G-Set ⊂ Bag ⊂
+// Z-set). TS = oracle #1 (the reference + the treaty fixture); this is the F#
+// oracle joining the treaty. The F# `ZSet` engine is the impl under test:
+// `add` is the per-key-SUM combiner (the treaty's `union`), and it drops any
+// key that nets to weight 0 (retraction) — so the same fixture the TS reference
+// emitted replays here byte-for-byte. "The compilers don't lie."
+
+/// Walk up from the test assembly to the repo root (Zeta.sln sentinel) — same
+/// pattern as the Bag / G-Set golden-vector tests.
+let private repoRoot () : string =
+    let mutable dir = DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
+    while not (isNull dir) && not (File.Exists(Path.Join(dir.FullName, "Zeta.sln"))) do
+        dir <- dir.Parent
+    if isNull dir then
+        failwith "Could not locate repo root (Zeta.sln) from test assembly location."
+    dir.FullName
+
+/// Eager list-comprehension over `EnumerateArray()` — NOT `Seq.map`. The
+/// `JsonElement.ArrayEnumerator` is a mutable struct that corrupts when boxed
+/// through a lazy Seq pipeline in Release (passes in fsi, fails compiled).
+let private zEntList (e: JsonElement) : (string * int64) list =
+    [ for x in e.EnumerateArray() -> (x.GetProperty("e").GetString(), x.GetProperty("w").GetInt64()) ]
+
+/// Enumerate the canonical (ascending-key, zero-dropped) run to (key, weight).
+let private zToList (z: ZSet<string>) : (string * int64) list =
+    [ for entry in z -> (entry.Key, entry.Weight) ]
+
+type private ZSetOp =
+    | Add of string
+    | AddW of string * int64
+    | Union of (string * int64) list
+
+let private parseZOp (e: JsonElement) : ZSetOp =
+    match e.GetProperty("op").GetString() with
+    | "add" -> Add(e.GetProperty("arg").GetString())
+    | "addW" -> AddW(e.GetProperty("arg").GetString(), e.GetProperty("w").GetInt64())
+    | "union" -> Union(zEntList (e.GetProperty("arg")))
+    | other -> failwithf "unknown z-set op in fixture: %s" other
+
+/// Read the fixture once; copy every primitive into F# values so the
+/// JsonDocument is safe to dispose before the values are used.
+let private loadZVector () : (string * int64) list * ZSetOp list * (string * int64) list list * (string * int64) list =
+    let path = Path.Join(repoRoot (), "src", "Core.TypeScript", "z-set", "golden-vectors.json")
+    use doc = JsonDocument.Parse(File.ReadAllText(path))
+    let root = doc.RootElement
+    let initial = zEntList (root.GetProperty("initialZSet"))
+    let ops = [ for op in root.GetProperty("ops").EnumerateArray() -> parseZOp op ]
+    let replay = [ for st in root.GetProperty("expectedReplayStates").EnumerateArray() -> zEntList st ]
+    let final = zEntList (root.GetProperty("expectedFinalState"))
+    initial, ops, replay, final
+
+[<Fact>]
+let ``F# replays the shared Z-set golden vector to expectedReplayStates + expectedFinalState`` () =
+    let initial, ops, expectedReplay, expectedFinal = loadZVector ()
+    let mutable state = ZSet.ofSeq initial
+    let actual =
+        [ for op in ops do
+              state <-
+                  match op with
+                  | Add x -> ZSet.add state (ZSet.singleton x 1L) // treaty `add` = +1
+                  | AddW (x, w) -> ZSet.add state (ZSet.singleton x w) // signed weight (may be negative)
+                  | Union xs -> ZSet.add state (ZSet.ofSeq xs) // treaty `union` = per-key SUM combiner
+              yield zToList state ]
+    actual |> should equal expectedReplay
+    zToList state |> should equal expectedFinal
+
+[<Fact>]
+let ``Z-set distinctions: abelian-group inverse, negatives persist, retraction-to-0 drops`` () =
+    let a = ZSet.ofSeq [ ("a", 1L); ("b", 2L) ]
+    // inverse: add a (neg a) = empty (the law the Bag's monoid cannot satisfy)
+    ZSet.add a (ZSet.neg a) |> ZSet.isEmpty |> should equal true
+    // negatives persist (drop rule is == 0, not <= 0 — the Bag would drop this)
+    ZSet.ofSeq [ ("c", -1L) ] |> zToList |> should equal [ ("c", -1L) ]
+    // retraction: a key driven to net 0 is dropped
+    ZSet.add (ZSet.ofSeq [ ("a", 1L) ]) (ZSet.ofSeq [ ("a", -1L) ])
+    |> ZSet.isEmpty
+    |> should equal true
+
+
+// ─── generic-math abelian-group surface (Zero + (+) + (~-) + (-)) ───────────
+// Z-set surfaces the native F# generic-math idiom ON THE TYPE: `Zero` + `(+)`
+// (additive monoid) PLUS `(~-)` / `(-)` (the abelian-group inverse) — the
+// `System.Numerics`-shaped interface ("numerics like dotnet", pushed to the
+// other langs that lack generic-math). NOT `INumber` (no total order; the ring
+// scalar is `ZSet.scale`, not a numeric product). These lock the operators to
+// the pooled combiner (operator ≡ module fn) and let generic numeric code +
+// `Seq.sum` aggregate Z-sets through `GenericZero` + `(+)`.
+
+[<Fact>]
+let ``(+) equals ZSet.add — operator delegates to the same pooled combiner`` () =
+    let a = ZSet.ofSeq [ ("a", 1L); ("b", 2L) ]
+    let b = ZSet.ofSeq [ ("b", 1L); ("c", 3L) ]
+    (a + b) |> should equal (ZSet.add a b)
+    (a + b) |> zToList |> should equal [ ("a", 1L); ("b", 3L); ("c", 3L) ]
+
+[<Fact>]
+let ``(~-) equals ZSet.neg and (-) equals ZSet.sub`` () =
+    let a = ZSet.ofSeq [ ("a", 1L); ("b", 2L) ]
+    let b = ZSet.ofSeq [ ("b", 1L) ]
+    (-a) |> should equal (ZSet.neg a)
+    (a - b) |> should equal (ZSet.sub a b)
+    (a - b) |> zToList |> should equal [ ("a", 1L); ("b", 1L) ]
+
+[<Fact>]
+let ``Zero is the additive identity and equals empty / GenericZero`` () =
+    let a = ZSet.ofSeq [ ("a", 1L); ("b", 2L) ]
+    (ZSet<string>.Zero + a) |> should equal a
+    (a + ZSet<string>.Zero) |> should equal a
+    ZSet<string>.Zero |> should equal ZSet.empty<string>
+    LanguagePrimitives.GenericZero<ZSet<string>> |> should equal ZSet.empty<string>
+
+[<Fact>]
+let ``abelian-group inverse via operators: a + (-a) = Zero and a - a = Zero`` () =
+    let a = ZSet.ofSeq [ ("a", 1L); ("b", -2L); ("c", 3L) ]
+    (a + (-a)) |> should equal ZSet<string>.Zero
+    (a - a) |> should equal ZSet<string>.Zero
+
+[<Fact>]
+let ``Seq.sum aggregates Z-sets through GenericZero + (+) (retraction nets to 0)`` () =
+    let parts =
+        [ ZSet.ofSeq [ ("a", 1L) ]
+          ZSet.ofSeq [ ("a", 1L); ("b", 2L) ]
+          ZSet.ofSeq [ ("b", -2L); ("c", 5L) ] ]
+    // empty Seq.sum seed is GenericZero (= empty); b nets to 0 and drops
+    Seq.sum parts |> zToList |> should equal [ ("a", 2L); ("c", 5L) ]
+
+[<Fact>]
+let ``(+) is NOT idempotent: a + a doubles every weight (Z-set, not G-Set)`` () =
+    let a = ZSet.ofSeq [ ("a", 1L); ("b", -3L) ]
+    (a + a) |> zToList |> should equal [ ("a", 2L); ("b", -6L) ]
+
+
+// ───────────── C14 (B-1007 P1): earn-its-keep auto-prune ─────────────
+// The ±1 Z-set ABELIAN GROUP laws (assoc / commut / Zero-identity /
+// negation-inverse / double-neg / sub) are already proven in the "Group
+// axioms" section above — C14 does NOT duplicate them. C14's remaining
+// half is the EARN-ITS-KEEP AUTO-PRUNE (B-1006): a key whose weights sum
+// to 0 is dropped (it didn't earn its keep; ZSet `(+)` at Algebra.fs:81
+// stores only `s <> 0L`), and that physical prune PRESERVES SEMANTICS.
+// Two FsCheck laws over SmallZSetArb:
+//   * invariant — no surviving entry has weight 0 (every key earned its keep)
+//   * semantics — lookup is an additive homomorphism: lookup k (a+b) =
+//     lookup k a + lookup k b at EVERY key (present or absent), so a
+//     cancelled/dropped key still looks up as its true sum (0). Shapiro CRDTs.
+
+[<FsCheck.Xunit.Property(Arbitrary = [| typeof<SmallZSetArb> |])>]
+let ``C14 earn-its-keep: no surviving entry has weight zero (auto-prune invariant)``
+    (a: ZSet<int>) (b: ZSet<int>) =
+    let nonzero (z: ZSet<int>) = z |> Seq.forall (fun e -> e.Weight <> 0L)
+    // the group OPERATIONS preserve the invariant — cancellations are pruned
+    nonzero a && nonzero b
+    && nonzero (ZSet.add a b) && nonzero (ZSet.sub a b) && nonzero (ZSet.neg a)
+
+[<FsCheck.Xunit.Property(Arbitrary = [| typeof<SmallZSetArb> |])>]
+let ``C14 auto-prune preserves semantics: lookup is an additive homomorphism (dropped keys look up as 0)``
+    (a: ZSet<int>) (b: ZSet<int>) =
+    // every key present in a or b, plus absent sentinels — the homomorphism
+    // must hold even where a+b physically dropped a cancelled key (lookup 0).
+    let keys =
+        Seq.append (a |> Seq.map (fun e -> e.Key)) (b |> Seq.map (fun e -> e.Key))
+        |> Seq.append (seq { -1; 0; 9999 })
+        |> Seq.distinct
+    let sum = ZSet.add a b
+    keys |> Seq.forall (fun k -> ZSet.lookup k sum = ZSet.lookup k a + ZSet.lookup k b)

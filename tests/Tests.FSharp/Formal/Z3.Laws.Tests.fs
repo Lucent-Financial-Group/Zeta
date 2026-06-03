@@ -140,6 +140,16 @@ let ``Z3 proves negation distributes over addition`` () =
 
 
 [<Fact>]
+// Completes the abelian-group law set: subtraction IS addition-of-the-inverse —
+// the per-key-weight statement of DBSP retraction (a - b = a + (-b)). The symbolic
+// (Z3) leg of the BP-16 cross-check; the FsCheck leg exercises the real ZSet<int>
+// (-) operator (ZSet.Tests.fs). Verified unsat with a sat negative control.
+let ``Z3 proves subtraction is addition of the inverse`` () =
+    z3AxiomHolds "subtraction = add inverse"
+        "(= (- a b) (+ a (- b)))"
+
+
+[<Fact>]
 let ``Z3 proves distinct is idempotent`` () =
     z3AxiomHolds "distinct idempotent"
         "(= (ite (> (ite (> a 0) 1 0) 0) 1 0) (ite (> a 0) 1 0))"
@@ -438,3 +448,301 @@ let ``TLC model-checker is available when configured`` () =
     | None ->
         // Tool not installed — test is informational only.
         ()
+
+// ═══════════════════════════════════════════════════════════════════
+// B-1007 C1 — Gaussian message product is an ABELIAN GROUP on the
+// natural-parameter representation (ν = μ·τ, τ = 1/σ²). product =
+// component-wise add, divide = component-wise subtract, identity =
+// One = (0,0). This is ℝ² under vector +/- — the abelian-group axioms
+// hold symbolically over the IDEAL REALS (QF_LRA). The FsCheck twin in
+// tests/Bayesian.Tests/Message.Tests.fs proves the FLOAT impl conforms;
+// THIS proves the algebraic model is correct-by-construction.
+//
+// Anchor: KFL 2001 (sum-product), Minka 2001 (EP cavity = divide),
+// Wainwright-Jordan 2008 §3 (exp-family natural params = free abelian
+// group). Mirrors the Z-set abelian-group lemmas above (same property
+// class, Gaussian payload). Authored by Soraya per B-1007.
+//
+// Float overflow (proper closure can break when τ1+τ2 overflows to ∞)
+// is invisible to QF_LRA ideal reals — that is the FsCheck side's job
+// (closure property on the bounded domain) + the separate C9 obligation.
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves Gaussian message product is associative (C1)`` () =
+    let script =
+        "(declare-const nuA Real)\n(declare-const tauA Real)\n" +
+        "(declare-const nuB Real)\n(declare-const tauB Real)\n" +
+        "(declare-const nuC Real)\n(declare-const tauC Real)\n" +
+        "(assert (not (and\n" +
+        "  (= (+ (+ nuA nuB) nuC)   (+ nuA (+ nuB nuC)))\n" +
+        "  (= (+ (+ tauA tauB) tauC) (+ tauA (+ tauB tauC))))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C1 Gaussian product associative" script
+
+[<Fact>]
+let ``Z3 proves Gaussian message product is commutative (C1)`` () =
+    let script =
+        "(declare-const nuA Real)\n(declare-const tauA Real)\n" +
+        "(declare-const nuB Real)\n(declare-const tauB Real)\n" +
+        "(assert (not (and\n" +
+        "  (= (+ nuA nuB)   (+ nuB nuA))\n" +
+        "  (= (+ tauA tauB) (+ tauB tauA)))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C1 Gaussian product commutative" script
+
+[<Fact>]
+let ``Z3 proves One (0,0) is the identity for Gaussian product (C1)`` () =
+    let script =
+        "(declare-const nuA Real)\n(declare-const tauA Real)\n" +
+        "(assert (not (and\n" +
+        "  (= (+ nuA 0.0)  nuA)  (= (+ tauA 0.0)  tauA)\n" +
+        "  (= (+ 0.0 nuA)  nuA)  (= (+ 0.0 tauA)  tauA))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C1 Gaussian product identity (0,0)" script
+
+[<Fact>]
+let ``Z3 proves Gaussian divide is the inverse via negation (C1)`` () =
+    let script =
+        "(declare-const nuA Real)\n(declare-const tauA Real)\n" +
+        "(assert (not (and\n" +
+        "  (= (- nuA nuA)   0.0)  (= (- tauA tauA)  0.0)\n" +
+        "  (= (+ nuA (- 0.0 nuA))   0.0)\n" +
+        "  (= (+ tauA (- 0.0 tauA)) 0.0))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C1 Gaussian product inverse (divide = subtract)" script
+
+[<Fact>]
+let ``Z3 proves Gaussian divide round-trips the product, the EP cavity (C1)`` () =
+    let script =
+        "(declare-const nuA Real)\n(declare-const tauA Real)\n" +
+        "(declare-const nuB Real)\n(declare-const tauB Real)\n" +
+        "(assert (not (and\n" +
+        "  (= (- (+ nuA nuB) nuB)   nuA)\n" +
+        "  (= (- (+ tauA tauB) tauB) tauA))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C1 Gaussian cavity round-trip ((a*b)/b = a)" script
+
+[<Fact>]
+let ``Z3 proves proper Gaussians are closed under product, guarded (C1)`` () =
+    let script =
+        "(declare-const tauA Real)\n(declare-const tauB Real)\n" +
+        // τA>0 and τB>0 ⇒ τA+τB>0 (proper closed under product). GUARDED
+        // implication, not unconditional — divide (cavity) can leave the
+        // proper domain (Minka 2001), which is correct, not a bug.
+        "(assert (not (=> (and (> tauA 0.0) (> tauB 0.0))\n" +
+        "                 (> (+ tauA tauB) 0.0))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C1 proper closed under product (guarded)" script
+
+// ═══════════════════════════════════════════════════════════════════
+// B-1007 C2 — Beta message product is an ABELIAN GROUP on the SHIFTED
+// natural parameters. The impl works on (α, β) directly: product =
+// α₁+α₂−1, divide = α₁−α₂+1, identity One = Beta(1,1). These ARE the
+// abelian-group axioms on the shifted naturals (n = α−1), proven here
+// symbolically over the ideal reals (QF_LRA). The FsCheck twin proves
+// the float impl conforms. Anchor: Bishop PRML ch.2, KFL 2001, Minka
+// 2001. Lemmas use the α-coordinate; β is identical by symmetry.
+//
+// CLOSURE differs from C1: proper (α>0) is NOT closed under product
+// (0.1+0.1−1<0). The honest closure is the conjugate update — proper
+// prior (α>0) × likelihood (α≥1) ⇒ proper. Stated as the guarded lemma.
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves Beta product is associative on shifted naturals (C2)`` () =
+    let script =
+        "(declare-const aA Real)\n(declare-const aB Real)\n(declare-const aC Real)\n" +
+        // (a*b)*c = ((aA+aB-1)+aC-1) ; a*(b*c) = (aA+(aB+aC-1)-1)
+        "(assert (not (= (- (+ (- (+ aA aB) 1.0) aC) 1.0)\n" +
+        "                (- (+ aA (- (+ aB aC) 1.0)) 1.0))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C2 Beta product associative (shifted naturals)" script
+
+[<Fact>]
+let ``Z3 proves Beta product is commutative on shifted naturals (C2)`` () =
+    let script =
+        "(declare-const aA Real)\n(declare-const aB Real)\n" +
+        "(assert (not (= (- (+ aA aB) 1.0) (- (+ aB aA) 1.0))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C2 Beta product commutative" script
+
+[<Fact>]
+let ``Z3 proves Beta One = Beta(1,1) is the identity for product (C2)`` () =
+    let script =
+        "(declare-const aA Real)\n" +
+        // a * One : aA + 1 - 1 = aA ; One * a : 1 + aA - 1 = aA  (One.Alpha = 1)
+        "(assert (not (and (= (- (+ aA 1.0) 1.0) aA)\n" +
+        "                  (= (- (+ 1.0 aA) 1.0) aA))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C2 Beta product identity (Beta(1,1))" script
+
+[<Fact>]
+let ``Z3 proves Beta divide round-trips the product, the EP cavity (C2)`` () =
+    let script =
+        "(declare-const aA Real)\n(declare-const aB Real)\n" +
+        // (a*b)/b = ((aA+aB-1) - aB + 1) = aA
+        "(assert (not (= (+ (- (- (+ aA aB) 1.0) aB) 1.0) aA)))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C2 Beta cavity round-trip ((a*b)/b = a)" script
+
+[<Fact>]
+let ``Z3 proves Beta divide is the shifted-natural inverse element (C2)`` () =
+    let script =
+        "(declare-const aA Real)\n(declare-const aB Real)\n" +
+        // a/b = aA - aB + 1 ; a*(One/b) where One/b = 2 - aB :  aA + (2-aB) - 1 = aA - aB + 1
+        "(assert (not (= (+ (- aA aB) 1.0)\n" +
+        "                (- (+ aA (- 2.0 aB)) 1.0))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C2 Beta divide = multiply by inverse" script
+
+[<Fact>]
+let ``Z3 proves proper Beta prior times a likelihood stays proper, guarded (C2)`` () =
+    let script =
+        "(declare-const aPrior Real)\n(declare-const aLike Real)\n" +
+        // proper prior (aPrior>0) AND likelihood (aLike>=1) ⇒ aPrior+aLike-1 > 0.
+        // NOT unconditional: two arbitrary propers can give α<0 (improper).
+        "(assert (not (=> (and (> aPrior 0.0) (>= aLike 1.0))\n" +
+        "                 (> (- (+ aPrior aLike) 1.0) 0.0))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C2 Beta conjugate closure (prior x likelihood, guarded)" script
+
+// ═══════════════════════════════════════════════════════════════════
+// B-1007 C3 — Bernoulli message product is an ABELIAN GROUP via LOG-ODDS
+// addition. The impl computes in probability space (t/(t+f)); that is
+// mathematically log-odds add. Here Z3 proves the LOG-ODDS model
+// (ℓ ∈ ℝ, product = ℓ_a + ℓ_b, identity One = 0, inverse = negation) is
+// an abelian group over the ideal reals; the FsCheck twin proves the
+// prob-space float impl conforms. Anchor: KFL 2001, Minka 2001,
+// exponential-family (log-odds = Bernoulli natural parameter).
+//
+// CLOSURE is unconditional: ℝ is closed under +, and the logistic
+// ℝ→(0,1) bijection carries that to p ∈ (0,1) — so unlike Beta, any two
+// proper Bernoullis have a proper product. (No guard needed; the
+// FsCheck closure property exercises the prob-space normalizer.)
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves Bernoulli product is associative in log-odds (C3)`` () =
+    let script =
+        "(declare-const lA Real)\n(declare-const lB Real)\n(declare-const lC Real)\n" +
+        "(assert (not (= (+ (+ lA lB) lC) (+ lA (+ lB lC)))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C3 Bernoulli product associative (log-odds)" script
+
+[<Fact>]
+let ``Z3 proves Bernoulli product is commutative in log-odds (C3)`` () =
+    let script =
+        "(declare-const lA Real)\n(declare-const lB Real)\n" +
+        "(assert (not (= (+ lA lB) (+ lB lA))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C3 Bernoulli product commutative" script
+
+[<Fact>]
+let ``Z3 proves One = 0.5 (log-odds 0) is the identity for Bernoulli product (C3)`` () =
+    let script =
+        "(declare-const lA Real)\n" +
+        "(assert (not (and (= (+ lA 0.0) lA) (= (+ 0.0 lA) lA))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C3 Bernoulli product identity (log-odds 0)" script
+
+[<Fact>]
+let ``Z3 proves Bernoulli divide is the inverse via log-odds negation (C3)`` () =
+    let script =
+        "(declare-const lA Real)\n" +
+        "(assert (not (and (= (- lA lA) 0.0)\n" +
+        "                  (= (+ lA (- 0.0 lA)) 0.0))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C3 Bernoulli divide = log-odds negation" script
+
+[<Fact>]
+let ``Z3 proves Bernoulli divide round-trips the product, the EP cavity (C3)`` () =
+    let script =
+        "(declare-const lA Real)\n(declare-const lB Real)\n" +
+        "(assert (not (= (- (+ lA lB) lB) lA)))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C3 Bernoulli cavity round-trip ((a*b)/b = a)" script
+// B-1007 C6 — BP convergence detection (`not (distance x y <= tol)`) is
+// NaN/∞-SAFE: a divergent run can never falsely report convergence. The
+// NaN/∞ cases are IEEE-754 facts, so they are proven in Z3's
+// floating-point theory (QF_FP); the finite threshold is proven in
+// QF_LRA. The FsCheck twin (Bayesian.Tests/Message.Tests.fs) exercises
+// the real-float per-family `distance` (returns ∞ for non-finite). Anchor:
+// factory-native; the `moved` invariant in FactorGraph.runToFixpoint.
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves a NaN residual counts as moved, never converged (C6)`` () =
+    // moved = not (fp.leq d tol). For NaN d, (fp.leq NaN tol) is FALSE ∀ tol,
+    // so moved is TRUE. Assert the negation (fp.leq d tol) under isNaN d ⇒ UNSAT.
+    let script =
+        "(set-logic QF_FP)\n" +
+        "(declare-const d (_ FloatingPoint 11 53))\n" +
+        "(declare-const tol (_ FloatingPoint 11 53))\n" +
+        "(assert (fp.isNaN d))\n" +
+        "(assert (fp.leq d tol))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C6 NaN residual is always moved" script
+
+[<Fact>]
+let ``Z3 proves a +infinity residual counts as moved for any finite tol (C6)`` () =
+    // (fp.leq +oo finite-tol) is FALSE, so +∞ residual is always moved.
+    let script =
+        "(set-logic QF_FP)\n" +
+        "(declare-const tol (_ FloatingPoint 11 53))\n" +
+        "(assert (not (fp.isInfinite tol)))\n" +
+        "(assert (not (fp.isNaN tol)))\n" +
+        "(assert (fp.leq (_ +oo 11 53) tol))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C6 +inf residual is always moved (finite tol)" script
+
+[<Fact>]
+let ``Z3 proves the finite convergence threshold has no converged-and-moved overlap (C6)`` () =
+    // For a finite residual d ≥ 0 and tol ≥ 0, converged (d ≤ tol) and moved
+    // (d > tol) are mutually exclusive — no d is BOTH. UNSAT ⇒ the threshold
+    // is an exact partition (no finite residual is misclassified).
+    let script =
+        "(declare-const d Real)\n(declare-const tol Real)\n" +
+        "(assert (>= d 0.0))\n(assert (>= tol 0.0))\n" +
+        "(assert (and (<= d tol) (> d tol)))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C6 finite threshold has no converged-and-moved overlap" script
+
+
+// ═══════════════════════════════════════════════════════════════════
+// C13 (B-1007 P1) — the DBSP operator-inverse identities, symbolically
+// over the IDEAL REALS (QF_LRA). z⁻¹ (delay): (z⁻¹ x)[t] = x[t−1], x[−1]=0.
+// I (integrate): I(s)[t] = Σ_{i≤t} s[i]. D (differentiate): D(x)[t] =
+// x[t] − x[t−1] = (1 − z⁻¹)(x). The substance is the TELESCOPING:
+// D∘I = I∘D = id over a bounded 3-tick stream s0,s1,s2. The FsCheck twin
+// (Operators/OperatorAlgebra.Tests.fs C13) runs the REAL Circuit on int64
+// Z-sets; Z3 proves the algebra over ideal reals (BP-16 cross-check).
+// Spec: DBSP (Budiu et al.) — I = (1−z⁻¹)⁻¹.
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves C13 D∘I = id (differentiate of integrate telescopes to each tick)`` () =
+    // I[t]=Σ_{i≤t}s[i]; D(I(s))[t]=I[t]−I[t−1] must equal s[t] for every t.
+    // assert the violation (some tick disagrees) ⇒ UNSAT ⇒ identity holds.
+    let script =
+        "(set-logic QF_LRA)\n" +
+        "(declare-const s0 Real)(declare-const s1 Real)(declare-const s2 Real)\n" +
+        "(assert (or\n" +
+        "  (not (= (- s0 0.0) s0))\n" +
+        "  (not (= (- (+ s0 s1) s0) s1))\n" +
+        "  (not (= (- (+ s0 s1 s2) (+ s0 s1)) s2))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C13 D∘I = id" script
+
+[<Fact>]
+let ``Z3 proves C13 I∘D = id (integrate of differentiate telescopes to each tick)`` () =
+    // D(s)[t]=s[t]−s[t−1] (s[−1]=0); I(D(s))[t]=Σ_{i≤t}D(s)[i] must equal s[t].
+    let script =
+        "(set-logic QF_LRA)\n" +
+        "(declare-const s0 Real)(declare-const s1 Real)(declare-const s2 Real)\n" +
+        "(assert (or\n" +
+        "  (not (= (- s0 0.0) s0))\n" +
+        "  (not (= (+ (- s0 0.0) (- s1 s0)) s1))\n" +
+        "  (not (= (+ (- s0 0.0) (- s1 s0) (- s2 s1)) s2))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C13 I∘D = id" script

@@ -17,8 +17,10 @@
     <!-- Algebra/ -->
     <Compile Include="Algebra/Weight.Tests.fs" />
     <Compile Include="Algebra/CayleyDickson.Tests.fs" />
+    <Compile Include="Algebra/HexCore.Tests.fs" />
     <Compile Include="Algebra/Units.Tests.fs" />
     <Compile Include="Algebra/GSet.Tests.fs" />
+    <Compile Include="Algebra/Bag.Tests.fs" />
     <Compile Include="Algebra/ZSet.Tests.fs" />
     <Compile Include="Algebra/ZSet.Overflow.Tests.fs" />
     <Compile Include="Algebra/Residuated.Tests.fs" />
@@ -34,6 +36,16 @@
     <Compile Include="Algebra/Semiring.Tests.fs" />
     <Compile Include="TriBoolean/TriBoolean.Tests.fs" />
     <Compile Include="TriBoolean/Float.Tests.fs" />
+    <Compile Include="Bonsai/Bonsai.Tests.fs" />
+    <Compile Include="Bonsai/Resume.Tests.fs" />
+    <Compile Include="Core/Codec.Tests.fs" />
+    <Compile Include="RangeSet.Tests.fs" />
+    <Compile Include="DynamicValue.Tests.fs" />
+    <Compile Include="DynamicValue.GoldenVectors.Tests.fs" />
+    <Compile Include="DynamicValue.CborGoldenVectors.Tests.fs" />
+    <Compile Include="DynamicValue.CborDecode.Tests.fs" />
+    <Compile Include="DynamicValue.JsonDecode.Tests.fs" />
+    <Compile Include="DynamicValue.Canonical.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
     <Compile Include="Observe/EventLog.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
@@ -58,6 +70,7 @@
     <Compile Include="Operators/Fusion.Tests.fs" />
     <Compile Include="Operators/ResidualMax.Tests.fs" />
     <Compile Include="Operators/Differentiate.Tests.fs" />
+    <Compile Include="Operators/OperatorAlgebra.Tests.fs" />
     <Compile Include="Operators/RecursiveCounting.MultiSeed.Tests.fs" />
     <Compile Include="Operators/RecursiveSemiNaive.Boundary.Tests.fs" />
     <Compile Include="Operators/CrmScenarios.Tests.fs" />
@@ -106,6 +119,9 @@
     <Compile Include="Infra/Rx.Tests.fs" />
     <Compile Include="Infra/FeatureFlags.Tests.fs" />
 
+    <!-- Limit/ -->
+    <Compile Include="Limit/Limit.Tests.fs" />
+
     <!-- Crdt/ -->
     <Compile Include="Crdt/GCounter.Tests.fs" />
     <Compile Include="Crdt/PNCounter.Tests.fs" />
@@ -137,6 +153,12 @@
 
     <!-- ZetaId/ — F# peer oracle cross-verify (matches TS + C# canonical hex) -->
     <Compile Include="ZetaId/CrossVerifyTests.fs" />
+    <Compile Include="ZetaId/Canonical.Tests.fs" />
+    <Compile Include="Yaml/ReaderTests.fs" />
+    <Compile Include="Yaml/CrossVerifyTests.fs" />
+    <Compile Include="Sha256/Sha256Tests.fs" />
+    <Compile Include="Sha256/CrossVerifyTests.fs" />
+    <Compile Include="CanonicalJson/CrossVerifyTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -144,6 +166,9 @@
     <ProjectReference Include="..\..\src\Core.FSharp.ZetaId\Zeta.Core.FSharp.ZetaId.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.TriBoolean\Zeta.Core.FSharp.TriBoolean.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Observe\Zeta.Core.FSharp.Observe.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.Yaml\Zeta.Core.FSharp.Yaml.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.Sha256\Zeta.Core.FSharp.Sha256.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.AceCanonical\Zeta.Core.FSharp.AceCanonical.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

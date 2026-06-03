@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Message.Tests.fs" />
+    <Compile Include="FactorGraph.Tests.fs" />
+    <Compile Include="MessageBatch.Tests.fs" />
+    <Compile Include="Bp.Tests.fs" />
+    <Compile Include="Ep.Tests.fs" />
     <Compile Include="BayesianTests.fs" />
   </ItemGroup>
 
@@ -25,5 +30,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="FsUnit.Xunit" />
+    <PackageReference Include="FsCheck" />
+    <PackageReference Include="FsCheck.Xunit.v3" />
   </ItemGroup>
 </Project>

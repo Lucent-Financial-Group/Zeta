@@ -25,6 +25,24 @@ let private genWires : Arbitrary<ToffoliWires> =
 type ToffoliArb() =
     static member Wires() = genWires
 
+type WeightPair = {
+    Left : Weight
+    Right : Weight
+}
+
+let private genSmallWeight : Gen<Weight> =
+    Gen.choose (-15, 15) |> Gen.map int64
+
+let private genWeightPair : Arbitrary<WeightPair> =
+    Gen.map2
+        (fun left right -> { Left = left; Right = right })
+        genSmallWeight
+        genSmallWeight
+    |> Arb.fromGen
+
+type WeightPairArb() =
+    static member WeightPair() = genWeightPair
+
 
 // ── Toffoli gate laws ────────────────────────────────────────────────────
 //
@@ -133,11 +151,200 @@ let ``Toffoli circuit records gate steps by wire id without erasing wire state``
     let circuit = {
         Gates = [ step ]
         Wires = wires
-        Ancilla = 1
+        Ancilla = 3
     }
 
     circuit.Gates |> should equal [ step ]
     circuit.Wires.[step.ControlA] |> should equal One
     circuit.Wires.[step.ControlB] |> should equal One
     circuit.Wires.[step.Target] |> should equal Zero
-    circuit.Ancilla |> should equal 1
+    circuit.Ancilla |> should equal 3
+
+
+// ── Reversible join weight multiplication fragment (B-0366.2.2) ──────────
+
+let private wireBits (fragment: ToffoliCircuitFragment) (wires: WireId list) =
+    wires |> List.map (fun wire -> fragment.Circuit.Wires.[wire])
+
+
+let private allGateWires (step: ToffoliGateStep) =
+    [ step.ControlA; step.ControlB; step.Target ]
+
+
+let private applyStep (wires: WireMap) (step: ToffoliGateStep) =
+    let target =
+        if wires.[step.ControlA] = One && wires.[step.ControlB] = One then
+            match wires.[step.Target] with
+            | Zero -> One
+            | One -> Zero
+        else
+            wires.[step.Target]
+
+    wires |> Map.add step.Target target
+
+
+let private applySteps steps wires =
+    steps |> List.fold applyStep wires
+
+
+let private executionStates steps wires =
+    steps |> List.scan applyStep wires
+
+
+let private wireKeySet (wires: WireMap) =
+    wires |> Map.toSeq |> Seq.map fst |> Set.ofSeq
+
+
+let private erasedWireCount before after =
+    Set.difference (wireKeySet before) (wireKeySet after)
+    |> Set.count
+
+
+[<Fact>]
+let ``Weight multiplication fragment encodes signed magnitude inputs`` () =
+    let fragment = ToffoliGate.modelWeightMul -3L 5L
+
+    fragment.Circuit.Wires.[fragment.ConstantOneWire] |> should equal One
+    fragment.Circuit.Wires.[fragment.LeftSignWire] |> should equal One
+    fragment.Circuit.Wires.[fragment.RightSignWire] |> should equal Zero
+    fragment.Circuit.Wires.[fragment.ProductSignWire] |> should equal Zero
+
+    wireBits fragment fragment.LeftMagnitudeWires |> should equal [ One; One ]
+    wireBits fragment fragment.RightMagnitudeWires |> should equal [ One; Zero; One ]
+    wireBits fragment fragment.ProductMagnitudeWires
+    |> should equal [ Zero; Zero; Zero; Zero; Zero ]
+
+
+[<Fact>]
+let ``Weight multiplication fragment records Peres-shaped chains`` () =
+    let fragment = ToffoliGate.modelWeightMul 3L 5L
+    let pairCount = fragment.LeftMagnitudeWires.Length * fragment.RightMagnitudeWires.Length
+
+    fragment.PeresChains.Length |> should equal pairCount
+    fragment.PeresChains
+    |> List.forall (fun chain -> chain.Length >= 3)
+    |> should equal true
+
+    fragment.ProductMagnitudeWires.Length
+    |> should equal (fragment.LeftMagnitudeWires.Length + fragment.RightMagnitudeWires.Length)
+    fragment.IntermediateWires.Length |> should equal pairCount
+    fragment.CarryWires.Length >= pairCount |> should equal true
+
+    let highProductColumn = fragment.ProductMagnitudeWires |> List.last
+    fragment.Circuit.Gates
+    |> List.exists (fun step -> step.Target = highProductColumn)
+    |> should equal true
+
+    fragment.Circuit.Gates |> List.skip 2 |> should equal (fragment.PeresChains |> List.collect id)
+
+
+[<Fact>]
+let ``Weight multiplication fragment retains every referenced wire`` () =
+    let fragment = ToffoliGate.modelWeightMul -2L -7L
+    let knownWires =
+        fragment.Circuit.Wires
+        |> Map.toSeq
+        |> Seq.map fst
+        |> Set.ofSeq
+
+    fragment.Circuit.Ancilla |> should equal fragment.Circuit.Wires.Count
+
+    for step in fragment.Circuit.Gates do
+        for wire in allGateWires step do
+            knownWires.Contains wire |> should equal true
+
+
+[<Fact>]
+let ``Weight multiplication fragment keeps zero weight as one magnitude bit`` () =
+    let fragment = ToffoliGate.modelWeightMul 0L 0L
+
+    wireBits fragment fragment.LeftMagnitudeWires |> should equal [ Zero ]
+    wireBits fragment fragment.RightMagnitudeWires |> should equal [ Zero ]
+    fragment.ProductMagnitudeWires.Length |> should equal 2
+    fragment.PeresChains.Length |> should equal 1
+
+
+[<Fact>]
+let ``Weight multiplication fragment normalizes zero product sign`` () =
+    let cases =
+        [ ToffoliGate.modelWeightMul 0L -5L
+          ToffoliGate.modelWeightMul -5L 0L ]
+
+    for fragment in cases do
+        fragment.Circuit.Wires.[fragment.ProductSignWire] |> should equal Zero
+        fragment.Circuit.Gates
+        |> List.exists (fun step -> step.Target = fragment.ProductSignWire)
+        |> should equal false
+
+
+[<Fact>]
+let ``Weight multiplication fragment propagates colliding partial-product carries`` () =
+    let fragment = ToffoliGate.modelWeightMul 3L 3L
+    let columnOne = fragment.ProductMagnitudeWires.[1]
+    let columnTwo = fragment.ProductMagnitudeWires.[2]
+    let columnThree = fragment.ProductMagnitudeWires.[3]
+    let gates = fragment.Circuit.Gates
+
+    gates
+    |> List.filter (fun step -> step.Target = columnOne)
+    |> List.length
+    |> should be (greaterThanOrEqualTo 2)
+
+    fragment.CarryWires
+    |> List.exists (fun carry ->
+        gates
+        |> List.exists (fun step ->
+            step.ControlA = carry
+            && step.ControlB = fragment.ConstantOneWire
+            && step.Target = columnTwo))
+    |> should equal true
+
+    fragment.CarryWires
+    |> List.exists (fun carry ->
+        gates
+        |> List.exists (fun step ->
+            step.ControlA = carry
+            && step.ControlB = fragment.ConstantOneWire
+            && step.Target = columnThree))
+    |> should equal true
+
+
+// ── Reversibility laws over the retained join-weight fragment (B-0366.2.3) ──
+
+[<FsCheck.Xunit.Property(Arbitrary = [| typeof<WeightPairArb> |], MaxTest = 128)>]
+let ``Weight multiplication fragment forward then reverse restores retained wires`` (pair: WeightPair) =
+    let fragment = ToffoliGate.modelWeightMul pair.Left pair.Right
+    let initial = fragment.Circuit.Wires
+
+    let afterForward =
+        applySteps fragment.Circuit.Gates initial
+
+    let afterReverse =
+        applySteps (List.rev fragment.Circuit.Gates) afterForward
+
+    afterReverse = initial
+
+
+[<FsCheck.Xunit.Property(Arbitrary = [| typeof<WeightPairArb> |], MaxTest = 128)>]
+let ``Weight multiplication fragment forward execution never erases retained wires`` (pair: WeightPair) =
+    let fragment = ToffoliGate.modelWeightMul pair.Left pair.Right
+    let initial = fragment.Circuit.Wires
+    let initialKeys = wireKeySet initial
+
+    executionStates fragment.Circuit.Gates initial
+    |> List.forall (fun state ->
+        Map.count state = Map.count initial
+        && wireKeySet state = initialKeys)
+
+
+[<FsCheck.Xunit.Property(Arbitrary = [| typeof<WeightPairArb> |], MaxTest = 128)>]
+let ``Weight multiplication fragment Landauer accounting reports zero erased bits`` (pair: WeightPair) =
+    let fragment = ToffoliGate.modelWeightMul pair.Left pair.Right
+    let initial = fragment.Circuit.Wires
+    let afterForward = applySteps fragment.Circuit.Gates initial
+    let afterReverse = applySteps (List.rev fragment.Circuit.Gates) afterForward
+
+    fragment.Circuit.Ancilla = Map.count initial
+    && erasedWireCount initial afterForward = 0
+    && erasedWireCount afterForward afterReverse = 0
+    && erasedWireCount initial afterReverse = 0

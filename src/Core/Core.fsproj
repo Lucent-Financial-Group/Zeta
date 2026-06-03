@@ -14,12 +14,19 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Algebra.fs" />
     <Compile Include="CayleyDickson.fs" />
+    <Compile Include="HexCore.fs" />
     <Compile Include="Semiring.fs" />
     <Compile Include="Pool.fs" />
     <Compile Include="GSet.fs" />
+    <Compile Include="Bag.fs" />
     <Compile Include="ZSet.fs" />
     <Compile Include="ToffoliGate.fs" />
     <Compile Include="IndexedZSet.fs" />
+    <Compile Include="Codec.fs" />
+    <Compile Include="Bonsai.fs" />
+    <Compile Include="Resume.fs" />
+    <Compile Include="RangeSet.fs" />
+    <Compile Include="DynamicValue.fs" />
     <Compile Include="Circuit.fs" />
     <Compile Include="PluginApi.fs" />
     <Compile Include="PluginHarness.fs" />
@@ -29,6 +36,7 @@
     <Compile Include="Handles.fs" />
     <Compile Include="Environment.fs" />
     <Compile Include="FeatureFlags.fs" />
+    <Compile Include="Limit.fs" />
     <Compile Include="Simd.fs" />
     <Compile Include="HardwareCrc.fs" />
     <Compile Include="SplitMix64.fs" />

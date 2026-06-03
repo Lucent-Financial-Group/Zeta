@@ -8,6 +8,7 @@ import {
   sign as nodeSign, verify as nodeVerify,
 } from "node:crypto";
 import type { AceManifest } from "./store.ts";
+import { canonicalBytes } from "./canonical.ts";
 
 export interface Keypair { privatePem: string; publicSpkiB64: string; keyId: string; }
 export interface AceSignature { algo: "ed25519"; key_id: string; sig: string; }
@@ -30,23 +31,11 @@ export function generateKeypair(): Keypair {
   return { privatePem, publicSpkiB64, keyId: keyId(publicSpkiB64) };
 }
 
-function canonicalize(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(canonicalize);
-  if (value && typeof value === "object") {
-    const out: Record<string, unknown> = {};
-    for (const k of Object.keys(value as Record<string, unknown>).sort()) {
-      out[k] = canonicalize((value as Record<string, unknown>)[k]);
-    }
-    return out;
-  }
-  return value;
-}
-
-/** Whole manifest minus `signature`, recursively key-sorted, compact JSON. */
+/** Whole manifest minus `signature`, via the shared canonical byte form (§8.1). */
 export function canonicalManifestBytes(manifest: AceManifest): Uint8Array {
   const { signature, ...rest } = manifest as AceManifest & { signature?: AceSignature };
   void signature; // excluded from canonical bytes — only `rest` is serialized
-  return new TextEncoder().encode(JSON.stringify(canonicalize(rest)));
+  return canonicalBytes(rest);
 }
 
 export function signManifest(manifest: AceManifest, privatePem: string): AceSignature {
@@ -76,4 +65,18 @@ export function verifySignature(
   const result: VerifyResult = { ok: true, key_id: signature.key_id };
   if (entry.label !== undefined) (result as { ok: true; key_id: string; label?: string }).label = entry.label;
   return result;
+}
+
+export interface RevocationEntry { reason?: string; at: string }
+export type RevocationMap = Record<string, Record<string, RevocationEntry>>;
+
+/** Derive the SPKI-DER base64 public key + its keyId from a private PEM (for a self-verify
+ *  trust store). Sibling of signIndex's internal signer-id derivation. */
+export function publicKeyInfoFromPrivatePem(privatePem: string): { keyId: string; public_key: string } {
+  const priv = createPrivateKey(privatePem);
+  if (priv.asymmetricKeyType !== "ed25519") {
+    throw new Error(`publicKeyInfoFromPrivatePem: expected an ed25519 key, got ${priv.asymmetricKeyType ?? "unknown"}`);
+  }
+  const public_key = (createPublicKey(priv).export({ type: "spki", format: "der" }) as Buffer).toString("base64");
+  return { keyId: keyId(public_key), public_key };
 }
