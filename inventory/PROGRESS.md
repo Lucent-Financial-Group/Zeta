@@ -102,7 +102,7 @@ un-archive.
   RLS unchanged (no new policy / USING(true) / GRANT). Full raw output in "Phase 4 — FIXED run"
   appendix. Phase-7 Auditor re-verifies on the live site (and may run the owner-side SQL companion
   `sql/proofs/phase4_proofs.sql`, incl. its pg_policies no-permissive-items-policy check).
-- [~] Phase 5 — Typed dynamic fields (CENTERPIECE; use higher reasoning effort).
+- [x] Phase 5 — Typed dynamic fields (CENTERPIECE; use higher reasoning effort).
 GATE: dedicated test suite passes; add-field applies to ALL items; per-type validation;
 search/sort INCLUDE custom fields; XSS-safe.
 VERIFY: add one field of each type; enter a <script> payload as a value → rendered inert; search by
@@ -129,6 +129,7 @@ a custom field returns correct items; "number" rejects text.
   DB-rejection via direct REST as editor, add-field-appears-on-all, deactivate-preserves-values+history,
   anon default-deny). required-at-DB intentionally DEFERRED (would break edits of the 210 existing
   items); required stays an app-side UX nudge. NOT marked [x] until (1)+(2) show observed output.
+  LIVE GATE PASSED (2026-06-03): owner ran sql/phase5.sql + sql/proofs/phase5_proofs.sql in the SQL editor — ALL 12 rows PASSED (per-type accept/reject + numeric-cast sort [10,100,9] vs [9,10,100] + no-permissive). Editor direct-REST unknown-key write REJECTED 400 post-install (was 204 before). CI run #11 (.github/workflows/inventory-phase5-proof.yml, admin secret, publishable key, NO service_role) = ALL PASS: (1) admin added 5 typed fields; (2) visible to editor + every item has custom_fields; (2b) 5 valid values stored; (3) all 6 malformed/unknown writes DB-rejected with correct per-type messages, valid value intact; (4) <script>/onerror stored verbatim as data; (5) deactivate -> value 42 PRESERVED + change_log history intact; (6) anon default-deny on all four tables = []. Two harness bugs the live run surfaced + fixed (PGRST102 heterogeneous bulk-insert keys; jsonb order-insensitive comparison) — feature itself unchanged. Phase-7 Auditor re-verifies on the live merged site. CLEANUP (owner, pre-launch SQL editor): archived throwaway items 216/225/226/227/228 + inactive defs 'p5_mpyh93ei_%' and 'p5_mpyhaucf_%'. Build-time test users (editor@/viewer@ + admin secret) are chat/secret-shared -> burn in Phase 7 (residual risk register).
 - [ ] Phase 6 — QR labels + export.
 GATE: scan resolves post-login; export round-trips incl. unicode/comma/quote.
 VERIFY: generate + scan a label → correct item after login; export then re-import → identical data.
@@ -841,3 +842,26 @@ Interpretation: risk (ii) typed numeric search+sort and risk (iii) XSS-safe rend
 names, at header + cell) PROVEN in a real browser. Risk (i) DB-side validation is proven structurally
 by sql/phase5.sql + the SQL/REST proofs (pending owner run). The Phase-7 Auditor re-verifies on the
 live merged site.
+
+### Live admin-path proof — CI run #11 (2026-06-03) — ALL PASS
+
+Run via .github/workflows/inventory-phase5-proof.yml (INVENTORY_ADMIN_EMAIL/PASSWORD secrets; publishable key; NO service_role). Raw observed:
+
+```
+admin role -> "admin"
+(1) 5 typed field defs created (http 201): PASS
+(2) all 5 defs visible to editor AND every item has a custom_fields object: PASS
+(2b) set valid custom_fields -> http 200; all five typed values stored: PASS
+(3) per-type validation REJECTED at the DB (direct REST):
+   number<-string   -> 400 ((number) must be a JSON number (got string))
+   boolean<-string  -> 400 ((boolean) must be a JSON boolean (got string))
+   date<-2024-13-40 -> 400 ((date) is not a valid calendar date (got 2024-13-40))
+   dropdown<-purple -> 400 ((dropdown) value purple is not an allowed option)
+   text<-number     -> 400 ((text) must be a JSON string (got number))
+   unknown key      -> 400 (no field_definitions row exists)
+   value intact after all rejects -> OK ; ASSERTION PASS
+(4) <img onerror>+<script> stored verbatim as a JSON string: PASS
+(5) deactivate field -> number value (42) PRESERVED; change_log custom_fields history 2 rows: PASS
+(6) anon items/field_definitions/change_log/profiles all [] : PASS
+=== SUMMARY: (1)=PASS (2)=PASS (2b)=PASS (3)=PASS (4)=PASS (5)=PASS (6)=PASS ===
+```
