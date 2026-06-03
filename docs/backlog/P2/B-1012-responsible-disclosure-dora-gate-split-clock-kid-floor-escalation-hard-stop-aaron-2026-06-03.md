@@ -18,7 +18,7 @@ type: design
 ## Origin (Aaron 2026-06-03, forwarded Kestrel × maintainer session)
 
 Preserved engineering substrate: `docs/research/2026-06-03-kestrel-aaron-open-source-ethic-floor-governance-jurisdiction-relative-opa-federation-nexus-meta-jurisdiction-conflict-resolution-aaron-forwarded.md` §2.
-The *discipline* lands as a rule (`.claude/rules/responsible-disclosure-...`); this row is the **gate implementation**.
+The *discipline* lands as a rule (`.claude/rules/responsible-disclosure-private-window-prompt-to-vendor-never-hoard-kid-floor-escalation`); this row is the **gate implementation**.
 
 ## What to build
 
@@ -62,5 +62,5 @@ An unreported exploit on the child-safety surface is a **floor matter** → stro
 
 - B-0926 (constitutional kid-safety floor) — the kid-floor escalation inherits floor properties
 - `.claude/rules/methodology-hard-limits.md` (the floor this operates above)
-- `.claude/rules/responsible-disclosure-...` (the discipline; rule landing this row implements)
+- `.claude/rules/responsible-disclosure-private-window-prompt-to-vendor-never-hoard-kid-floor-escalation` (the discipline; rule landing this row implements)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (named-human legal routing)
