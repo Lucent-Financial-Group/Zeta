@@ -1089,7 +1089,7 @@ jobs:
     # TS golden-vector oracle) plus `bun test tools/ace/`. The ORACLES assert COMMITTED outputs (no
     # dotnet/rust toolchain needed); the ace suite installs npm deps (z3-solver) + uses the runner
     # node for its solver Z3 differential. This is the ENFORCEMENT half of the canonical-primitive
-    # gate (proof + 4-language byte-lock); the proof half is the Soraya formal-coverage / lean-proof
+    # gate (proof + 4-language byte-lock); the proof half is the formal-coverage cadence / lean-proof
     # lane. NOTE: promoting this to a REQUIRED check (branch protection) is a separate operator/devops
     # step — until then it runs + shows on every PR but does not block auto-merge.
     name: cross-verify (trust-core oracles + ace suite)
