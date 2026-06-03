@@ -55,7 +55,7 @@ no single point of failure — not runtime, not language, not axiom-tower). This
 _model_, not a claim that every primitive already has the full stack — the per-primitive status
 above (mostly ⬜/🚧) is the honest current state; the stack is built up one verified primitive at
 a time (tracked by `B-0959`). Full framing:
-[`docs/research/2026-06-03-three-bit-perfect-oracle-shapes-and-the-protection-model-aaron.md`](research/2026-06-03-three-bit-perfect-oracle-shapes-and-the-protection-model-aaron.md).
+[`research/2026-06-03-three-bit-perfect-oracle-shapes-and-the-protection-model-aaron.md`](research/2026-06-03-three-bit-perfect-oracle-shapes-and-the-protection-model-aaron.md).
 
 ## The wish list — every primitive we want (so we don't forget)
 
