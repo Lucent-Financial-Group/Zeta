@@ -96,9 +96,10 @@ public class CrossVerifyTests
             var id = vec.GetProperty("id").GetString()!;
             var expected = vec.GetProperty("expected_canonical_json").GetString()!;
             var value = vec.GetProperty("value");
-            string actual;
-            try { actual = AceCanonical.Canonicalize(value); }
-            catch { actual = "<rejected>"; }
+            // Canonical vectors MUST canonicalize — no catch here. If the seam throws,
+            // that is a genuine bug for a vector we expect to succeed, so let it
+            // propagate and fail the test loudly (no generic catch masking it).
+            var actual = AceCanonical.Canonicalize(value);
             results.Add(($"canonical:{id}", actual));
             if (!string.Equals(actual, expected, StringComparison.Ordinal)) mismatches++;
         }
@@ -118,9 +119,17 @@ public class CrossVerifyTests
             {
                 var value = vec.GetProperty("value");
                 actual = AceCanonical.Canonicalize(value);
-                // If we reach here, the seam accepted an invalid vector.
+                // If we reach here, the seam accepted an invalid vector (a mismatch
+                // recorded below). Typed catches below — NOT a generic catch — so only
+                // the two expected rejection paths map to "<rejected>"; any unexpected
+                // exception propagates and fails the test (CodeQL cs/catch-of-all-exceptions).
             }
-            catch { actual = "<rejected>"; }
+            // The seam's fail-loud rejection (float / unsafe-int / unsupported / lone surrogate
+            // detected in EncodeString).
+            catch (AceCanonicalException) { actual = "<rejected>"; }
+            // System.Text.Json transcode throw at GetString()/Name for a lone-surrogate
+            // value or key — also a legitimate rejection.
+            catch (InvalidOperationException) { actual = "<rejected>"; }
             results.Add(($"invalid:{id}", actual));
             if (!string.Equals(actual, "<rejected>", StringComparison.Ordinal)) mismatches++;
         }
@@ -148,7 +157,7 @@ public class CrossVerifyTests
     // ------------------------------------------------------------------
 
     [Fact]
-    public void CrossVerifyCanonicalJsonVectorsMatchTsRustFSharp()
+    public void CrossVerifyCanonicalJsonVectorsMatchExpectedCanonicalJson()
     {
         var root = RepoRoot();
         // Path.Join (not Path.Combine) — CodeQL flags Path.Combine when later

@@ -16,7 +16,6 @@
 //   - minified; raw unicode (astral preserved); escape only `"`, `\`,
 //     the \b \f \n \r \t short-forms, and other control chars < 0x20 as lowercase \u00XX.
 
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -42,7 +41,7 @@ public static class AceCanonical
     /// Render <paramref name="element"/> to canonical JSON.
     /// Throws <see cref="AceCanonicalException"/> if the value is not Ace-canonical
     /// (float, unsafe-int, or unsupported kind).  For lone-surrogate strings/keys,
-    /// <see cref="System.Text.Json"/> throws <see cref="InvalidOperationException"/> at
+    /// <see cref="System.Text.Json"/> throws <see cref="System.InvalidOperationException"/> at
     /// <c>GetString()</c>/<c>Name</c> — that constitutes a rejection; the caller may
     /// catch either exception type.
     /// </summary>
@@ -75,8 +74,13 @@ public static class AceCanonical
     private static string CanonicalizeNumber(JsonElement element)
     {
         // TryGetInt64 fails for any float / NaN / Infinity (and out-of-int64 range).
-        // The magnitude check then enforces the JS Number.isSafeInteger bound.
-        if (!element.TryGetInt64(out var v) || Math.Abs(v) > MaxSafeInteger)
+        // The explicit range check then enforces the JS Number.isSafeInteger bound.
+        // NB: compare against the bounds directly rather than Math.Abs(v) — Math.Abs
+        // throws OverflowException for long.MinValue, which would escape the documented
+        // AceCanonicalException rejection contract; the direct comparison rejects
+        // long.MinValue (and every other out-of-range value) cleanly as an
+        // AceCanonicalException, matching the F#/Rust oracles' magnitude check.
+        if (!element.TryGetInt64(out var v) || v < -MaxSafeInteger || v > MaxSafeInteger)
             throw new AceCanonicalException(
                 "not a safe integer — Ace canonical content has no Float fields and " +
                 "integers must be within the safe-integer range");
