@@ -52,7 +52,7 @@ Every inflection point across all three shapes is **designed to be** protected b
 **intended** stack: **deterministic simulation + 4 languages + persisted-seed verification of
 the oracles + Rx-join of the homeostates + math proof on multiple intellectual towers** (target:
 no single point of failure — not runtime, not language, not axiom-tower). This is the protection
-*model*, not a claim that every primitive already has the full stack — the per-primitive status
+_model_, not a claim that every primitive already has the full stack — the per-primitive status
 above (mostly ⬜/🚧) is the honest current state; the stack is built up one verified primitive at
 a time (tracked by `B-0959`). Full framing:
 [`docs/research/2026-06-03-three-bit-perfect-oracle-shapes-and-the-protection-model-aaron.md`](research/2026-06-03-three-bit-perfect-oracle-shapes-and-the-protection-model-aaron.md).
