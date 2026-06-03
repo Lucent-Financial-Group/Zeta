@@ -27,12 +27,30 @@ human's call).
 | **Regulation** | lighter zone (self-behavior-modification-and-reporting; legal-counsel-confirmed not a medical device) | strict (FDA-class device rules + HIPAA-class data obligations) = the red tape we're avoiding |
 | **Who interprets clinically** | a **human clinician** (the tool does not) | the tool would (this is the line it must not cross) |
 
-### The discriminator
+### The discriminator — TWO prongs (both required), per FDA General Wellness policy
 
-**Does the tool make a CLINICAL JUDGMENT (medical) or DESCRIBE + REPORT and let a
-human clinician interpret (wellness)?** The status is about **what the tool claims
-to do**, not the data it holds. Keep outputs **descriptive** → wellness device.
-The moment the tool asserts a clinical conclusion → medical device.
+FDA's *General Wellness: Policy for Low Risk Devices* gives the carve-out only to
+products that satisfy **BOTH**: (1) **intended for general-wellness use** (no
+reference to a disease or condition; maintains general health / healthy lifestyle)
+**AND** (2) **present low risk** to user safety. ([FDA guidance](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/general-wellness-policy-low-risk-devices)
+— active; CDRH refresh 2026.)
+
+- **Prong 1 — general-wellness-use (describe, don't diagnose):** does the tool
+  make a **CLINICAL JUDGMENT** (medical) or **DESCRIBE + REPORT** and let a human
+  clinician interpret (wellness)? Status is about **what the tool claims to do**,
+  not the data it holds. Keep outputs **descriptive** + free of disease/condition
+  claims → satisfies prong 1. The moment it asserts a clinical conclusion →
+  medical.
+- **Prong 2 — low risk:** even a purely-descriptive tool must **present low risk**
+  to user safety to keep the carve-out. A "describe-only" tool that could still
+  cause harm (e.g., surfaces a signal a vulnerable user acts on dangerously, or
+  whose failure has high-stakes consequence) is **not** automatically a wellness
+  device just because it doesn't diagnose. Describe-not-diagnose is necessary, not
+  sufficient.
+
+**Both prongs required.** Prong 1 alone (the describe-vs-diagnose line) is not
+enough — the low-risk prong is the second gate. A high-risk descriptive tool still
+falls outside the wellness carve-out.
 
 ### Tool describes, clinician interprets — even when the data is clinically useful
 
