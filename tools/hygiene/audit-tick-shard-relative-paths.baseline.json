@@ -15,6 +15,11 @@
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/20/1643Z.md",
+    "line": 55,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/20/1718Z.md",
     "line": 48,
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
@@ -23,6 +28,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/20/1718Z.md",
     "line": 49,
     "target": "../../../../../../.claude/rules/encoding-rules-without-mechanizing.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/20/1718Z.md",
+    "line": 50,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/20/1807Z.md",
@@ -51,6 +61,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/20/1807Z.md",
+    "line": 20,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/20/1807Z.md",
     "line": 26,
     "target": "../../../../../../.claude/rules/no-op-cadence-failure-mode.md"
   },
@@ -75,6 +90,11 @@
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/20/1807Z.md",
+    "line": 49,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/20/1626Z.md",
     "line": 11,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
@@ -88,6 +108,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/20/1626Z.md",
     "line": 40,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/20/1626Z.md",
+    "line": 41,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/20/1626Z.md",
@@ -115,6 +140,21 @@
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/20/1703Z.md",
+    "line": 85,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/20/1700Z.md",
+    "line": 34,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/2322Z-c.md",
+    "line": 15,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/18/0007Z.md",
     "line": 26,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
@@ -131,6 +171,16 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/18/0007Z.md",
+    "line": 60,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/0007Z.md",
+    "line": 64,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/0007Z.md",
     "line": 70,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
   },
@@ -143,6 +193,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/18/2012Z.md",
     "line": 8,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/2012Z.md",
+    "line": 20,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/18/2012Z.md",
@@ -178,6 +233,16 @@
     "file": "docs/hygiene-history/ticks/2026/05/18/2057Z.md",
     "line": 23,
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/2057Z.md",
+    "line": 37,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/2109Z.md",
+    "line": 13,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/18/2040Z.md",
@@ -225,6 +290,11 @@
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/18/2352Z-c.md",
+    "line": 11,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/18/2037Z.md",
     "line": 23,
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md#stale-armed-pr-resolution-patterns"
@@ -235,9 +305,19 @@
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/18/2337Z-c.md",
+    "line": 11,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/27/1609Z.md",
     "line": 5,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/1609Z.md",
+    "line": 38,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/27/1609Z.md",
@@ -248,6 +328,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/27/1609Z.md",
     "line": 51,
     "target": "../../../../../../.claude/rules/agent-roster-reference-card.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/1609Z.md",
+    "line": 68,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/27/1609Z.md",
@@ -268,6 +353,21 @@
     "file": "docs/hygiene-history/ticks/2026/05/27/1342Z.md",
     "line": 68,
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/1342Z.md",
+    "line": 74,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/1342Z.md",
+    "line": 130,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/1342Z.md",
+    "line": 131,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/27/1342Z.md",
@@ -306,6 +406,16 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/27/1008Z.md",
+    "line": 39,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/1008Z.md",
+    "line": 60,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/1008Z.md",
     "line": 84,
     "target": "../../../../../../.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md"
   },
@@ -328,6 +438,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/27/2242Z.md",
     "line": 90,
     "target": "../../../../../../.claude/rules/force-push-with-lease-authorization-policy.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/2242Z.md",
+    "line": 112,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/27/2242Z.md",
@@ -355,6 +470,11 @@
     "target": "../../../../../../.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/27/2242Z.md",
+    "line": 139,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/27/1809Z.md",
     "line": 5,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
@@ -363,6 +483,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/27/1809Z.md",
     "line": 37,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/1809Z.md",
+    "line": 51,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/27/1809Z.md",
@@ -410,6 +535,16 @@
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/27/0408Z.md",
+    "line": 79,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/0408Z.md",
+    "line": 84,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/27/2009Z.md",
     "line": 18,
     "target": "../../../../../../.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md"
@@ -418,6 +553,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/27/2009Z.md",
     "line": 27,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/2009Z.md",
+    "line": 49,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/27/2009Z.md",
@@ -451,6 +591,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/27/2208Z.md",
+    "line": 24,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/2208Z.md",
     "line": 28,
     "target": "../../../../../../.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md"
   },
@@ -478,6 +623,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/27/2208Z.md",
     "line": 45,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/2208Z.md",
+    "line": 62,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/27/2208Z.md",
@@ -536,6 +686,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/27/0608Z.md",
+    "line": 35,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/0608Z.md",
     "line": 54,
     "target": "../../../../../../.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md"
   },
@@ -571,6 +726,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/27/0208Z.md",
+    "line": 29,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/0208Z.md",
     "line": 33,
     "target": "../../../../../../.claude/rules/zeta-expected-branch.md"
   },
@@ -588,6 +748,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/27/0208Z.md",
     "line": 56,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/0208Z.md",
+    "line": 75,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/27/0208Z.md",
@@ -646,6 +811,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/27/1303Z.md",
+    "line": 32,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/1303Z.md",
     "line": 42,
     "target": "../../../../../../.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md"
   },
@@ -691,6 +861,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/27/1303Z.md",
+    "line": 135,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/27/1303Z.md",
     "line": 137,
     "target": "../../../../../../.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md"
   },
@@ -731,6 +906,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/29/0401Z.md",
+    "line": 26,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/29/0401Z.md",
     "line": 30,
     "target": "../../../../../../.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md"
   },
@@ -750,9 +930,19 @@
     "target": "../../../../../../.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/29/0401Z.md",
+    "line": 48,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/29/0202Z.md",
     "line": 14,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/29/0202Z.md",
+    "line": 46,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/29/0202Z.md",
@@ -781,6 +971,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/29/0609Z.md",
+    "line": 27,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/29/0609Z.md",
     "line": 33,
     "target": "../../../../../../.claude/rules/pr-triage-tiers.md"
   },
@@ -788,6 +983,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/29/0609Z.md",
     "line": 48,
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/29/0609Z.md",
+    "line": 52,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/29/0609Z.md",
@@ -808,6 +1008,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/29/0609Z.md",
     "line": 72,
     "target": "../../../../../../.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/29/0609Z.md",
+    "line": 73,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/29/0609Z.md",
@@ -848,6 +1053,16 @@
     "file": "docs/hygiene-history/ticks/2026/05/16/1643Z.md",
     "line": 77,
     "target": "../../../../../../.claude/rules/honor-those-that-came-before.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1657Z.md",
+    "line": 62,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1657Z.md",
+    "line": 64,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/16/0213Z.md",
@@ -905,6 +1120,11 @@
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1654Z.md",
+    "line": 88,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/16/2349Z.md",
     "line": 15,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
@@ -918,6 +1138,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/16/2349Z.md",
     "line": 33,
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/2349Z.md",
+    "line": 76,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/16/2349Z.md",
@@ -955,6 +1180,11 @@
     "target": "../../../../../../.claude/rules/lost-files-surface.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1718Z.md",
+    "line": 52,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/16/1644Z.md",
     "line": 70,
     "target": "../../../../../../.claude/rules/zeta-expected-branch.md"
@@ -963,6 +1193,21 @@
     "file": "docs/hygiene-history/ticks/2026/05/16/1644Z.md",
     "line": 72,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1732Z.md",
+    "line": 37,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1732Z.md",
+    "line": 56,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1732Z.md",
+    "line": 57,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/16/0438Z.md",
@@ -990,9 +1235,19 @@
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0528Z.md",
+    "line": 20,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/16/1342Z.md",
     "line": 20,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0510Z.md",
+    "line": 36,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/16/1236Z.md",
@@ -1041,6 +1296,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/16/0245Z.md",
+    "line": 37,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0245Z.md",
     "line": 48,
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
   },
@@ -1053,6 +1313,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/16/0245Z.md",
     "line": 71,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0245Z.md",
+    "line": 73,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/16/0245Z.md",
@@ -1073,6 +1338,16 @@
     "file": "docs/hygiene-history/ticks/2026/05/16/0523Z.md",
     "line": 6,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0523Z.md",
+    "line": 22,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0537Z.md",
+    "line": 20,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/16/1211Z.md",
@@ -1110,9 +1385,19 @@
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0520Z.md",
+    "line": 48,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/16/0535Z.md",
     "line": 59,
     "target": "../../../../../../.claude/rules/honor-those-that-came-before.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0451Z.md",
+    "line": 6,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/16/0451Z.md",
@@ -1143,6 +1428,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/16/0540Z.md",
     "line": 6,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0540Z.md",
+    "line": 48,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/16/0437Z.md",
@@ -1196,8 +1486,18 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/16/0425Z.md",
+    "line": 25,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0425Z.md",
     "line": 32,
     "target": "../../../../../../.claude/rules/honor-those-that-came-before.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1706Z.md",
+    "line": 55,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/28/0010Z.md",
@@ -1218,6 +1518,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/28/0010Z.md",
     "line": 20,
     "target": "../../../../../../.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/28/0010Z.md",
+    "line": 27,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/28/0010Z.md",
@@ -1253,6 +1558,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/28/0010Z.md",
     "line": 53,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/28/0010Z.md",
+    "line": 71,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/28/0010Z.md",
@@ -1298,6 +1608,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/28/0808Z.md",
     "line": 135,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/28/0808Z.md",
+    "line": 137,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/28/0808Z.md",
@@ -1360,6 +1675,11 @@
     "target": "../../../../../../.claude/rules/refresh-before-decide.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/28/1408Z.md",
+    "line": 61,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/28/0608Z.md",
     "line": 1,
     "target": "../../../../../../.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md"
@@ -1391,6 +1711,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/28/0608Z.md",
+    "line": 81,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/28/0608Z.md",
     "line": 92,
     "target": "../../../../../../.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md"
   },
@@ -1408,6 +1733,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/28/0608Z.md",
     "line": 95,
     "target": "../../../../../../.claude/rules/must-paired-with-can-exit-pattern.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/28/0608Z.md",
+    "line": 96,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/28/0608Z.md",
@@ -1438,6 +1768,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/28/0208Z.md",
     "line": 19,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/28/0208Z.md",
+    "line": 35,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/28/0208Z.md",
@@ -1485,6 +1820,11 @@
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/17/0602Z.md",
+    "line": 145,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/17/0012Z.md",
     "line": 13,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
@@ -1526,6 +1866,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/17/2207Z.md",
+    "line": 88,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/2207Z.md",
     "line": 89,
     "target": "../../../../../../.claude/rules/zeta-expected-branch.md"
   },
@@ -1533,6 +1878,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/17/2300Z.md",
     "line": 43,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/2300Z.md",
+    "line": 79,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/17/2300Z.md",
@@ -1551,6 +1901,16 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/17/1019Z.md",
+    "line": 24,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/1019Z.md",
+    "line": 28,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/1019Z.md",
     "line": 50,
     "target": "../../../../../../.claude/rules/zeta-expected-branch.md"
   },
@@ -1558,6 +1918,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/17/1019Z.md",
     "line": 53,
     "target": "../../../../../../.claude/rules/zeta-expected-branch.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/1019Z.md",
+    "line": 81,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/17/1019Z.md",
@@ -1603,6 +1968,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/17/1356Z.md",
     "line": 89,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/1356Z.md",
+    "line": 90,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/17/1034Z.md",
@@ -1670,6 +2040,21 @@
     "target": "../../../../../../.claude/rules/mechanical-authorization-check.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/17/0252Z.md",
+    "line": 111,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/0252Z.md",
+    "line": 119,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/0252Z.md",
+    "line": 134,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/17/1149Z.md",
     "line": 50,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
@@ -1725,6 +2110,11 @@
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/17/0057Z.md",
+    "line": 29,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/17/1258Z.md",
     "line": 106,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
@@ -1743,6 +2133,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/17/0221Z.md",
     "line": 59,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/0221Z.md",
+    "line": 60,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/17/0221Z.md",
@@ -1800,6 +2195,26 @@
     "target": "../../../../../../.claude/rules/rule-0-no-sh-files.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/17/0418Z.md",
+    "line": 138,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/0418Z.md",
+    "line": 199,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/0236Z.md",
+    "line": 8,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/0236Z.md",
+    "line": 15,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md#counter-with-escalation-clause-b-0540-2026-05-16"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/17/0236Z.md",
     "line": 45,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
@@ -1811,6 +2226,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/17/0236Z.md",
+    "line": 60,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/0236Z.md",
     "line": 61,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
   },
@@ -1818,6 +2238,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/17/0236Z.md",
     "line": 62,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/0236Z.md",
+    "line": 63,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/19/0826Z.md",
@@ -1846,6 +2271,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/19/1005Z.md",
+    "line": 29,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/19/1005Z.md",
     "line": 37,
     "target": "../../../../../../.claude/rules/zeta-expected-branch.md"
   },
@@ -1863,6 +2293,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/19/1005Z.md",
     "line": 68,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/19/1005Z.md",
+    "line": 68,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/19/1005Z.md",
@@ -1901,6 +2336,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/19/0608Z.md",
+    "line": 115,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/19/0608Z.md",
     "line": 116,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
   },
@@ -1930,6 +2370,11 @@
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/19/0803Z.md",
+    "line": 52,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/19/0816Z.md",
     "line": 13,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
@@ -1951,8 +2396,18 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/26/0410Z.md",
+    "line": 54,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/26/0410Z.md",
     "line": 82,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/26/0410Z.md",
+    "line": 101,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/26/0410Z.md",
@@ -2060,9 +2515,19 @@
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/26/1008Z.md",
+    "line": 149,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/26/1808Z.md",
     "line": 74,
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/26/1808Z.md",
+    "line": 101,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/26/1808Z.md",
@@ -2073,6 +2538,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/26/1808Z.md",
     "line": 113,
     "target": "../../../../../../.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/26/1808Z.md",
+    "line": 114,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/26/1808Z.md",
@@ -2088,6 +2558,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/26/1202Z.md",
     "line": 38,
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/26/1202Z.md",
+    "line": 54,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/26/1202Z.md",
@@ -2116,6 +2591,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/26/1202Z.md",
+    "line": 82,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/26/1202Z.md",
     "line": 83,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
   },
@@ -2123,6 +2603,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/26/2208Z.md",
     "line": 11,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/26/2208Z.md",
+    "line": 25,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/26/2208Z.md",
@@ -2143,6 +2628,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/26/2208Z.md",
     "line": 46,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/26/2208Z.md",
+    "line": 64,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/26/2208Z.md",
@@ -2186,6 +2676,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/26/0608Z.md",
+    "line": 88,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/26/0608Z.md",
     "line": 89,
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
   },
@@ -2193,6 +2688,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/26/0814Z.md",
     "line": 12,
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/26/0814Z.md",
+    "line": 20,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/26/0814Z.md",
@@ -2245,6 +2745,11 @@
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0603Z.md",
+    "line": 79,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/21/1335Z.md",
     "line": 26,
     "target": "../../../../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md"
@@ -2255,6 +2760,11 @@
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/21/1335Z.md",
+    "line": 36,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/21/0822Z.md",
     "line": 18,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
@@ -2263,6 +2773,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/21/0822Z.md",
     "line": 25,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0822Z.md",
+    "line": 33,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/0822Z.md",
@@ -2291,6 +2806,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/0822Z.md",
+    "line": 80,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0822Z.md",
     "line": 81,
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
   },
@@ -2316,8 +2836,18 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/0822Z.md",
+    "line": 86,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0822Z.md",
     "line": 87,
     "target": "../../../../../../.claude/rules/refresh-before-decide.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0202Z.md",
+    "line": 15,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/0202Z.md",
@@ -2331,6 +2861,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/0202Z.md",
+    "line": 66,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0202Z.md",
     "line": 67,
     "target": "../../../../../../.claude/rules/honor-those-that-came-before.md"
   },
@@ -2341,8 +2876,28 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/0202Z.md",
+    "line": 69,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0202Z.md",
     "line": 70,
     "target": "../../../../../../.claude/rules/zeta-expected-branch.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0149Z.md",
+    "line": 21,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0149Z.md",
+    "line": 76,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0149Z.md",
+    "line": 77,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/0149Z.md",
@@ -2366,6 +2921,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/0059Z.md",
+    "line": 21,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0059Z.md",
     "line": 30,
     "target": "../../../../../../.claude/rules/zeta-expected-branch.md"
   },
@@ -2383,6 +2943,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/21/0059Z.md",
     "line": 64,
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0059Z.md",
+    "line": 65,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/0059Z.md",
@@ -2421,6 +2986,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/1421Z.md",
+    "line": 43,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/1421Z.md",
     "line": 47,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
   },
@@ -2428,6 +2998,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/21/1421Z.md",
     "line": 65,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/1421Z.md",
+    "line": 66,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/1421Z.md",
@@ -2451,6 +3026,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/1019Z.md",
+    "line": 22,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/1019Z.md",
     "line": 24,
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
   },
@@ -2471,6 +3051,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/1019Z.md",
+    "line": 50,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/1019Z.md",
     "line": 51,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
   },
@@ -2481,8 +3066,28 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/0249Z.md",
+    "line": 13,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0249Z.md",
+    "line": 88,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0249Z.md",
     "line": 103,
     "target": "../../../../../../.claude/rules/honor-those-that-came-before.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0249Z.md",
+    "line": 122,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0249Z.md",
+    "line": 123,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/0249Z.md",
@@ -2507,6 +3112,11 @@
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/1212Z.md",
     "line": 19,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/1212Z.md",
+    "line": 19,
     "target": "../../../../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md"
   },
   {
@@ -2521,8 +3131,18 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/1212Z.md",
+    "line": 31,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/1212Z.md",
     "line": 37,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/1212Z.md",
+    "line": 38,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/1212Z.md",
@@ -2533,6 +3153,26 @@
     "file": "docs/hygiene-history/ticks/2026/05/21/1212Z.md",
     "line": 40,
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/1401Z.md",
+    "line": 17,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/1401Z.md",
+    "line": 43,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/1410Z.md",
+    "line": 49,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/1410Z.md",
+    "line": 70,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/1410Z.md",
@@ -2548,6 +3188,31 @@
     "file": "docs/hygiene-history/ticks/2026/05/21/1410Z.md",
     "line": 73,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0226Z.md",
+    "line": 9,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0226Z.md",
+    "line": 98,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0226Z.md",
+    "line": 104,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0226Z.md",
+    "line": 123,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0226Z.md",
+    "line": 124,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/0226Z.md",
@@ -2577,7 +3242,17 @@
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/2209Z.md",
     "line": 22,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/2209Z.md",
+    "line": 22,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/2209Z.md",
+    "line": 60,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/2209Z.md",
@@ -2591,6 +3266,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/2209Z.md",
+    "line": 93,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/2209Z.md",
     "line": 94,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
   },
@@ -2598,6 +3278,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/21/2209Z.md",
     "line": 95,
     "target": "../../../../../../.claude/rules/honor-those-that-came-before.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/2209Z.md",
+    "line": 96,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/21/2209Z.md",
@@ -2655,6 +3340,16 @@
     "target": "../../../../../../.claude/rules/no-directives.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1333Z.md",
+    "line": 60,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1333Z.md",
+    "line": 61,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/24/0416Z.md",
     "line": 9,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
@@ -2676,6 +3371,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/0416Z.md",
+    "line": 99,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/0416Z.md",
     "line": 100,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
   },
@@ -2688,6 +3388,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/24/0416Z.md",
     "line": 102,
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1902Z.md",
+    "line": 43,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/1902Z.md",
@@ -2726,6 +3431,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/1902Z.md",
+    "line": 71,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1902Z.md",
     "line": 72,
     "target": "../../../../../../.claude/rules/pr-triage-tiers.md"
   },
@@ -2748,6 +3458,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/24/1902Z.md",
     "line": 75,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1902Z.md",
+    "line": 76,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/1902Z.md",
@@ -2778,6 +3493,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/24/2206Z.md",
     "line": 61,
     "target": "../../../../../../.claude/rules/only-way-to-lose-is-not-to-play.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/2206Z.md",
+    "line": 65,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/2206Z.md",
@@ -2833,6 +3553,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/24/2206Z.md",
     "line": 86,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/2206Z.md",
+    "line": 87,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/2206Z.md",
@@ -2946,8 +3671,18 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/1608Z.md",
+    "line": 93,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1608Z.md",
     "line": 94,
     "target": "../../../../../../.claude/rules/zeta-expected-branch.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1608Z.md",
+    "line": 104,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/1804Z.md",
@@ -2958,6 +3693,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/24/1804Z.md",
     "line": 41,
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1804Z.md",
+    "line": 59,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/1804Z.md",
@@ -2981,6 +3721,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/1804Z.md",
+    "line": 88,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1804Z.md",
     "line": 89,
     "target": "../../../../../../.claude/rules/agent-roster-reference-card.md"
   },
@@ -2998,6 +3743,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/24/1804Z.md",
     "line": 92,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1804Z.md",
+    "line": 93,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/0441Z.md",
@@ -3061,6 +3811,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/0441Z.md",
+    "line": 135,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/0441Z.md",
     "line": 136,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
   },
@@ -3106,6 +3861,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/1607Z.md",
+    "line": 98,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1607Z.md",
     "line": 99,
     "target": "../../../../../../.claude/rules/zeta-expected-branch.md"
   },
@@ -3113,6 +3873,16 @@
     "file": "docs/hygiene-history/ticks/2026/05/24/1607Z.md",
     "line": 100,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1607Z.md",
+    "line": 101,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1607Z.md",
+    "line": 111,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/0240Z.md",
@@ -3133,6 +3903,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/24/0240Z.md",
     "line": 95,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/0240Z.md",
+    "line": 96,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/0240Z.md",
@@ -3196,6 +3971,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/1407Z.md",
+    "line": 85,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1407Z.md",
     "line": 86,
     "target": "../../../../../../.claude/rules/zeta-expected-branch.md"
   },
@@ -3203,6 +3983,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/24/1407Z.md",
     "line": 87,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/1407Z.md",
+    "line": 97,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/2033Z.md",
@@ -3213,6 +3998,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/24/2033Z.md",
     "line": 26,
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/2033Z.md",
+    "line": 57,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/2033Z.md",
@@ -3241,6 +4031,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/2033Z.md",
+    "line": 66,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/2033Z.md",
     "line": 80,
     "target": "../../../../../../.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md"
   },
@@ -3248,6 +4043,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/24/2033Z.md",
     "line": 85,
     "target": "../../../../../../.claude/rules/agent-roster-reference-card.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/2033Z.md",
+    "line": 86,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/2033Z.md",
@@ -3281,6 +4081,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/24/2033Z.md",
+    "line": 92,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/24/2033Z.md",
     "line": 93,
     "target": "../../../../../../.claude/rules/zeta-expected-branch.md"
   },
@@ -3301,6 +4106,16 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/23/0802Z.md",
+    "line": 32,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/23/0802Z.md",
+    "line": 36,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/23/0802Z.md",
     "line": 52,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
   },
@@ -3308,6 +4123,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/23/0802Z.md",
     "line": 80,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/23/0802Z.md",
+    "line": 81,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/23/0802Z.md",
@@ -3386,8 +4206,18 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/2028Z.md",
+    "line": 26,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/2028Z.md",
     "line": 27,
     "target": "../../../../../../.claude/rules/refresh-before-decide.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/2028Z.md",
+    "line": 52,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/2028Z.md",
@@ -3398,6 +4228,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/15/0414Z.md",
     "line": 32,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0414Z.md",
+    "line": 36,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/0414Z.md",
@@ -3430,9 +4265,19 @@
     "target": "../../../../../../.claude/rules/encoding-rules-without-mechanizing.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1939Z.md",
+    "line": 66,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/15/1907Z.md",
     "line": 64,
     "target": "../../../../../../.claude/rules/encoding-rules-without-mechanizing.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1907Z.md",
+    "line": 65,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/0025Z-pr3320.md",
@@ -3446,8 +4291,23 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/0025Z-pr3320.md",
+    "line": 52,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0025Z-pr3320.md",
     "line": 53,
     "target": "../../../../../../.claude/rules/honor-those-that-came-before.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0025Z-pr3320.md",
+    "line": 54,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0615Z.md",
+    "line": 56,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1719Z.md",
@@ -3466,13 +4326,33 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1719Z.md",
+    "line": 41,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1719Z.md",
     "line": 42,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1731Z.md",
+    "line": 21,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1731Z.md",
+    "line": 36,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1731Z.md",
     "line": 37,
     "target": "../../../../../../.claude/rules/refresh-before-decide.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1731Z.md",
+    "line": 38,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/2012Z.md",
@@ -3483,6 +4363,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/15/1718Z.md",
     "line": 7,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1718Z.md",
+    "line": 40,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1718Z.md",
@@ -3535,9 +4420,19 @@
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1915Z.md",
+    "line": 74,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/15/1524Z.md",
     "line": 7,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1524Z.md",
+    "line": 40,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1524Z.md",
@@ -3548,6 +4443,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/15/1524Z.md",
     "line": 47,
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1524Z.md",
+    "line": 48,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1524Z.md",
@@ -3580,14 +4480,34 @@
     "target": "../../../../../../.claude/rules/honor-those-that-came-before.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
+    "line": 30,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1807Z.md",
+    "line": 71,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/15/1807Z.md",
     "line": 72,
     "target": "../../../../../../.claude/rules/encoding-rules-without-mechanizing.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1807Z.md",
+    "line": 73,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1807Z.md",
     "line": 74,
     "target": "../../../../../../.claude/rules/refresh-before-decide.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0517Z.md",
+    "line": 9,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/0517Z.md",
@@ -3613,6 +4533,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/15/0717Z.md",
     "line": 7,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1757Z.md",
+    "line": 45,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1757Z.md",
@@ -3653,6 +4578,16 @@
     "file": "docs/hygiene-history/ticks/2026/05/15/1949Z.md",
     "line": 60,
     "target": "../../../../../../.claude/rules/skill-router-as-substrate-inventory.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1949Z.md",
+    "line": 61,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1020Z.md",
+    "line": 38,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1020Z.md",
@@ -3715,6 +4650,11 @@
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1601Z.md",
+    "line": 23,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/15/1629Z.md",
     "line": 27,
     "target": "../../../../../../.claude/rules/refresh-before-decide.md"
@@ -3750,9 +4690,24 @@
     "target": "../../../../../../.claude/rules/no-op-cadence-failure-mode.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1952Z.md",
+    "line": 58,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1749Z.md",
+    "line": 64,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/15/1749Z.md",
     "line": 65,
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1749Z.md",
+    "line": 66,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1749Z.md",
@@ -3765,6 +4720,21 @@
     "target": "../../../../../../.claude/rules/encoding-rules-without-mechanizing.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1833Z.md",
+    "line": 74,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0051Z.md",
+    "line": 18,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1820Z.md",
+    "line": 58,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/15/1820Z.md",
     "line": 59,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
@@ -3773,6 +4743,16 @@
     "file": "docs/hygiene-history/ticks/2026/05/15/1820Z.md",
     "line": 60,
     "target": "../../../../../../.claude/rules/encoding-rules-without-mechanizing.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1820Z.md",
+    "line": 61,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0524Z.md",
+    "line": 52,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/0524Z.md",
@@ -3816,8 +4796,18 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/2046Z.md",
+    "line": 12,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/2046Z.md",
     "line": 44,
     "target": "../../../../../../.claude/rules/wake-time-substrate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/2046Z.md",
+    "line": 45,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/0043Z.md",
@@ -3841,6 +4831,16 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1919Z.md",
+    "line": 35,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1919Z.md",
+    "line": 58,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1919Z.md",
     "line": 59,
     "target": "../../../../../../.claude/rules/never-be-idle.md"
   },
@@ -3856,8 +4856,18 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1931Z.md",
+    "line": 11,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1931Z.md",
     "line": 24,
     "target": "../../../../../../.claude/rules/refresh-before-decide.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1931Z.md",
+    "line": 67,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1931Z.md",
@@ -3915,6 +4925,16 @@
     "target": "../../../../../../.claude/rules/encoding-rules-without-mechanizing.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1844Z.md",
+    "line": 77,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1844Z.md",
+    "line": 78,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/15/0027Z.md",
     "line": 22,
     "target": "../../../../../../.claude/rules/zeta-expected-branch.md"
@@ -3928,6 +4948,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/15/0027Z.md",
     "line": 24,
     "target": "../../../../../../.claude/rules/honor-those-that-came-before.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0813Z.md",
+    "line": 9,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/0230Z.md",
@@ -3970,9 +4995,19 @@
     "target": "../../../../../../.claude/rules/encoding-rules-without-mechanizing.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/15/2032Z.md",
+    "line": 70,
+    "target": "../../../../../../.claude/rules/substrate-or-it-didnt-happen.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/15/0037Z.md",
     "line": 7,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0037Z.md",
+    "line": 12,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/0829Z.md",
@@ -3985,9 +5020,19 @@
     "target": "../../../../../../.claude/rules/encoding-rules-without-mechanizing.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1855Z.md",
+    "line": 52,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/22/1208Z.md",
     "line": 26,
     "target": "../../../../../../.claude/rules/honor-those-that-came-before.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/22/1208Z.md",
+    "line": 26,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/22/1208Z.md",
@@ -3996,8 +5041,18 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/22/1208Z.md",
+    "line": 57,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/22/1208Z.md",
     "line": 58,
     "target": "../../../../../../.claude/rules/honor-those-that-came-before.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/22/1208Z.md",
+    "line": 59,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/22/1208Z.md",
@@ -4008,6 +5063,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/22/1208Z.md",
     "line": 61,
     "target": "../../../../../../.claude/rules/refresh-before-decide.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/1131Z.md",
+    "line": 48,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/1131Z.md",
@@ -4033,6 +5093,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/25/1131Z.md",
     "line": 89,
     "target": "../../../../../../.claude/rules/pr-triage-tiers.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/1131Z.md",
+    "line": 90,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/1131Z.md",
@@ -4071,6 +5136,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0407Z.md",
+    "line": 75,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0407Z.md",
     "line": 79,
     "target": "../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
   },
@@ -4101,6 +5171,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0407Z.md",
+    "line": 93,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0407Z.md",
     "line": 94,
     "target": "../../../../../../.claude/rules/agent-roster-reference-card.md"
   },
@@ -4108,6 +5183,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/25/0407Z.md",
     "line": 95,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0613Z.md",
+    "line": 19,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0613Z.md",
@@ -4176,6 +5256,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0112Z.md",
+    "line": 68,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0112Z.md",
     "line": 75,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
   },
@@ -4200,6 +5285,11 @@
     "target": "../../../../../../.claude/rules/default-to-both.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0112Z.md",
+    "line": 80,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/25/1636Z.md",
     "line": 10,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
@@ -4216,8 +5306,18 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/1636Z.md",
+    "line": 53,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/1636Z.md",
     "line": 56,
     "target": "../../../../../../.claude/rules/encoding-rules-without-mechanizing.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/1636Z.md",
+    "line": 60,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/1636Z.md",
@@ -4275,6 +5375,11 @@
     "target": "../../../../../../.claude/rules/pr-triage-tiers.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/25/1009Z.md",
+    "line": 115,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/25/0443Z.md",
     "line": 12,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
@@ -4301,6 +5406,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0443Z.md",
+    "line": 102,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0443Z.md",
     "line": 112,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
   },
@@ -4323,6 +5433,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/25/0443Z.md",
     "line": 116,
     "target": "../../../../../../.claude/rules/default-to-both.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0443Z.md",
+    "line": 117,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0443Z.md",
@@ -4370,9 +5485,19 @@
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/25/1405Z.md",
+    "line": 86,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/25/1808Z.md",
     "line": 11,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/1808Z.md",
+    "line": 27,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/1808Z.md",
@@ -4383,6 +5508,16 @@
     "file": "docs/hygiene-history/ticks/2026/05/25/1808Z.md",
     "line": 50,
     "target": "../../../../../../.claude/rules/honor-those-that-came-before.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/1808Z.md",
+    "line": 88,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/1808Z.md",
+    "line": 94,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/1808Z.md",
@@ -4441,8 +5576,18 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0243Z.md",
+    "line": 59,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0243Z.md",
     "line": 61,
     "target": "../../../../../../.claude/rules/refresh-before-decide.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0243Z.md",
+    "line": 76,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0243Z.md",
@@ -4468,6 +5613,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/25/0243Z.md",
     "line": 98,
     "target": "../../../../../../.claude/rules/default-to-both.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0243Z.md",
+    "line": 99,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0243Z.md",
@@ -4526,6 +5676,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0042Z.md",
+    "line": 71,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0042Z.md",
     "line": 77,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
   },
@@ -4556,6 +5711,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0042Z.md",
+    "line": 83,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0042Z.md",
     "line": 84,
     "target": "../../../../../../.claude/rules/honor-those-that-came-before.md"
   },
@@ -4571,6 +5731,16 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/2208Z.md",
+    "line": 18,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/2208Z.md",
+    "line": 24,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/2208Z.md",
     "line": 46,
     "target": "../../../../../../.claude/rules/zeta-expected-branch.md"
   },
@@ -4583,6 +5753,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/25/2208Z.md",
     "line": 63,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/2208Z.md",
+    "line": 81,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/2208Z.md",
@@ -4621,6 +5796,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0209Z.md",
+    "line": 59,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0209Z.md",
     "line": 71,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
   },
@@ -4646,6 +5826,11 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0209Z.md",
+    "line": 76,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0209Z.md",
     "line": 77,
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
   },
@@ -4663,6 +5848,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/25/1707Z.md",
     "line": 111,
     "target": "../../../../../../.claude/rules/encoding-rules-without-mechanizing.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/1707Z.md",
+    "line": 115,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/1707Z.md",
@@ -4716,8 +5906,18 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/1539Z.md",
+    "line": 53,
+    "target": "../../../../../../.claude/rules/backlog-item-start-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/1539Z.md",
     "line": 56,
     "target": "../../../../../../.claude/rules/no-directives.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/1539Z.md",
+    "line": 72,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/1539Z.md",
@@ -4735,6 +5935,11 @@
     "target": "../../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/25/1539Z.md",
+    "line": 91,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/25/0008Z.md",
     "line": 12,
     "target": "../../../../../../.claude/rules/tick-must-never-stop.md"
@@ -4748,6 +5953,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/25/0008Z.md",
     "line": 54,
     "target": "../../../../../../.claude/rules/default-to-both.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0008Z.md",
+    "line": 82,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0008Z.md",
@@ -4773,6 +5983,11 @@
     "file": "docs/hygiene-history/ticks/2026/05/25/0008Z.md",
     "line": 95,
     "target": "../../../../../../.claude/rules/default-to-both.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/25/0008Z.md",
+    "line": 96,
+    "target": "../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/25/0008Z.md",
