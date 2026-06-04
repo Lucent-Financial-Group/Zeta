@@ -1,6 +1,6 @@
 ---
 name: factory-ops
-description: Factory operations meta — auditing the factory, finding automation gaps, balance and brake coverage, and highest-uplift optimization. Open when improving the factory itself.
+description: Factory operations meta — auditing the factory, automation gaps, balance/brake coverage, highest-uplift optimization.
 ---
 
 # factory ops

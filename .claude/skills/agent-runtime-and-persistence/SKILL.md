@@ -1,6 +1,6 @@
 ---
 name: agent-runtime-and-persistence
-description: Agent runtime and persistence — self-boot, replication, persistence services, memory, glass-halo, ace, zflash, session recovery, browser extraction. Open for how an agent boots, persists, replicates, or operates its own substrate.
+description: Agent runtime and persistence — self-boot, replication, persistence, memory, glass-halo, ace, zflash, session recovery.
 ---
 
 # agent runtime and persistence

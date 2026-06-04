@@ -1,6 +1,6 @@
 ---
 name: experience-and-product
-description: Experience and product — agent / developer / user experience, consent UX, product discovery, branding, negotiation, vibe-coding method. Open for how people and agents encounter and adopt the work.
+description: Experience and product — agent/developer/user experience, consent UX, product discovery, branding, negotiation.
 ---
 
 # experience and product

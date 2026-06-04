@@ -1,6 +1,6 @@
 ---
 name: streaming-and-execution
-description: Incremental & streaming computation and query execution — DBSP/delta-streams, dataflow, windows, operators, iteration models, and deterministic replay. Open this for any engine-level decision about how data moves and is computed over time.
+description: Incremental/streaming computation and query execution — DBSP, dataflow, windows, operators, deterministic replay.
 ---
 
 # streaming and execution

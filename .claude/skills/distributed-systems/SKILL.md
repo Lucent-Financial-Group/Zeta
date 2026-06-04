@@ -1,6 +1,6 @@
 ---
 name: distributed-systems
-description: Distributed systems — consensus (Paxos/Raft/BFT), replication, CRDTs, coordination, gossip, clocks, consistency models. Open for any multi-node correctness or coordination decision.
+description: Distributed systems — consensus (Paxos/Raft/BFT), replication, CRDTs, coordination, gossip, clocks, consistency.
 ---
 
 # distributed systems

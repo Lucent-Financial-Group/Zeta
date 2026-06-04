@@ -1,6 +1,6 @@
 ---
 name: workflows
-description: Factory workflows — git and PR, GitHub surfaces, OpenSpec change lifecycle, round and backlog management, bug-fix procedure, next-steps. Open when running a defined factory procedure end-to-end.
+description: Factory workflows — git/PR, GitHub surfaces, OpenSpec lifecycle, round and backlog management, bug-fix, next-steps.
 ---
 
 # workflows

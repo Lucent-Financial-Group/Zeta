@@ -1,6 +1,6 @@
 ---
 name: performance-and-runtime-ops
-description: Performance and runtime operations — hot-path tuning, benchmarking, profiling, concurrency, SIMD, plus containers, CI, observability, logging, metrics, and SRE. Open for speed, resource, or run-in-production decisions.
+description: Performance and runtime ops — tuning, benchmarking, profiling, concurrency, SIMD, containers, CI, observability.
 ---
 
 # performance and runtime ops

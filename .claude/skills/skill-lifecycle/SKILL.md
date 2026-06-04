@@ -1,6 +1,6 @@
 ---
 name: skill-lifecycle
-description: Skill lifecycle — creating, improving, tuning, gap-finding, and auditing the skill library itself. Open when working on skills as artifacts.
+description: Skill lifecycle — creating, improving, tuning, gap-finding, and auditing the skill library itself.
 ---
 
 # skill lifecycle

@@ -1,6 +1,6 @@
 ---
 name: governance
-description: Governance and anchoring — decision rights, conflict resolution, alignment, naming and etymology, citation and anchor discipline, canonical-home and glossary hygiene, public-API gatekeeping. Open for who-decides, naming, and keep-the-substrate-honest decisions.
+description: Governance and anchoring — decision rights, conflict resolution, alignment, naming, citations/anchors, glossary hygiene.
 ---
 
 # governance

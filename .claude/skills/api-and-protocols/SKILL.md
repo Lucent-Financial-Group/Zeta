@@ -1,6 +1,6 @@
 ---
 name: api-and-protocols
-description: API and protocol surfaces — GraphQL and federation, public-API contract design, and wire-format and interface concerns. Open when designing or reviewing an external-facing surface.
+description: API and protocol surfaces — GraphQL and federation, public-API contract design, wire formats and interfaces.
 ---
 
 # api and protocols

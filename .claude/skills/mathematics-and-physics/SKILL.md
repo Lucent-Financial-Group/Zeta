@@ -1,6 +1,6 @@
 ---
 name: mathematics-and-physics
-description: Mathematics and physics foundations — category/graph/complexity/chaos theory, geometry, measure and probability, numerical analysis, and physics used load-bearingly. Open for theory, proofs, and mathematical structure.
+description: Math and physics foundations — category/graph/complexity/chaos theory, geometry, measure/probability, numerics.
 ---
 
 # mathematics and physics

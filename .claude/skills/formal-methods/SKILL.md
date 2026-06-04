@@ -1,6 +1,6 @@
 ---
 name: formal-methods
-description: Formal verification and static analysis — TLA+/Z3/Lean/Alloy/F*, property and mutation testing, Semgrep/CodeQL, and routing the right tool per property class. Open when a claim needs a proof or a check.
+description: Formal verification and static analysis — TLA+/Z3/Lean/Alloy/F*, property/mutation testing, Semgrep/CodeQL, routing.
 ---
 
 # formal methods

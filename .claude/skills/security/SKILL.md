@@ -1,6 +1,6 @@
 ---
 name: security
-description: Security — offensive and defensive, threat modeling, prompt-injection defense, crypto and hashing, obfuscation, and adversarial corpora. Open for any attack-surface, hardening, or red-team decision.
+description: Security — offensive and defensive, threat modeling, prompt-injection defense, crypto/hashing, obfuscation.
 ---
 
 # security

@@ -1,6 +1,6 @@
 ---
 name: search-ir-and-ml
-description: Search, information retrieval, and machine learning — search engines, ranking and relevance, neural retrieval, text analysis and classification, ML/LLM systems and evals. Open for any retrieval, NLP, or ML decision.
+description: Search, IR, and ML — engines, ranking, neural retrieval, text analysis/classification, ML/LLM systems, evals.
 ---
 
 # search ir and ml

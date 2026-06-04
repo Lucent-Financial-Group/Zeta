@@ -1,6 +1,6 @@
 ---
 name: research
-description: Research practice — paper peer review and tech-radar stewardship. Open when evaluating external research or tracking technology adoption.
+description: Research practice — paper peer review and tech-radar stewardship.
 ---
 
 # research

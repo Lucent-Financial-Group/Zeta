@@ -1,6 +1,6 @@
 ---
 name: data-modeling-and-ontology
-description: Data modeling, warehousing, and knowledge representation — Data Vault / dimensional / anchor / activity-schema, master data, lineage and governance, taxonomy / ontology / knowledge-graph. Open when shaping how data and meaning are structured over time.
+description: Data modeling, warehousing, ontology — Data Vault/dimensional/anchor, master data, lineage, taxonomy, knowledge graphs.
 ---
 
 # data modeling and ontology

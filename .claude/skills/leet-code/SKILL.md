@@ -1,6 +1,6 @@
 ---
 name: leet-code
-description: Algorithmic problem solving — DSA toolbox, LeetCode and contest patterns, complexity communication. Open for interview-style algorithm and data-structure problems.
+description: Algorithmic problem solving — DSA toolbox, LeetCode and contest patterns, complexity communication.
 ---
 
 # leet code

@@ -1,6 +1,6 @@
 ---
 name: storage-and-query-engines
-description: Databases and query engines — storage layouts, the SQL parse→bind→optimize→plan→execute pipeline, transactions and concurrency, and the full family of database kinds. Open for any decision about how data is stored, indexed, or queried.
+description: Databases and query engines — storage layouts, SQL parse→plan→execute, transactions, indexing, every database kind.
 ---
 
 # storage and query engines

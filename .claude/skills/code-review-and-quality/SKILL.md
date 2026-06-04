@@ -1,6 +1,6 @@
 ---
 name: code-review-and-quality
-description: Code review and quality — zero-empathy review, maintainability, complexity reduction, race hunting, spec-to-code alignment, repo structure. Open when reviewing a diff or hardening quality.
+description: Code review and quality — zero-empathy review, maintainability, complexity reduction, race hunting, spec alignment.
 ---
 
 # code review and quality

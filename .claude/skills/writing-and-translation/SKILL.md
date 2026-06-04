@@ -1,6 +1,6 @@
 ---
 name: writing-and-translation
-description: Writing and translation — technical prose, documentation, cross-domain and vocabulary translation, teaching patterns. Open when producing or clarifying English-facing artifacts.
+description: Writing and translation — technical prose, documentation, cross-domain/vocabulary translation, teaching patterns.
 ---
 
 # writing and translation

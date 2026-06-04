@@ -1,6 +1,6 @@
 ---
 name: languages-and-build
-description: Programming languages, build, and packaging — C#/F#/TypeScript/Python/Java idioms, Roslyn and analyzers, MSBuild, NuGet, dependency hygiene. Open for language-specific or build/package decisions.
+description: Languages, build, packaging — C#/F#/TS/Python/Java, Roslyn/analyzers, MSBuild, NuGet, dependency hygiene.
 ---
 
 # languages and build
