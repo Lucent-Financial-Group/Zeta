@@ -328,11 +328,11 @@ runtime surprise.
 - Nicholas Blumhardt — Serilog design posts.
 - Charity Majors et al. 2019 — *Observability
   Engineering* (chapter on structured events).
-- `.claude/skills/logging-expert/SKILL.md` — library /
+- `.claude/skills/performance-and-runtime-ops/blueprints/logging-expert.md` — library /
   level / retention sibling.
-- `.claude/skills/observability-and-tracing-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/observability-and-tracing-expert.md`
   — umbrella.
-- `.claude/skills/serialization-and-wire-format-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/serialization-and-wire-format-expert.md`
   — encoding mechanics.
 - `.claude/skills/data-contract-expert/SKILL.md` —
   cross-team schema contract discipline.

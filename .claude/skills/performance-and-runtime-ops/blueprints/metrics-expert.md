@@ -291,13 +291,13 @@ sidecar.
 - Tene — HDRHistogram docs.
 - Prometheus + OpenMetrics specs.
 - OpenTelemetry Metrics spec.
-- `.claude/skills/observability-and-tracing-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/observability-and-tracing-expert.md`
   — three-pillar umbrella.
-- `.claude/skills/alerting-expert/SKILL.md` — alert-rule
+- `.claude/skills/performance-and-runtime-ops/blueprints/alerting-expert.md` — alert-rule
   design.
 - `.claude/skills/metrics-store-expert/SKILL.md` — storage
   engine.
-- `.claude/skills/performance-engineer/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` —
   consumer of these metrics.
-- `.claude/skills/gossip-protocols-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/gossip-protocols-expert.md` —
   aggregation primitives.

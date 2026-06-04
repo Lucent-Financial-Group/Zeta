@@ -438,9 +438,9 @@ format.
 - `AGENTS.md` — multi-harness contract.
 - `CLAUDE.md` — Claude-specific session architecture.
 - `docs/VISION.md` §"The vibe-coded hypothesis".
-- `.claude/skills/prompt-engineering-expert/SKILL.md`.
-- `.claude/skills/prompt-protector/SKILL.md`.
-- `.claude/skills/ai-evals-expert/SKILL.md` (pair).
-- `.claude/skills/long-term-rescheduler/SKILL.md` — cache TTL
+- `.claude/skills/search-ir-and-ml/blueprints/prompt-engineering-expert.md`.
+- `.claude/skills/security/blueprints/prompt-protector.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/ai-evals-expert.md` (pair).
+- `.claude/skills/agent-runtime-and-persistence/blueprints/long-term-rescheduler.md` — cache TTL
   case study.
-- `.claude/skills/observability-and-tracing-expert/SKILL.md`.
+- `.claude/skills/performance-and-runtime-ops/blueprints/observability-and-tracing-expert.md`.

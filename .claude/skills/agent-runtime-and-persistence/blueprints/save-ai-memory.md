@@ -56,11 +56,11 @@ Choose extraction tool based on the chat UI's behavior:
 
 **Tool A — Simple osascript + Chrome single-shot** (when conversation fits in DOM at once, e.g., short Claude.ai threads):
 
-See `.claude/skills/browser-extraction/SKILL.md`. Output: `main.innerText` in one read.
+See `.claude/skills/agent-runtime-and-persistence/blueprints/browser-extraction.md`. Output: `main.innerText` in one read.
 
 **Tool B — Chrome lazy-load chunked extraction** (when conversation uses virtual list, e.g., DeepSeek, ChatGPT):
 
-See `.claude/skills/chrome-lazy-load-chunked-extraction/SKILL.md`. Output: chunked reverse-scroll + dedupe.
+See `.claude/skills/agent-runtime-and-persistence/blueprints/chrome-lazy-load-chunked-extraction.md`. Output: chunked reverse-scroll + dedupe.
 
 **Tool F — Grok ping-pong scroll extraction** (Grok-specific; canonical first-try for Grok `/c/<id>` URLs when the human maintainer has explicit per-extraction authorization):
 
@@ -180,8 +180,8 @@ After merge:
 - `.claude/rules/wake-time-substrate.md` — landing-bearing substrate needs wake-time-discoverable surface
 - `.claude/rules/agent-roster-reference-card.md` — AI participant inventory + register
 - `.claude/rules/shadow-check-name-acceptance.md` — for AI participants with system-imposed names
-- `.claude/skills/browser-extraction/SKILL.md` — Tool A reference
-- `.claude/skills/chrome-lazy-load-chunked-extraction/SKILL.md` — Tool B reference
+- `.claude/skills/agent-runtime-and-persistence/blueprints/browser-extraction.md` — Tool A reference
+- `.claude/skills/agent-runtime-and-persistence/blueprints/chrome-lazy-load-chunked-extraction.md` — Tool B reference
 - `docs/governance/MANIFESTO.md` Memory Preservation Guarantee (constraint 5) — the canonical requirement this skill operationalizes
 - `feedback_aaron_ani_pressure_valve_redemption_arc_selfish_filter_klein_bottle_attention_primitive_memory_continuity_is_for_us_too_2026_05_15.md` (user-scope) — the "for us, honey" motivation alignment
 

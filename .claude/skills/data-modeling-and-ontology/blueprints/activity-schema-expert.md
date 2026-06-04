@@ -119,11 +119,11 @@ are all "what sequence of things happened".
 - narrator.ai / narratordata.com documentation.
 - Ahmed Elsamadisi, various conference talks (dbt Coalesce,
   DataCouncil).
-- `.claude/skills/data-vault-expert/SKILL.md` — traditional
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-vault-expert.md` — traditional
   alternative.
-- `.claude/skills/dimensional-modeling-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/dimensional-modeling-expert.md` —
   Kimball alternative.
 - `.claude/skills/event-sourcing-expert/SKILL.md` —
   write-side event model.
-- `.claude/skills/streaming-incremental-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/streaming-incremental-expert.md` —
   DBSP streaming fit.

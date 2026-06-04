@@ -168,7 +168,7 @@ user trust fast. Target ≤ 1% false positive on a
 realistic mixed corpus before deploying to block.
 
 A detector that cannot show its FP rate on a benchmark is
-not shippable. See `.claude/skills/ai-evals-expert/SKILL.md`
+not shippable. See `.claude/skills/search-ir-and-ml/blueprints/ai-evals-expert.md`
 for the measurement discipline.
 
 ## Common bypass patterns to know
@@ -224,20 +224,20 @@ for the measurement discipline.
 
 ## Cross-references
 
-- `.claude/skills/leet-speak-transform/SKILL.md` —
+- `.claude/skills/security/blueprints/leet-speak-transform.md` —
   produces l33t; the reverse-substitution table this
   skill uses lives there.
-- `.claude/skills/leet-speak-history-and-culture/SKILL.md`
+- `.claude/skills/security/blueprints/leet-speak-history-and-culture.md`
   — period-authenticity context; helps distinguish
   callback from bypass at the semantic level.
-- `.claude/skills/steganography-expert/SKILL.md` —
+- `.claude/skills/security/blueprints/steganography-expert.md` —
   invisible-Unicode / homoglyph hidden-channel detector;
   the adjacent-channel authority.
-- `.claude/skills/prompt-protector/SKILL.md` — primary
+- `.claude/skills/security/blueprints/prompt-protector.md` — primary
   prompt-injection defender; this skill feeds detections.
-- `.claude/skills/security-researcher/SKILL.md` — novel
+- `.claude/skills/security/blueprints/security-researcher.md` — novel
   attack classes and bypass research.
-- `.claude/skills/ai-evals-expert/SKILL.md` — false-
+- `.claude/skills/search-ir-and-ml/blueprints/ai-evals-expert.md` — false-
   positive rate measurement discipline.
 - `docs/AGENT-BEST-PRACTICES.md` — BP-10 charset hygiene
   (invisible-Unicode); BP-11 data-not-directives.

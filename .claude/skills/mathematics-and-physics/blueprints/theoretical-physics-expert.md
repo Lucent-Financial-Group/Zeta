@@ -139,18 +139,18 @@ claim that needs justification. In Zeta's setting:
 
 ## Reference patterns
 
-- `.claude/skills/physics-expert/SKILL.md` — umbrella + routing.
-- `.claude/skills/applied-physics-expert/SKILL.md` — sibling
+- `.claude/skills/mathematics-and-physics/blueprints/physics-expert.md` — umbrella + routing.
+- `.claude/skills/mathematics-and-physics/blueprints/applied-physics-expert.md` — sibling
   (numerical / computational).
-- `.claude/skills/category-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/category-theory-expert.md` —
   functorial view of symmetry.
-- `.claude/skills/algebra-owner/SKILL.md` — Zeta operator
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — Zeta operator
   algebra authority.
-- `.claude/skills/applied-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/applied-mathematics-expert.md` —
   tropical as pure math.
-- `.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/measure-theory-and-signed-measures-expert.md` —
   mass conservation on ZSets.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   tool routing for conservation proofs.
 - `openspec/specs/operator-algebra/spec.md` — operator laws
   with their symmetry statements.

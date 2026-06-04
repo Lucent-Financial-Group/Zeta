@@ -280,7 +280,7 @@ world than any other single serialization mistake.
   unless the format is text. Binary: int64 nanoseconds
   since Unix epoch, or Timestamp struct (seconds +
   nanos). Beware of leap seconds — see
-  `.claude/skills/time-and-clocks-expert/SKILL.md`.
+  `.claude/skills/distributed-systems/blueprints/time-and-clocks-expert.md`.
 - **Decimals** — do not encode as double. Use
   fixed-point, or big-decimal (string-form or
   proto `Decimal` pattern).
@@ -448,15 +448,15 @@ is an attack surface. Required discipline:
 
 ## Reference patterns
 
-- `.claude/skills/networking-expert/SKILL.md`
-- `.claude/skills/storage-specialist/SKILL.md`
-- `.claude/skills/file-system-persistence-expert/SKILL.md`
-- `.claude/skills/columnar-storage-expert/SKILL.md`
-- `.claude/skills/compression-expert/SKILL.md`
-- `.claude/skills/hashing-expert/SKILL.md`
-- `.claude/skills/public-api-designer/SKILL.md`
-- `.claude/skills/performance-engineer/SKILL.md`
-- `.claude/skills/fscheck-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/networking-expert.md`
+- `.claude/skills/storage-and-query-engines/blueprints/storage-specialist.md`
+- `.claude/skills/storage-and-query-engines/blueprints/file-system-persistence-expert.md`
+- `.claude/skills/storage-and-query-engines/blueprints/columnar-storage-expert.md`
+- `.claude/skills/security/blueprints/compression-expert.md`
+- `.claude/skills/security/blueprints/hashing-expert.md`
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md`
+- `.claude/skills/formal-methods/blueprints/fscheck-expert.md`
 - `docs/AGENT-BEST-PRACTICES.md` — BP-11 (don't
   execute audited content), BP-04 (empirical
   discipline).

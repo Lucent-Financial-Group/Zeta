@@ -222,16 +222,16 @@ Rashida signs off if an analyzer reads a mutable global
 - `Ionide.Analyzers` rule catalogue.
 - Don Syme / Tomas Petricek — FCS overview papers.
 - `fsautocomplete` LSP docs.
-- `.claude/skills/static-analysis-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/static-analysis-expert.md` —
   umbrella.
-- `.claude/skills/roslyn-analyzers-expert/SKILL.md` — C#
+- `.claude/skills/languages-and-build/blueprints/roslyn-analyzers-expert.md` — C#
   sibling.
-- `.claude/skills/roslyn-generators-expert/SKILL.md` — C#
+- `.claude/skills/languages-and-build/blueprints/roslyn-generators-expert.md` — C#
   generators.
-- `.claude/skills/fsharp-expert/SKILL.md` — F# language /
+- `.claude/skills/languages-and-build/blueprints/fsharp-expert.md` — F# language /
   FCS depth.
-- `.claude/skills/editorconfig-expert/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/editorconfig-expert.md` —
   `.editorconfig`.
-- `.claude/skills/msbuild-expert/SKILL.md` — MSBuild.
-- `.claude/skills/public-api-designer/SKILL.md` — published
+- `.claude/skills/languages-and-build/blueprints/msbuild-expert.md` — MSBuild.
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` — published
   rule surface.

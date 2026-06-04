@@ -68,7 +68,7 @@ Two names for the same concept divides attention and multiplies
 docs. Pick one; use it everywhere. The rename event that
 aligns them is cheap compared to the attention-tax of
 divergence. Tools: grep, controlled vocabulary (see
-`.claude/skills/controlled-vocabulary-expert/SKILL.md`).
+`.claude/skills/data-modeling-and-ontology/blueprints/controlled-vocabulary-expert.md`).
 
 ### 4. A public rename is a breaking change
 
@@ -114,14 +114,14 @@ Canonical-home-auditor flags these.
 - **Package / NuGet names** — stable long-horizon identity;
   changing these is a community-visible event.
 - **Commit / PR titles** — see
-  `.claude/skills/commit-message-shape/SKILL.md`. The name of
+  `.claude/skills/workflows/blueprints/commit-message-shape.md`. The name of
   a commit is part of the repo's grep history forever.
 - **Branch names** — short-lived, grep-friendly, kebab-case.
 - **Database / schema names** — often public via migrations;
   rename cost is schema-migration-scale.
 - **API / URL names** — the most public names in a system;
   route through the public-api-designer.
-- **Metric names** — see `.claude/skills/metrics-expert/SKILL.md`
+- **Metric names** — see `.claude/skills/performance-and-runtime-ops/blueprints/metrics-expert.md`
   for the Prometheus / OpenMetrics suffix rules. A renamed
   metric is a silently broken dashboard.
 - **Skill / persona names** — `.claude/skills/<name>/` is the
@@ -223,7 +223,7 @@ because the applied skill carries its own weight.
 - Does **not** rename artifacts. It advises; the repo owner
   (or, for public APIs, public-api-designer) executes.
 - Does **not** own taxonomies or controlled vocabularies —
-  that's `.claude/skills/controlled-vocabulary-expert/SKILL.md`.
+  that's `.claude/skills/data-modeling-and-ontology/blueprints/controlled-vocabulary-expert.md`.
 - Does **not** own public-API naming binding decisions —
   defers to public-api-designer.
 - Does **not** own commit-message *format* — defers to
@@ -235,15 +235,15 @@ because the applied skill carries its own weight.
 
 ## Reference patterns
 
-- `.claude/skills/controlled-vocabulary-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/controlled-vocabulary-expert.md` —
   where vocabulary lists live.
 - `.claude/skills/public-api-designer/` — binding naming
   decisions for public APIs.
-- `.claude/skills/commit-message-shape/SKILL.md` — commit-title
+- `.claude/skills/workflows/blueprints/commit-message-shape.md` — commit-title
   shape rules.
-- `.claude/skills/etymology-expert/SKILL.md` — history of a
+- `.claude/skills/governance/blueprints/etymology-expert.md` — history of a
   word's form; pair when a name carries prior semantics.
-- `.claude/skills/canonical-home-auditor/SKILL.md` — naming as
+- `.claude/skills/governance/blueprints/canonical-home-auditor.md` — naming as
   canonical-home discriminator.
 - `docs/AGENT-BEST-PRACTICES.md` — BP-17 / BP-18 (Rule Zero),
   BP-21 (facet declaration).

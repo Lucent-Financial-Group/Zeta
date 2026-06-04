@@ -128,17 +128,17 @@ when relating *two* ZSets at different time steps:
 
 ## Reference patterns
 
-- `.claude/skills/mathematics-expert/SKILL.md` — umbrella.
-- `.claude/skills/category-theory-expert/SKILL.md` — sibling
+- `.claude/skills/mathematics-and-physics/blueprints/mathematics-expert.md` — umbrella.
+- `.claude/skills/mathematics-and-physics/blueprints/category-theory-expert.md` — sibling
   (functorial view of measures).
-- `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/probability-and-bayesian-inference-expert.md` —
   sibling (probability specialisation).
-- `.claude/skills/theoretical-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/theoretical-mathematics-expert.md` —
   sibling (abstract algebra on the ZSet as a free abelian
   group).
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   tool routing.
-- `.claude/skills/algebra-owner/SKILL.md` — Zeta operator
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — Zeta operator
   algebra authority.
 - `src/Core/RecursiveSigned.fs` — Jordan-decomposition-safe
   semi-naive path.

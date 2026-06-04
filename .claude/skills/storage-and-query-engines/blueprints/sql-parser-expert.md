@@ -231,22 +231,22 @@ The hat quantifies the cost.
 
 ## Reference patterns
 
-- `.claude/skills/sql-engine-expert/SKILL.md` — umbrella.
-- `.claude/skills/sql-expert/SKILL.md` — SQL-language
+- `.claude/skills/storage-and-query-engines/blueprints/sql-engine-expert.md` — umbrella.
+- `.claude/skills/storage-and-query-engines/blueprints/sql-expert.md` — SQL-language
   semantics.
-- `.claude/skills/postgresql-expert/SKILL.md` — dialect
+- `.claude/skills/storage-and-query-engines/blueprints/postgresql-expert.md` — dialect
   coverage.
-- `.claude/skills/query-optimizer-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/query-optimizer-expert.md` —
   post-parse optimiser.
-- `.claude/skills/relational-algebra-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/relational-algebra-expert.md` —
   equivalence proofs.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md` —
   DST gate on parser dependencies.
-- `.claude/skills/performance-engineer/SKILL.md` — perf
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` — perf
   profile of the hot-path parser.
-- `.claude/skills/fscheck-expert/SKILL.md` — parser fuzz
+- `.claude/skills/formal-methods/blueprints/fscheck-expert.md` — parser fuzz
   properties.
-- `.claude/skills/public-api-designer/SKILL.md` — AST as
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` — AST as
   public contract.
 - Postgres `src/backend/parser/` — reference grammar.
 - `libpg_query` — Postgres parser as a C library

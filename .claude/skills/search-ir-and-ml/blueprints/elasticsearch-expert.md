@@ -306,7 +306,7 @@ guess.
 - Gormley & Tong — *Elasticsearch: The Definitive Guide*
   (2015; dated but foundational).
 - Elastic blog (performance / internals).
-- `.claude/skills/lucene-expert/SKILL.md`.
-- `.claude/skills/solr-expert/SKILL.md`.
-- `.claude/skills/search-query-language-expert/SKILL.md`.
-- `.claude/skills/search-relevance-expert/SKILL.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/lucene-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/solr-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/search-query-language-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/search-relevance-expert.md`.

@@ -269,24 +269,24 @@ Contest code has a specific register:
 
 ## Cross-references
 
-- `.claude/skills/leet-code-patterns/SKILL.md` —
+- `.claude/skills/leet-code/blueprints/leet-code-patterns.md` —
   try the fifteen patterns first; only reach for
   this skill when they genuinely do not fit.
-- `.claude/skills/leet-code-dsa-toolbox/SKILL.md` —
+- `.claude/skills/leet-code/blueprints/leet-code-dsa-toolbox.md` —
   the primitive layer; this skill extends it with
   persistence, augmentation, and decomposition.
-- `.claude/skills/leet-code-complexity-interview/SKILL.md`
+- `.claude/skills/leet-code/blueprints/leet-code-complexity-interview.md`
   — complexity communication; this skill's techniques
   live at O(n log² n) / O(n √n) / O(n log n · α(n))
   and that vocabulary needs to be fluent.
-- `.claude/skills/complexity-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/complexity-theory-expert.md` —
   theoretical rigor for lower-bound arguments.
 - `.claude/skills/algorithms-expert/SKILL.md` —
   genuinely research-grade algorithmic work.
-- `.claude/skills/performance-engineer/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` —
   when asymptotic analysis collides with real-
   hardware constants.
-- `.claude/skills/python-expert/SKILL.md`,
-  `.claude/skills/csharp-expert/SKILL.md`,
-  `.claude/skills/fsharp-expert/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/python-expert.md`,
+  `.claude/skills/languages-and-build/blueprints/csharp-expert.md`,
+  `.claude/skills/languages-and-build/blueprints/fsharp-expert.md` —
   language-idiomatic contest code.

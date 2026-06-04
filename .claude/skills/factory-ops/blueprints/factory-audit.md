@@ -241,11 +241,11 @@ Aaron-facing.>
   `docs/DEBT.md`, `docs/WINS.md` — round health signals
 - `memory/MEMORY.md` + `memory/persona/` — memory
   hygiene
-- `.claude/skills/skill-gap-finder/SKILL.md` — sibling
+- `.claude/skills/skill-lifecycle/blueprints/skill-gap-finder.md` — sibling
   at skill scope
-- `.claude/skills/skill-tune-up/SKILL.md` — sibling at
+- `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — sibling at
   existing-skill scope
-- `.claude/skills/agent-experience-engineer/SKILL.md` —
+- `.claude/skills/experience-and-product/blueprints/agent-experience-engineer.md` —
   sibling at agent-experience scope
 - `.claude/agents/architect.md` — the `architect`, integration
 - `.claude/agents/skill-expert.md` — the `skill-expert`, sibling

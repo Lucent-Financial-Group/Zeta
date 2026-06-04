@@ -256,7 +256,7 @@ JanusGraph + Cassandra is a popular FOSS escape hatch.
 - ISO/IEC 39075:2024 (GQL).
 - Robinson, Webber, Eifrem — *Graph Databases* (2nd ed).
 - Ian Robinson — TinkerPop materials.
-- `.claude/skills/knowledge-graph-expert/SKILL.md`.
-- `.claude/skills/graph-theory-expert/SKILL.md`.
-- `.claude/skills/ontology-expert/SKILL.md`.
-- `.claude/skills/database-systems-expert/SKILL.md`.
+- `.claude/skills/data-modeling-and-ontology/blueprints/knowledge-graph-expert.md`.
+- `.claude/skills/mathematics-and-physics/blueprints/graph-theory-expert.md`.
+- `.claude/skills/data-modeling-and-ontology/blueprints/ontology-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/database-systems-expert.md`.

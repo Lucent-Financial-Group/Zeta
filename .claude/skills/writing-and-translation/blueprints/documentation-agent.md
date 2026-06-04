@@ -149,5 +149,5 @@ time.
 - `docs/ROUND-HISTORY.md` — where history voice belongs
 - `docs/_retired/` — created on first retire
 - `docs/CONFLICT-RESOLUTION.md` — conflict protocol
-- `.claude/skills/spec-zealot/SKILL.md` — his counterpart on
+- `.claude/skills/code-review-and-quality/blueprints/spec-zealot.md` — his counterpart on
   the spec side

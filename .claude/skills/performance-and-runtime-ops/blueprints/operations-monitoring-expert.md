@@ -347,15 +347,15 @@ and the freshness oracle.
 - Principles of Chaos (principlesofchaos.org).
 - Liz Fong-Jones — burn-rate alerting.
 - ICS (US NIMS) — incident command structure.
-- `.claude/skills/observability-and-tracing-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/observability-and-tracing-expert.md`
   — telemetry sibling.
-- `.claude/skills/metrics-expert/SKILL.md` — SLI metric
+- `.claude/skills/performance-and-runtime-ops/blueprints/metrics-expert.md` — SLI metric
   shape.
-- `.claude/skills/alerting-expert/SKILL.md` — rule
+- `.claude/skills/performance-and-runtime-ops/blueprints/alerting-expert.md` — rule
   mechanics.
-- `.claude/skills/security-operations-engineer/SKILL.md`
+- `.claude/skills/security/blueprints/security-operations-engineer.md`
   — security incidents sibling.
-- `.claude/skills/data-operations-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-operations-expert.md` —
   DataOps umbrella sibling.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md`
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md`
   — DST chaos sibling.

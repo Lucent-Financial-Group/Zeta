@@ -186,18 +186,18 @@ Drift gets filed as a TUNE task on the paired
 ## Reference patterns
 
 - `stryker-config.json` — config at repo root.
-- `.claude/skills/fscheck-expert/SKILL.md` — sibling
+- `.claude/skills/formal-methods/blueprints/fscheck-expert.md` — sibling
   (property-based testing).
-- `.claude/skills/fsharp-expert/SKILL.md` — test authoring
+- `.claude/skills/languages-and-build/blueprints/fsharp-expert.md` — test authoring
   (F#).
-- `.claude/skills/csharp-expert/SKILL.md` — test authoring
+- `.claude/skills/languages-and-build/blueprints/csharp-expert.md` — test authoring
   (C#).
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   portfolio-level tool routing.
-- `.claude/skills/github-actions-expert/SKILL.md` — CI
+- `.claude/skills/performance-and-runtime-ops/blueprints/github-actions-expert.md` — CI
   workflow shape.
-- `.claude/skills/devops-engineer/SKILL.md` — threshold
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — threshold
   policy / runner policy.
-- `.claude/skills/maintainability-reviewer/SKILL.md` — test-
+- `.claude/skills/code-review-and-quality/blueprints/maintainability-reviewer.md` — test-
   smell triage routing.
 - `docs/TECH-RADAR.md` — Stryker.NET tech-radar row.

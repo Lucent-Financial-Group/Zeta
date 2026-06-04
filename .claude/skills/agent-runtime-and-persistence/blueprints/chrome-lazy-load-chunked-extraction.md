@@ -321,7 +321,7 @@ the chunk-overlap-dedup pattern.
 
 ## Composes with
 
-- `.claude/skills/browser-extraction/SKILL.md` — parent
+- `.claude/skills/agent-runtime-and-persistence/blueprints/browser-extraction.md` — parent
   skill; this is the lazy-load-specific extension
 - `.claude/settings.json` permission allowlist for
   `Bash(osascript *)` + `Bash(pkill *)` (required for

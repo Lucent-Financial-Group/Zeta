@@ -262,15 +262,15 @@ without ever running.
 - `tools/setup/common/verifiers.sh` — Z3 installer.
 - `docs/research/verification-registry.md` — where
   externally-cited lemmas live.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   Soraya, tool-routing authority.
-- `.claude/skills/verification-drift-auditor/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/verification-drift-auditor.md` —
   the audit sweep that keeps registry rows honest.
-- `.claude/skills/lean4-expert/SKILL.md`,
-  `.claude/skills/tla-expert/SKILL.md`,
-  `.claude/skills/alloy-expert/SKILL.md` — sibling hats
+- `.claude/skills/formal-methods/blueprints/lean4-expert.md`,
+  `.claude/skills/formal-methods/blueprints/tla-expert.md`,
+  `.claude/skills/formal-methods/blueprints/alloy-expert.md` — sibling hats
   for the other formal-methods surfaces.
-- `.claude/skills/fsharp-expert/SKILL.md` — for F# idioms
+- `.claude/skills/languages-and-build/blueprints/fsharp-expert.md` — for F# idioms
   in the Z3 driver and its tests.
 - de Moura & Bjørner, *Z3: An Efficient SMT Solver* (TACAS
   2008) — canonical reference.

@@ -168,12 +168,12 @@ reliable.
 - ReactiveX docs — pull / push patterns.
 - Timely Dataflow / Differential Dataflow source — push
   canonical.
-- `.claude/skills/execution-model-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/execution-model-expert.md` —
   umbrella.
-- `.claude/skills/streaming-incremental-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/streaming-incremental-expert.md` —
   DBSP / push-native.
-- `.claude/skills/volcano-iterator-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/volcano-iterator-expert.md` —
   pull canonical.
-- `.claude/skills/query-planner/SKILL.md` — plan shape.
-- `.claude/skills/algebra-owner/SKILL.md` — retraction-
+- `.claude/skills/storage-and-query-engines/blueprints/query-planner.md` — plan shape.
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — retraction-
   native invariants.

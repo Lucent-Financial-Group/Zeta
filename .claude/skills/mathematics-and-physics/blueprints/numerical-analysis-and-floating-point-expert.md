@@ -155,16 +155,16 @@ bit-for-bit. For Zeta's determinism guarantees:
 
 ## Reference patterns
 
-- `.claude/skills/mathematics-expert/SKILL.md` — umbrella.
-- `.claude/skills/applied-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/mathematics-expert.md` — umbrella.
+- `.claude/skills/mathematics-and-physics/blueprints/applied-mathematics-expert.md` —
   sibling (algorithm choice).
-- `.claude/skills/theoretical-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/theoretical-mathematics-expert.md` —
   sibling (proof of bounds).
-- `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/probability-and-bayesian-inference-expert.md` —
   sibling (log-sum-exp, softmax, entropy).
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   tool routing for bounded numerical obligations.
-- `.claude/skills/performance-engineer/SKILL.md` — sibling
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` — sibling
   (timing / allocation, not numerical behaviour).
 - `src/Core/NovelMath.fs` — tropical semiring arithmetic.
 - `src/Core/Hierarchy.fs` — tropical LFP closure.

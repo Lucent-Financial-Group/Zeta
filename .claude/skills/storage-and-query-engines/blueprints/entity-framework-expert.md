@@ -219,15 +219,15 @@ change-tracker; they stay separate.
   target.
 - `docs/ROADMAP.md` — EF-compatibility phasing.
 - `docs/BACKLOG.md` — EF items.
-- `.claude/skills/sql-expert/SKILL.md` — SQL-language
+- `.claude/skills/storage-and-query-engines/blueprints/sql-expert.md` — SQL-language
   umbrella.
-- `.claude/skills/postgresql-expert/SKILL.md` — Postgres-
+- `.claude/skills/storage-and-query-engines/blueprints/postgresql-expert.md` — Postgres-
   wire details.
-- `.claude/skills/query-planner/SKILL.md` — plan-shape.
-- `.claude/skills/query-optimizer-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/query-planner.md` — plan-shape.
+- `.claude/skills/storage-and-query-engines/blueprints/query-optimizer-expert.md` —
   logical rewrites.
-- `.claude/skills/csharp-expert/SKILL.md` — C# idioms.
-- `.claude/skills/public-api-designer/SKILL.md` — public-
+- `.claude/skills/languages-and-build/blueprints/csharp-expert.md` — C# idioms.
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` — public-
   surface gate for a native provider.
-- `.claude/skills/algebra-owner/SKILL.md` — operator-algebra
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — operator-algebra
   laws.

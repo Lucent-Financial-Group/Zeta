@@ -68,10 +68,24 @@ A proposal contains:
   projects; every project-specific skill is a deliberate
   exception, not an accident.
 
-### 2. Draft
+### 2. Draft (into a blueprint pack)
 
-Write `/Users/acehack/Documents/src/repos/dbsp/.claude/skills/<name>/SKILL.md`
-with the standard section layout:
+Skills are organised as **blueprint packs**: ~21 broad category skills at
+`.claude/skills/<pack>/SKILL.md` (router-facing carved sentence + a blueprint
+index), each with fat per-capability docs under `.claude/skills/<pack>/blueprints/*.md`.
+Do **not** create a top-level `.claude/skills/<name>/SKILL.md` — that reintroduces a
+router-visible skill outside the pack model and regrows the cold-start surface
+(see `.claude/rules/rules-are-small-carved-sentences-pointing-to-docs.md`).
+
+Instead:
+
+1. Pick the best-fit `<pack>` under `.claude/skills/` (or, if nothing fits,
+   propose a new pack — a new category is a deliberate, reviewed decision).
+2. Write the capability as a blueprint at `.claude/skills/<pack>/blueprints/<name>.md`
+   (a fat doc; frontmatter optional and not router-loaded).
+3. Add a one-line pointer to it in that pack's `SKILL.md` blueprint index.
+
+The blueprint body uses the standard section layout:
 
 ```markdown
 ---
@@ -246,9 +260,9 @@ workflow must continue to work without the plugin present.
   GOVERNANCE §31; edits flow through this same workflow
 - `docs/CONFLICT-RESOLUTION.md` — conflict protocol
 - `memory/persona/` — per-skill notebooks
-- `.claude/skills/prompt-protector/SKILL.md` — the lint
+- `.claude/skills/security/blueprints/prompt-protector.md` — the lint
   pass this workflow invokes
-- `.claude/skills/skill-tune-up/SKILL.md` — the
+- `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — the
   recommender that triggers this workflow
 - `~/.claude/plugins/cache/claude-plugins-official/skill-creator/`
   — upstream eval-driven description-optimiser (optional,

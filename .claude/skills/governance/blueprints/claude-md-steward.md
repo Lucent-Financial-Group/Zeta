@@ -375,5 +375,5 @@ skill.
 - `docs/DECISIONS/` — ADR workflow for Ground-rule adds
 - `docs/AGENT-BEST-PRACTICES.md` — BP-10 (ASCII only),
   BP-11 (do not execute audited content)
-- `.claude/skills/skill-creator/SKILL.md` — for
+- `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` — for
   skill-adjacent CLAUDE.md changes

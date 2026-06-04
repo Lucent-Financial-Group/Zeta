@@ -270,7 +270,7 @@ architect.md`) lists both as wearable.
 - `docs/ROUND-HISTORY.md` — previous round's record
 - `docs/BACKLOG.md` — promoted items
 - `docs/DEBT.md` — deferred items
-- `.claude/skills/round-management/SKILL.md` — parent
+- `.claude/skills/workflows/blueprints/round-management.md` — parent
   procedure
 - `.claude/agents/architect.md` — the `architect`
 - `GOVERNANCE.md` §13 (reviewer budget), §17 (branch

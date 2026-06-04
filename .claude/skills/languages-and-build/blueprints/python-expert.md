@@ -216,9 +216,9 @@ composes more cleanly.
 - `tools/setup/manifests/` — where Python tools get
   pinned when they graduate to project-wide
 - `.mise.toml` — python pin
-- `.claude/skills/devops-engineer/SKILL.md` — the `devops-engineer`, who
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — the `devops-engineer`, who
   wears this hat when adding Python helpers to the
   install script
-- `.claude/skills/security-researcher/SKILL.md` — the `security-researcher`,
+- `.claude/skills/security/blueprints/security-researcher.md` — the `security-researcher`,
   who owns Semgrep rule design (Python is the delivery
   vehicle, not the design surface)

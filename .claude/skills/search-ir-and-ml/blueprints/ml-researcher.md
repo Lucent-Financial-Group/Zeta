@@ -273,18 +273,18 @@ project. ML-theory surface is narrow but real:
 
 ## Cross-references
 
-- `.claude/skills/ai-researcher/SKILL.md` — the LLM /
+- `.claude/skills/search-ir-and-ml/blueprints/ai-researcher.md` — the LLM /
   generative / alignment counterpart. Hand off there
   when the claim is AI-specific.
-- `.claude/skills/ml-engineering-expert/SKILL.md` —
+- `.claude/skills/search-ir-and-ml/blueprints/ml-engineering-expert.md` —
   the applied-training counterpart.
-- `.claude/skills/ai-evals-expert/SKILL.md` — the
+- `.claude/skills/search-ir-and-ml/blueprints/ai-evals-expert.md` — the
   measurement counterpart.
 - `.claude/skills/probability-and-bayesian-inference-
   expert/SKILL.md` — probability substrate.
-- `.claude/skills/mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/mathematics-expert.md` —
   pure-math prerequisites.
-- `.claude/skills/applied-mathematics-expert/SKILL.md`
+- `.claude/skills/mathematics-and-physics/blueprints/applied-mathematics-expert.md`
   — applied-math neighbour.
 - `.claude/skills/measure-theory-and-signed-measures-
   expert/SKILL.md` — measure-theoretic neighbour used
@@ -292,11 +292,11 @@ project. ML-theory surface is narrow but real:
 - `.claude/skills/numerical-analysis-and-floating-
   point-expert/SKILL.md` — where numerical-stability
   theorems matter.
-- `.claude/skills/formal-verification-expert/SKILL.md`
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md`
   (Soraya) — proof-tool routing.
-- `.claude/skills/complexity-theory-expert/SKILL.md`
+- `.claude/skills/mathematics-and-physics/blueprints/complexity-theory-expert.md`
   — computational-complexity neighbour.
-- `.claude/skills/missing-citations/SKILL.md` —
+- `.claude/skills/governance/blueprints/missing-citations.md` —
   citation discovery that this skill triages.
 - `tools/lean4/Lean4/DbspChainRule.lean` — the
   DBSP chain-rule proof in Lean.

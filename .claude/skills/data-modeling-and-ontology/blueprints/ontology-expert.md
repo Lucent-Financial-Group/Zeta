@@ -343,15 +343,15 @@ Not urgent, but a candidate research path.
 - Schema.org documentation.
 - FIBO (EDM Council) documentation.
 - PROV-O (W3C) documentation.
-- `.claude/skills/taxonomy-expert/SKILL.md` — hierarchical
+- `.claude/skills/data-modeling-and-ontology/blueprints/taxonomy-expert.md` — hierarchical
   sibling.
-- `.claude/skills/controlled-vocabulary-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/controlled-vocabulary-expert.md` —
   term-list sibling.
-- `.claude/skills/knowledge-graph-expert/SKILL.md` — query
+- `.claude/skills/data-modeling-and-ontology/blueprints/knowledge-graph-expert.md` — query
   sibling.
-- `.claude/skills/master-data-management-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/master-data-management-expert.md` —
   golden-record sibling.
-- `.claude/skills/data-lineage-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-lineage-expert.md` —
   provenance sibling.
-- `.claude/skills/category-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/category-theory-expert.md` —
   abstract-structure sibling.

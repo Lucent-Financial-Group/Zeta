@@ -245,27 +245,27 @@ project, so the AI-research surface is narrow but real:
 
 ## Cross-references
 
-- `.claude/skills/ml-researcher/SKILL.md` — the broader
+- `.claude/skills/search-ir-and-ml/blueprints/ml-researcher.md` — the broader
   ML-theory counterpart. Hand off ML-theoretical
   questions (convergence bounds, PAC-learning, classical
   RL regret) to that skill.
-- `.claude/skills/ml-engineering-expert/SKILL.md` — the
+- `.claude/skills/search-ir-and-ml/blueprints/ml-engineering-expert.md` — the
   applied-training counterpart. Hand off production
   training / serving / quantisation to that skill.
-- `.claude/skills/ai-evals-expert/SKILL.md` — the
+- `.claude/skills/search-ir-and-ml/blueprints/ai-evals-expert.md` — the
   measurement counterpart. Hand off eval *construction*
   to that skill; this hat *uses* evals as evidence.
-- `.claude/skills/llm-systems-expert/SKILL.md` —
+- `.claude/skills/search-ir-and-ml/blueprints/llm-systems-expert.md` —
   application-architecture counterpart.
-- `.claude/skills/prompt-engineering-expert/SKILL.md` —
+- `.claude/skills/search-ir-and-ml/blueprints/prompt-engineering-expert.md` —
   prompt-design counterpart.
-- `.claude/skills/ai-jailbreaker/SKILL.md` — gated
+- `.claude/skills/security/blueprints/ai-jailbreaker.md` — gated
   dormant adversarial-prompt research capability.
-- `.claude/skills/formal-verification-expert/SKILL.md`
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md`
   (Soraya) — formal-methods research routing.
-- `.claude/skills/security-researcher/SKILL.md` (Mateo) —
+- `.claude/skills/security/blueprints/security-researcher.md` (Mateo) —
   attack-paper review routing.
-- `.claude/skills/missing-citations/SKILL.md` — citation
+- `.claude/skills/governance/blueprints/missing-citations.md` — citation
   discovery; this hat triages the found citations.
 - `docs/BACKLOG.md` — where factory adoption-of-research
   decisions are logged.

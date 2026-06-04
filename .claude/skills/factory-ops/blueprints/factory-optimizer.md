@@ -197,9 +197,9 @@ both get read; the architect decides.
 - `docs/research/proof-tool-coverage.md` — formal-coverage
   baseline
 - `docs/CONFLICT-RESOLUTION.md` — open tensions
-- `.claude/skills/factory-balance-auditor/SKILL.md` —
+- `.claude/skills/factory-ops/blueprints/factory-balance-auditor.md` —
   the balancer sister skill
-- `.claude/skills/skill-gap-finder/SKILL.md` — missing-skill
+- `.claude/skills/skill-lifecycle/blueprints/skill-gap-finder.md` — missing-skill
   input
-- `.claude/skills/next-steps/SKILL.md` — session-level
+- `.claude/skills/workflows/blueprints/next-steps.md` — session-level
   sibling

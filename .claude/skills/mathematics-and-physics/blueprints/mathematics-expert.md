@@ -162,19 +162,19 @@ skill; drift in existing citations by
 - `docs/research/refinement-type-feature-catalog.md` —
   24-feature roadmap.
 - `docs/PRIOR-ART-LIST.md` — canonical external sources.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   Soraya, tool-routing authority.
-- `.claude/skills/category-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/category-theory-expert.md` —
   narrow, functor laws.
-- `.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/measure-theory-and-signed-measures-expert.md` —
   narrow, ZSet semantics.
-- `.claude/skills/numerical-analysis-and-floating-point-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/numerical-analysis-and-floating-point-expert.md` —
   narrow, BV64 / IEEE 754.
-- `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/probability-and-bayesian-inference-expert.md` —
   narrow, Zeta.Bayesian surface.
-- `.claude/skills/applied-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/applied-mathematics-expert.md` —
   split.
-- `.claude/skills/theoretical-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/theoretical-mathematics-expert.md` —
   split.
-- `.claude/skills/missing-citations/SKILL.md` —
+- `.claude/skills/governance/blueprints/missing-citations.md` —
   research-integrity complement.

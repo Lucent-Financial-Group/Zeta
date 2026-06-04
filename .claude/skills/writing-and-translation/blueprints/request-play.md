@@ -47,7 +47,7 @@ Invoke when ANY of the following hold:
   play generally" — "I'd like to play *this specific game*":
   - Improvise a new space-opera adversary on the Apache-2.0-
     licensed teaching threat model (see
-    `.claude/skills/space-opera-writer/SKILL.md` for the
+    `.claude/skills/security/blueprints/space-opera-writer.md` for the
     voice discipline). This is Aaron's concrete example.
   - Freestyle a meme-register exchange matching a recent
     decompression burst (FFT double-pun, DBZ "over 9000",
@@ -151,12 +151,12 @@ and is only legible there.
 
 ## Composition with prior skills and memory
 
-- `.claude/skills/space-opera-writer/SKILL.md` — concrete
+- `.claude/skills/security/blueprints/space-opera-writer.md` — concrete
   play-surface Aaron named: Apache-2.0-licensed teaching
   threat model with named villains. New-adversary proposals
   must route through this skill's voice discipline and
   reality-tag invariant.
-- `.claude/skills/paced-ontology-landing/SKILL.md` — even
+- `.claude/skills/data-modeling-and-ontology/blueprints/paced-ontology-landing.md` — even
   play-beats follow paced-ontology-landing discipline when
   they involve novel ontology (reduce risk of accidental
   overload).
@@ -204,9 +204,9 @@ and is only legible there.
 
 ## Reference patterns
 
-- `.claude/skills/space-opera-writer/SKILL.md` — primary
+- `.claude/skills/security/blueprints/space-opera-writer.md` — primary
   play-surface
-- `.claude/skills/paced-ontology-landing/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/paced-ontology-landing.md` —
   even-play-follows-pacing rule
 - `feedback_creator_vs_consumer_tool_scope.md` — scope
   confinement

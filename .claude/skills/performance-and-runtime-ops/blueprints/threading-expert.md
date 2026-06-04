@@ -375,15 +375,15 @@ checks it.
 - Sustrik — *Structured Concurrency*.
 - Stephen Toub — .NET runtime async/await blog posts.
 - .NET runtime repo — `ThreadPool` + `Task` source.
-- `.claude/skills/race-hunter/SKILL.md` — diff audit.
-- `.claude/skills/concurrency-control-expert/SKILL.md` —
+- `.claude/skills/code-review-and-quality/blueprints/race-hunter.md` — diff audit.
+- `.claude/skills/storage-and-query-engines/blueprints/concurrency-control-expert.md` —
   tx-level concurrency.
-- `.claude/skills/morsel-driven-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/morsel-driven-expert.md` —
   query parallelism.
-- `.claude/skills/hardware-intrinsics-expert/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/hardware-intrinsics-expert.md` —
   SIMD + cache-line.
-- `.claude/skills/performance-engineer/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` —
   benchmarks.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md`
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md`
   — DST harness for scheduling.
-- `.claude/skills/tla-expert/SKILL.md` — formal specs.
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — formal specs.

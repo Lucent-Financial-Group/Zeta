@@ -300,6 +300,6 @@ UpdateItem(
 - Ongaro & Ousterhout — *In Search of an Understandable
   Consensus Algorithm* (Raft, 2014).
 - FoundationDB whitepapers.
-- `.claude/skills/database-systems-expert/SKILL.md`.
-- `.claude/skills/wide-column-database-expert/SKILL.md`.
-- `.claude/skills/storage-specialist/SKILL.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/database-systems-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/wide-column-database-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/storage-specialist.md`.

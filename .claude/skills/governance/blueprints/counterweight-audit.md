@@ -184,5 +184,5 @@ stability as in catching drift. Both outcomes are logged.
   motivating case for this skill.
 - `docs/AGENT-BEST-PRACTICES.md` — BP-NN promotion target
   when a counter has been re-tightened 3+ times.
-- `.claude/skills/skill-tune-up/SKILL.md` — sibling cadence
+- `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — sibling cadence
   discipline for skill files.

@@ -192,8 +192,8 @@ Dockerfile.
 - `tools/setup/install.sh` — the single source of
   three-way parity
 - `GOVERNANCE.md` §24 — three-way parity rule
-- `.claude/skills/devops-engineer/SKILL.md` — the `devops-engineer`
-- `.claude/skills/bash-expert/SKILL.md` — bash idioms
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — the `devops-engineer`
+- `.claude/skills/languages-and-build/blueprints/bash-expert.md` — bash idioms
   the installer uses
 - `docs/BACKLOG.md` entry: "Devcontainer / Codespaces
   image"

@@ -207,6 +207,6 @@ but tractable. Open when someone has the time.
   and proof progress
 - `docs/research/mathlib-progress.md` — historical
   context on Mathlib integration
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   the `formal-verification-expert`, routing
-- `.claude/skills/algebra-owner/SKILL.md` — the `algebra-owner`
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — the `algebra-owner`

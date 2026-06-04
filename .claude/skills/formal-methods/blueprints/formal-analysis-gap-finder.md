@@ -386,17 +386,17 @@ Structure:
 
 ## Reference patterns
 
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   the routing expert; every finding routes to her.
-- `.claude/skills/verification-drift-auditor/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/verification-drift-auditor.md` —
   sibling; artifact-vs-source drift.
-- `.claude/skills/claims-tester/SKILL.md` — sibling;
+- `.claude/skills/formal-methods/blueprints/claims-tester.md` — sibling;
   empirical falsifiability.
-- `.claude/skills/skill-gap-finder/SKILL.md` — sibling;
+- `.claude/skills/skill-lifecycle/blueprints/skill-gap-finder.md` — sibling;
   absent skills.
-- `.claude/skills/factory-automation-gap-finder/SKILL.md` —
+- `.claude/skills/factory-ops/blueprints/factory-automation-gap-finder.md` —
   sibling; absent automation.
-- `.claude/skills/factory-balance-auditor/SKILL.md` —
+- `.claude/skills/factory-ops/blueprints/factory-balance-auditor.md` —
   sibling; authority-vs-compensator.
 - `docs/research/proof-tool-coverage.md` — Soraya's portfolio
   snapshot; this skill reads it but does not edit.

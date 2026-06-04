@@ -329,16 +329,16 @@ Before adding a timestamp to a new Zeta type:
 - IERS Bulletins — leap-second announcements.
 - RFC 5905 — NTPv4.
 - IEEE 1588-2008 — PTP.
-- `.claude/skills/distributed-consensus-expert/SKILL.md`
+- `.claude/skills/distributed-systems/blueprints/distributed-consensus-expert.md`
   — ordering via consensus.
-- `.claude/skills/eventual-consistency-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/eventual-consistency-expert.md` —
   timestamps in consistency framing.
-- `.claude/skills/crdt-expert/SKILL.md` — version vectors
+- `.claude/skills/distributed-systems/blueprints/crdt-expert.md` — version vectors
   in CRDT context.
-- `.claude/skills/distributed-query-execution-expert/SKILL.md`
+- `.claude/skills/storage-and-query-engines/blueprints/distributed-query-execution-expert.md`
   — planner cost-model timestamps.
-- `.claude/skills/performance-engineer/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` —
   benchmark-timing hygiene.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md`
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md`
   — virtual-clock harness.
-- `.claude/skills/tla-expert/SKILL.md` — HLC refinement.
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — HLC refinement.

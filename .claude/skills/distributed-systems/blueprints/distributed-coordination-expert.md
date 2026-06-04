@@ -273,12 +273,12 @@ adversarial scheduling.
   (fencing tokens).
 - HashiCorp Consul docs — sessions, KV, SWIM gossip.
 - Jepsen reports on ZK / etcd / Consul.
-- `.claude/skills/distributed-consensus-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/distributed-consensus-expert.md` —
   umbrella.
-- `.claude/skills/paxos-expert/SKILL.md` — Paxos family.
-- `.claude/skills/raft-expert/SKILL.md` — Raft.
-- `.claude/skills/tla-expert/SKILL.md` — TLA+ authoring.
-- `.claude/skills/transaction-manager-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/paxos-expert.md` — Paxos family.
+- `.claude/skills/distributed-systems/blueprints/raft-expert.md` — Raft.
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — TLA+ authoring.
+- `.claude/skills/storage-and-query-engines/blueprints/transaction-manager-expert.md` —
   distributed commit.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md` —
   DST.

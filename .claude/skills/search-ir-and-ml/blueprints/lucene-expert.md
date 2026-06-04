@@ -316,7 +316,7 @@ features.
 - Lucene.NET docs (`lucenenet.apache.org`).
 - Elastic engineering blog (Lucene internals posts).
 - Michael McCandless's blog (former Lucene PMC).
-- `.claude/skills/search-engine-library-expert/SKILL.md`.
-- `.claude/skills/elasticsearch-expert/SKILL.md`.
-- `.claude/skills/solr-expert/SKILL.md`.
-- `.claude/skills/search-relevance-expert/SKILL.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/search-engine-library-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/elasticsearch-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/solr-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/search-relevance-expert.md`.

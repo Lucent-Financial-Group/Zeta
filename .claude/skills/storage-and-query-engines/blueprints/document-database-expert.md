@@ -285,6 +285,6 @@ to the cost model (RU/s) — it surprises.
 - Cosmos DB docs.
 - Chodorow — *MongoDB: The Definitive Guide* (3rd ed).
 - Couchbase *Developing with Couchbase Server*.
-- `.claude/skills/database-systems-expert/SKILL.md`.
-- `.claude/skills/relational-database-expert/SKILL.md`.
-- `.claude/skills/key-value-store-expert/SKILL.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/database-systems-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/relational-database-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/key-value-store-expert.md`.

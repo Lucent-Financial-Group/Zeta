@@ -485,18 +485,18 @@ Because consent algebra ≅ Z-set algebra:
 
 ## Cross-references
 
-- `.claude/skills/consent-ux-researcher/SKILL.md` —
+- `.claude/skills/experience-and-product/blueprints/consent-ux-researcher.md` —
   the UX surface; wear together when the consent
   primitive needs a user-facing layer.
-- `.claude/skills/glass-halo-architect/SKILL.md` —
+- `.claude/skills/agent-runtime-and-persistence/blueprints/glass-halo-architect.md` —
   the architectural stance; radical-transparency-as-
   defense needs consent primitives to be revocable.
-- `.claude/skills/relational-algebra-expert/SKILL.md`
+- `.claude/skills/data-modeling-and-ontology/blueprints/relational-algebra-expert.md`
   — when consent composes with relational operators.
-- `.claude/skills/category-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/category-theory-expert.md` —
   for the lift past ring → module → algebra into
   category-theoretic structures.
-- `.claude/skills/threat-model-critic/SKILL.md`
+- `.claude/skills/security/blueprints/threat-model-critic.md`
   (Aminata) — for adversary-modeling the consent
   primitives.
 - `memory/user_glass_halo_and_radical_honesty.md` —

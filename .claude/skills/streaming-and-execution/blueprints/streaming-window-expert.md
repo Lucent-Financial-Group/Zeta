@@ -168,12 +168,12 @@ refuses.
 - Apache Beam *Streaming Systems* by Akidau, Chernyak,
   Lax.
 - Materialize windowing docs.
-- `.claude/skills/streaming-incremental-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/streaming-incremental-expert.md` —
   parent.
-- `.claude/skills/algebra-owner/SKILL.md` — aggregator
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — aggregator
   laws.
-- `.claude/skills/sql-expert/SKILL.md` — SQL:2016 grammar.
-- `.claude/skills/storage-specialist/SKILL.md` — window-
+- `.claude/skills/storage-and-query-engines/blueprints/sql-expert.md` — SQL:2016 grammar.
+- `.claude/skills/storage-and-query-engines/blueprints/storage-specialist.md` — window-
   state persistence.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   proofs.

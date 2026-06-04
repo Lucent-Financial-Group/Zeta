@@ -228,11 +228,11 @@ Never produce a rewrite. This skill is advisory only.
 
 ## Reference patterns
 
-- `.claude/skills/fsharp-expert/SKILL.md` — F# idioms
-- `.claude/skills/csharp-expert/SKILL.md` — C# idioms
-- `.claude/skills/holistic-view/SKILL.md` — sibling
+- `.claude/skills/languages-and-build/blueprints/fsharp-expert.md` — F# idioms
+- `.claude/skills/languages-and-build/blueprints/csharp-expert.md` — C# idioms
+- `.claude/skills/governance/blueprints/holistic-view.md` — sibling
   "second hat" skill; different lens
-- `.claude/skills/benchmark-authoring-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/benchmark-authoring-expert.md`
   — where P0 findings measure
 - `docs/CONFLICT-RESOLUTION.md` — language-choice
   conflict protocol

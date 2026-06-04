@@ -219,9 +219,9 @@ For each row in the queue:
 
 ## Reference patterns
 
-- `.claude/skills/csharp-expert/SKILL.md` — C# idioms for
+- `.claude/skills/languages-and-build/blueprints/csharp-expert.md` — C# idioms for
   path-(a) fixes
-- `.claude/skills/fsharp-expert/SKILL.md` — F# idioms
+- `.claude/skills/languages-and-build/blueprints/fsharp-expert.md` — F# idioms
   when the rule fires on F# via analyzer cross-language
 - `.claude/skills/harsh-critic/SKILL.md` — review floor on
   path-(a) refactors

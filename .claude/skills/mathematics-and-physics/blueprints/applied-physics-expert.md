@@ -126,18 +126,18 @@ Int64 without wraparound".
 
 ## Reference patterns
 
-- `.claude/skills/physics-expert/SKILL.md` — umbrella + routing.
-- `.claude/skills/theoretical-physics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/physics-expert.md` — umbrella + routing.
+- `.claude/skills/mathematics-and-physics/blueprints/theoretical-physics-expert.md` —
   sibling (formal analogy, symmetry).
-- `.claude/skills/applied-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/applied-mathematics-expert.md` —
   sibling (pure-math tropical, pure-math gossip).
-- `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/probability-and-bayesian-inference-expert.md` —
   sibling (entropy on random variables).
-- `.claude/skills/numerical-analysis-and-floating-point-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/numerical-analysis-and-floating-point-expert.md` —
   sibling (float / int correctness).
-- `.claude/skills/performance-engineer/SKILL.md` — sibling
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` — sibling
   (wall-time / allocation).
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md` —
   DST harness for empirical measurements on the hot path.
 - `src/Core/NovelMath.fs` — tropical semiring.
 - `src/Core/Hierarchy.fs` — tropical LFP closure.

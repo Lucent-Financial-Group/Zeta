@@ -215,7 +215,7 @@ GitHub Actions wiring.
 - `docs/research/claude-cron-durability.md` — the
   round-34 research note documenting session-scope
   behaviour (created alongside this skill)
-- `.claude/skills/round-open-checklist/SKILL.md` — step
+- `.claude/skills/workflows/blueprints/round-open-checklist.md` — step
   7.6 entry point for session-restart recovery
 - `.github/workflows/scheduled-*.yml` — the durable
   backend for `lifetime: needs durable` entries

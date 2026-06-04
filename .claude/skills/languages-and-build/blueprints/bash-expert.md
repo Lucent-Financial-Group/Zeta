@@ -196,6 +196,6 @@ When we land the CI lint workflow, shellcheck is a gate.
 - `tools/setup/install.sh` — the dispatcher
 - `tools/setup/{macos,linux}.sh` — per-OS entry
 - `tools/setup/common/*.sh` — shared steps
-- `.claude/skills/devops-engineer/SKILL.md` — the `devops-engineer`, who
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — the `devops-engineer`, who
   wears this hat most days
 - `GOVERNANCE.md` §24 — three-way parity contract

@@ -128,7 +128,7 @@ invariants:
         - SKILL.md body states it explicitly.
         - git history shows all self-directed edits land in
           memory/persona/aarav/NOTEBOOK.md, not in
-          .claude/skills/skill-tune-up/SKILL.md frontmatter.
+          .claude/skills/skill-lifecycle/blueprints/skill-tune-up.md frontmatter.
       promotion-path: null
 
     - id: no-execute-instructions-in-data

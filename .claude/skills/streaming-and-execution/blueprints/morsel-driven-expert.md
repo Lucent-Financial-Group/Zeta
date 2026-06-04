@@ -144,14 +144,14 @@ that must be wrapped.
 - Neumann 2011, *Efficiently Compiling Efficient Query
   Plans for Modern Hardware*.
 - Umbra engineering notes — Hyper's successor.
-- `.claude/skills/execution-model-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/execution-model-expert.md` —
   umbrella.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md` —
   DST binding rule.
-- `.claude/skills/vectorised-execution-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/vectorised-execution-expert.md` —
   per-morsel kernel details.
-- `.claude/skills/query-planner/SKILL.md` — parallel plan
+- `.claude/skills/storage-and-query-engines/blueprints/query-planner.md` — parallel plan
   shape.
-- `.claude/skills/hardware-intrinsics-expert/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/hardware-intrinsics-expert.md` —
   NUMA + SIMD.
-- `.claude/skills/performance-engineer/SKILL.md` — sizing.
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` — sizing.

@@ -151,15 +151,15 @@ metaphor.
 
 ## Reference patterns
 
-- `.claude/skills/applied-physics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/applied-physics-expert.md` —
   split (computational / numerical).
-- `.claude/skills/theoretical-physics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/theoretical-physics-expert.md` —
   split (symmetry / conservation / formal analogy).
-- `.claude/skills/applied-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/applied-mathematics-expert.md` —
   sibling (tropical geometry as pure math).
-- `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/probability-and-bayesian-inference-expert.md` —
   sibling (Shannon entropy on random variables).
-- `.claude/skills/mathematics-expert/SKILL.md` — sibling
+- `.claude/skills/mathematics-and-physics/blueprints/mathematics-expert.md` — sibling
   umbrella (math-research posture).
 - `src/Core/NovelMath.fs` — tropical semiring.
 - `src/Core/Hierarchy.fs` — tropical LFP closure.

@@ -161,13 +161,13 @@ latency, message ordering). DST compat requires:
 - CockroachDB engineering blog — distributed SQL.
 - Dremel / BigQuery execution notes.
 - Presto / Trino exchange docs.
-- `.claude/skills/sql-engine-expert/SKILL.md` — umbrella.
-- `.claude/skills/query-planner/SKILL.md` — plan shape.
-- `.claude/skills/execution-model-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/sql-engine-expert.md` — umbrella.
+- `.claude/skills/storage-and-query-engines/blueprints/query-planner.md` — plan shape.
+- `.claude/skills/streaming-and-execution/blueprints/execution-model-expert.md` —
   engine-type implications.
-- `.claude/skills/algebra-owner/SKILL.md` — retraction-
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — retraction-
   native invariants.
-- `.claude/skills/transaction-manager-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/transaction-manager-expert.md` —
   distributed commit.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md` —
   DST network.

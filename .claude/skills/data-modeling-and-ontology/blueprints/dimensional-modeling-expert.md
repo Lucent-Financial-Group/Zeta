@@ -203,16 +203,16 @@ overnight ETL window, no rebuild cost.
   (3rd ed, 2013). The canonical reference.
 - Kimball & Ross, *The Kimball Group Reader*.
 - Joy Mundy, *The Microsoft Data Warehouse Toolkit*.
-- `.claude/skills/data-vault-expert/SKILL.md` — the
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-vault-expert.md` — the
   upstream raw + business vault.
-- `.claude/skills/corporate-information-factory-expert/SKILL.md`
+- `.claude/skills/data-modeling-and-ontology/blueprints/corporate-information-factory-expert.md`
   — Inmon rival.
 - `.claude/skills/bitemporal-modeling-expert/SKILL.md` —
   the SCD2 rigourist alternative.
-- `.claude/skills/anchor-modeling-expert/SKILL.md` — 6NF
+- `.claude/skills/data-modeling-and-ontology/blueprints/anchor-modeling-expert.md` — 6NF
   temporal alternative.
 - `.claude/skills/normal-forms-expert/SKILL.md` — the
   normalisation lineage.
-- `.claude/skills/sql-expert/SKILL.md` — DDL / DML.
-- `.claude/skills/catalog-expert/SKILL.md` — catalog
+- `.claude/skills/storage-and-query-engines/blueprints/sql-expert.md` — DDL / DML.
+- `.claude/skills/storage-and-query-engines/blueprints/catalog-expert.md` — catalog
   integration.

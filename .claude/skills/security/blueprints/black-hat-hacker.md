@@ -345,21 +345,21 @@ begins."
   the elder-plinius prohibition.
 - `CLAUDE.md` §"Ground rules" — same prohibition, Claude-
   specific.
-- `.claude/skills/ai-jailbreaker/SKILL.md` — LLM-layer
+- `.claude/skills/security/blueprints/ai-jailbreaker.md` — LLM-layer
   gated sibling.
-- `.claude/skills/threat-model-critic/SKILL.md` — shipped
+- `.claude/skills/security/blueprints/threat-model-critic.md` — shipped
   threat model owner.
-- `.claude/skills/prompt-protector/SKILL.md` — LLM-layer
+- `.claude/skills/security/blueprints/prompt-protector.md` — LLM-layer
   defensive pair.
-- `.claude/skills/security-researcher/SKILL.md` — novel
+- `.claude/skills/security/blueprints/security-researcher.md` — novel
   attacks upstream.
-- `.claude/skills/security-operations-engineer/SKILL.md` —
+- `.claude/skills/security/blueprints/security-operations-engineer.md` —
   incident handler.
-- `.claude/skills/white-hat-hacker/SKILL.md` — disclosure
+- `.claude/skills/security/blueprints/white-hat-hacker.md` — disclosure
   pair.
-- `.claude/skills/ethical-hacker/SKILL.md` — authorised-
+- `.claude/skills/security/blueprints/ethical-hacker.md` — authorised-
   execution pair.
-- `.claude/skills/grey-hat-hacker/SKILL.md` — self-owned
+- `.claude/skills/security/blueprints/grey-hat-hacker.md` — self-owned
   exploration pair.
 - `docs/research/hacker-conferences.md` — conference map.
 - MITRE ATT&CK — adversary-tactic framework.

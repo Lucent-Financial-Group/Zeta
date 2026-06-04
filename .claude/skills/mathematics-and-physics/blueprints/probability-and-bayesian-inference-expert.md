@@ -169,16 +169,16 @@ offline tier.
 
 ## Reference patterns
 
-- `.claude/skills/mathematics-expert/SKILL.md` — umbrella.
-- `.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/mathematics-expert.md` — umbrella.
+- `.claude/skills/mathematics-and-physics/blueprints/measure-theory-and-signed-measures-expert.md` —
   sibling (measure foundations).
-- `.claude/skills/numerical-analysis-and-floating-point-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/numerical-analysis-and-floating-point-expert.md` —
   sibling (log-sum-exp, softmax stability).
-- `.claude/skills/applied-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/applied-mathematics-expert.md` —
   sibling (frequentist / non-Bayesian statistics).
-- `.claude/skills/category-theory-expert/SKILL.md` — sibling
+- `.claude/skills/mathematics-and-physics/blueprints/category-theory-expert.md` — sibling
   (Giry monad, probability as an effect).
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   tool routing for probabilistic obligations.
 - `src/Bayesian/` — Zeta's forward-looking Bayesian tree.
 - `src/Core/CountMin.fs`, `src/Core/Sketch.fs`,

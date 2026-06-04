@@ -290,14 +290,14 @@ one-liner. Current alternative: scan the plan YAML / JSON.
 - Grover & Leskovec — *node2vec* (2016).
 - Kipf & Welling — *GCN* (2017).
 - Amazon Neptune docs; JanusGraph docs; TigerGraph docs.
-- `.claude/skills/graph-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/graph-theory-expert.md` —
   algorithmic foundations.
-- `.claude/skills/ontology-expert/SKILL.md` — semantic
+- `.claude/skills/data-modeling-and-ontology/blueprints/ontology-expert.md` — semantic
   sibling.
-- `.claude/skills/taxonomy-expert/SKILL.md` — tree sibling.
-- `.claude/skills/master-data-management-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/taxonomy-expert.md` — tree sibling.
+- `.claude/skills/data-modeling-and-ontology/blueprints/master-data-management-expert.md` —
   golden-record sibling.
-- `.claude/skills/data-lineage-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-lineage-expert.md` —
   provenance sibling.
-- `.claude/skills/sql-expert/SKILL.md` — relational
+- `.claude/skills/storage-and-query-engines/blueprints/sql-expert.md` — relational
   alternative.

@@ -215,13 +215,13 @@ maintainer will curse it.
 
 ## Reference patterns
 
-- `.claude/skills/ontology-landing-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/ontology-landing-expert.md` —
   theory.
-- `.claude/skills/translator-expert/SKILL.md`
-- `.claude/skills/cross-domain-translation/SKILL.md`
-- `.claude/skills/reducer/SKILL.md`
-- `.claude/skills/canonical-home-auditor/SKILL.md`
-- `.claude/skills/verification-drift-auditor/SKILL.md`
+- `.claude/skills/writing-and-translation/blueprints/translator-expert.md`
+- `.claude/skills/writing-and-translation/blueprints/cross-domain-translation.md`
+- `.claude/skills/code-review-and-quality/blueprints/reducer.md`
+- `.claude/skills/governance/blueprints/canonical-home-auditor.md`
+- `.claude/skills/formal-methods/blueprints/verification-drift-auditor.md`
 - `docs/GLOSSARY.md`
 - `docs/DECISIONS/`
 - `docs/ROUND-HISTORY.md`

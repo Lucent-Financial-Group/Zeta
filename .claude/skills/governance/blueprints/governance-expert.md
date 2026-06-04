@@ -261,10 +261,10 @@ Architect-with-consent or human.
 - Python PEP 13 (governance).
 - Apache Project Maturity Model.
 - Brooks — *The Mythical Man-Month* (Conway's Law).
-- `.claude/skills/data-governance-expert/SKILL.md`.
-- `.claude/skills/conflict-resolution-expert/SKILL.md`.
-- `.claude/skills/negotiation-expert/SKILL.md`.
-- `.claude/skills/factory-audit/SKILL.md`.
-- `.claude/skills/ontology-expert/SKILL.md`.
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-governance-expert.md`.
+- `.claude/skills/governance/blueprints/conflict-resolution-expert.md`.
+- `.claude/skills/experience-and-product/blueprints/negotiation-expert.md`.
+- `.claude/skills/factory-ops/blueprints/factory-audit.md`.
+- `.claude/skills/data-modeling-and-ontology/blueprints/ontology-expert.md`.
 - `docs/CONFLICT-RESOLUTION.md`.
 - `GOVERNANCE.md`.

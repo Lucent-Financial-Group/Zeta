@@ -290,9 +290,9 @@ this skill.
 - `tools/alignment/` — concrete per-clause lint scripts.
 - `memory/persona/sova/NOTEBOOK.md` — persona notebook
   (created on first invocation if absent).
-- `.claude/skills/verification-drift-auditor/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/verification-drift-auditor.md` —
   companion auditor for verification artefacts.
-- `.claude/skills/skill-tune-up/SKILL.md` (Aarav) — same
+- `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` (Aarav) — same
   BP-NN citation discipline.
 
 ## How to know this skill is working

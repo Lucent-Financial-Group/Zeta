@@ -126,4 +126,4 @@ stale failure mode v1 itself diagnosed.
 - `tests/ThreadSafetyTests.fs` — stress-test template
 - `docs/DECISIONS/2026-04-21-router-coherence-v2.md` — the
   authoritative Stage-1 ↔ Stage-2 hand-off contract
-- `.claude/skills/complexity-reviewer/SKILL.md` — Stage-1 partner
+- `.claude/skills/code-review-and-quality/blueprints/complexity-reviewer.md` — Stage-1 partner

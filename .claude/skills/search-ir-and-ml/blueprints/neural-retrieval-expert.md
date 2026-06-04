@@ -291,7 +291,7 @@ operators update.
 - Chen et al. — bge-m3.
 - Gao et al. — HyDE.
 - Matryoshka Representation Learning (Kusupati et al.).
-- `.claude/skills/full-text-search-expert/SKILL.md`.
-- `.claude/skills/vector-database-expert/SKILL.md`.
-- `.claude/skills/search-relevance-expert/SKILL.md`.
-- `.claude/skills/text-classification-expert/SKILL.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/full-text-search-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/vector-database-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/search-relevance-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/text-classification-expert.md`.

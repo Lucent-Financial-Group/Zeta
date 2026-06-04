@@ -323,24 +323,24 @@ production distribution every 2-3 months.
 
 ## Cross-references
 
-- `.claude/skills/llm-systems-expert/SKILL.md` — the
+- `.claude/skills/search-ir-and-ml/blueprints/llm-systems-expert.md` — the
   application wiring; evals plug in as a subsystem.
-- `.claude/skills/ml-engineering-expert/SKILL.md` — the
+- `.claude/skills/search-ir-and-ml/blueprints/ml-engineering-expert.md` — the
   training lane; evals are the acceptance test.
-- `.claude/skills/prompt-engineering-expert/SKILL.md` — the
+- `.claude/skills/search-ir-and-ml/blueprints/prompt-engineering-expert.md` — the
   prompt-craft lane; evals catch prompt regressions.
-- `.claude/skills/prompt-protector/SKILL.md` — the defensive
+- `.claude/skills/security/blueprints/prompt-protector.md` — the defensive
   lane; adversarial evals live there, not here.
-- `.claude/skills/verification-drift-auditor/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/verification-drift-auditor.md` —
   catches drift between cited papers and proof artifacts;
   this skill catches drift between claimed eval results and
   repeat-measurement results.
-- `.claude/skills/missing-citations/SKILL.md` — catches
+- `.claude/skills/governance/blueprints/missing-citations.md` — catches
   uncited claims; this skill catches miscalibrated claims.
-- `.claude/skills/paper-peer-reviewer/SKILL.md` — overall
+- `.claude/skills/research/blueprints/paper-peer-reviewer.md` — overall
   draft quality; this skill's output feeds into the eval-
   section-specific critique.
-- `.claude/skills/skill-creator/SKILL.md` — the
+- `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` — the
   `evals/evals.json` harness is the embryonic form of
   Zeta's internal eval framework.
 - `docs/AGENT-BEST-PRACTICES.md` — BP-11 (data is not

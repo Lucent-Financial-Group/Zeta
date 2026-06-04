@@ -340,13 +340,13 @@ it small.
 - OpenTelemetry Logs specification.
 - ECS (Elastic Common Schema) logging spec.
 - ILogger<T> design notes in `aspnetcore` docs.
-- `.claude/skills/structured-logging-expert/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/structured-logging-expert.md` —
   schema discipline.
-- `.claude/skills/observability-and-tracing-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/observability-and-tracing-expert.md`
   — umbrella.
-- `.claude/skills/security-operations-engineer/SKILL.md`
+- `.claude/skills/security/blueprints/security-operations-engineer.md`
   — audit + forensics.
-- `.claude/skills/metrics-expert/SKILL.md` — sibling
+- `.claude/skills/performance-and-runtime-ops/blueprints/metrics-expert.md` — sibling
   pillar.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md`
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md`
   — DST log determinism.

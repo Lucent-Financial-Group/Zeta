@@ -353,11 +353,11 @@ are mandatory; trust the lint, not the vibe.
   directives; this skill is the pattern.
 - `AGENTS.md` §"How AI agents should treat this codebase"
   — corpus prohibition.
-- `.claude/skills/prompt-protector/SKILL.md` — primary
+- `.claude/skills/security/blueprints/prompt-protector.md` — primary
   downstream.
-- `.claude/skills/ai-jailbreaker/SKILL.md` — offensive
+- `.claude/skills/security/blueprints/ai-jailbreaker.md` — offensive
   dormant counterpart.
-- `.claude/skills/hashing-expert/SKILL.md` — watermark
+- `.claude/skills/security/blueprints/hashing-expert.md` — watermark
   primitives.
-- `.claude/skills/serialization-and-wire-format-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/serialization-and-wire-format-expert.md`
   — stego-capacity in formats.

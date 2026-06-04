@@ -32,7 +32,7 @@ but matching tends to read cleaner.
 
 ## Etymology is not the same as naming
 
-**Naming** (see `.claude/skills/naming-expert/SKILL.md`) is
+**Naming** (see `.claude/skills/governance/blueprints/naming-expert.md`) is
 the act of choosing what to call a thing going forward.
 **Etymology** is the reconstructed history of what words have
 meant in the past. A naming decision *consults* etymology to
@@ -210,9 +210,9 @@ etymology does not *execute* the naming decision.
 
 ## Reference patterns
 
-- `.claude/skills/naming-expert/SKILL.md` — the *act* of
+- `.claude/skills/governance/blueprints/naming-expert.md` — the *act* of
   naming; etymology informs it.
-- `.claude/skills/controlled-vocabulary-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/controlled-vocabulary-expert.md` —
   where project glossaries live.
 - `docs/GLOSSARY.md` (project-specific, where applicable) —
   where term-history notes can land for load-bearing terms.

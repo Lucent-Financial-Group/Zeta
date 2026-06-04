@@ -284,7 +284,7 @@ registered metrics.
 - Grainger et al. — *AI-Powered Search* (2024).
 - Burges — *From RankNet to LambdaRank to LambdaMART*
   (2010).
-- `.claude/skills/full-text-search-expert/SKILL.md`.
-- `.claude/skills/elasticsearch-expert/SKILL.md`.
-- `.claude/skills/solr-expert/SKILL.md`.
-- `.claude/skills/text-analysis-expert/SKILL.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/full-text-search-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/elasticsearch-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/solr-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/text-analysis-expert.md`.

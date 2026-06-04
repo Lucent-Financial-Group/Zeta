@@ -255,7 +255,7 @@ where a back-dated sample is ignored.
 - Thanos, Cortex, Mimir docs.
 - Google SRE book — SLO / alerting chapters.
 - Brendan Gregg — *Systems Performance*.
-- `.claude/skills/metrics-expert/SKILL.md`.
-- `.claude/skills/observability-and-tracing-expert/SKILL.md`.
-- `.claude/skills/alerting-expert/SKILL.md`.
-- `.claude/skills/database-systems-expert/SKILL.md`.
+- `.claude/skills/performance-and-runtime-ops/blueprints/metrics-expert.md`.
+- `.claude/skills/performance-and-runtime-ops/blueprints/observability-and-tracing-expert.md`.
+- `.claude/skills/performance-and-runtime-ops/blueprints/alerting-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/database-systems-expert.md`.

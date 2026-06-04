@@ -111,18 +111,18 @@ never load-bearing. Specifically:
   edit-time, not a runtime guard.
 - The plugin's rule patterns are useful input when
   authoring semgrep rules via
-  `.claude/skills/semgrep-rule-authoring/SKILL.md`.
+  `.claude/skills/formal-methods/blueprints/semgrep-rule-authoring.md`.
 - If the plugin becomes too chatty for a given repo
   edit cadence, disable it in `.claude/settings.json`;
   the skill content remains readable from cache.
 
 ## Reference patterns
 
-- [.claude/skills/security-researcher/SKILL.md](/.claude/skills/security-researcher/SKILL.md)
+- [.claude/skills/security/blueprints/security-researcher.md](/.claude/skills/security/blueprints/security-researcher.md)
   — sibling proactive-research lane (Mateo)
-- [.claude/skills/threat-model-critic/SKILL.md](/.claude/skills/threat-model-critic/SKILL.md)
+- [.claude/skills/security/blueprints/threat-model-critic.md](/.claude/skills/security/blueprints/threat-model-critic.md)
   — shipped-threat-model lane (Aminata)
-- [.claude/skills/prompt-protector/SKILL.md](/.claude/skills/prompt-protector/SKILL.md)
+- [.claude/skills/security/blueprints/prompt-protector.md](/.claude/skills/security/blueprints/prompt-protector.md)
   — agent-layer lane (Nadia)
 - `docs/security/THREAT-MODEL.md` — the shipped model Aminata guards
 - `docs/security/SECURITY-BACKLOG.md` — pending security controls

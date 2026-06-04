@@ -343,7 +343,7 @@ regardless of severity heuristics:
   cites when a violation corresponds to a stable rule.
 - `memory/persona/soraya/NOTEBOOK.md` — the auditor's own
   state file, bounded by the notebook-hygiene rules in
-  `.claude/skills/agent-experience-engineer/SKILL.md`.
+  `.claude/skills/experience-and-product/blueprints/agent-experience-engineer.md`.
 - `.claude/agents/formal-verification-expert.md` — the owning
   persona.
 - `docs/TECH-RADAR.md` — ring assignments for formal tools

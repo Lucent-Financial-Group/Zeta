@@ -267,7 +267,7 @@ Ora2Pg, AWS DMS) help but don't replace judgement.
 - Bernstein, Hadzilacos, Goodman — *Concurrency Control
   and Recovery* (classic).
 - Pavlo & Aslett — *What's Really New with NewSQL*.
-- `.claude/skills/postgresql-expert/SKILL.md`.
-- `.claude/skills/sql-expert/SKILL.md`.
-- `.claude/skills/sql-engine-expert/SKILL.md`.
-- `.claude/skills/database-systems-expert/SKILL.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/postgresql-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/sql-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/sql-engine-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/database-systems-expert.md`.

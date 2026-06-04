@@ -127,7 +127,7 @@ keyed stream to the plan, no schema event. Valid-time is the
   Agile Information Modeling in Evolving Data Environments*
   (DKE 2010).
 - anchormodeling.com — the reference site and online modeller.
-- `.claude/skills/data-vault-expert/SKILL.md` — the
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-vault-expert.md` — the
   mainstream alternative.
 - `.claude/skills/bitemporal-modeling-expert/SKILL.md` —
   temporal theory.

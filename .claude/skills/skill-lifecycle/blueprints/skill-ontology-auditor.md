@@ -212,7 +212,7 @@ and the candidate rules in
 - **BP-04** — scope-narrow personas.
 
 Candidate rules promote to stable BP-NN via Architect decision
-per `.claude/skills/skill-tune-up/SKILL.md` §live-search.
+per `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` §live-search.
 
 ## Invocation cadence
 
@@ -289,19 +289,19 @@ per `.claude/skills/skill-tune-up/SKILL.md` §live-search.
   (1993) — ontology-as-specification discipline.
 - Guarino — *Formal Ontology and Information Systems* (1998)
   — the IS-A and role-vs-kind distinctions this audit enforces.
-- `.claude/skills/taxonomy-expert/SKILL.md` — hierarchical
+- `.claude/skills/data-modeling-and-ontology/blueprints/taxonomy-expert.md` — hierarchical
   classification theory.
-- `.claude/skills/ontology-expert/SKILL.md` — formal knowledge
+- `.claude/skills/data-modeling-and-ontology/blueprints/ontology-expert.md` — formal knowledge
   representation theory.
-- `.claude/skills/teaching-skill-pattern/SKILL.md` — the
+- `.claude/skills/writing-and-translation/blueprints/teaching-skill-pattern.md` — the
   three-counterpart taxonomy + faceted-classification section.
-- `.claude/skills/skill-tune-up/SKILL.md` — broad tune-up
+- `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — broad tune-up
   ranker this skill complements.
-- `.claude/skills/skill-gap-finder/SKILL.md` — absent-skill
+- `.claude/skills/skill-lifecycle/blueprints/skill-gap-finder.md` — absent-skill
   finder; counterpart role.
-- `.claude/skills/skill-creator/SKILL.md` — lifecycle that
+- `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` — lifecycle that
   lands any recommendation.
-- `.claude/skills/skill-improver/SKILL.md` — acts on BP-NN
+- `.claude/skills/skill-lifecycle/blueprints/skill-improver.md` — acts on BP-NN
   citations checkbox-style.
 - `docs/AGENT-BEST-PRACTICES.md` — stable BP-NN rules.
 - `memory/persona/best-practices-scratch.md` — candidate

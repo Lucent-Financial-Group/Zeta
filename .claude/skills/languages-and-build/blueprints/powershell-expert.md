@@ -162,8 +162,8 @@ than runtime checks, surface errors at the call boundary.
 
 ## Reference patterns
 
-- `.claude/skills/bash-expert/SKILL.md` — sibling
-- `.claude/skills/devops-engineer/SKILL.md` — the `devops-engineer`
+- `.claude/skills/languages-and-build/blueprints/bash-expert.md` — sibling
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — the `devops-engineer`
   (when Windows lands, the `windows.ps1` script lives
   here)
 - `GOVERNANCE.md` §24 — three-way parity; Windows joins

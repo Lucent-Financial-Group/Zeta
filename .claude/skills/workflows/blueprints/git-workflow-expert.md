@@ -302,12 +302,12 @@ Rules:
 - `git log main --oneline` — the round history
 - `CLAUDE.md` §"git safety protocol" — baseline rules
 - `GOVERNANCE.md` §23 — upstream-contribution workflow
-- `.claude/skills/commit-message-shape/SKILL.md` —
+- `.claude/skills/workflows/blueprints/commit-message-shape.md` —
   message shape
-- `.claude/skills/round-open-checklist/SKILL.md` —
+- `.claude/skills/workflows/blueprints/round-open-checklist.md` —
   open-of-round
-- `.claude/skills/round-management/SKILL.md` — full
+- `.claude/skills/workflows/blueprints/round-management.md` — full
   round cadence
-- `.claude/skills/github-actions-expert/SKILL.md` — the
+- `.claude/skills/performance-and-runtime-ops/blueprints/github-actions-expert.md` — the
   gate before merge
-- `.claude/skills/devops-engineer/SKILL.md` — the `devops-engineer`
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — the `devops-engineer`

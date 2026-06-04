@@ -205,11 +205,11 @@ recommends; skill-creator executes.
   deferred work
 - `GOVERNANCE.md` — rules that might need enforcement
   skills
-- `.claude/skills/skill-creator/SKILL.md` — the landing
+- `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` — the landing
   workflow
-- `.claude/skills/skill-tune-up/SKILL.md` —
+- `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` —
   sibling; the `skill-expert`
-- `.claude/skills/skill-improver/SKILL.md` — the `skill-improver`,
+- `.claude/skills/skill-lifecycle/blueprints/skill-improver.md` — the `skill-improver`,
   paired on consolidation
 - `memory/persona/best-practices-scratch.md` — scratchpad
   for findings

@@ -222,30 +222,30 @@ engine work touches them.
 
 - `docs/ROADMAP.md`, `docs/BACKLOG.md`, `docs/TECH-RADAR.md`,
   `docs/PRIOR-ART-LIST.md` — engine-level anchors.
-- `.claude/skills/sql-parser-expert/SKILL.md` — parser narrow.
-- `.claude/skills/sql-expert/SKILL.md` — SQL-language narrow.
-- `.claude/skills/postgresql-expert/SKILL.md` — dialect +
+- `.claude/skills/storage-and-query-engines/blueprints/sql-parser-expert.md` — parser narrow.
+- `.claude/skills/storage-and-query-engines/blueprints/sql-expert.md` — SQL-language narrow.
+- `.claude/skills/storage-and-query-engines/blueprints/postgresql-expert.md` — dialect +
   wire narrow.
-- `.claude/skills/query-optimizer-expert/SKILL.md` — logical
+- `.claude/skills/storage-and-query-engines/blueprints/query-optimizer-expert.md` — logical
   narrow.
-- `.claude/skills/query-planner/SKILL.md` — physical narrow
+- `.claude/skills/storage-and-query-engines/blueprints/query-planner.md` — physical narrow
   (Imani).
-- `.claude/skills/execution-model-expert/SKILL.md` — engine-
+- `.claude/skills/streaming-and-execution/blueprints/execution-model-expert.md` — engine-
   type narrow.
-- `.claude/skills/relational-algebra-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/relational-algebra-expert.md` —
   equivalence proofs.
-- `.claude/skills/algebra-owner/SKILL.md` — retraction-native
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — retraction-native
   laws.
-- `.claude/skills/storage-specialist/SKILL.md` — persistence.
-- `.claude/skills/entity-framework-expert/SKILL.md` — EF
+- `.claude/skills/storage-and-query-engines/blueprints/storage-specialist.md` — persistence.
+- `.claude/skills/storage-and-query-engines/blueprints/entity-framework-expert.md` — EF
   client surface.
-- `.claude/skills/hardware-intrinsics-expert/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/hardware-intrinsics-expert.md` —
   SIMD kernels.
-- `.claude/skills/performance-engineer/SKILL.md` — zero-alloc
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` — zero-alloc
   discipline.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md` —
   DST binding rule.
-- `.claude/skills/public-api-designer/SKILL.md` — public
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` — public
   cross-layer contracts.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   proof-tool portfolio.

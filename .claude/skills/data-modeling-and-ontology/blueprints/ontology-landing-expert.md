@@ -204,12 +204,12 @@ algebra.
 
 ## Reference patterns
 
-- `.claude/skills/paced-ontology-landing/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/paced-ontology-landing.md` —
   the applied workflow.
-- `.claude/skills/translator-expert/SKILL.md`
-- `.claude/skills/reducer/SKILL.md`
-- `.claude/skills/canonical-home-auditor/SKILL.md`
-- `.claude/skills/verification-drift-auditor/SKILL.md`
+- `.claude/skills/writing-and-translation/blueprints/translator-expert.md`
+- `.claude/skills/code-review-and-quality/blueprints/reducer.md`
+- `.claude/skills/governance/blueprints/canonical-home-auditor.md`
+- `.claude/skills/formal-methods/blueprints/verification-drift-auditor.md`
 - `docs/GLOSSARY.md`
 - `docs/DECISIONS/`
 - `AGENTS.md` — section on how to treat vocabulary.

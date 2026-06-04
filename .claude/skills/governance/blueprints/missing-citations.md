@@ -211,19 +211,19 @@ cadence.
 - `docs/PRIOR-ART-LIST.md` — canonical source list.
 - `docs/research/verification-registry.md` — registry this
   hat cross-references.
-- `.claude/skills/verification-drift-auditor/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/verification-drift-auditor.md` —
   paired drift hat (cited-claim side).
-- `.claude/skills/paper-peer-reviewer/SKILL.md` — overall
+- `.claude/skills/research/blueprints/paper-peer-reviewer.md` — overall
   draft reviewer.
-- `.claude/skills/mathematics-expert/SKILL.md` — math-field
+- `.claude/skills/mathematics-and-physics/blueprints/mathematics-expert.md` — math-field
   umbrella.
-- `.claude/skills/physics-expert/SKILL.md` — physics-field
+- `.claude/skills/mathematics-and-physics/blueprints/physics-expert.md` — physics-field
   umbrella.
-- `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/probability-and-bayesian-inference-expert.md` —
   probability / Bayesian claims.
-- `.claude/skills/algebra-owner/SKILL.md` — Zeta operator-
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — Zeta operator-
   algebra claims.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   tool-portfolio routing.
-- `.claude/skills/tech-radar-owner/SKILL.md` — upstream list
+- `.claude/skills/research/blueprints/tech-radar-owner.md` — upstream list
   curation.

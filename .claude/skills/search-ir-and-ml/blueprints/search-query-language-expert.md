@@ -326,7 +326,7 @@ templates.
 - SQLite FTS5 docs.
 - Vespa YQL reference.
 - OWASP "Injection" (search-injection variants).
-- `.claude/skills/lucene-expert/SKILL.md`.
-- `.claude/skills/elasticsearch-expert/SKILL.md`.
-- `.claude/skills/solr-expert/SKILL.md`.
-- `.claude/skills/full-text-search-expert/SKILL.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/lucene-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/elasticsearch-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/solr-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/full-text-search-expert.md`.

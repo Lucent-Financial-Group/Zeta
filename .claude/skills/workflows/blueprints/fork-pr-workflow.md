@@ -417,7 +417,7 @@ body should:
 - `git rebase upstream/main` — sync to upstream before
   pushing
 - `git push --force-with-lease` — safe force-push
-- `.claude/skills/git-workflow-expert/SKILL.md` — the
+- `.claude/skills/workflows/blueprints/git-workflow-expert.md` — the
   within-repo sibling skill
-- `.claude/skills/commit-message-shape/SKILL.md` —
+- `.claude/skills/workflows/blueprints/commit-message-shape.md` —
   message shape (unchanged by fork context)

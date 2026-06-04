@@ -262,9 +262,9 @@ entire architectural bet.)
 - Pavlo & Aslett — *What's Really New with NewSQL* (2016).
 - Fowler — "Polyglot Persistence" (2011).
 - CMU 15-445 / 15-721 lecture notes.
-- `.claude/skills/relational-database-expert/SKILL.md`.
-- `.claude/skills/document-database-expert/SKILL.md`.
-- `.claude/skills/wide-column-database-expert/SKILL.md`.
-- `.claude/skills/key-value-store-expert/SKILL.md`.
-- `.claude/skills/time-series-database-expert/SKILL.md`.
-- `.claude/skills/vector-database-expert/SKILL.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/relational-database-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/document-database-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/wide-column-database-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/key-value-store-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/time-series-database-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/vector-database-expert.md`.

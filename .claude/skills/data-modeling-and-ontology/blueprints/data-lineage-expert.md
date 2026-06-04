@@ -286,16 +286,16 @@ bolted on. This is a research-paper-grade claim.
   OpenMetadata / Collibra docs.
 - BCBS 239 *Principles for effective risk data aggregation*.
 - Manta / Octopai SQL-parser documentation.
-- `.claude/skills/data-vault-expert/SKILL.md` — audit-column
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-vault-expert.md` — audit-column
   seed.
-- `.claude/skills/master-data-management-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/master-data-management-expert.md` —
   entity-lineage sibling.
-- `.claude/skills/data-governance-expert/SKILL.md` — policy
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-governance-expert.md` — policy
   sibling.
 - `.claude/skills/data-catalog-expert/SKILL.md` /
-  `.claude/skills/catalog-expert/SKILL.md` — discoverability
+  `.claude/skills/storage-and-query-engines/blueprints/catalog-expert.md` — discoverability
   sibling.
-- `.claude/skills/streaming-incremental-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/streaming-incremental-expert.md` —
   DBSP free-lineage.
-- `.claude/skills/ontology-expert/SKILL.md` — PROV-O
+- `.claude/skills/data-modeling-and-ontology/blueprints/ontology-expert.md` — PROV-O
   modelling.

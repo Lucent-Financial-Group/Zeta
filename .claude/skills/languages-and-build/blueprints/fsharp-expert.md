@@ -216,7 +216,7 @@ language API.
 - `.semgrep.yml` — F# anti-pattern rules
 - `CLAUDE.md` — result-over-exception ground rule
 - `docs/AGENT-BEST-PRACTICES.md` — BP-11, BP-16
-- `.claude/skills/public-api-designer/SKILL.md` — the `public-api-designer`
-- `.claude/skills/performance-engineer/SKILL.md` — the `performance-engineer`
-- `.claude/skills/race-hunter/SKILL.md` — concurrency
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` — the `public-api-designer`
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` — the `performance-engineer`
+- `.claude/skills/code-review-and-quality/blueprints/race-hunter.md` — concurrency
   bugs specific to F# + Interlocked

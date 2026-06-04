@@ -381,17 +381,17 @@ selection.
 - Eisenbud et al. 2016 — *Maglev* (NSDI).
 - Barbette et al. 2022 — *io_uring networking*.
 - High Performance Browser Networking, Grigorik (book).
-- `.claude/skills/distributed-coordination-expert/SKILL.md`
+- `.claude/skills/distributed-systems/blueprints/distributed-coordination-expert.md`
   — pluggable wire-protocol layer.
-- `.claude/skills/security-researcher/SKILL.md` — TLS
+- `.claude/skills/security/blueprints/security-researcher.md` — TLS
   threat research.
-- `.claude/skills/security-operations-engineer/SKILL.md` —
+- `.claude/skills/security/blueprints/security-operations-engineer.md` —
   CVE triage.
-- `.claude/skills/devops-engineer/SKILL.md` — deployment.
-- `.claude/skills/performance-engineer/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — deployment.
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` —
   benchmarks.
-- `.claude/skills/gossip-protocols-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/gossip-protocols-expert.md` —
   overlay topology.
-- `.claude/skills/threading-expert/SKILL.md` — async I/O
+- `.claude/skills/performance-and-runtime-ops/blueprints/threading-expert.md` — async I/O
   state machine.
-- `.claude/skills/tla-expert/SKILL.md` — protocol specs.
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — protocol specs.

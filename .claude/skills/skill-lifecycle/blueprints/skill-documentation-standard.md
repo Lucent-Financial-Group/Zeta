@@ -281,14 +281,14 @@ audit properties would hold.
 
 ## Reference patterns
 
-- `.claude/skills/data-vault-expert/SKILL.md` — the
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-vault-expert.md` — the
   provenance discipline this inherits.
-- `.claude/skills/skill-creator/SKILL.md` — authoring
+- `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` — authoring
   workflow.
-- `.claude/skills/skill-improver/SKILL.md` — mechanical
+- `.claude/skills/skill-lifecycle/blueprints/skill-improver.md` — mechanical
   fixes.
-- `.claude/skills/skill-tune-up/SKILL.md` — periodic audit.
-- `.claude/skills/prompt-protector/SKILL.md` — BP-10 / BP-11
+- `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — periodic audit.
+- `.claude/skills/security/blueprints/prompt-protector.md` — BP-10 / BP-11
   lint.
 - `docs/AGENT-BEST-PRACTICES.md` — BP-NN rule list.
 - `docs/ROUND-HISTORY.md` — round-by-round changelog where

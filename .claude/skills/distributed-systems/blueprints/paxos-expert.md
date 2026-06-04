@@ -290,15 +290,15 @@ Under seeded DST, a Paxos run is fully reproducible.
   (github.com/gryadka).
 - Van Renesse & Altinbuken 2015, *Paxos Made Moderately
   Complex*.
-- `.claude/skills/distributed-consensus-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/distributed-consensus-expert.md` —
   umbrella.
-- `.claude/skills/raft-expert/SKILL.md` — Raft.
-- `.claude/skills/distributed-coordination-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/raft-expert.md` — Raft.
+- `.claude/skills/distributed-systems/blueprints/distributed-coordination-expert.md` —
   ZK / etcd primitives.
-- `.claude/skills/tla-expert/SKILL.md` — TLA+ authoring.
-- `.claude/skills/transaction-manager-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — TLA+ authoring.
+- `.claude/skills/storage-and-query-engines/blueprints/transaction-manager-expert.md` —
   distributed commit.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md` —
   DST.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   proof portfolio.

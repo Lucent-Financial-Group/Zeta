@@ -173,13 +173,13 @@ as the base spec.
 - `openspec/specs/` — current specs
 - `tools/tla/specs/`, `tools/alloy/specs/`,
   `tools/lean4/Lean4/` — formal counterparts
-- `.claude/skills/openspec-propose/SKILL.md`,
+- `.claude/skills/workflows/blueprints/openspec-propose.md`,
   `openspec-apply-change/SKILL.md`,
   `openspec-archive-change/SKILL.md` — workflow skills
   (Note: archive is a stub per Zeta's no-archive
   choice; keep the skill definition but don't invoke.)
-- `.claude/skills/formal-verification-expert/SKILL.md`
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md`
   — the `formal-verification-expert`
-- `.claude/skills/algebra-owner/SKILL.md` — the `algebra-owner`
-- `.claude/skills/spec-zealot/SKILL.md` — the `spec-zealot`, for
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — the `algebra-owner`
+- `.claude/skills/code-review-and-quality/blueprints/spec-zealot.md` — the `spec-zealot`, for
   spec-to-code drift review

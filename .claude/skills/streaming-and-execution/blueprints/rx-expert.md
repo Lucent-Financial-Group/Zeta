@@ -259,15 +259,15 @@ When this skill is wearing the hat on a review:
 - Reaqtor repository — durable standing queries.
 - `Reactive Streams` spec (reactive-streams.org) — the
   credit-based back-pressure protocol that Rx lacks.
-- `.claude/skills/linq-expert/SKILL.md` — Erik; the
+- `.claude/skills/languages-and-build/blueprints/linq-expert.md` — Erik; the
   pull-based dual.
-- `.claude/skills/duality-expert/SKILL.md` — Meijer; the
+- `.claude/skills/mathematics-and-physics/blueprints/duality-expert.md` — Meijer; the
   umbrella.
-- `.claude/skills/variance-expert/SKILL.md` — Brian; the
+- `.claude/skills/mathematics-and-physics/blueprints/variance-expert.md` — Brian; the
   variance analysis of `IObservable` / `IObserver`.
-- `.claude/skills/push-pull-dataflow-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/push-pull-dataflow-expert.md` —
   back-pressure architecture.
-- `.claude/skills/streaming-window-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/streaming-window-expert.md` —
   windowing semantics.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md`
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md`
   — DST binding of schedulers.

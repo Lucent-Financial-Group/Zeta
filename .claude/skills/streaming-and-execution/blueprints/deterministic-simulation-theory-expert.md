@@ -211,15 +211,15 @@ statement of the rule.
 - `docs/PRIOR-ART-LIST.md` — FoundationDB / TigerBeetle /
   Antithesis citations.
 - `docs/BACKLOG.md` §`ISimulationDriver` unification.
-- `.claude/skills/race-hunter/SKILL.md` — concurrency-bug
+- `.claude/skills/code-review-and-quality/blueprints/race-hunter.md` — concurrency-bug
   partner.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   spec-side partner.
-- `.claude/skills/performance-engineer/SKILL.md` — hot-path
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` — hot-path
   sibling.
-- `.claude/skills/public-api-designer/SKILL.md` — public
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` — public
   simulation-driver surface gate.
-- `.claude/skills/csharp-fsharp-fit-reviewer/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/csharp-fsharp-fit-reviewer.md` —
   language-idiom sibling (async discipline).
 - `docs/CONFLICT-RESOLUTION.md` — conference protocol when
   DST blocks a dependency another specialist wants to land.

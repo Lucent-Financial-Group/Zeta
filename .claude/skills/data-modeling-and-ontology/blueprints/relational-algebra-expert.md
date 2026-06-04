@@ -244,19 +244,19 @@ routing:
   Semirings*.
 - Budiu et al., *DBSP: Automatic Incremental View
   Maintenance*.
-- `.claude/skills/sql-expert/SKILL.md` — SQL-language
+- `.claude/skills/storage-and-query-engines/blueprints/sql-expert.md` — SQL-language
   umbrella.
-- `.claude/skills/algebra-owner/SKILL.md` — Zeta operator-
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — Zeta operator-
   algebra laws.
-- `.claude/skills/query-optimizer-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/query-optimizer-expert.md` —
   rewrite-rule author.
-- `.claude/skills/category-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/category-theory-expert.md` —
   functorial / natural view.
-- `.claude/skills/theoretical-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/theoretical-mathematics-expert.md` —
   broader algebra questions.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   proof-tool routing.
-- `.claude/skills/lean4-expert/SKILL.md` — Lean-4-native
+- `.claude/skills/formal-methods/blueprints/lean4-expert.md` — Lean-4-native
   proofs.
-- `.claude/skills/fscheck-expert/SKILL.md` — property-based
+- `.claude/skills/formal-methods/blueprints/fscheck-expert.md` — property-based
   tests on equivalence.

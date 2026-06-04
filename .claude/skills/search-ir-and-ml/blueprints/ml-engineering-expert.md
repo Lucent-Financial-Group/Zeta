@@ -366,9 +366,9 @@ Rarely justified outside large-scale teams.
 
 ### Zeta-adjacent
 
-- `.claude/skills/llm-systems-expert/SKILL.md`.
-- `.claude/skills/ai-evals-expert/SKILL.md`.
-- `.claude/skills/ml-researcher/SKILL.md`.
-- `.claude/skills/ai-researcher/SKILL.md`.
-- `.claude/skills/python-expert/SKILL.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/llm-systems-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/ai-evals-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/ml-researcher.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/ai-researcher.md`.
+- `.claude/skills/languages-and-build/blueprints/python-expert.md`.
 - `docs/VISION.md` §"The vibe-coded hypothesis".

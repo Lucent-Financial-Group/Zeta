@@ -172,11 +172,11 @@ applies?" — if none, the proposal is speculative.
   feature catalogue across refinement-type systems.
 - `docs/research/proof-tool-coverage.md` — proof-tool portfolio
   table.
-- `.claude/skills/lean4-expert/SKILL.md` — sibling (classical
+- `.claude/skills/formal-methods/blueprints/lean4-expert.md` — sibling (classical
   proof, Lean-4-native).
-- `.claude/skills/z3-expert/SKILL.md` — sibling (SMT-direct).
-- `.claude/skills/tla-expert/SKILL.md` — sibling (model-level).
-- `.claude/skills/fscheck-expert/SKILL.md` — sibling (property
+- `.claude/skills/formal-methods/blueprints/z3-expert.md` — sibling (SMT-direct).
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — sibling (model-level).
+- `.claude/skills/formal-methods/blueprints/fscheck-expert.md` — sibling (property
   testing).
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   portfolio-level routing authority.

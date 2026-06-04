@@ -165,11 +165,11 @@ When `release.yml` lands:
   (future: track Zeta.* published versions here)
 - `docs/CURRENT-ROUND.md` open-asks — "NuGet prefix
   reservation" is pending Aaron
-- `.claude/skills/public-api-designer/SKILL.md` —
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` —
   the `public-api-designer`, for every public-API addition
-- `.claude/skills/package-auditor/SKILL.md` — the `package-auditor`,
+- `.claude/skills/languages-and-build/blueprints/package-auditor.md` — the `package-auditor`,
   who audits the packages we consume (sibling concern)
-- `.claude/skills/devops-engineer/SKILL.md` — the `devops-engineer`,
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — the `devops-engineer`,
   for CI workflow integration
 - NuGet package authoring docs:
   https://learn.microsoft.com/nuget/create-packages/

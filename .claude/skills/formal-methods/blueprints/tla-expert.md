@@ -237,9 +237,9 @@ spec.
 - `tools/formal-verification/run-tlc.ts` — invocation wrapper
 - `docs/SPEC-CAUGHT-A-BUG.md` — historical record of
   bugs TLC caught
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   the `formal-verification-expert`, routing authority
-- `.claude/skills/alloy-expert/SKILL.md` — sibling for
+- `.claude/skills/formal-methods/blueprints/alloy-expert.md` — sibling for
   the other bounded-model-checker we use
 - Lamport, *Specifying Systems* (canonical textbook;
   referenced from `references/tla-book/`)

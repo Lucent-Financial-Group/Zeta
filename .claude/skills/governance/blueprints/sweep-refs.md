@@ -154,7 +154,7 @@ One commit per logical move. Include:
 - Round 27 example: `docs/FAMILY-EMPATHY.md` →
   `docs/CONFLICT-RESOLUTION.md`; refs swept across skills +
   research docs.
-- `.claude/skills/documentation-agent/SKILL.md` — the `documentation-agent`,
+- `.claude/skills/writing-and-translation/blueprints/documentation-agent.md` — the `documentation-agent`,
   who wears this hat most frequently.
-- `.claude/skills/devops-engineer/SKILL.md` — the `devops-engineer`,
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — the `devops-engineer`,
   wears it on install-script / workflow renames.

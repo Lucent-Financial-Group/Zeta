@@ -366,10 +366,10 @@ ended "help me with X" leads to loop behaviour. Prefer:
 
 ### Zeta-adjacent references
 
-- `.claude/skills/skill-creator/SKILL.md` — workflow.
-- `.claude/skills/prompt-protector/SKILL.md` — defense pair.
-- `.claude/skills/skill-tune-up/SKILL.md` — triage.
-- `.claude/skills/skill-improver/SKILL.md` — execution.
+- `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` — workflow.
+- `.claude/skills/security/blueprints/prompt-protector.md` — defense pair.
+- `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — triage.
+- `.claude/skills/skill-lifecycle/blueprints/skill-improver.md` — execution.
 - `docs/AGENT-BEST-PRACTICES.md` — BP-NN rules.
 - `docs/VISION.md` §"The vibe-coded hypothesis" — why prompt
   quality is load-bearing here.

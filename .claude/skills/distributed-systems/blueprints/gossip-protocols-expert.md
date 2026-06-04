@@ -279,17 +279,17 @@ Formal verification requires:
 - Hayashibara et al. 2004 — *The ϕ-accrual failure
   detector*.
 - Birman et al. 1999 — *Bimodal Multicast* (TOCS).
-- `.claude/skills/distributed-consensus-expert/SKILL.md`
+- `.claude/skills/distributed-systems/blueprints/distributed-consensus-expert.md`
   — consensus-based membership alternative.
-- `.claude/skills/replication-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/replication-expert.md` —
   sibling; gossip is one replication mechanism.
-- `.claude/skills/crdt-expert/SKILL.md` — gossip
+- `.claude/skills/distributed-systems/blueprints/crdt-expert.md` — gossip
   payloads that merge.
-- `.claude/skills/eventual-consistency-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/eventual-consistency-expert.md` —
   end-state framing.
-- `.claude/skills/graph-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/graph-theory-expert.md` —
   gossip-overlay spectral analysis.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md`
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md`
   — DST harness for gossip runs.
-- `.claude/skills/tla-expert/SKILL.md` — probabilistic
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — probabilistic
   spec authoring.

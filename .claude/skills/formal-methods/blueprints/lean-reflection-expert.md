@@ -202,6 +202,6 @@ To move to Stage 2 (tactic authoring), the following are prerequisites:
 
 - Scouting note: `docs/research/lean-reflection-stage-1-notes-2026-05-10.md`
 - Real proof surface: `tools/lean4/Lean4/DbspChainRule.lean`
-- Complementary skill: `.claude/skills/lean4-expert/SKILL.md`
-- Routing authority: `.claude/skills/formal-verification-expert/SKILL.md`
+- Complementary skill: `.claude/skills/formal-methods/blueprints/lean4-expert.md`
+- Routing authority: `.claude/skills/formal-methods/blueprints/formal-verification-expert.md`
 - Primary reading: `https://leanprover-community.github.io/lean4-metaprogramming-book/`

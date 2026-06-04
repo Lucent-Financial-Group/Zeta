@@ -302,11 +302,11 @@ pipeline-of-`Seq.*` rather than `query { }`.
   Programming Fundamentals* (13 lectures).
 - Torgersen et al., C# specification — query expression
   translation rules (§8.x of the modern spec).
-- `.claude/skills/rx-expert/SKILL.md` — Rx sibling.
-- `.claude/skills/variance-expert/SKILL.md` — umbrella.
-- `.claude/skills/relational-algebra-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/rx-expert.md` — Rx sibling.
+- `.claude/skills/mathematics-and-physics/blueprints/variance-expert.md` — umbrella.
+- `.claude/skills/data-modeling-and-ontology/blueprints/relational-algebra-expert.md` —
   SQL side.
-- `.claude/skills/streaming-incremental-expert/SKILL.md`
+- `.claude/skills/streaming-and-execution/blueprints/streaming-incremental-expert.md`
   — DBSP side.
 - `docs/PRIOR-ART-LIST.md` §"Reactive .NET" + §"ORM /
   data access".

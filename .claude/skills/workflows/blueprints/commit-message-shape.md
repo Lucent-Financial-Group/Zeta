@@ -188,7 +188,7 @@ EOF
     completeness laws live"
   - "skill(devops-engineer): initial — Dejan"
   - "deps: Bump FsUnit.xUnit from 7.1.0 to 7.1.1 (#1)"
-- `.claude/skills/sweep-refs/SKILL.md` — sibling; rename
+- `.claude/skills/governance/blueprints/sweep-refs.md` — sibling; rename
   sweeps have their own commit shape
 - GOVERNANCE §2 — docs-read-as-current-state is why the
   WHY belongs in commit messages, not in-tree comments

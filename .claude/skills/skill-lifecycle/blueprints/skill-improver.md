@@ -143,9 +143,9 @@ silently rewrite whose-in-charge; she proposes and waits.
 
 ## Reference patterns
 
-- `.claude/skills/skill-creator/SKILL.md` — the workflow she
+- `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` — the workflow she
   dispatches into
-- `.claude/skills/skill-tune-up/SKILL.md` — her pair
+- `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — her pair
 - `memory/persona/skill-improver.md` — her notebook
 - `memory/persona/aarav/NOTEBOOK.md` — his notebook
   (read-only for her)

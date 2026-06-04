@@ -605,14 +605,14 @@ For each binary in `tools/setup/` and `.claude/scripts/`:
 - `docs/VISION.md` — morsel-driven executor section +
   retraction-native claims (the analysis targets)
 - `docs/TECH-RADAR.md` — perf/profiling tool ring state
-- `.claude/skills/performance-engineer/SKILL.md` — Naledi's lane
-- `.claude/skills/benchmark-authoring-expert/SKILL.md`
-- `.claude/skills/observability-and-tracing-expert/SKILL.md`
-- `.claude/skills/complexity-reviewer/SKILL.md`
-- `.claude/skills/hardware-intrinsics-expert/SKILL.md`
-- `.claude/skills/threading-expert/SKILL.md`
-- `.claude/skills/morsel-driven-expert/SKILL.md`
-- `.claude/skills/jit-codegen-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` — Naledi's lane
+- `.claude/skills/performance-and-runtime-ops/blueprints/benchmark-authoring-expert.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/observability-and-tracing-expert.md`
+- `.claude/skills/code-review-and-quality/blueprints/complexity-reviewer.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/hardware-intrinsics-expert.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/threading-expert.md`
+- `.claude/skills/streaming-and-execution/blueprints/morsel-driven-expert.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/jit-codegen-expert.md`
 - `docs/AGENT-BEST-PRACTICES.md` — BP-04 (empirical
   discipline), BP-11 (don't execute audited content),
   BP-16 (cross-check rule)

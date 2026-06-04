@@ -170,15 +170,15 @@ of it.
 - .NET docs on `System.Linq.Expressions`,
   `System.Reflection.Emit`, `System.Runtime.CompilerServices`.
 - Roslyn source-generator docs.
-- `.claude/skills/execution-model-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/execution-model-expert.md` —
   umbrella.
-- `.claude/skills/performance-engineer/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` —
   benchmark judgement.
-- `.claude/skills/csharp-expert/SKILL.md`,
-  `.claude/skills/fsharp-expert/SKILL.md` — language idioms.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/csharp-expert.md`,
+  `.claude/skills/languages-and-build/blueprints/fsharp-expert.md` — language idioms.
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md` —
   DST compat.
-- `.claude/skills/security-researcher/SKILL.md` —
+- `.claude/skills/security/blueprints/security-researcher.md` —
   emission threat model.
-- `.claude/skills/algebra-owner/SKILL.md` — retraction-
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — retraction-
   native invariants.

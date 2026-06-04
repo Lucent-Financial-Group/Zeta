@@ -13,7 +13,7 @@ best-practice-drift, cite stable BP-NN rule IDs. The persona
 
 **Purpose:** keep the skill ecosystem healthy by flagging which
 agent skills most need attention from the **`skill-creator`**
-workflow (`.claude/skills/skill-creator/SKILL.md` §workflow).
+workflow (`.claude/skills/skill-lifecycle/blueprints/skill-creator.md` §workflow).
 Findings cite stable rule IDs from
 `docs/AGENT-BEST-PRACTICES.md` (BP-01 … BP-NN) so the Skill
 Improver (Yara) can act on them as a checkbox list, not as
@@ -199,7 +199,7 @@ whatever protocol the artifacts themselves don't encode.
 
 Our `skill-creator` wraps Anthropic's upstream `skill-creator`
 *skill* and ends up naturally thin; that's documented in
-`.claude/skills/skill-creator/SKILL.md §upstream-pointer`.
+`.claude/skills/skill-lifecycle/blueprints/skill-creator.md §upstream-pointer`.
 `skill-tune-up` wraps the upstream plugin's `scripts/`,
 `eval-viewer/`, `agents/` directories and the Anthropic guide
 PDF under `docs/references/` — none of those are skills, so
@@ -266,11 +266,11 @@ not this skill's.
   external reviewer contract (GOVERNANCE §31); audit on
   the same 5-10 round cadence, same BP-NN citation
   discipline as any `.claude/skills/*/SKILL.md`
-- `.claude/skills/skill-creator/SKILL.md` — the workflow his
+- `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` — the workflow his
   recommendations feed into
-- `.claude/skills/skill-improver/SKILL.md` — `skill-improver`'s surface;
+- `.claude/skills/skill-lifecycle/blueprints/skill-improver.md` — `skill-improver`'s surface;
   she acts on his BP-NN citations checkbox-style
-- `.claude/skills/prompt-protector/SKILL.md` — `prompt-protector`'s surface;
+- `.claude/skills/security/blueprints/prompt-protector.md` — `prompt-protector`'s surface;
   the invisible-char lint he defers to
 - `memory/persona/aarav/NOTEBOOK.md` — his notebook
   (created on first invocation if absent)

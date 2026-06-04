@@ -179,12 +179,12 @@ layer) — the parts that live outside the engine.
 - Chad Sanderson & Andrew Jones — data contracts.
 - Zhamak Dehghani, *Data Mesh* (2022, O'Reilly).
 - Ryan Blue (Iceberg) — open lakehouse discussion.
-- `.claude/skills/data-vault-expert/SKILL.md` — modelling
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-vault-expert.md` — modelling
   counterpart.
 - `.claude/skills/data-quality-expert/SKILL.md` through
   `.claude/skills/event-sourcing-expert/SKILL.md` — the
   narrower ops specialists listed in the description.
-- `.claude/skills/observability-and-tracing-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/observability-and-tracing-expert.md`
   — system-level sibling.
-- `.claude/skills/devops-engineer/SKILL.md` — classical
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — classical
   CI/CD sibling.

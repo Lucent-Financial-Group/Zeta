@@ -213,11 +213,11 @@ build Zeta.sln`.
 - `Zeta.sln` — solution file
 - `src/Core/Core.fsproj` — the primary F# project
 - `src/Core/AssemblyInfo.fs` — InternalsVisibleTo ledger
-- `.claude/skills/fsharp-expert/SKILL.md` — paired for
+- `.claude/skills/languages-and-build/blueprints/fsharp-expert.md` — paired for
   F# file content
-- `.claude/skills/csharp-expert/SKILL.md` — paired for
+- `.claude/skills/languages-and-build/blueprints/csharp-expert.md` — paired for
   C# file content
-- `.claude/skills/package-auditor/SKILL.md` — the `package-auditor`,
+- `.claude/skills/languages-and-build/blueprints/package-auditor.md` — the `package-auditor`,
   pin discipline
-- `.claude/skills/public-api-designer/SKILL.md` — the `public-api-designer`,
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` — the `public-api-designer`,
   IVT review

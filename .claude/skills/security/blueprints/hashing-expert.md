@@ -378,11 +378,11 @@ decision.
   sharding-hash evidence log.
 - `docs/BACKLOG.md` — probabilistic-data-structure
   sweep (filters depend on hash quality).
-- `.claude/skills/security-researcher/SKILL.md`
-- `.claude/skills/serialization-and-wire-format-expert/SKILL.md`
-- `.claude/skills/compression-expert/SKILL.md`
-- `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md`
-- `.claude/skills/performance-engineer/SKILL.md`
+- `.claude/skills/security/blueprints/security-researcher.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/serialization-and-wire-format-expert.md`
+- `.claude/skills/security/blueprints/compression-expert.md`
+- `.claude/skills/mathematics-and-physics/blueprints/probability-and-bayesian-inference-expert.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md`
 - `docs/AGENT-BEST-PRACTICES.md` — BP-11 (don't
   execute audited content), BP-16 (cross-check).
 

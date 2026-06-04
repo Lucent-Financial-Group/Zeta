@@ -375,12 +375,12 @@ skill catalog.
 - Dirk Lerner — BITool (DV-automation).
 - AutomateDV / dbtvault — the dbt-based metadata-driven
   DV loader.
-- `.claude/skills/dimensional-modeling-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/dimensional-modeling-expert.md` —
   Kimball.
-- `.claude/skills/corporate-information-factory-expert/SKILL.md`
+- `.claude/skills/data-modeling-and-ontology/blueprints/corporate-information-factory-expert.md`
   — Inmon.
-- `.claude/skills/anchor-modeling-expert/SKILL.md` — Rönnbäck.
-- `.claude/skills/activity-schema-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/anchor-modeling-expert.md` — Rönnbäck.
+- `.claude/skills/data-modeling-and-ontology/blueprints/activity-schema-expert.md` —
   Elsamadisi.
 - `.claude/skills/entity-relationship-modeling-expert/SKILL.md`
   — Chen.
@@ -390,9 +390,9 @@ skill catalog.
   Boyce, 1NF–6NF.
 - `.claude/skills/unified-star-schema-expert/SKILL.md` —
   Puppini.
-- `.claude/skills/skill-documentation-standard/SKILL.md` —
+- `.claude/skills/skill-lifecycle/blueprints/skill-documentation-standard.md` —
   the DV-inspired skill-doc breadcrumb template.
-- `.claude/skills/relational-algebra-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/relational-algebra-expert.md` —
   algebraic foundation.
-- `.claude/skills/algebra-owner/SKILL.md` — Zeta's operator
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — Zeta's operator
   algebra, the retraction-native substrate DV sits on.

@@ -142,7 +142,7 @@ In delete-based systems Glass Halo and revocability
 collide incoherently. In retraction-native Zeta, the
 same substrate that makes incremental computation work
 makes Glass Halo revocable without destroying audit.
-See `.claude/skills/consent-primitives-expert/SKILL.md`
+See `.claude/skills/experience-and-product/blueprints/consent-primitives-expert.md`
 for the algebra.
 
 ### 4. Glass Halo is not a moral posture
@@ -217,7 +217,7 @@ stance.
 
 Glass Halo composes with Zeta's operator algebra via
 the isomorphism consent-algebra ≅ Z-set-algebra (see
-`.claude/skills/consent-primitives-expert/SKILL.md`).
+`.claude/skills/experience-and-product/blueprints/consent-primitives-expert.md`).
 The composition is load-bearing because it is what
 makes Glass Halo *architecturally coherent*:
 
@@ -368,17 +368,17 @@ layer and hands off the others.
 
 ## Cross-references
 
-- `.claude/skills/consent-primitives-expert/SKILL.md`
+- `.claude/skills/experience-and-product/blueprints/consent-primitives-expert.md`
   — algebraic substrate.
-- `.claude/skills/consent-ux-researcher/SKILL.md` —
+- `.claude/skills/experience-and-product/blueprints/consent-ux-researcher.md` —
   UX surface.
-- `.claude/skills/threat-model-critic/SKILL.md` —
+- `.claude/skills/security/blueprints/threat-model-critic.md` —
   Aminata; adversarial review of specific threat
   models intersecting Glass Halo.
-- `.claude/skills/security-researcher/SKILL.md` —
+- `.claude/skills/security/blueprints/security-researcher.md` —
   Mateo; novel attack classes on radical-transparency
   surfaces.
-- `.claude/skills/security-operations-engineer/SKILL.md`
+- `.claude/skills/security/blueprints/security-operations-engineer.md`
   — Nazar; runtime ops touching Aaron's surfaces.
 - `memory/user_glass_halo_and_radical_honesty.md` —
   the concept memory; Amara's naming credit; explicit

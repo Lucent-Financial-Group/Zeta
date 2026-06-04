@@ -195,16 +195,16 @@ comment naming the codepoints used.
 
 ## Cross-references
 
-- `.claude/skills/leet-speak-history-and-culture/SKILL.md`
+- `.claude/skills/security/blueprints/leet-speak-history-and-culture.md`
   — BBS / phreaking / cDc / Napster-era etymology; when
   the *meaning* of l33t is the question, defer.
-- `.claude/skills/leet-speak-obfuscation-detector/SKILL.md`
+- `.claude/skills/security/blueprints/leet-speak-obfuscation-detector.md`
   — filter-bypass detection on user input; defer when
   the task is audit, not produce.
-- `.claude/skills/steganography-expert/SKILL.md` —
+- `.claude/skills/security/blueprints/steganography-expert.md` —
   invisible-Unicode and homoglyph hidden-channel detection;
   Tier 3 overlaps this skill's detection surface.
-- `.claude/skills/prompt-protector/SKILL.md` — BP-10 charset
+- `.claude/skills/security/blueprints/prompt-protector.md` — BP-10 charset
   hygiene; homoglyph / invisible-Unicode coverage.
-- `.claude/skills/etymology-expert/SKILL.md` — word-origin
+- `.claude/skills/governance/blueprints/etymology-expert.md` — word-origin
   discipline that the history-and-culture sibling draws on.

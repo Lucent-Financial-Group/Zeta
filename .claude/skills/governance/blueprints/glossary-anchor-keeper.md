@@ -404,10 +404,10 @@ own audit, it gets tuned up per `skill-tune-up`.
 - `docs/AGENT-BEST-PRACTICES.md` — stable BP-NN rules
   this skill cites in findings.
 - `docs/DECISIONS/` — where anchor-break ADRs land.
-- `.claude/skills/cross-domain-translation/SKILL.md`
-- `.claude/skills/translator-expert/SKILL.md`
-- `.claude/skills/verification-drift-auditor/SKILL.md`
-- `.claude/skills/skill-tune-up/SKILL.md` — invokes
+- `.claude/skills/writing-and-translation/blueprints/cross-domain-translation.md`
+- `.claude/skills/writing-and-translation/blueprints/translator-expert.md`
+- `.claude/skills/formal-methods/blueprints/verification-drift-auditor.md`
+- `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — invokes
   this skill on rotation.
 - `memory/persona/glossary-anchor-keeper/NOTEBOOK.md` —
   the keeper's notebook (created on first invocation).

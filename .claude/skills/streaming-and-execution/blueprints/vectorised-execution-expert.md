@@ -170,14 +170,14 @@ in simpler code.
   Query Execution*.
 - DuckDB engineering blog — vectorised execution.
 - ClickHouse docs — vectorised execution notes.
-- `.claude/skills/execution-model-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/execution-model-expert.md` —
   umbrella.
-- `.claude/skills/hardware-intrinsics-expert/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/hardware-intrinsics-expert.md` —
   kernels.
-- `.claude/skills/columnar-storage-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/columnar-storage-expert.md` —
   on-disk layout.
-- `.claude/skills/query-planner/SKILL.md` — plan shape.
-- `.claude/skills/algebra-owner/SKILL.md` — retraction-
+- `.claude/skills/storage-and-query-engines/blueprints/query-planner.md` — plan shape.
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — retraction-
   native laws.
 - `src/Core/Simd.fs`, `src/Core/SimdMerge.fs`,
   `src/Core/ZSet.fs` — current substrate.

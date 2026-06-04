@@ -242,18 +242,18 @@ When a hybrid proposal lands, the hat runs this audit:
   Maintenance*.
 - Materialize engineering blog — streaming SQL engine.
 - DuckDB engineering blog — vectorised execution.
-- `.claude/skills/sql-engine-expert/SKILL.md` — umbrella.
-- `.claude/skills/query-planner/SKILL.md` — physical plan
+- `.claude/skills/storage-and-query-engines/blueprints/sql-engine-expert.md` — umbrella.
+- `.claude/skills/storage-and-query-engines/blueprints/query-planner.md` — physical plan
   (Imani).
-- `.claude/skills/query-optimizer-expert/SKILL.md` — logical.
-- `.claude/skills/algebra-owner/SKILL.md` — retraction-native
+- `.claude/skills/storage-and-query-engines/blueprints/query-optimizer-expert.md` — logical.
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — retraction-native
   laws.
-- `.claude/skills/hardware-intrinsics-expert/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/hardware-intrinsics-expert.md` —
   kernel-level.
-- `.claude/skills/performance-engineer/SKILL.md` — perf
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` — perf
   decisions.
-- `.claude/skills/storage-specialist/SKILL.md` — persistence.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/storage-specialist.md` — persistence.
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md` —
   DST gate on scheduling.
 - `docs/TECH-RADAR.md` — morsel / codegen / vectorisation
   rows.

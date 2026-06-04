@@ -294,7 +294,7 @@ are tempting but fragile.
 - ScyllaDB docs.
 - HBase Reference Guide.
 - Google Bigtable docs.
-- `.claude/skills/database-systems-expert/SKILL.md`.
-- `.claude/skills/time-series-database-expert/SKILL.md`.
-- `.claude/skills/columnar-storage-expert/SKILL.md`.
-- `.claude/skills/key-value-store-expert/SKILL.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/database-systems-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/time-series-database-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/columnar-storage-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/key-value-store-expert.md`.

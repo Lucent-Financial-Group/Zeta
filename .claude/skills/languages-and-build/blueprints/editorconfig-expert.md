@@ -275,15 +275,15 @@ The cross-tool picture is uneven — which is why
 - Roslyn `AnalyzerConfigOptions` source.
 - `Microsoft.CodeAnalysis.Workspaces` — how the cascade is
   computed.
-- `.claude/skills/static-analysis-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/static-analysis-expert.md` —
   umbrella.
-- `.claude/skills/roslyn-analyzers-expert/SKILL.md` — C#
+- `.claude/skills/languages-and-build/blueprints/roslyn-analyzers-expert.md` — C#
   analyzers.
-- `.claude/skills/roslyn-generators-expert/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/roslyn-generators-expert.md` —
   generators.
-- `.claude/skills/fsharp-analyzers-expert/SKILL.md` — F#
+- `.claude/skills/languages-and-build/blueprints/fsharp-analyzers-expert.md` — F#
   analyzers.
-- `.claude/skills/msbuild-expert/SKILL.md` — MSBuild
+- `.claude/skills/languages-and-build/blueprints/msbuild-expert.md` — MSBuild
   wiring.
-- `.claude/skills/developer-experience-engineer/SKILL.md` —
+- `.claude/skills/experience-and-product/blueprints/developer-experience-engineer.md` —
   IDE DX.

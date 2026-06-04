@@ -256,15 +256,15 @@ invariants.
 - CockroachDB per-range Raft notes.
 - Raft TLA+ spec — github.com/ongardie/raft.tla.
 - Jepsen Raft analysis series.
-- `.claude/skills/distributed-consensus-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/distributed-consensus-expert.md` —
   umbrella.
-- `.claude/skills/paxos-expert/SKILL.md` — Paxos family.
-- `.claude/skills/distributed-coordination-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/paxos-expert.md` — Paxos family.
+- `.claude/skills/distributed-systems/blueprints/distributed-coordination-expert.md` —
   etcd / ZK primitives.
-- `.claude/skills/tla-expert/SKILL.md` — TLA+ authoring.
-- `.claude/skills/transaction-manager-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — TLA+ authoring.
+- `.claude/skills/storage-and-query-engines/blueprints/transaction-manager-expert.md` —
   distributed commit.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md` —
   DST.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   proof portfolio.

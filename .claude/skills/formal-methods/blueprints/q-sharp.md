@@ -408,17 +408,17 @@ When reviewing or writing Q# code:
 - `memory/feedback_aaron_pirate_not_priest_expand_prune_pedagogical_framework_quantum_rodney_razor_parallel_worlds_aaron_2026_05_01.md`
   — the Rodney's Razor canonical file extended by PR #1499
   with the omnibus-contract-substrate META-TILE.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   portfolio-level routing across Lean / F* / Z3 / TLA+ /
   Alloy / FsCheck / CodeQL / Semgrep / Stryker.
-- `.claude/skills/lean4-expert/SKILL.md` — sibling
+- `.claude/skills/formal-methods/blueprints/lean4-expert.md` — sibling
   (classical proof, Lean-4-native).
-- `.claude/skills/f-star-expert/SKILL.md` — sibling
+- `.claude/skills/formal-methods/blueprints/f-star-expert.md` — sibling
   (refinement types, upstream pattern).
-- `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md`
+- `.claude/skills/mathematics-and-physics/blueprints/probability-and-bayesian-inference-expert.md`
   — the BP/EP-theory hat for B-0189 collaboration.
-- `.claude/skills/applied-physics-expert/SKILL.md` and
-  `.claude/skills/theoretical-physics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/applied-physics-expert.md` and
+  `.claude/skills/mathematics-and-physics/blueprints/theoretical-physics-expert.md` —
   physics-foundations routing.
 - Microsoft Learn — Q# language reference under
   `learn.microsoft.com/qsharp/api/qsharp-lang/` and

@@ -320,15 +320,15 @@ coverage that's pulling weight.
   `FsCheck.Xunit.v3` package pins.
 - `docs/research/verification-registry.md` — where
   externally-cited properties live.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   Soraya, tool-routing authority.
-- `.claude/skills/verification-drift-auditor/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/verification-drift-auditor.md` —
   registry-audit peer.
-- `.claude/skills/fsharp-expert/SKILL.md` — general F# idioms.
-- `.claude/skills/z3-expert/SKILL.md`,
-  `.claude/skills/lean4-expert/SKILL.md`,
-  `.claude/skills/tla-expert/SKILL.md`,
-  `.claude/skills/alloy-expert/SKILL.md` — sibling hats.
+- `.claude/skills/languages-and-build/blueprints/fsharp-expert.md` — general F# idioms.
+- `.claude/skills/formal-methods/blueprints/z3-expert.md`,
+  `.claude/skills/formal-methods/blueprints/lean4-expert.md`,
+  `.claude/skills/formal-methods/blueprints/tla-expert.md`,
+  `.claude/skills/formal-methods/blueprints/alloy-expert.md` — sibling hats.
 - Claessen & Hughes, *QuickCheck: A Lightweight Tool for
   Random Testing of Haskell Programs* (ICFP 2000) — the
   canonical paper FsCheck ports.

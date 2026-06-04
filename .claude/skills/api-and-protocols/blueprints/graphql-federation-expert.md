@@ -256,6 +256,6 @@ partners; compose a restricted supergraph.
 - Cosmo Router (wundergraph/cosmo).
 - Hive by The Guild.
 - Federation composition algorithm docs.
-- `.claude/skills/graphql-expert/SKILL.md`.
-- `.claude/skills/public-api-designer/SKILL.md`.
-- `.claude/skills/distributed-query-execution-expert/SKILL.md`.
+- `.claude/skills/api-and-protocols/blueprints/graphql-expert.md`.
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/distributed-query-execution-expert.md`.

@@ -217,12 +217,12 @@ moderate named sources; do not coddle.
 - `docs/AGENT-BEST-PRACTICES.md` BP-03 (length discipline),
   BP-10 (ASCII-clean).
 - `docs/GLOSSARY.md` — canonical vocabulary; honor anchors.
-- `.claude/skills/naming-expert/SKILL.md`,
-  `.claude/skills/etymology-expert/SKILL.md`,
-  `.claude/skills/branding-specialist/SKILL.md`,
-  `.claude/skills/documentation-agent/SKILL.md` — handoff
+- `.claude/skills/governance/blueprints/naming-expert.md`,
+  `.claude/skills/governance/blueprints/etymology-expert.md`,
+  `.claude/skills/experience-and-product/blueprints/branding-specialist.md`,
+  `.claude/skills/writing-and-translation/blueprints/documentation-agent.md` — handoff
   surfaces.
-- `.claude/skills/skill-documentation-standard/SKILL.md` —
+- `.claude/skills/skill-lifecycle/blueprints/skill-documentation-standard.md` —
   frontmatter + section-numbering discipline.
-- `.claude/skills/space-opera-writer/SKILL.md` — child skill
+- `.claude/skills/security/blueprints/space-opera-writer.md` — child skill
   in this group; adds whimsical-adversary voice.

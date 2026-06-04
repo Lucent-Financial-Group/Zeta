@@ -256,14 +256,14 @@ the user provided the matching `partial` declaration).
 - `.NET Conf 2022` — incremental generator deep dive.
 - Roslyn `CodeAnalysis.CSharp.Test.Utilities` source.
 - `Microsoft.CodeAnalysis.Testing` generator-test harness.
-- `.claude/skills/static-analysis-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/static-analysis-expert.md` —
   umbrella.
-- `.claude/skills/roslyn-analyzers-expert/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/roslyn-analyzers-expert.md` —
   analyzers.
-- `.claude/skills/fsharp-analyzers-expert/SKILL.md` — F#
+- `.claude/skills/languages-and-build/blueprints/fsharp-analyzers-expert.md` — F#
   analyzer sibling.
-- `.claude/skills/editorconfig-expert/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/editorconfig-expert.md` —
   `.editorconfig` / `build_property.*`.
-- `.claude/skills/msbuild-expert/SKILL.md` — MSBuild.
-- `.claude/skills/public-api-designer/SKILL.md` — public
+- `.claude/skills/languages-and-build/blueprints/msbuild-expert.md` — MSBuild.
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` — public
   surface.

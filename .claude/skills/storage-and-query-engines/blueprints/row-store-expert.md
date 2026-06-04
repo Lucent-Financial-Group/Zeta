@@ -240,12 +240,12 @@ The call is per-subsystem; global defaults are traps.
 - Postgres `src/backend/access/heap/` + `nbtree/`.
 - InnoDB clustered-index design.
 - SQL Server heap vs clustered-index docs.
-- `.claude/skills/storage-specialist/SKILL.md` — end-to-end
+- `.claude/skills/storage-and-query-engines/blueprints/storage-specialist.md` — end-to-end
   persistence.
-- `.claude/skills/columnar-storage-expert/SKILL.md` — column
+- `.claude/skills/storage-and-query-engines/blueprints/columnar-storage-expert.md` — column
   sibling.
-- `.claude/skills/transaction-manager-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/transaction-manager-expert.md` —
   MVCC chain semantics.
-- `.claude/skills/algebra-owner/SKILL.md` — retraction-
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — retraction-
   native invariants.
-- `.claude/skills/sql-engine-expert/SKILL.md` — umbrella.
+- `.claude/skills/storage-and-query-engines/blueprints/sql-engine-expert.md` — umbrella.

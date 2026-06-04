@@ -225,22 +225,22 @@ mutable global (telemetry, cache files, locale).
 - `Microsoft.CodeAnalysis.PublicApiAnalyzers`.
 - OWASP top-10 coverage map (for Semgrep / CodeQL).
 - SonarQube quality-gate model.
-- `.claude/skills/roslyn-analyzers-expert/SKILL.md` — Roslyn
+- `.claude/skills/languages-and-build/blueprints/roslyn-analyzers-expert.md` — Roslyn
   analyzers.
-- `.claude/skills/roslyn-generators-expert/SKILL.md` — Roslyn
+- `.claude/skills/languages-and-build/blueprints/roslyn-generators-expert.md` — Roslyn
   generators.
-- `.claude/skills/fsharp-analyzers-expert/SKILL.md` — F#
+- `.claude/skills/languages-and-build/blueprints/fsharp-analyzers-expert.md` — F#
   analyzers.
-- `.claude/skills/semgrep-expert/SKILL.md` — Semgrep tool.
-- `.claude/skills/semgrep-rule-authoring/SKILL.md` — Semgrep
+- `.claude/skills/formal-methods/blueprints/semgrep-expert.md` — Semgrep tool.
+- `.claude/skills/formal-methods/blueprints/semgrep-rule-authoring.md` — Semgrep
   rule authoring.
-- `.claude/skills/codeql-expert/SKILL.md` — CodeQL.
-- `.claude/skills/sonar-issue-fixer/SKILL.md` — SonarQube.
-- `.claude/skills/stryker-expert/SKILL.md` — mutation
+- `.claude/skills/formal-methods/blueprints/codeql-expert.md` — CodeQL.
+- `.claude/skills/languages-and-build/blueprints/sonar-issue-fixer.md` — SonarQube.
+- `.claude/skills/formal-methods/blueprints/stryker-expert.md` — mutation
   testing.
-- `.claude/skills/editorconfig-expert/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/editorconfig-expert.md` —
   `.editorconfig`.
-- `.claude/skills/msbuild-expert/SKILL.md` — MSBuild wiring.
-- `.claude/skills/public-api-designer/SKILL.md` — public API.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/msbuild-expert.md` — MSBuild wiring.
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` — public API.
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   proof tools.

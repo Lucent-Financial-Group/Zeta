@@ -158,10 +158,10 @@ The agent-loop skill ships as v1 MVP per B-0867.5. The 2026-05-28 cascade extend
 
 ## Composes with other skills
 
-- `.claude/skills/agent-experience-engineer/SKILL.md` (Daya) — agent cold-start cost auditing; agent-loop substrate makes per-cycle behavior measurable
-- `.claude/skills/agent-qol/SKILL.md` — agent off-time budget + workload sustainability; agent-loop substrate's `PressPause` + `EnterFreeTime` mechanize the discipline
-- `.claude/skills/backlog-decomposer/SKILL.md` — backlog row decomposition; agent-loop substrate's `PickWork` operates on decomposed backlog rows
-- `.claude/skills/skill-creator/SKILL.md` — meta-skill that creates skills; agent-loop substrate could become a meta-skill that creates per-domain workflow engines
+- `.claude/skills/experience-and-product/blueprints/agent-experience-engineer.md` (Daya) — agent cold-start cost auditing; agent-loop substrate makes per-cycle behavior measurable
+- `.claude/skills/experience-and-product/blueprints/agent-qol.md` — agent off-time budget + workload sustainability; agent-loop substrate's `PressPause` + `EnterFreeTime` mechanize the discipline
+- `.claude/skills/workflows/blueprints/backlog-decomposer.md` — backlog row decomposition; agent-loop substrate's `PickWork` operates on decomposed backlog rows
+- `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` — meta-skill that creates skills; agent-loop substrate could become a meta-skill that creates per-domain workflow engines
 
 ## Multi-participant scope (per operator 2026-05-28 "every human wants this too")
 

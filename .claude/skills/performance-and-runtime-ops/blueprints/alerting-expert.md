@@ -334,11 +334,11 @@ monitoring misses. Alert design accounts for it.
 - Prometheus AlertManager docs.
 - PagerDuty / Opsgenie incident response docs.
 - `promtool test rules` docs.
-- `.claude/skills/metrics-expert/SKILL.md` — metric
+- `.claude/skills/performance-and-runtime-ops/blueprints/metrics-expert.md` — metric
   contract.
-- `.claude/skills/operations-monitoring-expert/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/operations-monitoring-expert.md` —
   SLI/SLO policy.
-- `.claude/skills/observability-and-tracing-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/observability-and-tracing-expert.md`
   — umbrella.
-- `.claude/skills/security-operations-engineer/SKILL.md` —
+- `.claude/skills/security/blueprints/security-operations-engineer.md` —
   security alerts sibling.

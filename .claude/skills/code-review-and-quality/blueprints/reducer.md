@@ -436,7 +436,7 @@ essential because "that's how we've always done it."
      delete.
    - **Naming drift.** Two names for the same concept; one
      name for two concepts. Reduce: rename (see
-     `.claude/skills/naming-expert/SKILL.md`).
+     `.claude/skills/governance/blueprints/naming-expert.md`).
    - **Nesting / flow-break.** Cognitive-complexity driver.
      Reduce: guard clauses, early return, extraction.
    - **Leaky abstractions.** Implementation peeking through.
@@ -557,12 +557,12 @@ essential because "that's how we've always done it."
 
 ## Reference patterns
 
-- `.claude/skills/complexity-reviewer/SKILL.md` — the measurer.
-- `.claude/skills/complexity-theory-expert/SKILL.md` — the
+- `.claude/skills/code-review-and-quality/blueprints/complexity-reviewer.md` — the measurer.
+- `.claude/skills/mathematics-and-physics/blueprints/complexity-theory-expert.md` — the
   theory.
 - `.claude/skills/maintainability-reviewer/` — the
   long-horizon readability check.
-- `.claude/skills/canonical-home-auditor/SKILL.md` — flags
+- `.claude/skills/governance/blueprints/canonical-home-auditor.md` — flags
   non-operational / load-bearing content that must not be
   reduced.
 - `docs/AGENT-BEST-PRACTICES.md` — BP-11, BP-19, BP-22

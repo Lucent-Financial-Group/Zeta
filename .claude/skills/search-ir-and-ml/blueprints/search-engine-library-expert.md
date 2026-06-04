@@ -304,9 +304,9 @@ the segment architecture is a *natural* fit for DBSP:
 - Xapian docs (`xapian.org`).
 - Quickwit blog (cloud-native Lucene-alternative patterns).
 - Elastic codec posts (per-version codec differences).
-- `.claude/skills/full-text-search-expert/SKILL.md`.
-- `.claude/skills/lucene-expert/SKILL.md`.
-- `.claude/skills/elasticsearch-expert/SKILL.md`.
-- `.claude/skills/solr-expert/SKILL.md`.
-- `.claude/skills/search-relevance-expert/SKILL.md`.
-- `.claude/skills/text-analysis-expert/SKILL.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/full-text-search-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/lucene-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/elasticsearch-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/solr-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/search-relevance-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/text-analysis-expert.md`.

@@ -291,12 +291,12 @@ is protected by construction.
 - Microsoft Application Insights exception docs.
 - `Microsoft.Extensions.Compliance.Redaction` — PII
   redaction framework.
-- `.claude/skills/observability-and-tracing-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/observability-and-tracing-expert.md`
   — umbrella.
-- `.claude/skills/logging-expert/SKILL.md` — emission.
-- `.claude/skills/alerting-expert/SKILL.md` — rate
+- `.claude/skills/performance-and-runtime-ops/blueprints/logging-expert.md` — emission.
+- `.claude/skills/performance-and-runtime-ops/blueprints/alerting-expert.md` — rate
   alerts.
-- `.claude/skills/operations-monitoring-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/operations-monitoring-expert.md`
   — incident command.
-- `.claude/skills/security-operations-engineer/SKILL.md` —
+- `.claude/skills/security/blueprints/security-operations-engineer.md` —
   security triage.

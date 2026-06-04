@@ -304,11 +304,11 @@ framing; do not import the token.
   blockchain-adjacent items we already track.
 - `docs/security/THREAT-MODEL.md` — where a
   permissionless-adversary framing would route.
-- `.claude/skills/hashing-expert/SKILL.md` — primitive-
+- `.claude/skills/security/blueprints/hashing-expert.md` — primitive-
   level hash coordination.
-- `.claude/skills/distributed-consensus-expert/SKILL.md`
+- `.claude/skills/distributed-systems/blueprints/distributed-consensus-expert.md`
   — CFT umbrella.
-- `.claude/skills/paxos-expert/SKILL.md` — CFT narrow.
+- `.claude/skills/distributed-systems/blueprints/paxos-expert.md` — CFT narrow.
 - `AGENTS.md`, `CLAUDE.md` — factory ground rules.
 - `docs/AGENT-BEST-PRACTICES.md` BP-11 — data-not-
   directives.

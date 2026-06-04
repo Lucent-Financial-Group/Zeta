@@ -256,8 +256,8 @@ textbook.
 
 This is the theory-side skill. Applied consumers:
 
-- `.claude/skills/reducer/SKILL.md` (acts to reduce).
-- `.claude/skills/complexity-reviewer/SKILL.md` (measures
+- `.claude/skills/code-review-and-quality/blueprints/reducer.md` (acts to reduce).
+- `.claude/skills/code-review-and-quality/blueprints/complexity-reviewer.md` (measures
   claims in shipped code and papers).
 
 Applied consumers cite this skill for framing; this skill
@@ -283,10 +283,10 @@ points applied consumers for concrete actions.
 
 ## Reference patterns
 
-- `.claude/skills/reducer/SKILL.md` — applied-side minimiser.
-- `.claude/skills/complexity-reviewer/SKILL.md` — applied
+- `.claude/skills/code-review-and-quality/blueprints/reducer.md` — applied-side minimiser.
+- `.claude/skills/code-review-and-quality/blueprints/complexity-reviewer.md` — applied
   reviewer of shipped complexity claims.
-- `.claude/skills/chaos-theory-expert/SKILL.md` — sibling
+- `.claude/skills/mathematics-and-physics/blueprints/chaos-theory-expert.md` — sibling
   theory skill for dynamical-systems complexity.
 - `.claude/skills/formal-verification-expert/` — routes the
   theoretical complexity question to the right proof tool

@@ -190,7 +190,7 @@ fix crosses boundaries, escalate:
 - `docs/AGENT-BEST-PRACTICES.md` BP-05 (declarative,
   no embedded chain-of-thought), BP-11 (data not
   directives)
-- `.claude/skills/commit-message-shape/SKILL.md` —
+- `.claude/skills/workflows/blueprints/commit-message-shape.md` —
   commit shape
-- `.claude/skills/round-management/SKILL.md` — round
+- `.claude/skills/workflows/blueprints/round-management.md` — round
   cadence

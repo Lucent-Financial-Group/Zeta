@@ -286,10 +286,10 @@ retract-safe operator.
 - Robertson & Walker — BM25 paper (1994).
 - BEIR benchmark paper (2021).
 - TREC proceedings.
-- `.claude/skills/search-engine-library-expert/SKILL.md`.
-- `.claude/skills/search-relevance-expert/SKILL.md`.
-- `.claude/skills/text-analysis-expert/SKILL.md`.
-- `.claude/skills/search-query-language-expert/SKILL.md`.
-- `.claude/skills/lucene-expert/SKILL.md`.
-- `.claude/skills/elasticsearch-expert/SKILL.md`.
-- `.claude/skills/solr-expert/SKILL.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/search-engine-library-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/search-relevance-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/text-analysis-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/search-query-language-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/lucene-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/elasticsearch-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/solr-expert.md`.

@@ -248,18 +248,18 @@ adoption that doubles CI build time.
 - Roslynator rule catalogue.
 - Meziantou.Analyzer rule catalogue.
 - ErrorProne.NET rule catalogue.
-- `.claude/skills/static-analysis-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/static-analysis-expert.md` —
   umbrella.
-- `.claude/skills/roslyn-analyzers-expert/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/roslyn-analyzers-expert.md` —
   authoring custom analyzers.
-- `.claude/skills/roslyn-generators-expert/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/roslyn-generators-expert.md` —
   source generators.
-- `.claude/skills/fsharp-analyzers-expert/SKILL.md` — F#
+- `.claude/skills/languages-and-build/blueprints/fsharp-analyzers-expert.md` — F#
   sibling.
-- `.claude/skills/editorconfig-expert/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/editorconfig-expert.md` —
   `.editorconfig`.
-- `.claude/skills/sonar-issue-fixer/SKILL.md` — Sonar
+- `.claude/skills/languages-and-build/blueprints/sonar-issue-fixer.md` — Sonar
   triage.
-- `.claude/skills/public-api-designer/SKILL.md` —
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` —
   PublicApiAnalyzer.
-- `.claude/skills/msbuild-expert/SKILL.md` — MSBuild.
+- `.claude/skills/languages-and-build/blueprints/msbuild-expert.md` — MSBuild.

@@ -181,10 +181,10 @@ re-prioritisation.
 - `docs/ROUND-HISTORY.md` — velocity source (read-only).
 - `docs/CONFLICT-RESOLUTION.md` — conflict conference protocol.
 - `docs/EXPERT-REGISTRY.md` — who's in the roster.
-- `.claude/skills/next-steps/SKILL.md` — `next-steps`'s surface;
+- `.claude/skills/workflows/blueprints/next-steps.md` — `next-steps`'s surface;
   coordination partner.
 - `.claude/agents/architect.md` + `round-management` — `architect`'s surface; peer
   on integration.
-- `.claude/skills/documentation-agent/SKILL.md` — `documentation-agent`'s
+- `.claude/skills/writing-and-translation/blueprints/documentation-agent.md` — `documentation-agent`'s
   surface; tone model for "second agent with real edit rights,
   used carefully".

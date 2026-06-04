@@ -266,14 +266,14 @@ encodes connectivity:
   (arXiv:1512.03547).
 - Robertson-Seymour, *Graph Minors* (20-paper series, 1983-
   2004).
-- `.claude/skills/mathematics-expert/SKILL.md` — math umbrella.
-- `.claude/skills/applied-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/mathematics-expert.md` — math umbrella.
+- `.claude/skills/mathematics-and-physics/blueprints/applied-mathematics-expert.md` —
   numerical-linear-algebra companion.
-- `.claude/skills/category-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/category-theory-expert.md` —
   categorical graph framings.
-- `.claude/skills/complexity-reviewer/SKILL.md` — algorithmic
+- `.claude/skills/code-review-and-quality/blueprints/complexity-reviewer.md` — algorithmic
   complexity analysis.
-- `.claude/skills/query-optimizer-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/query-optimizer-expert.md` —
   join-graph optimisation.
-- `.claude/skills/paxos-expert/SKILL.md` — EPaxos dependency
+- `.claude/skills/distributed-systems/blueprints/paxos-expert.md` — EPaxos dependency
   graphs.

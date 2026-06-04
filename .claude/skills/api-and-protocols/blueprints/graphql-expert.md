@@ -332,6 +332,6 @@ across teams without coordination. Minimise.
 - OpenTelemetry GraphQL semantic conventions.
 - DataLoader (Facebook).
 - Persisted Queries RFC.
-- `.claude/skills/graphql-federation-expert/SKILL.md`.
-- `.claude/skills/public-api-designer/SKILL.md`.
-- `.claude/skills/postgresql-expert/SKILL.md`.
+- `.claude/skills/api-and-protocols/blueprints/graphql-federation-expert.md`.
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/postgresql-expert.md`.

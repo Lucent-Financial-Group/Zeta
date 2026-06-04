@@ -113,16 +113,16 @@ over indexed posets.
 
 ## Reference patterns
 
-- `.claude/skills/mathematics-expert/SKILL.md` — umbrella.
-- `.claude/skills/applied-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/mathematics-expert.md` — umbrella.
+- `.claude/skills/mathematics-and-physics/blueprints/applied-mathematics-expert.md` —
   sibling (computation, not proof).
-- `.claude/skills/category-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/category-theory-expert.md` —
   narrow (functor / monoidal).
-- `.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/measure-theory-and-signed-measures-expert.md` —
   narrow (ZSet semantics).
-- `.claude/skills/lean4-expert/SKILL.md` — Lean 4
+- `.claude/skills/formal-methods/blueprints/lean4-expert.md` — Lean 4
   tactics / Mathlib.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   tool routing.
 - `tools/lean4/Lean4/DbspChainRule.lean` — live proof
   surface.

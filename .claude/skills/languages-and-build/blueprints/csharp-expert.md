@@ -229,6 +229,6 @@ pollution.
 - `tests/Core.CSharp.Tests/` — facade-specific tests
 - `src/Core/AssemblyInfo.fs` — `InternalsVisibleTo`
   ledger (includes the C# test projects)
-- `.claude/skills/fsharp-expert/SKILL.md` — sibling
-- `.claude/skills/public-api-designer/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/fsharp-expert.md` — sibling
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` —
   the `public-api-designer`; cross-language API surface review

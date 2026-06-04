@@ -268,15 +268,15 @@ Zeta's delta-dataflow matches this shape.
   JSON Datatype* (TPDS) — Automerge's paper.
 - Bieniusa et al. 2012 — *An optimized conflict-free
   replicated set* (OR-Set).
-- `.claude/skills/distributed-consensus-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/distributed-consensus-expert.md` —
   linearizable counterpart.
-- `.claude/skills/eventual-consistency-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/eventual-consistency-expert.md` —
   consistency-spectrum framer.
-- `.claude/skills/calm-theorem-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/calm-theorem-expert.md` —
   monotonicity-implies-coordination-free theory.
-- `.claude/skills/algebra-owner/SKILL.md` — Zeta's
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — Zeta's
   Z-set algebra.
-- `.claude/skills/tla-expert/SKILL.md` — convergence spec
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — convergence spec
   authoring.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   proof-tool routing.

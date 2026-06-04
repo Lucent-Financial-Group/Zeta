@@ -261,8 +261,8 @@ on:
 - `.github/workflows/*.yml` (when they exist)
 - `docs/research/ci-workflow-design.md` — Zeta's decisions
 - `docs/research/ci-gate-inventory.md` — phase discipline
-- `.claude/skills/devops-engineer/SKILL.md` — the `devops-engineer`
-- `.claude/skills/security-researcher/SKILL.md` — the `security-researcher`,
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — the `devops-engineer`
+- `.claude/skills/security/blueprints/security-researcher.md` — the `security-researcher`,
   action-supply-chain review
 - GitHub's own hardening guide:
   https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions

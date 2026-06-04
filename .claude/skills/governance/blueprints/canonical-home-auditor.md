@@ -407,17 +407,17 @@ Effort labels (`S` / `M` / `L`) per `next-steps` convention.
 - `docs/AGENT-BEST-PRACTICES.md` — stable BP-NN rules.
 - `memory/persona/best-practices-scratch.md` — candidate
   BP-HOME awaiting promotion.
-- `.claude/skills/skill-ontology-auditor/SKILL.md` — narrow
+- `.claude/skills/skill-lifecycle/blueprints/skill-ontology-auditor.md` — narrow
   counterpart (skill-library only).
-- `.claude/skills/project-structure-reviewer/SKILL.md` —
+- `.claude/skills/code-review-and-quality/blueprints/project-structure-reviewer.md` —
   code-tree structural counterpart.
-- `.claude/skills/taxonomy-expert/SKILL.md` — hierarchical
+- `.claude/skills/data-modeling-and-ontology/blueprints/taxonomy-expert.md` — hierarchical
   classification theory.
-- `.claude/skills/ontology-expert/SKILL.md` — formal
+- `.claude/skills/data-modeling-and-ontology/blueprints/ontology-expert.md` — formal
   knowledge-representation theory.
-- `.claude/skills/factory-audit/SKILL.md` — compliance
+- `.claude/skills/factory-ops/blueprints/factory-audit.md` — compliance
   auditor (distinct role).
-- `.claude/skills/documentation-agent/SKILL.md` — doc-style
+- `.claude/skills/writing-and-translation/blueprints/documentation-agent.md` — doc-style
   steward.
-- `.claude/skills/openspec-expert/SKILL.md` — spec-file
+- `.claude/skills/workflows/blueprints/openspec-expert.md` — spec-file
   placement authority.

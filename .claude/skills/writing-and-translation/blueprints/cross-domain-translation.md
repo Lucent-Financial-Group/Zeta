@@ -207,13 +207,13 @@ both pass.
 
 ## Reference patterns
 
-- `.claude/skills/translator-expert/SKILL.md` — theory.
-- `.claude/skills/naming-expert/SKILL.md`
-- `.claude/skills/etymology-expert/SKILL.md`
-- `.claude/skills/reducer/SKILL.md` — Rodney's Razor
+- `.claude/skills/writing-and-translation/blueprints/translator-expert.md` — theory.
+- `.claude/skills/governance/blueprints/naming-expert.md`
+- `.claude/skills/governance/blueprints/etymology-expert.md`
+- `.claude/skills/code-review-and-quality/blueprints/reducer.md` — Rodney's Razor
   preservation constraints used in Step 4.
-- `.claude/skills/paced-ontology-landing/SKILL.md`
-- `.claude/skills/conflict-resolution-expert/SKILL.md`
+- `.claude/skills/data-modeling-and-ontology/blueprints/paced-ontology-landing.md`
+- `.claude/skills/governance/blueprints/conflict-resolution-expert.md`
 - `docs/GLOSSARY.md` — canonical IR home.
 - `AGENTS.md` — glossary-first discipline is the
   project-level application of cross-domain

@@ -151,7 +151,7 @@ formalises what is otherwise implicit.
 
 - `AGENTS.md` §11 — integration authority
 - `docs/CONFLICT-RESOLUTION.md` — conflict protocol
-- `.claude/skills/round-management/SKILL.md` — `architect`'s hat;
+- `.claude/skills/workflows/blueprints/round-management.md` — `architect`'s hat;
   this skill is its non-authoritative sibling
 - `docs/GLOSSARY.md` — canonical vocabulary
 - `docs/AGENT-BEST-PRACTICES.md` — rules the hat checks against

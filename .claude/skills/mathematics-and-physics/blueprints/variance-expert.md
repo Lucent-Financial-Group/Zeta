@@ -289,15 +289,15 @@ When this skill is on a review:
   dual-glass to variance.
 - Pierce — *Types and Programming Languages* — chapters on
   subtyping and variance.
-- `.claude/skills/linq-expert/SKILL.md` — Erik.
-- `.claude/skills/rx-expert/SKILL.md` — Bart.
-- `.claude/skills/duality-expert/SKILL.md` — Meijer; the
+- `.claude/skills/languages-and-build/blueprints/linq-expert.md` — Erik.
+- `.claude/skills/streaming-and-execution/blueprints/rx-expert.md` — Bart.
+- `.claude/skills/mathematics-and-physics/blueprints/duality-expert.md` — Meijer; the
   broader umbrella.
-- `.claude/skills/category-theory-expert/SKILL.md` — the
+- `.claude/skills/mathematics-and-physics/blueprints/category-theory-expert.md` — the
   categorical treatment.
-- `.claude/skills/differential-geometry-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/differential-geometry-expert.md` —
   Riemann; the physics treatment.
-- `.claude/skills/csharp-expert/SKILL.md` — Mads.
-- `.claude/skills/typescript-expert/SKILL.md` — Anders.
-- `.claude/skills/public-api-designer/SKILL.md` — Ilyana;
+- `.claude/skills/languages-and-build/blueprints/csharp-expert.md` — Mads.
+- `.claude/skills/languages-and-build/blueprints/typescript-expert.md` — Anders.
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` — Ilyana;
   variance is a public-API question.

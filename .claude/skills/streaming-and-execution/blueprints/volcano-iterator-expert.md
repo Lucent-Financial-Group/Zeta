@@ -111,10 +111,10 @@ Postgres; the borrowed code will silently drop retractions.
 - Graefe 1994, *Volcano — An Extensible and Parallel Query
   Evaluation System*.
 - Postgres `src/backend/executor/` — canonical Volcano.
-- `.claude/skills/execution-model-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/execution-model-expert.md` —
   umbrella.
-- `.claude/skills/vectorised-execution-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/vectorised-execution-expert.md` —
   sibling (hot path).
-- `.claude/skills/query-planner/SKILL.md` — plan shape.
-- `.claude/skills/algebra-owner/SKILL.md` — retraction-
+- `.claude/skills/storage-and-query-engines/blueprints/query-planner.md` — plan shape.
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — retraction-
   native laws.

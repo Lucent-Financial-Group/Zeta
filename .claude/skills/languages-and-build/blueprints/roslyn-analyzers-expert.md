@@ -293,13 +293,13 @@ Profile with `BenchmarkDotNet` or `Microsoft.CodeAnalysis
   `roslyn-analyzers` (github.com/dotnet/roslyn-analyzers).
 - Steve Gordon — analyzer perf series.
 - Bill Wagner / David Kean — `IOperation` migration notes.
-- `.claude/skills/static-analysis-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/static-analysis-expert.md` —
   umbrella.
-- `.claude/skills/roslyn-generators-expert/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/roslyn-generators-expert.md` —
   source generators.
-- `.claude/skills/fsharp-analyzers-expert/SKILL.md` — F#.
-- `.claude/skills/editorconfig-expert/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/fsharp-analyzers-expert.md` — F#.
+- `.claude/skills/languages-and-build/blueprints/editorconfig-expert.md` —
   `.editorconfig`.
-- `.claude/skills/msbuild-expert/SKILL.md` — MSBuild.
-- `.claude/skills/public-api-designer/SKILL.md` — published
+- `.claude/skills/languages-and-build/blueprints/msbuild-expert.md` — MSBuild.
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` — published
   rule surface.

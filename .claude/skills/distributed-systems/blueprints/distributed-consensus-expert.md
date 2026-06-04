@@ -229,16 +229,16 @@ follows the template.
 - Cachin, Guerraoui, Rodrigues — *Introduction to
   Reliable and Secure Distributed Programming*.
 - FoundationDB DST paper / blog series.
-- `.claude/skills/paxos-expert/SKILL.md` — Paxos family.
-- `.claude/skills/raft-expert/SKILL.md` — Raft.
-- `.claude/skills/distributed-coordination-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/paxos-expert.md` — Paxos family.
+- `.claude/skills/distributed-systems/blueprints/raft-expert.md` — Raft.
+- `.claude/skills/distributed-systems/blueprints/distributed-coordination-expert.md` —
   primitives.
-- `.claude/skills/transaction-manager-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/transaction-manager-expert.md` —
   distributed commit.
-- `.claude/skills/distributed-query-execution-expert/SKILL.md`
+- `.claude/skills/storage-and-query-engines/blueprints/distributed-query-execution-expert.md`
   — cross-node execution.
-- `.claude/skills/tla-expert/SKILL.md` — TLA+ authoring.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md`
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — TLA+ authoring.
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md`
   — DST.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   proof portfolio.

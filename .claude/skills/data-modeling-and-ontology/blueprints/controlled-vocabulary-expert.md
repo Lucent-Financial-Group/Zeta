@@ -284,12 +284,12 @@ concept scheme would enable renaming without broken links.
 - Shirky — *Ontology is Overrated* (2005).
 - Aitchison, Gilchrist, Bawden — *Thesaurus Construction
   and Use* (4th ed 2000).
-- `.claude/skills/taxonomy-expert/SKILL.md` — tree sibling.
-- `.claude/skills/ontology-expert/SKILL.md` — semantic
+- `.claude/skills/data-modeling-and-ontology/blueprints/taxonomy-expert.md` — tree sibling.
+- `.claude/skills/data-modeling-and-ontology/blueprints/ontology-expert.md` — semantic
   sibling.
-- `.claude/skills/knowledge-graph-expert/SKILL.md` — query
+- `.claude/skills/data-modeling-and-ontology/blueprints/knowledge-graph-expert.md` — query
   sibling.
-- `.claude/skills/master-data-management-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/master-data-management-expert.md` —
   entity-master sibling.
-- `.claude/skills/data-governance-expert/SKILL.md` — policy
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-governance-expert.md` — policy
   sibling.

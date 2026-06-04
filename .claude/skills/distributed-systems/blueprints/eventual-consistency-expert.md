@@ -237,16 +237,16 @@ Cassandra's `ONE`, `QUORUM`, `ALL` are syntactic sugar.
   Limitations, Extensions, and Beyond*.
 - Viotti, Vukolic 2016 — *Consistency in Non-Transactional
   Distributed Storage Systems* (ACM CSUR — the survey).
-- `.claude/skills/distributed-consensus-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/distributed-consensus-expert.md` —
   linearizable counterpart.
-- `.claude/skills/crdt-expert/SKILL.md` — convergent data
+- `.claude/skills/distributed-systems/blueprints/crdt-expert.md` — convergent data
   types.
-- `.claude/skills/calm-theorem-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/calm-theorem-expert.md` —
   monotonicity theory.
-- `.claude/skills/replication-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/replication-expert.md` —
   replication mechanics.
-- `.claude/skills/distributed-coordination-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/distributed-coordination-expert.md` —
   primitive semantics.
-- `.claude/skills/tla-expert/SKILL.md` — spec authoring.
-- `.claude/skills/transaction-manager-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — spec authoring.
+- `.claude/skills/storage-and-query-engines/blueprints/transaction-manager-expert.md` —
   tx isolation levels.

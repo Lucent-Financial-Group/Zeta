@@ -373,17 +373,17 @@ For a new surface:
 - Prometheus + OpenMetrics specification.
 - Grafana Pyroscope docs.
 - Cilium Tetragon docs.
-- `.claude/skills/performance-engineer/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` —
   profiler consumer.
-- `.claude/skills/security-operations-engineer/SKILL.md`
+- `.claude/skills/security/blueprints/security-operations-engineer.md`
   — PII / audit model.
-- `.claude/skills/devops-engineer/SKILL.md` — collector
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — collector
   deployment.
-- `.claude/skills/distributed-query-execution-expert/SKILL.md`
+- `.claude/skills/storage-and-query-engines/blueprints/distributed-query-execution-expert.md`
   — operator-level counters.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md`
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md`
   — DST observability.
-- `.claude/skills/gossip-protocols-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/gossip-protocols-expert.md` —
   distributed aggregation primitives.
-- `.claude/skills/tla-expert/SKILL.md` — propagation
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — propagation
   correctness specs.

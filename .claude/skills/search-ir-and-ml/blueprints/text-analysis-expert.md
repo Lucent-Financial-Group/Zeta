@@ -289,7 +289,7 @@ normalisation is a separate step beyond NFC.
 - Snowball stemmer docs (`snowballstem.org`).
 - Ingersoll, Morton, Farris — *Taming Text* (2013).
 - Lucene `analysis/common`, `analysis/kuromoji`, etc.
-- `.claude/skills/search-engine-library-expert/SKILL.md`.
-- `.claude/skills/full-text-search-expert/SKILL.md`.
-- `.claude/skills/controlled-vocabulary-expert/SKILL.md`.
-- `.claude/skills/search-relevance-expert/SKILL.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/search-engine-library-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/full-text-search-expert.md`.
+- `.claude/skills/data-modeling-and-ontology/blueprints/controlled-vocabulary-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/search-relevance-expert.md`.

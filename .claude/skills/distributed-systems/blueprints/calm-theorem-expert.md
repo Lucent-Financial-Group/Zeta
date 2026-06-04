@@ -248,17 +248,17 @@ coordination is needed only on the non-monotonic subset.
   — *Dedalus: Datalog in Time and Space* (Dedalus paper).
 - Alvaro, Conway, Hellerstein, Marczak 2011 — *Consistency
   Analysis in Bloom: a CALM and Collected Approach* (CIDR).
-- `.claude/skills/crdt-expert/SKILL.md` — lattice merge
+- `.claude/skills/distributed-systems/blueprints/crdt-expert.md` — lattice merge
   design.
-- `.claude/skills/eventual-consistency-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/eventual-consistency-expert.md` —
   consistency spectrum.
-- `.claude/skills/distributed-consensus-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/distributed-consensus-expert.md` —
   when consensus IS needed.
-- `.claude/skills/relational-algebra-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/relational-algebra-expert.md` —
   operator-level monotonicity.
-- `.claude/skills/category-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/category-theory-expert.md` —
   semilattice foundations.
-- `.claude/skills/algebra-owner/SKILL.md` — Zeta-specific
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — Zeta-specific
   operator claims.
-- `.claude/skills/tla-expert/SKILL.md` — refinement-proof
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — refinement-proof
   authoring.

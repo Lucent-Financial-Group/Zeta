@@ -304,15 +304,15 @@ do not pretend otherwise.
   (pre-CodeQL).
 - `.semgrep.yml` — syntactic sibling; prefer for syntactic
   patterns.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   Soraya, tool-routing authority.
-- `.claude/skills/security-researcher/SKILL.md` — Mateo,
+- `.claude/skills/security/blueprints/security-researcher.md` — Mateo,
   active security surface.
-- `.claude/skills/security-operations-engineer/SKILL.md` —
+- `.claude/skills/security/blueprints/security-operations-engineer.md` —
   Nazar, triage operations.
-- `.claude/skills/devops-engineer/SKILL.md` — Dejan,
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — Dejan,
   GitHub Actions authority.
-- `.claude/skills/semgrep-rule-authoring/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/semgrep-rule-authoring.md` —
   syntactic-pattern sibling.
 - GitHub CodeQL docs — `https://codeql.github.com/docs/`.
 - SARIF v2.1.0 specification — the finding interchange

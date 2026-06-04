@@ -172,7 +172,7 @@ or edit namespaces without an explicit human go-ahead.
 - `README.md` — primary first-touch surface
 - `.claude/agents/architect.md` + `round-management` — the `architect`, integration
   partner
-- `.claude/skills/backlog-scrum-master/SKILL.md` — the `backlog-scrum-master`,
+- `.claude/skills/workflows/blueprints/backlog-scrum-master.md` — the `backlog-scrum-master`,
   backlog partner
-- `.claude/skills/paper-peer-reviewer/SKILL.md` — Wei, paper
+- `.claude/skills/research/blueprints/paper-peer-reviewer.md` — Wei, paper
   co-author

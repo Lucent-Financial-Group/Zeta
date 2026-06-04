@@ -284,10 +284,10 @@ the profile for that operator's time window tells us
 - BenchmarkDotNet EventPipeProfiler docs.
 - Grafana Pyroscope docs.
 - Parca docs.
-- `.claude/skills/performance-engineer/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` —
   tuning sibling.
-- `.claude/skills/observability-and-tracing-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/observability-and-tracing-expert.md`
   — umbrella.
-- `.claude/skills/hardware-intrinsics-expert/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/hardware-intrinsics-expert.md` —
   instruction-level.
-- `.claude/skills/jit-codegen-expert/SKILL.md` — CLR/JIT.
+- `.claude/skills/performance-and-runtime-ops/blueprints/jit-codegen-expert.md` — CLR/JIT.

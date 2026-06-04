@@ -201,11 +201,11 @@ paired ref sweeps are regression vectors.
   convention
 - `GOVERNANCE.md` §30 — sweep-refs after rename
 - `AGENTS.md` §18 — typed memory file convention
-- `.claude/skills/factory-audit/SKILL.md` — adjacent
+- `.claude/skills/factory-ops/blueprints/factory-audit.md` — adjacent
   meta-audit lane
-- `.claude/skills/skill-gap-finder/SKILL.md` — adjacent
+- `.claude/skills/skill-lifecycle/blueprints/skill-gap-finder.md` — adjacent
   absent-skill lane
-- `.claude/skills/sweep-refs/SKILL.md` — paired
+- `.claude/skills/governance/blueprints/sweep-refs.md` — paired
   procedure
 - `docs/AGENT-BEST-PRACTICES.md` — BP-03 (file size),
   BP-09 (ASCII only), BP-11, BP-15 (path hygiene)

@@ -311,17 +311,17 @@ grade; hand off to `leet-code-contest-patterns`.
 
 ## Cross-references
 
-- `.claude/skills/leet-code-dsa-toolbox/SKILL.md` —
+- `.claude/skills/leet-code/blueprints/leet-code-dsa-toolbox.md` —
   primitive data structures the patterns lean on
   (union-find, segment tree, Fenwick, monotonic deque).
-- `.claude/skills/leet-code-complexity-interview/SKILL.md`
+- `.claude/skills/leet-code/blueprints/leet-code-complexity-interview.md`
   — interview-grade big-O pedagogy.
-- `.claude/skills/leet-code-contest-patterns/SKILL.md`
+- `.claude/skills/leet-code/blueprints/leet-code-contest-patterns.md`
   — competitive programming lane (Codeforces, ICPC).
-- `.claude/skills/complexity-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/complexity-theory-expert.md` —
   theoretical asymptotic bounds, lower bounds,
   complexity-class membership.
-- `.claude/skills/fsharp-expert/SKILL.md`,
-  `.claude/skills/csharp-expert/SKILL.md`,
-  `.claude/skills/python-expert/SKILL.md` — language-
+- `.claude/skills/languages-and-build/blueprints/fsharp-expert.md`,
+  `.claude/skills/languages-and-build/blueprints/csharp-expert.md`,
+  `.claude/skills/languages-and-build/blueprints/python-expert.md` — language-
   idiomatic implementation once the pattern is chosen.

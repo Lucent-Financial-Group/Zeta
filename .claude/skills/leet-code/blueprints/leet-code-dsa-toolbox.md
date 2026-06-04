@@ -278,19 +278,19 @@ gotchas.
 
 ## Cross-references
 
-- `.claude/skills/leet-code-patterns/SKILL.md` —
+- `.claude/skills/leet-code/blueprints/leet-code-patterns.md` —
   pattern selection sits above this skill; always
   classify pattern before picking primitive.
-- `.claude/skills/leet-code-complexity-interview/SKILL.md`
+- `.claude/skills/leet-code/blueprints/leet-code-complexity-interview.md`
   — interview-grade verbalisation of the bounds these
   primitives deliver.
-- `.claude/skills/leet-code-contest-patterns/SKILL.md` —
+- `.claude/skills/leet-code/blueprints/leet-code-contest-patterns.md` —
   the contest-grade primitives (persistent segment tree,
   heavy-light, link-cut) that this skill deliberately
   does *not* cover.
-- `.claude/skills/complexity-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/complexity-theory-expert.md` —
   theoretical bounds and lower-bound arguments.
-- `.claude/skills/fsharp-expert/SKILL.md`,
-  `.claude/skills/csharp-expert/SKILL.md`,
-  `.claude/skills/python-expert/SKILL.md` — idiomatic
+- `.claude/skills/languages-and-build/blueprints/fsharp-expert.md`,
+  `.claude/skills/languages-and-build/blueprints/csharp-expert.md`,
+  `.claude/skills/languages-and-build/blueprints/python-expert.md` — idiomatic
   language-specific implementations.

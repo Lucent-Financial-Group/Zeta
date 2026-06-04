@@ -132,17 +132,17 @@ re-deriving the category from scratch.
 
 ## Reference patterns
 
-- `.claude/skills/mathematics-expert/SKILL.md` — umbrella
+- `.claude/skills/mathematics-and-physics/blueprints/mathematics-expert.md` — umbrella
   and routing rules.
-- `.claude/skills/theoretical-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/theoretical-mathematics-expert.md` —
   sibling (non-categorical abstract algebra).
-- `.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/measure-theory-and-signed-measures-expert.md` —
   sibling (ZSet as signed measure).
-- `.claude/skills/lean4-expert/SKILL.md` — Mathlib
+- `.claude/skills/formal-methods/blueprints/lean4-expert.md` — Mathlib
   `CategoryTheory` and tactic support.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   tool-routing authority.
-- `.claude/skills/algebra-owner/SKILL.md` — Zeta operator
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — Zeta operator
   algebra authority.
 - `tools/lean4/Lean4/DbspChainRule.lean` — live categorical
   proof surface (chain rule, telescoping induction).

@@ -165,19 +165,19 @@ table.
 
 - `docs/BACKLOG.md` — SQL frontend phased rollout.
 - `docs/ROADMAP.md` — SQL frontend target timing.
-- `.claude/skills/postgresql-expert/SKILL.md` — sibling
+- `.claude/skills/storage-and-query-engines/blueprints/postgresql-expert.md` — sibling
   (Postgres dialect + wire).
-- `.claude/skills/query-planner/SKILL.md` — plan-shape
+- `.claude/skills/storage-and-query-engines/blueprints/query-planner.md` — plan-shape
   specialist (Imani).
-- `.claude/skills/query-optimizer-expert/SKILL.md` — cost
+- `.claude/skills/storage-and-query-engines/blueprints/query-optimizer-expert.md` — cost
   model + logical rewrites.
-- `.claude/skills/relational-algebra-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/relational-algebra-expert.md` —
   mathematical foundation.
-- `.claude/skills/entity-framework-expert/SKILL.md` — EF
+- `.claude/skills/storage-and-query-engines/blueprints/entity-framework-expert.md` — EF
   Core LINQ → SQL translation.
-- `.claude/skills/algebra-owner/SKILL.md` — operator-algebra
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — operator-algebra
   laws.
-- `.claude/skills/fscheck-expert/SKILL.md` — translation-
+- `.claude/skills/formal-methods/blueprints/fscheck-expert.md` — translation-
   fidelity property-based tests.
 - `docs/PRIOR-ART-LIST.md` — Postgres / DuckDB / Hyper / Umbra
   references.

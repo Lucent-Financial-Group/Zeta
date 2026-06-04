@@ -286,8 +286,8 @@ When this skill is on a review:
   typings fixes.
 - `zod` / `valibot` / `@effect/schema` — runtime schema
   libraries that bridge TS types to runtime validation.
-- `.claude/skills/csharp-expert/SKILL.md` — Mads.
-- `.claude/skills/fsharp-expert/SKILL.md`.
-- `.claude/skills/variance-expert/SKILL.md` — Brian.
-- `.claude/skills/linq-expert/SKILL.md` — Erik.
-- `.claude/skills/rx-expert/SKILL.md` — Bart.
+- `.claude/skills/languages-and-build/blueprints/csharp-expert.md` — Mads.
+- `.claude/skills/languages-and-build/blueprints/fsharp-expert.md`.
+- `.claude/skills/mathematics-and-physics/blueprints/variance-expert.md` — Brian.
+- `.claude/skills/languages-and-build/blueprints/linq-expert.md` — Erik.
+- `.claude/skills/streaming-and-execution/blueprints/rx-expert.md` — Bart.

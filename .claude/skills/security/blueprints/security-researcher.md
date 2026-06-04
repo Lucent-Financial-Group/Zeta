@@ -145,7 +145,7 @@ Use the plugin as a first-pass lint only:
   supposed to catch.
 - The plugin's rule list is useful as a living checklist
   when composing semgrep rules via
-  `.claude/skills/semgrep-rule-authoring/SKILL.md`.
+  `.claude/skills/formal-methods/blueprints/semgrep-rule-authoring.md`.
 - The plugin is Claude-Code-only. Agents running via the
   Agent SDK directly do not load Claude Code plugins, so
   this lane must not depend on the plugin firing. Treat
@@ -162,8 +162,8 @@ Use the plugin as a first-pass lint only:
 - `docs/security/THREAT-MODEL.md`
 - `docs/security/SDL-CHECKLIST.md`
 - `docs/security/CRYPTO.md` (planned)
-- `.claude/skills/threat-model-critic/SKILL.md`
-- `.claude/skills/prompt-protector/SKILL.md`
-- `.claude/skills/package-auditor/SKILL.md`
+- `.claude/skills/security/blueprints/threat-model-critic.md`
+- `.claude/skills/security/blueprints/prompt-protector.md`
+- `.claude/skills/languages-and-build/blueprints/package-auditor.md`
 - `.semgrep.yml` — rules the `security-researcher` proposes extensions to
 - `docs/AGENT-BEST-PRACTICES.md` — BP-04, BP-10, BP-11

@@ -288,13 +288,13 @@ propagates the consequence incrementally.
 - Zingg / Dedupe / Informatica IDD / Reltio / Stibo STEP /
   Semarchy / Profisee docs.
 - Gartner MDM Magic Quadrant.
-- `.claude/skills/data-vault-expert/SKILL.md` — identity-
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-vault-expert.md` — identity-
   stable hashing.
-- `.claude/skills/taxonomy-expert/SKILL.md` — where does it
+- `.claude/skills/data-modeling-and-ontology/blueprints/taxonomy-expert.md` — where does it
   file.
-- `.claude/skills/ontology-expert/SKILL.md` — semantic
+- `.claude/skills/data-modeling-and-ontology/blueprints/ontology-expert.md` — semantic
   sibling.
-- `.claude/skills/data-lineage-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-lineage-expert.md` —
   provenance sibling.
-- `.claude/skills/data-governance-expert/SKILL.md` — policy
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-governance-expert.md` — policy
   sibling.

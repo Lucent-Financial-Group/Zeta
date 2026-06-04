@@ -231,18 +231,18 @@ look "right" to the model; it's a quiet failure mode.
   adaptive cost models.
 - Leis et al. *How Good Are Query Optimizers, Really?* —
   cardinality-estimation error analysis.
-- `.claude/skills/query-planner/SKILL.md` — physical plan +
+- `.claude/skills/storage-and-query-engines/blueprints/query-planner.md` — physical plan +
   SIMD dispatch (Imani).
-- `.claude/skills/relational-algebra-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/relational-algebra-expert.md` —
   equivalence proofs.
-- `.claude/skills/sql-expert/SKILL.md` — SQL semantics.
-- `.claude/skills/algebra-owner/SKILL.md` — retraction-native
+- `.claude/skills/storage-and-query-engines/blueprints/sql-expert.md` — SQL semantics.
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — retraction-native
   invariants.
-- `.claude/skills/postgresql-expert/SKILL.md` — dialect
+- `.claude/skills/storage-and-query-engines/blueprints/postgresql-expert.md` — dialect
   hooks.
-- `.claude/skills/entity-framework-expert/SKILL.md` — EF
+- `.claude/skills/storage-and-query-engines/blueprints/entity-framework-expert.md` — EF
   query shapes.
-- `.claude/skills/fscheck-expert/SKILL.md` — translation-
+- `.claude/skills/formal-methods/blueprints/fscheck-expert.md` — translation-
   fidelity properties.
-- `.claude/skills/performance-engineer/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` —
   calibration benchmarks.

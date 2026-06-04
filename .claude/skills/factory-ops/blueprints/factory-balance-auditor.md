@@ -273,10 +273,10 @@ union of findings to shape the next round's backlog.
   standing rules
 - `.claude/agents/*.md` — per-persona Authority sections
 - `.claude/skills/*/SKILL.md` — per-skill Authority lines
-- `.claude/skills/factory-audit/SKILL.md` — sibling audit
-- `.claude/skills/skill-gap-finder/SKILL.md` — sibling
-- `.claude/skills/skill-tune-up/SKILL.md` — sibling
-- `.claude/skills/project-structure-reviewer/SKILL.md` —
+- `.claude/skills/factory-ops/blueprints/factory-audit.md` — sibling audit
+- `.claude/skills/skill-lifecycle/blueprints/skill-gap-finder.md` — sibling
+- `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — sibling
+- `.claude/skills/code-review-and-quality/blueprints/project-structure-reviewer.md` —
   sibling
 - `docs/BACKLOG.md` — where P1 / P2 findings land
 - `docs/ROUND-HISTORY.md` — where arc-level findings land

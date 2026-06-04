@@ -315,9 +315,9 @@ addressable identity for every unit of content.
 - LaTeX `\section` / `\subsection` / `\subsubsection`.
 - `docs/AGENT-BEST-PRACTICES.md` — the BP-NN stable-ID
   precedent in this repo.
-- `.claude/skills/skill-documentation-standard/SKILL.md`
+- `.claude/skills/skill-lifecycle/blueprints/skill-documentation-standard.md`
   — SKILL.md-specific adoption.
-- `.claude/skills/documentation-agent/SKILL.md` —
+- `.claude/skills/writing-and-translation/blueprints/documentation-agent.md` —
   general doc steward.
-- `.claude/skills/openspec-expert/SKILL.md` —
+- `.claude/skills/workflows/blueprints/openspec-expert.md` —
   requirement numbering.

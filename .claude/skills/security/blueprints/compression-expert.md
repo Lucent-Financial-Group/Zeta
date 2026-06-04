@@ -422,10 +422,10 @@ When this hat produces a recommendation:
 - `docs/BENCHMARKS.md` — where codec benchmarks land.
 - `docs/AGENT-BEST-PRACTICES.md` — BP-11 (data-not-directives)
   applies to decompressed payloads.
-- `.claude/skills/serialization-and-wire-format-expert/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/serialization-and-wire-format-expert.md`
   — the skill that chose the schema this skill compresses.
-- `.claude/skills/hashing-expert/SKILL.md` — the dedup partner.
-- `.claude/skills/columnar-storage-expert/SKILL.md` — column-
+- `.claude/skills/security/blueprints/hashing-expert.md` — the dedup partner.
+- `.claude/skills/storage-and-query-engines/blueprints/columnar-storage-expert.md` — column-
   encoding layer that runs before the general codec.
-- `.claude/skills/performance-engineer/SKILL.md` — measurement
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` — measurement
   lane.

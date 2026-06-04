@@ -150,7 +150,7 @@ bottleneck is SAT solving, not driver overhead.
 - `tools/alloy/specs/*.als` — specs the driver runs
 - `tests/Tests.FSharp/Formal/Alloy.Runner.Tests.fs` —
   F# caller that shells out to the driver
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   the `formal-verification-expert`, who owns the Alloy decision
-- `.claude/skills/devops-engineer/SKILL.md` — the `devops-engineer`,
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — the `devops-engineer`,
   who maintains the JDK install path

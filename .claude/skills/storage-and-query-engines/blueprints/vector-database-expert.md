@@ -266,7 +266,7 @@ dominates. Benchmark your specific access pattern.
 - ANN-benchmarks.com.
 - Ibrahim et al. — *MTEB benchmark* (embedding eval).
 - Milvus / Weaviate / Qdrant / pgvector docs.
-- `.claude/skills/full-text-search-expert/SKILL.md`.
-- `.claude/skills/search-relevance-expert/SKILL.md`.
-- `.claude/skills/llm-systems-expert/SKILL.md`.
-- `.claude/skills/database-systems-expert/SKILL.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/full-text-search-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/search-relevance-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/llm-systems-expert.md`.
+- `.claude/skills/storage-and-query-engines/blueprints/database-systems-expert.md`.

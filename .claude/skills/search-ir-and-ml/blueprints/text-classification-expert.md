@@ -259,7 +259,7 @@ aggregates update incrementally.
 - Jain & Wallace — *Attention is not Explanation*.
 - Guo et al. — *On Calibration of Modern Neural Networks*.
 - HuggingFace Transformers documentation.
-- `.claude/skills/ml-engineering-expert/SKILL.md`.
-- `.claude/skills/neural-retrieval-expert/SKILL.md`.
-- `.claude/skills/search-relevance-expert/SKILL.md`.
-- `.claude/skills/full-text-search-expert/SKILL.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/ml-engineering-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/neural-retrieval-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/search-relevance-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/full-text-search-expert.md`.

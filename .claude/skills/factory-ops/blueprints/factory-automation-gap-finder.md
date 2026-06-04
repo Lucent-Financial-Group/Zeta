@@ -250,29 +250,29 @@ This skill's running notes live at
 
 ## Reference patterns
 
-- `.claude/skills/skill-gap-finder/SKILL.md` — sibling,
+- `.claude/skills/skill-lifecycle/blueprints/skill-gap-finder.md` — sibling,
   missing-skill detector.
-- `.claude/skills/factory-audit/SKILL.md` — factory-
+- `.claude/skills/factory-ops/blueprints/factory-audit.md` — factory-
   structure audit.
-- `.claude/skills/factory-balance-auditor/SKILL.md` —
+- `.claude/skills/factory-ops/blueprints/factory-balance-auditor.md` —
   authority-vs-compensator audit.
-- `.claude/skills/skill-tune-up/SKILL.md` — existing-skill
+- `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — existing-skill
   ranker.
-- `.claude/skills/devops-engineer/SKILL.md` — default
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — default
   executor of CI / workflow automation.
-- `.claude/skills/github-actions-expert/SKILL.md` — GH
+- `.claude/skills/performance-and-runtime-ops/blueprints/github-actions-expert.md` — GH
   Actions specifics.
-- `.claude/skills/long-term-rescheduler/SKILL.md` — agent
+- `.claude/skills/agent-runtime-and-persistence/blueprints/long-term-rescheduler.md` — agent
   cron trigger owner.
-- `.claude/skills/round-management/SKILL.md` — round-close
+- `.claude/skills/workflows/blueprints/round-management.md` — round-close
   housekeeping owner.
-- `.claude/skills/backlog-scrum-master/SKILL.md` —
+- `.claude/skills/workflows/blueprints/backlog-scrum-master.md` —
   BACKLOG hygiene owner.
-- `.claude/skills/documentation-agent/SKILL.md` — doc
+- `.claude/skills/writing-and-translation/blueprints/documentation-agent.md` — doc
   sweep owner.
-- `.claude/skills/package-upgrader/SKILL.md` — dependency
+- `.claude/skills/languages-and-build/blueprints/package-upgrader.md` — dependency
   lifecycle owner.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   proof-portfolio owner (out of this skill's scope).
 - `docs/AGENT-BEST-PRACTICES.md` — BP-NN rule list.
 - `docs/ROUND-HISTORY.md` — evidence source.

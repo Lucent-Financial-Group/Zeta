@@ -144,12 +144,12 @@ An IR expression is a good bridge when:
 
 ## Reference patterns
 
-- `.claude/skills/cross-domain-translation/SKILL.md` —
+- `.claude/skills/writing-and-translation/blueprints/cross-domain-translation.md` —
   the applied workflow.
-- `.claude/skills/naming-expert/SKILL.md`
-- `.claude/skills/etymology-expert/SKILL.md`
-- `.claude/skills/reducer/SKILL.md`
-- `.claude/skills/complexity-theory-expert/SKILL.md`
+- `.claude/skills/governance/blueprints/naming-expert.md`
+- `.claude/skills/governance/blueprints/etymology-expert.md`
+- `.claude/skills/code-review-and-quality/blueprints/reducer.md`
+- `.claude/skills/mathematics-and-physics/blueprints/complexity-theory-expert.md`
 - `docs/GLOSSARY.md` — the project's standing IR.
 - `AGENTS.md` — glossary-first discipline is the
   project-level application of this skill.

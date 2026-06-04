@@ -159,11 +159,11 @@ enforces Inmon's properties as invariants.
   Warehousing* (2008).
 - Bill Inmon & Claudia Imhoff, *Corporate Information
   Factory* (2nd ed, 2001).
-- `.claude/skills/data-vault-expert/SKILL.md` — the modern
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-vault-expert.md` — the modern
   Inmon descendant.
-- `.claude/skills/dimensional-modeling-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/dimensional-modeling-expert.md` —
   the Kimball rival.
-- `.claude/skills/anchor-modeling-expert/SKILL.md` — the
+- `.claude/skills/data-modeling-and-ontology/blueprints/anchor-modeling-expert.md` — the
   6NF temporal variant.
 - `.claude/skills/lakehouse-architecture-expert/SKILL.md` —
   DW 2.0's modern descendant.

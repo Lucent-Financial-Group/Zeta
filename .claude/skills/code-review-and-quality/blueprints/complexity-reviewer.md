@@ -175,4 +175,4 @@ stale failure mode v1 itself diagnosed.
 - `bench/` — the only empirical arbiter when analysis is contested
 - `docs/DECISIONS/2026-04-21-router-coherence-v2.md` — the
   authoritative Stage-1 ↔ Stage-2 hand-off contract
-- `.claude/skills/claims-tester/SKILL.md` — Stage-2 partner
+- `.claude/skills/formal-methods/blueprints/claims-tester.md` — Stage-2 partner

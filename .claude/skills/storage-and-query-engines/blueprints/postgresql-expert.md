@@ -209,17 +209,17 @@ without the text-format roundtrip.
 - `docs/BACKLOG.md` — phased rollout.
 - `docs/PRIOR-ART-LIST.md` — Postgres reference citation.
 - `docs/TECH-RADAR.md` — Postgres-wire row.
-- `.claude/skills/sql-expert/SKILL.md` — SQL-language
+- `.claude/skills/storage-and-query-engines/blueprints/sql-expert.md` — SQL-language
   umbrella.
-- `.claude/skills/query-planner/SKILL.md` — plan-shape
+- `.claude/skills/storage-and-query-engines/blueprints/query-planner.md` — plan-shape
   specialist.
-- `.claude/skills/query-optimizer-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/query-optimizer-expert.md` —
   cost + rewrites.
-- `.claude/skills/entity-framework-expert/SKILL.md` — EF
+- `.claude/skills/storage-and-query-engines/blueprints/entity-framework-expert.md` — EF
   Core compatibility.
-- `.claude/skills/security-operations-engineer/SKILL.md` —
+- `.claude/skills/security/blueprints/security-operations-engineer.md` —
   auth / TLS policy.
-- `.claude/skills/threat-model-critic/SKILL.md` — wire-
+- `.claude/skills/security/blueprints/threat-model-critic.md` — wire-
   surface threat model.
-- `.claude/skills/performance-engineer/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` —
   bytes-on-wire tuning.

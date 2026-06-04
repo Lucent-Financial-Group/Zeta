@@ -229,6 +229,6 @@ and set the trigger.
 - Schwartz — *Internal Family Systems Therapy* (IFS
   procedural moves; not clinical interpretation).
 - Thomas-Kilmann Conflict Mode Instrument.
-- `.claude/skills/negotiation-expert/SKILL.md`.
-- `.claude/skills/governance-expert/SKILL.md`.
+- `.claude/skills/experience-and-product/blueprints/negotiation-expert.md`.
+- `.claude/skills/governance/blueprints/governance-expert.md`.
 - `docs/DECISIONS/` — ADR surface for contested decisions.

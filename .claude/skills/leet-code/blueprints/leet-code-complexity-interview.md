@@ -236,14 +236,14 @@ Common probes and the right response shape:
 
 ## Cross-references
 
-- `.claude/skills/leet-code-patterns/SKILL.md` —
+- `.claude/skills/leet-code/blueprints/leet-code-patterns.md` —
   pattern-selection, prerequisite to this skill.
-- `.claude/skills/leet-code-dsa-toolbox/SKILL.md` —
+- `.claude/skills/leet-code/blueprints/leet-code-dsa-toolbox.md` —
   primitive-level complexity reference.
-- `.claude/skills/leet-code-contest-patterns/SKILL.md`
+- `.claude/skills/leet-code/blueprints/leet-code-contest-patterns.md`
   — contest-grade complexity (persistence, square-
   root decomposition, FFT).
-- `.claude/skills/complexity-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/complexity-theory-expert.md` —
   theoretical rigour; lower bounds, class membership,
   reductions.
 - `.claude/skills/algorithms-expert/SKILL.md` — when

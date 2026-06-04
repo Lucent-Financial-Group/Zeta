@@ -427,18 +427,18 @@ When findings land from this skill, route by layer:
 
 ## Cross-references
 
-- `.claude/skills/consent-primitives-expert/SKILL.md`
+- `.claude/skills/experience-and-product/blueprints/consent-primitives-expert.md`
   — algebraic substrate underneath every UX choice.
-- `.claude/skills/glass-halo-architect/SKILL.md` —
+- `.claude/skills/agent-runtime-and-persistence/blueprints/glass-halo-architect.md` —
   architectural stance that frames when consent UX
   applies.
-- `.claude/skills/user-experience-engineer/SKILL.md`
+- `.claude/skills/experience-and-product/blueprints/user-experience-engineer.md`
   — general UX skill; handoff for non-consent UX.
-- `.claude/skills/threat-model-critic/SKILL.md` —
+- `.claude/skills/security/blueprints/threat-model-critic.md` —
   adversary model for consent flows.
-- `.claude/skills/prompt-protector/SKILL.md` —
+- `.claude/skills/security/blueprints/prompt-protector.md` —
   agent-layer consent threats.
-- `.claude/skills/public-api-designer/SKILL.md` —
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md` —
   when consent UX is a library surface.
 - `memory/user_glass_halo_and_radical_honesty.md`
   — the strategic stance that grounds the

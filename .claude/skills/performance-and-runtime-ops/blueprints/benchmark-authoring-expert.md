@@ -208,10 +208,10 @@ translates it into BDN code.
 - `bench/Feldera.Bench/*.fs` — comparison benchmarks
 - `docs/BENCHMARKS.md` — baseline narrative (when it
   lands)
-- `.claude/skills/performance-engineer/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` —
   the `performance-engineer`
-- `.claude/skills/claims-tester/SKILL.md` — the `claims-tester`
-- `.claude/skills/complexity-reviewer/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/claims-tester.md` — the `claims-tester`
+- `.claude/skills/code-review-and-quality/blueprints/complexity-reviewer.md` —
   the `complexity-reviewer`
 - BenchmarkDotNet docs:
   https://benchmarkdotnet.org/articles/overview.html

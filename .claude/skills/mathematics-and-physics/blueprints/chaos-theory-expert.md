@@ -301,17 +301,17 @@ when the applied-side need is concrete.
 
 ## Reference patterns
 
-- `.claude/skills/complexity-theory-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/complexity-theory-expert.md` —
   sibling theory skill; effective complexity, logical depth,
   P vs NP.
-- `.claude/skills/reducer/SKILL.md` — edge-of-chaos
+- `.claude/skills/code-review-and-quality/blueprints/reducer.md` — edge-of-chaos
   intuition for "how much structure is right".
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md`
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md`
   — the opposite discipline: ensuring determinism in a
   sensitive system.
-- `.claude/skills/applied-physics-expert/SKILL.md` — for
+- `.claude/skills/mathematics-and-physics/blueprints/applied-physics-expert.md` — for
   physical-system entry points (pendulums, oscillators,
   fluid turbulence).
-- `.claude/skills/applied-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/applied-mathematics-expert.md` —
   ODE / PDE / numerical-methods sibling skill.
 - `docs/AGENT-BEST-PRACTICES.md` — BP-11, BP-19, BP-23.

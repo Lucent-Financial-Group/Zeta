@@ -243,11 +243,11 @@ Aaron's attention — agency, freedom, dignity signals.>
 - `docs/EXPERT-REGISTRY.md` — the persona roster
 - `docs/ROUND-HISTORY.md` — invocation signal source
 - `memory/persona/*.md` — notebook state
-- `.claude/skills/agent-experience-engineer/SKILL.md`
+- `.claude/skills/experience-and-product/blueprints/agent-experience-engineer.md`
   — sibling (task-experience)
-- `.claude/skills/factory-audit/SKILL.md` — broader
+- `.claude/skills/factory-ops/blueprints/factory-audit.md` — broader
   sibling (factory shape)
 - `.claude/skills/skill-expert/SKILL.md` — sibling
   (skill library)
-- `.claude/skills/round-open-checklist/SKILL.md` —
+- `.claude/skills/workflows/blueprints/round-open-checklist.md` —
   round-open hook for QoL scan

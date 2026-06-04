@@ -178,14 +178,14 @@ you can't recover either without the catalog. Safeguards:
 - `pg_catalog` documentation.
 - Bailis et al. on "online schema change".
 - Google F1 / Spanner schema-change paper.
-- `.claude/skills/sql-engine-expert/SKILL.md` — umbrella.
-- `.claude/skills/postgresql-expert/SKILL.md` — wire
+- `.claude/skills/storage-and-query-engines/blueprints/sql-engine-expert.md` — umbrella.
+- `.claude/skills/storage-and-query-engines/blueprints/postgresql-expert.md` — wire
   visibility.
-- `.claude/skills/storage-specialist/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/storage-specialist.md` —
   persistence.
-- `.claude/skills/transaction-manager-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/transaction-manager-expert.md` —
   DDL transactions.
-- `.claude/skills/algebra-owner/SKILL.md` — schema-change
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — schema-change
   invariants.
-- `.claude/skills/sql-expert/SKILL.md` — DDL grammar
+- `.claude/skills/storage-and-query-engines/blueprints/sql-expert.md` — DDL grammar
   semantics.

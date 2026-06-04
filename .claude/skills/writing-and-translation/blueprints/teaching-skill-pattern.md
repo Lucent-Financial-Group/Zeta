@@ -186,7 +186,7 @@ has either drifted or the expert is missing.
 The three-counterpart taxonomy above is the first and most
 common cut of Zeta's skill library. It is not the only cut.
 Under Ranganathan's colon-classification tradition (see
-`.claude/skills/taxonomy-expert/SKILL.md`), a well-organised
+`.claude/skills/data-modeling-and-ontology/blueprints/taxonomy-expert.md`), a well-organised
 library classifies *on multiple orthogonal facets* rather
 than one deep tree. Zeta's skill library uses **three
 facets**:
@@ -387,12 +387,12 @@ first-encounters.
   scaffold inspiration.
 - *Grokking Algorithms* (Bhargava 2016) — modern example of
   teach-style technical writing.
-- `.claude/skills/skill-documentation-standard/SKILL.md` —
+- `.claude/skills/skill-lifecycle/blueprints/skill-documentation-standard.md` —
   frontmatter / breadcrumb discipline for all skills
   including teach.
-- `.claude/skills/skill-creator/SKILL.md` — lifecycle that
+- `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` — lifecycle that
   lands teach-skill edits.
-- `.claude/skills/section-numbering-expert/SKILL.md` — ISO
+- `.claude/skills/governance/blueprints/section-numbering-expert.md` — ISO
   2145 for teach skills > ~6 sections.
-- `.claude/skills/documentation-agent/SKILL.md` — general doc
+- `.claude/skills/writing-and-translation/blueprints/documentation-agent.md` — general doc
   steward.

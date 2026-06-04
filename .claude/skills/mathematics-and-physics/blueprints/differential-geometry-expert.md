@@ -284,11 +284,11 @@ When this skill is on a review (rare):
 - Nakahara — *Geometry, Topology and Physics* (the
   physics-oriented bridge).
 - Amari — *Information Geometry and Its Applications*.
-- `.claude/skills/variance-expert/SKILL.md` — Brian.
-- `.claude/skills/duality-expert/SKILL.md` — Meijer.
-- `.claude/skills/physics-expert/SKILL.md` — broad.
-- `.claude/skills/theoretical-physics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/variance-expert.md` — Brian.
+- `.claude/skills/mathematics-and-physics/blueprints/duality-expert.md` — Meijer.
+- `.claude/skills/mathematics-and-physics/blueprints/physics-expert.md` — broad.
+- `.claude/skills/mathematics-and-physics/blueprints/theoretical-physics-expert.md` —
   depth.
-- `.claude/skills/applied-physics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/applied-physics-expert.md` —
   engineering side.
-- `.claude/skills/mathematics-expert/SKILL.md` — abstract.
+- `.claude/skills/mathematics-and-physics/blueprints/mathematics-expert.md` — abstract.

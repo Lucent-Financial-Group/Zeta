@@ -162,19 +162,19 @@ proposal.
 - `.semgrep.yml` — Zeta's custom rules.
 - `.semgrepignore` — path-level silencing.
 - `.github/workflows/gate.yml` — CI integration.
-- `.claude/skills/semgrep-rule-authoring/SKILL.md` — paired
+- `.claude/skills/formal-methods/blueprints/semgrep-rule-authoring.md` — paired
   *how* skill.
-- `.claude/skills/codeql-expert/SKILL.md` — sibling (deeper
+- `.claude/skills/formal-methods/blueprints/codeql-expert.md` — sibling (deeper
   dataflow tool).
-- `.claude/skills/csharp-expert/SKILL.md` — Roslyn
+- `.claude/skills/languages-and-build/blueprints/csharp-expert.md` — Roslyn
   analyzers.
-- `.claude/skills/github-actions-expert/SKILL.md` — workflow
+- `.claude/skills/performance-and-runtime-ops/blueprints/github-actions-expert.md` — workflow
   shape.
-- `.claude/skills/devops-engineer/SKILL.md` — pin / SHA
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — pin / SHA
   policy.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   portfolio-level tool routing.
-- `.claude/skills/security-operations-engineer/SKILL.md` —
+- `.claude/skills/security/blueprints/security-operations-engineer.md` —
   secrets / incident-response side.
 - `docs/TECH-RADAR.md` — Semgrep tech-radar row (should
   read Adopt once custom + `p/secrets` both land).

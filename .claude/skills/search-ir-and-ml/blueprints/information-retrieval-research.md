@@ -254,7 +254,7 @@ Open research questions the Zeta factory cares about:
 - Liu et al. — Lost in the Middle.
 - Joachims et al. — Unbiased LTR series.
 - Faggioli et al. — LLM-based IR evaluation.
-- `.claude/skills/full-text-search-expert/SKILL.md`.
-- `.claude/skills/neural-retrieval-expert/SKILL.md`.
-- `.claude/skills/search-relevance-expert/SKILL.md`.
-- `.claude/skills/paper-peer-reviewer/SKILL.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/full-text-search-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/neural-retrieval-expert.md`.
+- `.claude/skills/search-ir-and-ml/blueprints/search-relevance-expert.md`.
+- `.claude/skills/research/blueprints/paper-peer-reviewer.md`.

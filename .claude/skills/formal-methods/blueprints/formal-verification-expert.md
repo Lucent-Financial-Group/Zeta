@@ -274,5 +274,5 @@ the `architect` reads it before sizing the round.
   `tests/Tests.FSharp/Formal/` — the artefact surfaces
 - `.semgrep.yml`, `stryker-config.json` — static + mutation
   tooling configuration
-- `.claude/skills/claims-tester/SKILL.md` — the `claims-tester`, the
+- `.claude/skills/formal-methods/blueprints/claims-tester.md` — the `claims-tester`, the
   empirical counterpart

@@ -240,6 +240,6 @@ rails.
 - Raiffa — *Negotiation Analysis*.
 - Malhotra & Bazerman — *Negotiation Genius*.
 - Thompson — *The Mind and Heart of the Negotiator*.
-- `.claude/skills/conflict-resolution-expert/SKILL.md`.
-- `.claude/skills/governance-expert/SKILL.md`.
-- `.claude/skills/public-api-designer/SKILL.md`.
+- `.claude/skills/governance/blueprints/conflict-resolution-expert.md`.
+- `.claude/skills/governance/blueprints/governance-expert.md`.
+- `.claude/skills/api-and-protocols/blueprints/public-api-designer.md`.

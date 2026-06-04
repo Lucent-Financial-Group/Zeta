@@ -283,7 +283,7 @@ PII. Use the right tool.
 - GDPR Art. 5 (principles), 17 (erasure), 35 (DPIA).
 - Dwork & Roth — *Algorithmic Foundations of Differential
   Privacy*.
-- `.claude/skills/master-data-management-expert/SKILL.md`.
-- `.claude/skills/data-lineage-expert/SKILL.md`.
-- `.claude/skills/security-operations-engineer/SKILL.md`.
-- `.claude/skills/threat-model-critic/SKILL.md`.
+- `.claude/skills/data-modeling-and-ontology/blueprints/master-data-management-expert.md`.
+- `.claude/skills/data-modeling-and-ontology/blueprints/data-lineage-expert.md`.
+- `.claude/skills/security/blueprints/security-operations-engineer.md`.
+- `.claude/skills/security/blueprints/threat-model-critic.md`.

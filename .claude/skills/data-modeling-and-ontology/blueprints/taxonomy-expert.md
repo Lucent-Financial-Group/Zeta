@@ -328,11 +328,11 @@ is the first test.
   argument.
 - Bowker & Star — *Sorting Things Out* (1999) — taxonomies
   as political.
-- `.claude/skills/ontology-expert/SKILL.md` — semantic
+- `.claude/skills/data-modeling-and-ontology/blueprints/ontology-expert.md` — semantic
   sibling.
-- `.claude/skills/controlled-vocabulary-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/controlled-vocabulary-expert.md` —
   term-list sibling.
-- `.claude/skills/master-data-management-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/master-data-management-expert.md` —
   golden-record sibling.
-- `.claude/skills/knowledge-graph-expert/SKILL.md` — query
+- `.claude/skills/data-modeling-and-ontology/blueprints/knowledge-graph-expert.md` — query
   sibling.

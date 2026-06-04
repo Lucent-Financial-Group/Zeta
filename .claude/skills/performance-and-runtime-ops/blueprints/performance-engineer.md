@@ -115,7 +115,7 @@ before/after row.
 - `bench/Benchmarks/*` — measurement surface
 - `docs/BENCHMARKS.md` — baseline log
 - `docs/TECH-RADAR.md` — perf-tool ring state
-- `.claude/skills/complexity-reviewer/SKILL.md` — the `complexity-reviewer`
-- `.claude/skills/query-planner/SKILL.md` — the `query-planner`
-- `.claude/skills/claims-tester/SKILL.md` — the `claims-tester`
+- `.claude/skills/code-review-and-quality/blueprints/complexity-reviewer.md` — the `complexity-reviewer`
+- `.claude/skills/storage-and-query-engines/blueprints/query-planner.md` — the `query-planner`
+- `.claude/skills/formal-methods/blueprints/claims-tester.md` — the `claims-tester`
 - `docs/AGENT-BEST-PRACTICES.md` — BP-04, BP-11, BP-16

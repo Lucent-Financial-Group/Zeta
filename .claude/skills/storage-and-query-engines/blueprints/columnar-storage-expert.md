@@ -161,12 +161,12 @@ needed downstream are decompressed.
 - Lemire *ALP* encoding paper.
 - Apache Arrow / Parquet specs.
 - DuckDB storage docs.
-- `.claude/skills/sql-engine-expert/SKILL.md` — umbrella.
-- `.claude/skills/storage-specialist/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/sql-engine-expert.md` — umbrella.
+- `.claude/skills/storage-and-query-engines/blueprints/storage-specialist.md` —
   end-to-end persistence.
-- `.claude/skills/vectorised-execution-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/vectorised-execution-expert.md` —
   scan kernels.
-- `.claude/skills/hardware-intrinsics-expert/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/hardware-intrinsics-expert.md` —
   SIMD decompression.
-- `.claude/skills/algebra-owner/SKILL.md` — retraction-
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — retraction-
   native layout invariants.

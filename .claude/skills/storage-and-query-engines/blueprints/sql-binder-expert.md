@@ -186,13 +186,13 @@ and the optimiser; not a public surface today.
   resolution canonical.
 - DuckDB binder docs.
 - SQL:2016 standard — name-resolution rules.
-- `.claude/skills/sql-parser-expert/SKILL.md` — syntax.
-- `.claude/skills/sql-expert/SKILL.md` — language
+- `.claude/skills/storage-and-query-engines/blueprints/sql-parser-expert.md` — syntax.
+- `.claude/skills/storage-and-query-engines/blueprints/sql-expert.md` — language
   semantics.
-- `.claude/skills/query-optimizer-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/query-optimizer-expert.md` —
   post-bind rewrites.
-- `.claude/skills/relational-algebra-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/blueprints/relational-algebra-expert.md` —
   bound-IR equivalence proofs.
-- `.claude/skills/postgresql-expert/SKILL.md` — dialect
+- `.claude/skills/storage-and-query-engines/blueprints/postgresql-expert.md` — dialect
   quirks.
-- `.claude/skills/sql-engine-expert/SKILL.md` — umbrella.
+- `.claude/skills/storage-and-query-engines/blueprints/sql-engine-expert.md` — umbrella.

@@ -282,13 +282,13 @@ red-team work before red-team work begins."
   the elder-plinius prohibition.
 - `CLAUDE.md` §"Ground rules" — same prohibition, Claude-
   specific.
-- `.claude/skills/prompt-protector/SKILL.md` — defensive
+- `.claude/skills/security/blueprints/prompt-protector.md` — defensive
   pair.
-- `.claude/skills/threat-model-critic/SKILL.md` — shipped
+- `.claude/skills/security/blueprints/threat-model-critic.md` — shipped
   threat model.
-- `.claude/skills/security-researcher/SKILL.md` — novel
+- `.claude/skills/security/blueprints/security-researcher.md` — novel
   attacks.
-- `.claude/skills/security-operations-engineer/SKILL.md` —
+- `.claude/skills/security/blueprints/security-operations-engineer.md` —
   incident handler.
 - OWASP *LLM Top 10* (2024+) — injection, data leakage,
   model DoS, etc.

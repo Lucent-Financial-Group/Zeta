@@ -206,17 +206,17 @@ certainly performing l33t after learning a table.
 
 ## Cross-references
 
-- `.claude/skills/leet-speak-transform/SKILL.md` —
+- `.claude/skills/security/blueprints/leet-speak-transform.md` —
   mechanical encode / decode; sibling.
-- `.claude/skills/leet-speak-obfuscation-detector/SKILL.md`
+- `.claude/skills/security/blueprints/leet-speak-obfuscation-detector.md`
   — filter-bypass audit; sibling.
-- `.claude/skills/etymology-expert/SKILL.md` — general
+- `.claude/skills/governance/blueprints/etymology-expert.md` — general
   word-origin discipline; this skill is the subculture-
   specific specialisation.
-- `.claude/skills/branding-specialist/SKILL.md` — when the
+- `.claude/skills/experience-and-product/blueprints/branding-specialist.md` — when the
   question is whether the l33t register belongs at all.
-- `.claude/skills/steganography-expert/SKILL.md` — the
+- `.claude/skills/security/blueprints/steganography-expert.md` — the
   filter-bypass origin (Era 3) overlaps with modern
   hidden-channel concerns.
-- `.claude/skills/security-researcher/SKILL.md` — modern
+- `.claude/skills/security/blueprints/security-researcher.md` — modern
   attack-surface inheritor of the filter-bypass lineage.

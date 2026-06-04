@@ -283,16 +283,16 @@ shipping alone:
   Conventional Encryption Function* (Merkle tree origin).
 - Corbett et al. 2012 — *Spanner* (TrueTime-based
   replication).
-- `.claude/skills/distributed-consensus-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/distributed-consensus-expert.md` —
   consensus umbrella.
-- `.claude/skills/paxos-expert/SKILL.md` — Paxos family.
-- `.claude/skills/raft-expert/SKILL.md` — Raft.
-- `.claude/skills/crdt-expert/SKILL.md` — coordination-
+- `.claude/skills/distributed-systems/blueprints/paxos-expert.md` — Paxos family.
+- `.claude/skills/distributed-systems/blueprints/raft-expert.md` — Raft.
+- `.claude/skills/distributed-systems/blueprints/crdt-expert.md` — coordination-
   avoidant replication.
-- `.claude/skills/eventual-consistency-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/eventual-consistency-expert.md` —
   consistency spectrum.
-- `.claude/skills/gossip-protocols-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/gossip-protocols-expert.md` —
   membership propagation.
-- `.claude/skills/distributed-coordination-expert/SKILL.md` —
+- `.claude/skills/distributed-systems/blueprints/distributed-coordination-expert.md` —
   primitive semantics.
-- `.claude/skills/tla-expert/SKILL.md` — spec authoring.
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — spec authoring.

@@ -124,14 +124,14 @@ stated error bound?) routes to Soraya for tool choice:
 
 ## Reference patterns
 
-- `.claude/skills/mathematics-expert/SKILL.md` — umbrella.
-- `.claude/skills/numerical-analysis-and-floating-point-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/mathematics-expert.md` — umbrella.
+- `.claude/skills/mathematics-and-physics/blueprints/numerical-analysis-and-floating-point-expert.md` —
   conditioning / overflow / IEEE 754.
-- `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/probability-and-bayesian-inference-expert.md` —
   Bayesian side.
-- `.claude/skills/theoretical-mathematics-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/theoretical-mathematics-expert.md` —
   sibling (proofs, not computation).
-- `.claude/skills/algebra-owner/SKILL.md` — Zeta operator
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — Zeta operator
   algebra authority.
 - `src/Core/NovelMath.fs` — tropical semiring.
 - `src/Core/Hierarchy.fs` — tropical LFP closure.

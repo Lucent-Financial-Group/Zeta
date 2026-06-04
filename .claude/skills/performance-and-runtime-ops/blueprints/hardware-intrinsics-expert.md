@@ -228,18 +228,18 @@ Before approving a SIMD kernel PR:
 
 ## Reference patterns
 
-- `.claude/skills/performance-engineer/SKILL.md` — owner
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` — owner
   (Naledi).
-- `.claude/skills/query-planner/SKILL.md` — dispatch-side
+- `.claude/skills/storage-and-query-engines/blueprints/query-planner.md` — dispatch-side
   sibling (Imani).
-- `.claude/skills/numerical-analysis-and-floating-point-expert/SKILL.md` —
+- `.claude/skills/mathematics-and-physics/blueprints/numerical-analysis-and-floating-point-expert.md` —
   IEEE 754 + saturation correctness.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md` —
   DST replay of SIMD kernels (Rashida).
-- `.claude/skills/csharp-expert/SKILL.md`,
-  `.claude/skills/fsharp-expert/SKILL.md` — host-language
+- `.claude/skills/languages-and-build/blueprints/csharp-expert.md`,
+  `.claude/skills/languages-and-build/blueprints/fsharp-expert.md` — host-language
   idioms.
-- `.claude/skills/benchmark-authoring-expert/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/benchmark-authoring-expert.md` —
   BenchmarkDotNet authoring.
 - `src/Core/Simd.fs`, `src/Core/SimdMerge.fs`,
   `src/Core/HardwareCrc.fs` — current kernels.

@@ -184,15 +184,15 @@ write. Policy:
   Snapshot Databases* (SSI).
 - Postgres SSI implementation notes.
 - CockroachDB concurrency-control whitepaper.
-- `.claude/skills/transaction-manager-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/transaction-manager-expert.md` —
   parent.
-- `.claude/skills/algebra-owner/SKILL.md` — retraction-
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — retraction-
   native semantics.
-- `.claude/skills/storage-specialist/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/storage-specialist.md` —
   persistence.
-- `.claude/skills/deterministic-simulation-theory-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/deterministic-simulation-theory-expert.md` —
   DST compat.
-- `.claude/skills/streaming-incremental-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/streaming-incremental-expert.md` —
   streaming read-set.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   serialisability proofs.

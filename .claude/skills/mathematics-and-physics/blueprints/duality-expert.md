@@ -255,14 +255,14 @@ When this skill is on a design review:
 - Pontryagin — *Topological Groups*.
 - *Profunctor Optics: Modular Data Accessors* — modern
   lens/prism unification.
-- `.claude/skills/linq-expert/SKILL.md` — Erik.
-- `.claude/skills/rx-expert/SKILL.md` — Bart.
-- `.claude/skills/variance-expert/SKILL.md` — Brian.
-- `.claude/skills/category-theory-expert/SKILL.md` —
+- `.claude/skills/languages-and-build/blueprints/linq-expert.md` — Erik.
+- `.claude/skills/streaming-and-execution/blueprints/rx-expert.md` — Bart.
+- `.claude/skills/mathematics-and-physics/blueprints/variance-expert.md` — Brian.
+- `.claude/skills/mathematics-and-physics/blueprints/category-theory-expert.md` —
   adjunctions / Yoneda.
-- `.claude/skills/differential-geometry-expert/SKILL.md`
+- `.claude/skills/mathematics-and-physics/blueprints/differential-geometry-expert.md`
   — Riemann.
-- `.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md`
+- `.claude/skills/mathematics-and-physics/blueprints/measure-theory-and-signed-measures-expert.md`
   — L^p / L^q.
-- `.claude/skills/push-pull-dataflow-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/push-pull-dataflow-expert.md` —
   engineering framing.

@@ -182,9 +182,9 @@ For each row in work-queue order:
 - `tools/setup/manifests/dotnet-tools` — dotnet global
   tool pins
 - `tools/setup/manifests/uv-tools` — uv CLI pins
-- `.claude/skills/package-auditor/SKILL.md` — upstream
+- `.claude/skills/languages-and-build/blueprints/package-auditor.md` — upstream
   audit lane
-- `.claude/skills/commit-message-shape/SKILL.md` —
+- `.claude/skills/workflows/blueprints/commit-message-shape.md` —
   `deps:` prefix convention
 - `docs/CONFLICT-RESOLUTION.md` — conflict protocol
   when a bump's build-break triages into design-doc

@@ -228,12 +228,12 @@ might be the element just retracted.
   Dataflow*.
 - Materialize engineering blog.
 - Feldera — Rust DBSP implementation.
-- `.claude/skills/algebra-owner/SKILL.md` — operator laws.
-- `.claude/skills/execution-model-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — operator laws.
+- `.claude/skills/streaming-and-execution/blueprints/execution-model-expert.md` —
   umbrella.
-- `.claude/skills/streaming-window-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/streaming-window-expert.md` —
   windowed aggregates.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   proofs.
 - `src/Core/Operator*.fs`,
   `src/Core/Differential.fs`,

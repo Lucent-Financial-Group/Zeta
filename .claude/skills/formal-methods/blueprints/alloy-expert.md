@@ -199,10 +199,10 @@ dump is what we debug from.
 - `tools/alloy/AlloyRunner.java` — headless driver
 - `tests/Tests.FSharp/Formal/Alloy.Runner.Tests.fs` — F#
   test harness
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   the `formal-verification-expert`
-- `.claude/skills/tla-expert/SKILL.md` — sibling for
+- `.claude/skills/formal-methods/blueprints/tla-expert.md` — sibling for
   temporal properties
-- `.claude/skills/java-expert/SKILL.md` — for the runner
+- `.claude/skills/languages-and-build/blueprints/java-expert.md` — for the runner
 - Daniel Jackson, *Software Abstractions* (canonical
   textbook on Alloy)

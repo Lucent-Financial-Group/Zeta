@@ -202,14 +202,14 @@ Solutions:
 - Postgres `src/backend/access/transam/`.
 - Google Spanner paper.
 - Lamport *Paxos Commit* paper.
-- `.claude/skills/sql-engine-expert/SKILL.md` — umbrella.
-- `.claude/skills/concurrency-control-expert/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/sql-engine-expert.md` — umbrella.
+- `.claude/skills/storage-and-query-engines/blueprints/concurrency-control-expert.md` —
   conflict detection.
-- `.claude/skills/storage-specialist/SKILL.md` —
+- `.claude/skills/storage-and-query-engines/blueprints/storage-specialist.md` —
   persistence.
-- `.claude/skills/algebra-owner/SKILL.md` — retraction-
+- `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — retraction-
   native laws.
-- `.claude/skills/streaming-incremental-expert/SKILL.md` —
+- `.claude/skills/streaming-and-execution/blueprints/streaming-incremental-expert.md` —
   delta-stream substrate.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   TLA+ invariants.

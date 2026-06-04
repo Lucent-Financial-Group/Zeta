@@ -329,12 +329,12 @@ a guarantee.
 - Apple — *TN3138: On the various usages of fsync on
   iOS and macOS*.
 - ZFS — *Intent Log and Write Cache* documentation.
-- `.claude/skills/storage-specialist/SKILL.md` — Zeta's
+- `.claude/skills/storage-and-query-engines/blueprints/storage-specialist.md` — Zeta's
   storage subsystem.
-- `.claude/skills/performance-engineer/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` —
   benchmarks.
-- `.claude/skills/devops-engineer/SKILL.md` — CI infra.
-- `.claude/skills/columnar-storage-expert/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md` — CI infra.
+- `.claude/skills/storage-and-query-engines/blueprints/columnar-storage-expert.md` —
   columnar layout.
-- `.claude/skills/security-operations-engineer/SKILL.md`
+- `.claude/skills/security/blueprints/security-operations-engineer.md`
   — ACL / capability threats.

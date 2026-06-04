@@ -294,5 +294,5 @@ load-bearing for greps on archived fire-history).
 - `.github/copilot-instructions.md`
 - `docs/HUMAN-BACKLOG.md` — Aaron-scoped decisions
   mirror
-- `.claude/skills/github-actions-expert/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/blueprints/github-actions-expert.md` —
   adjacent capability (workflow authoring)
