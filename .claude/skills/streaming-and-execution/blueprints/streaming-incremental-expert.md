@@ -1,8 +1,9 @@
-<!-- BLUEPRINT — loaded on demand from the streaming-and-execution category skill. Fat is fine; no routing frontmatter. -->
+---
+name: streaming-incremental-expert
+description: DBSP / Timely Dataflow — delta-stream composition, retraction-native IVM, standing queries, watermarks, frontiers.
+---
 
-# Blueprint: Streaming / Incremental — The Base Substrate
-
-> Migrated from the former `streaming-incremental-expert` skill. DBSP / Timely Dataflow — delta-stream composition, retraction-native IVM, standing queries, watermarks, frontiers.
+# Streaming / Incremental Expert — The Base Substrate
 
 Capability skill. No persona. This is the execution-model
 narrow that carries Zeta's identity: **streaming,
