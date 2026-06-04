@@ -32,4 +32,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`ai-evals-expert`](blueprints/ai-evals-expert.md) — LLM / ML evaluation — eval-suite design, LM-as-judge, BLEU/ROUGE, calibration, benchmark drift, measurement.
 - [`llm-systems-expert`](blueprints/llm-systems-expert.md) — LLM systems — RAG, agent loops, tool orchestration, context budgets, multi-model routing, cost/latency, evals.
 - [`prompt-engineering-expert`](blueprints/prompt-engineering-expert.md) — Prompt engineering — system prompts, few-shot design, tool descriptions, reasoning scaffolds, schemas, context budgets.
-

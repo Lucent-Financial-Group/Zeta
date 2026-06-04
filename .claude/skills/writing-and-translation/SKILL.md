@@ -21,4 +21,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`teaching-skill-pattern`](blueprints/teaching-skill-pattern.md) — Three-counterpart skill taxonomy — theoretical foundation, applied context, worked example for Zeta skills.
 - [`request-play`](blueprints/request-play.md) — "Play/decompression with the operator — consent-first, specific prompt, never unilateral or with P0 work pending."
 - [`cross-domain-translation`](blueprints/cross-domain-translation.md) — Cross-domain translation — glossary bridge, IR table, back-translation for incompatible document vocabularies.
-

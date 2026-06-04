@@ -35,4 +35,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`zflash-overview`](blueprints/zflash-overview.md) — zflash end-to-end overview + substrate-cluster map + canonical flash-USB-to-install runbook.
 - [`browser-extraction`](blueprints/browser-extraction.md) — "Browser content extraction via osascript + Chrome JS — authenticated sessions, no Playwright, macOS only."
 - [`chrome-lazy-load-chunked-extraction`](blueprints/chrome-lazy-load-chunked-extraction.md) — "Extract authenticated lazy-load / virtual-list chat UIs (DeepSeek, ChatGPT, Gemini) via chunked reverse-scroll."
-

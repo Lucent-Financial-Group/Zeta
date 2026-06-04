@@ -21,4 +21,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`skill-gap-finder`](blueprints/skill-gap-finder.md) — Skill gap finder — scans recurring patterns and tribal knowledge that should become a central skill.
 - [`skill-ontology-auditor`](blueprints/skill-ontology-auditor.md) — Skill-library ontology hygiene — facets, orthogonality violations, theory/applied drift, hand-off contracts, naming.
 - [`skill-documentation-standard`](blueprints/skill-documentation-standard.md) — SKILL.md documentation standard — frontmatter pattern, Data Vault breadcrumbs, body scaffold, BP-NN citations.
-

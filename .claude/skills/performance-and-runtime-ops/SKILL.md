@@ -35,4 +35,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`error-tracking-expert`](blueprints/error-tracking-expert.md) — Error tracking — Sentry/Rollbar fingerprinting, releases, PII in exceptions, regressions, Result-over-exception.
 - [`operations-monitoring-expert`](blueprints/operations-monitoring-expert.md) — SRE operations — SLI/SLO/error budgets, on-call, incident command, runbooks, chaos engineering, toil reduction.
 - [`lightlike-observability-discipline`](blueprints/lightlike-observability-discipline.md) — Lightlike-substrate observability design-rule — OTel, Kubernetes, Argo, Prometheus, Git instrumentation.
-

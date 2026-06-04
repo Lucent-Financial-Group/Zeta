@@ -31,4 +31,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`backlog-scrum-master`](blueprints/backlog-scrum-master.md) — Backlog + roadmap grooming — BACKLOG.md/ROADMAP.md, in-flight view, velocity, priorities, scope boundaries.
 - [`next-steps`](blueprints/next-steps.md) — Next-steps recommender — top 3-5 items ranked by value-per-effort from backlog, findings, and research.
 - [`bug-fixer`](blueprints/bug-fixer.md) — "Bug-fix procedure — falsifying test, blast-radius walk, minimal correct fix, reviewer floor, spec update."
-

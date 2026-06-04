@@ -34,4 +34,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`package-upgrader`](blueprints/package-upgrader.md) — Package upgrade driver — turns audit output into concrete upgrade PRs, blast-radius-ordered, build+test gated.
 - [`editorconfig-expert`](blueprints/editorconfig-expert.md) — EditorConfig — indent/charset/EOL keys, .NET analyzer severity overrides, pattern precedence, MSBuild interaction.
 - [`sonar-issue-fixer`](blueprints/sonar-issue-fixer.md) — SonarLint/Roslyn analyzer triage — right long-term fix or documented suppression, never quick-appease edits.
-

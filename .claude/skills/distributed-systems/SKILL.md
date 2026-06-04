@@ -26,4 +26,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`eventual-consistency-expert`](blueprints/eventual-consistency-expert.md) — Eventual consistency — consistency hierarchy, session guarantees, logical clocks, CAP/PACELC, tunable consistency.
 - [`replication-expert`](blueprints/replication-expert.md) — Replication strategies — primary-backup, state-machine, chain, log-shipping, quorum, anti-entropy protocol selection.
 - [`time-and-clocks-expert`](blueprints/time-and-clocks-expert.md) — Time and clocks — wall vs monotonic, NTP/PTP drift, UTC/TAI, logical clocks (Lamport/vector), DST-safe.
-

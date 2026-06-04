@@ -31,4 +31,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`leet-speak-obfuscation-detector`](blueprints/leet-speak-obfuscation-detector.md) — "Leet-speak filter bypass — Unicode NFKC, homoglyph lookup, reverse substitution scoring, moderation pipelines."
 - [`leet-speak-transform`](blueprints/leet-speak-transform.md) — Leet-speak transform — encode/decode numeric, aggressive, and Unicode-homoglyph dialects with register awareness.
 - [`space-opera-writer`](blueprints/space-opera-writer.md) — Whimsical-adversary prose for THREAT-MODEL-SPACE-OPERA.md — named villains, reality tags, mitigation-honesty invariant.
-

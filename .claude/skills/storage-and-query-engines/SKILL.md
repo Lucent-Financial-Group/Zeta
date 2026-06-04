@@ -39,4 +39,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`distributed-query-execution-expert`](blueprints/distributed-query-execution-expert.md) — Distributed SQL execution — partitioning, shuffle/broadcast/gather, collocated joins, aggregation, shard routing.
 - [`database-systems-expert`](blueprints/database-systems-expert.md) — Database systems — storage models, CAP/PACELC, consistency, NewSQL, sharding, polyglot persistence, anomalies.
 - [`entity-framework-expert`](blueprints/entity-framework-expert.md) — EF Core — provider model, LINQ→SQL translation, DbContext lifecycle, change tracking, migrations, Zeta provider design.
-

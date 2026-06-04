@@ -22,4 +22,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`race-hunter`](blueprints/race-hunter.md) — F# concurrency bug hunter — CompareExchange misses, torn reads, lock-across-await, concurrent ResizeArray, P0/P1/P2.
 - [`spec-zealot`](blueprints/spec-zealot.md) — Spec-to-code alignment review — zero-empathy; finds drift, spec bugs, gaps, overlay violations, best-practice lint.
 - [`project-structure-reviewer`](blueprints/project-structure-reviewer.md) — Repo layout audit — folder tree shape, file placement, naming conventions, misplaced artifacts, debt as disorganization.
-

@@ -25,4 +25,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`execution-model-expert`](blueprints/execution-model-expert.md) — Execution model — Volcano vs vectorised vs morsel-driven vs JIT-codegen vs push/pull vs streaming/incremental.
 - [`deterministic-simulation-theory-expert`](blueprints/deterministic-simulation-theory-expert.md) — DST — seeded replayable simulation, ISimulationEnvironment, entropy guards, FoundationDB/TigerBeetle, hot-path binding.
 - [`algebra-owner`](blueprints/algebra-owner.md) — Zeta.Core operator algebra — Z-sets, D/I/z^-1/H operators, retractions, chain rule, nested fixpoints, differentials.
-

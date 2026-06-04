@@ -18,4 +18,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`graphql-expert`](blueprints/graphql-expert.md) — "GraphQL — type system, resolvers, N+1/DataLoader, Apollo/Relay/URQL, persisted queries, subscriptions, pagination."
 - [`graphql-federation-expert`](blueprints/graphql-federation-expert.md) — "GraphQL federation — Apollo v2 subgraphs, router composition, entity resolution, schema stitching alternatives."
 - [`public-api-designer`](blueprints/public-api-designer.md) — Public API design gatekeeper — public type/member/signature changes, internal→public flips, contract review.
-

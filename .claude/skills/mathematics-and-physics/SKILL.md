@@ -31,4 +31,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`physics-expert`](blueprints/physics-expert.md) — Physics — entropy, tropical semiring, anti-entropy dynamics, dimensional reasoning, load-bearing vs rhetorical use.
 - [`applied-physics-expert`](blueprints/applied-physics-expert.md) — Applied physics in Zeta — tropical semiring/stat-mech limits, anti-entropy CRDTs, Shannon sketch tuning.
 - [`theoretical-physics-expert`](blueprints/theoretical-physics-expert.md) — "Theoretical physics — symmetry/group theory, QFT, general relativity, statistical mechanics, formal reasoning."
-

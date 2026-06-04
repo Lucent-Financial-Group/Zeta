@@ -19,4 +19,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`factory-automation-gap-finder`](blueprints/factory-automation-gap-finder.md) — Factory automation gap scanner — finds manual factory work to automate across CI, release, hygiene, dependencies.
 - [`factory-balance-auditor`](blueprints/factory-balance-auditor.md) — Factory balance audit — finds powers/authorities/write-surfaces lacking a compensating brake or reviewer.
 - [`factory-optimizer`](blueprints/factory-optimizer.md) — Factory optimizer — highest-uplift intervention per maintainer effort; pairs with factory-balance-auditor.
-

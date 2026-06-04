@@ -25,4 +25,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`branding-specialist`](blueprints/branding-specialist.md) — "Product identity and strategy — naming, positioning, competitive framing, roadmap narrative, stakeholder comms."
 - [`negotiation-expert`](blueprints/negotiation-expert.md) — Negotiation — BATNA/ZOPA, integrative vs distributive, upstream asks, vendor contracts, AI-to-AI bargaining.
 - [`vibe-coding-expert`](blueprints/vibe-coding-expert.md) — "Vibe-coding / AI factory method — AI-directed software production, spec/skill/subagent/PR loop, quality gates."
-

@@ -32,4 +32,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`sweep-refs`](blueprints/sweep-refs.md) — Cross-repo reference sweep — grep, classify refs, update moved paths, anchor discipline, verify, commit.
 - [`human-anchor`](blueprints/human-anchor.md) — Tie a concept, ontology, or vocabulary term back to the human who originated it and the research paper(s) — old and modern — that anchor it. Use when introducing or reviewing a coinage, algebra, data model, or vocabulary term that should stand on named prior art.
 - [`claude-md-steward`](blueprints/claude-md-steward.md) — "CLAUDE.md steward — audit, revise, improve CLAUDE.md with Zeta-specific guards over upstream plugin."
-

@@ -31,4 +31,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`paced-ontology-landing`](blueprints/paced-ontology-landing.md) — Ontology landing workflow — incremental migration across docs/skills/decisions, retraction path, maintainer opt-in gate.
 - [`knowledge-graph-expert`](blueprints/knowledge-graph-expert.md) — "Knowledge graphs — RDF/property graphs, SPARQL/Cypher/GQL, Neo4j/Neptune/JanusGraph, supernodes, schema design."
 - [`relational-algebra-expert`](blueprints/relational-algebra-expert.md) — Relational algebra — Codd operators, equivalence rewrite laws, DBSP mapping, retraction-native semantics, proof anchors.
-

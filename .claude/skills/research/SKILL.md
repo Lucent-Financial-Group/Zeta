@@ -17,4 +17,3 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 
 - [`paper-peer-reviewer`](blueprints/paper-peer-reviewer.md) — Paper peer review — SIGMOD/VLDB/POPL standards, related-work audit, proof/benchmark requirements, rebuttal questions.
 - [`tech-radar-owner`](blueprints/tech-radar-owner.md) — docs/TECH-RADAR.md stewardship — Adopt/Trial/Assess/Hold rings, promotion/demotion, entry gate, reviews.
-
