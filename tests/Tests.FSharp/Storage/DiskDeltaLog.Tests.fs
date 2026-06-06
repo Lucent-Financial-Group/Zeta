@@ -80,6 +80,82 @@ let ``fsync-per-append round-trips`` () =
 
 
 [<Fact>]
+let ``group-commit segment log appends and replays in sequence order`` () =
+    withDir "gcdl-roundtrip" (fun dir ->
+        use log = new GroupCommitDiskDeltaLog<int>(dir, CheckpointDeltaCodec<int>())
+        let dlog = log :> IDeltaLog<int>
+        let tasks =
+            [| for i in 1 .. 20 ->
+                   dlog.AppendAsync(ZSet.ofKeys [ i ], empty, ct).AsTask() |]
+        System.Threading.Tasks.Task.WaitAll(tasks |> Array.map (fun t -> t :> System.Threading.Tasks.Task))
+        tasks |> Array.map (fun t -> t.Result) |> should equal [| 1L .. 20L |]
+        let entries = dlog.ReplayAsync(0L, ct).AsTask().Result
+        entries |> Array.map _.Seq |> should equal [| 1L .. 20L |]
+        entries |> Array.map (fun e -> e.Delta) |> should equal [| for i in 1 .. 20 -> ZSet.ofKeys [ i ] |])
+
+
+[<Fact>]
+let ``group-commit segment log recovers high-water across a fresh instance`` () =
+    withDir "gcdl-reopen" (fun dir ->
+        (use log1 = new GroupCommitDiskDeltaLog<int>(dir, CheckpointDeltaCodec<int>())
+         let dlog1 = log1 :> IDeltaLog<int>
+         for i in 1 .. 3 do
+             dlog1.AppendAsync(ZSet.ofKeys [ i ], empty, ct).AsTask().Wait())
+        use log2 = new GroupCommitDiskDeltaLog<int>(dir, CheckpointDeltaCodec<int>())
+        let dlog2 = log2 :> IDeltaLog<int>
+        dlog2.HighWater |> should equal 3L
+        dlog2.ReplayAsync(0L, ct).AsTask().Result.Length |> should equal 3
+        dlog2.AppendAsync(ZSet.ofKeys [ 4 ], empty, ct).AsTask().Result |> should equal 4L)
+
+
+[<Fact>]
+let ``group-commit segment log works through the canonical CBOR codec`` () =
+    withDir "gcdl-cbor" (fun dir ->
+        use log = new GroupCommitDiskDeltaLog<int>(dir, CborDeltaCodec<int>(keyEnc, keyDec))
+        let dlog = log :> IDeltaLog<int>
+        dlog.AppendAsync(ZSet.ofSeq [ 1, 1L; 2, -3L ], empty, ct).AsTask().Wait()
+        let e = (dlog.ReplayAsync(0L, ct).AsTask().Result).[0]
+        e.Delta |> should equal (ZSet.ofSeq [ 1, 1L; 2, -3L ]))
+
+
+[<Fact>]
+let ``group-commit segment log truncates torn trailing record on recovery`` () =
+    withDir "gcdl-torn" (fun dir ->
+        (use log = new GroupCommitDiskDeltaLog<int>(dir, CheckpointDeltaCodec<int>())
+         let dlog = log :> IDeltaLog<int>
+         dlog.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask().Wait()
+         dlog.AppendAsync(ZSet.ofKeys [ 2 ], empty, ct).AsTask().Wait())
+        let segment = Path.Combine(dir, "delta.segment")
+        let before = FileInfo(segment).Length
+        use fs = new FileStream(segment, FileMode.Append, FileAccess.Write, FileShare.Read)
+        fs.Write([| 0x7uy; 0x8uy; 0x9uy |], 0, 3)
+        fs.Flush()
+        FileInfo(segment).Length |> should equal (before + 3L)
+        use recovered = new GroupCommitDiskDeltaLog<int>(dir, CheckpointDeltaCodec<int>())
+        let dlog = recovered :> IDeltaLog<int>
+        dlog.HighWater |> should equal 2L
+        dlog.ReplayAsync(0L, ct).AsTask().Result |> Array.map _.Seq |> should equal [| 1L; 2L |]
+        FileInfo(segment).Length |> should equal before)
+
+
+[<Fact>]
+let ``end-to-end: RecoverableSpine recovers from the group-commit segment log`` () =
+    withDir "gcdl-spine" (fun dir ->
+        let store = InMemorySnapshotStore<int>() :> ISnapshotStore<int>
+        let live =
+            use log1 = new GroupCommitDiskDeltaLog<int>(dir, CheckpointDeltaCodec<int>())
+            let s = RecoverableSpine.create (log1 :> IDeltaLog<int>) store
+            for i in 1 .. 6 do s.CommitAsync(ZSet.ofKeys [ i ]).Wait()
+            s.CommitAsync(ZSet.neg (ZSet.ofKeys [ 3 ])).Wait()
+            s
+        use log2 = new GroupCommitDiskDeltaLog<int>(dir, CheckpointDeltaCodec<int>())
+        let recovered = RecoverableSpine<int>.RecoverAsync(log2 :> IDeltaLog<int>, store).Result
+        recovered.Consolidate() |> should equal (live.Consolidate())
+        recovered.AppliedSeq |> should equal 7L
+        (recovered.Consolidate()).[3] |> should equal 0L)
+
+
+[<Fact>]
 let ``end-to-end: RecoverableSpine recovers from the disk log across a fresh instance`` () =
     withDir "ddl-spine" (fun dir ->
         let store = InMemorySnapshotStore<int>() :> ISnapshotStore<int>
