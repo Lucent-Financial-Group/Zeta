@@ -22,6 +22,11 @@ The active operating split:
 - GitHub/git: authoritative coordination and durable project state.
 - Broadcast bus: local coordination cache, never final authority.
 
+As of 2026-06-06 maintainer direction, do not assume a Codex background
+service is currently running. To save money, push work forward in the
+foreground chat session unless the maintainer explicitly re-enables a
+background service.
+
 ## Re-entry Notes
 
 The 2026-06-06 Codex IDE re-entry found the root checkout still
