@@ -124,6 +124,14 @@ let ``group-commit segment log works through the canonical CBOR codec`` () =
 
 
 [<Fact>]
+let ``group-commit segment log rejects multi-ferry writer configs`` () =
+    withDir "gcdl-dop" (fun dir ->
+        let config = { FerryThrottlerConfig.deterministic with MaxDegreeOfParallelism = 2 }
+        (fun () -> new GroupCommitDiskDeltaLog<int>(dir, CheckpointDeltaCodec<int>(), config) |> ignore)
+        |> should throw typeof<System.ArgumentException>)
+
+
+[<Fact>]
 let ``group-commit segment log truncates torn trailing record on recovery`` () =
     withDir "gcdl-torn" (fun dir ->
         (use log = new GroupCommitDiskDeltaLog<int>(dir, CheckpointDeltaCodec<int>())

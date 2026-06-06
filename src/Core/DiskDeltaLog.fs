@@ -145,7 +145,9 @@ type DiskDeltaLog<'K when 'K : comparison>
 /// inspectability, this hot-path backend appends framed records to one segment
 /// file and routes appends through `FerryThrottler<'TItem,'TResult>`. Each ferry
 /// boat writes N records then performs one `Flush(true)` before completing the N
-/// caller tasks. `MaxDegreeOfParallelism = 1` is the deterministic path.
+/// caller tasks. This v1 backend is a single-segment writer, so
+/// `MaxDegreeOfParallelism` must be 1; segment sharding/striping is a later
+/// scale-out backend, not an implicit behavior here.
 ///
 /// Record frame:
 /// `[len:int32-LE][crc32c:uint32-LE][payload]`, where payload is
@@ -174,6 +176,11 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
         match maxBatchBytes with
         | Some bytes -> { baseConfig with MaxBatchBytes = Some bytes }
         | None -> baseConfig
+    do
+        if ferryConfig.MaxDegreeOfParallelism <> 1 then
+            invalidArg
+                (nameof config)
+                "GroupCommitDiskDeltaLog writes one segment file; MaxDegreeOfParallelism must be 1."
 
     let framePayload (seq: int64) (captured: Map<string, string>) (delta: ZSet<'K>) : byte[] =
         let dict = Dictionary<string, string>()
@@ -263,6 +270,7 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
 
     let appendBoat (boat: ReadOnlyMemory<GroupCommitDeltaAppendRequest>) (ct: CancellationToken) : Task<int64 array> =
         task {
+            let createdSegment = not (File.Exists segmentPath)
             use fs =
                 new FileStream(
                     segmentPath,
@@ -276,6 +284,8 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
                 do! fs.WriteAsync(ReadOnlyMemory req.Record, ct).AsTask()
             do! fs.FlushAsync ct
             fs.Flush(flushToDisk = true)
+            if createdSegment then
+                FileSync.fsyncDir root
             return [| for i in 0 .. boat.Length - 1 -> boat.Span.[i].Seq |]
         }
 
