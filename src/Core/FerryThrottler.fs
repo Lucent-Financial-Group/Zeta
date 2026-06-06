@@ -321,6 +321,13 @@ type FerryThrottler<'TItem, 'TResult>
             for i in 0 .. count - 1 do
                 requests.[i].TrySetResult results.[i]
 
+    let trySize (req: FerryRequest<'TItem, 'TResult>) =
+        try
+            Ok(sizeOf req.Item)
+        with ex ->
+            req.TrySetException ex
+            Error()
+
     let runFerry () : Task =
         backgroundTask {
             let reader = inbox.Reader
@@ -344,26 +351,31 @@ type FerryThrottler<'TItem, 'TResult>
                             req.Dispose()
                             pending <- ValueNone
                         | ValueSome req ->
-                            items.[0] <- req.Item
-                            requests.[0] <- req
-                            n <- 1
-                            bytes <- sizeOf req.Item
+                            match trySize req with
+                            | Ok sz ->
+                                items.[0] <- req.Item
+                                requests.[0] <- req
+                                n <- 1
+                                bytes <- sz
+                            | Error() -> req.Dispose()
                             pending <- ValueNone
                         | ValueNone -> ()
                         let mutable draining = true
                         while draining && n < config.MaxBatchSize do
                             match tryTakeActive reader with
                             | ValueSome req ->
-                                let sz = sizeOf req.Item
-                                match byteBudget with
-                                | Some cap when n > 0 && bytes + sz > cap ->
-                                    pending <- ValueSome req
-                                    draining <- false
-                                | _ ->
-                                    items.[n] <- req.Item
-                                    requests.[n] <- req
-                                    n <- n + 1
-                                    bytes <- bytes + sz
+                                match trySize req with
+                                | Ok sz ->
+                                    match byteBudget with
+                                    | Some cap when n > 0 && bytes + sz > cap ->
+                                        pending <- ValueSome req
+                                        draining <- false
+                                    | _ ->
+                                        items.[n] <- req.Item
+                                        requests.[n] <- req
+                                        n <- n + 1
+                                        bytes <- bytes + sz
+                                | Error() -> req.Dispose()
                             | ValueNone -> draining <- false
                         if n > 0 then
                             try

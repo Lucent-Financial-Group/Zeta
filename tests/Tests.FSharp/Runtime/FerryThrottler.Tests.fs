@@ -269,3 +269,30 @@ let ``result arity honors byte budget while preserving aligned results`` () =
     throttler.CompleteAsync().Wait()
     tasks |> Array.map (fun t -> t.Result) |> should equal [| for x in 1 .. 10 -> x + 1 |]
     List.ofSeq boats |> List.forall (fun n -> n >= 1 && n <= 2) |> should equal true
+
+
+[<Fact>]
+let ``result arity faults request when byte sizer throws`` () =
+    let processed = ConcurrentQueue<int>()
+    let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+        task {
+            for i in 0 .. boat.Length - 1 do
+                processed.Enqueue boat.Span.[i]
+            return [| for i in 0 .. boat.Length - 1 -> boat.Span.[i] |]
+        }
+    let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 4; MaxBatchBytes = Some 100 }
+    let sizer item =
+        if item = 2 then invalidOp "size failed"
+        10
+    use throttler = new FerryThrottler<int, int>(config, processBatch, itemSizeBytes = sizer)
+    let ok1 = throttler.ProcessAsync 1
+    let bad = throttler.ProcessAsync 2
+    let ok3 = throttler.ProcessAsync 3
+    Task.WhenAll([| ok1; ok3 |]).Wait()
+    Task.WhenAny(bad :> Task, Task.Delay 2000).Result |> should equal (bad :> Task)
+    bad.IsFaulted |> should equal true
+    bad.Exception.InnerExceptions |> Seq.exists (fun ex -> ex.Message = "size failed") |> should equal true
+    throttler.CompleteAsync().Wait()
+    ok1.Result |> should equal 1
+    ok3.Result |> should equal 3
+    List.ofSeq processed |> should equal [ 1; 3 ]
